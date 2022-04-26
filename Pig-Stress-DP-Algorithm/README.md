@@ -2,7 +2,7 @@
 
 Detection and Resolving Heat Stress from Pig that utilize Thermographic Imaging, Image processing, & Deep Learning
 
-## Deep Learning Environment
+## Deep learning
 
 To get started with deep learning. Follow the steps below
 
@@ -13,7 +13,7 @@ To get started with deep learning. Follow the steps below
 
    > conda env list
 
-  <img src='static/2022-04-26_19-36.png' width='450px' >
+  <img src='../static/2022-04-26_19-36.png' width='450px' >
 
 4. Activate the environment
    > conda activate pig-stress-env
@@ -23,7 +23,7 @@ To get started with deep learning. Follow the steps below
 
 6. Visit the `Pig-Stress-DP-Algorithm/main.ipynb` file for more information.
 
-Optional commands in the environemnt
+Optional in environemnts
 
 - Testing the environemnt if working
   > python Pig-Stress-DP-Algorithm/test-env.py
