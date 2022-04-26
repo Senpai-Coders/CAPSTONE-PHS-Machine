@@ -1,0 +1,16 @@
+opencv-python
+numpy
+pandas
+matplotlib
+seaborn
+Django
+djangorestframework
+django-filter
+markdown 
+tensorflow
+tensorflow-hub
+tensorflow-gpu
+tensorflow-io
+pillow
+scikit-learn
+keras
