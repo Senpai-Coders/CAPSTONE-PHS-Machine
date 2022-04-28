@@ -31,3 +31,4 @@ Optional commands in the environemnt
   > conda deactivate
 - Deleting the environment. Make sure to deactivate the env first.
   > conda env remove --name pig-stress-env
+
