@@ -9,6 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "daisyui": "^2.14.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.3.2",
     "next": "12.1.5",
     "react": "18.0.0",
     "react-dom": "18.0.0"
