@@ -13,6 +13,7 @@ module.exports = {
     },
     env: {
       MONGODB_URI:"mongodb+srv://Jervx:helloworld@capstone.nv1cu.mongodb.net/PHS_MACHINE?retryWrites=true&w=majority",
-      JWT_SECRET_KEY:"ErenJaeger",
+      JWT_SCRT:"ErenJaeger",
+      EXPIRATION: 86400 //Seconds
     },
   };
