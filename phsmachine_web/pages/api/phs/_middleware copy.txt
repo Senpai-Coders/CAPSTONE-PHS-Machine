@@ -1,0 +1,39 @@
+import { NextResponse } from 'next/server'
+import { VERIFY_AUTHORIZATION } from "../../../helpers/api/index"
+
+export const middleware = (req) => {
+    let { cookies } = req
+
+    const auth = req.cookies.authorization
+    console.log(auth)
+
+    if (!auth)
+        return new Response(JSON.stringify({
+            status: 401,
+            message: "Sorry, your authorization is missing or expired",
+            solution: "Please sign in again"
+        }),
+            {
+                status: 401,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        )
+
+    if (!VERIFY_AUTHORIZATION(auth))
+        return new Response(JSON.stringify({
+            status: 401,
+            message: "Sorry, your authorization is invalid, or have been tampered",
+            solution: "Please sign in again"
+        }),
+            {
+                status: 401,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        )
+
+    return NextResponse.next()
+}

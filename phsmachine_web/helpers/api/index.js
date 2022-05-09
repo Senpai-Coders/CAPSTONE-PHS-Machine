@@ -48,4 +48,14 @@ export const GENERATE_JWT = (DATA) => {
     return jwt.sign(DATA, process.env.JWT_SCRT);
 };
   
+
+export const VERIFY_AUTHORIZATION = (JWT) => {
+    try{
+        const DATA = jwt.verify(JWT, process.env.JWT_SCRT);
+        return DATA
+    }catch(e){
+        return false
+    }
+}
+
 export default {}

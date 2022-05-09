@@ -10,14 +10,11 @@ const handler = async (req, res) => {
             sameSite : "strict",
             path : "/"
         }))
-
-        res.status(200).json({
-            message : "Signed Out 👌"
-        })
+        res.status(200).json({ message : "Signed Out 👌" })
     } catch (e) {
         console.log(e)
         res.status(500).json({
-            message: `Error 😥`
+            message: `Internal Server Error 😥`
         })
     }
 }

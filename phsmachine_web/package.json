@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@vespaiach/axios-fetch-adapter": "^0.2.2",
+    "axios": "^0.26.1",
     "bcryptjs": "^2.4.3",
     "cookie": "^0.5.0",
     "daisyui": "^2.14.3",
