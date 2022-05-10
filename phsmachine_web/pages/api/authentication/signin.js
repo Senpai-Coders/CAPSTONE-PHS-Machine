@@ -10,13 +10,14 @@ const handler = async (req, res) => {
         let { username, password } = req.body
 
         let USER = await users.findOne({ user_name: username }).lean()
-        const PASSWORD = USER.password
 
         // check if not exist
         if (!USER) return res.status(404).json({
             error: 404,
             message: "Sorry but you are not in our database."
         })
+
+        const PASSWORD = USER.password
 
         // convert it to an object & remove password hash
         USER = {...USER} 
