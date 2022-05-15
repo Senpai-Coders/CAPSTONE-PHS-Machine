@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^1.6.1",
     "@vespaiach/axios-fetch-adapter": "^0.2.2",
     "axios": "^0.26.1",
     "bcryptjs": "^2.4.3",

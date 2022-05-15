@@ -7,9 +7,9 @@ export default function Layout({ children }) {
             <Head>
                 <title>Layouts Example</title>
             </Head>
-            <div className='flex relative h-screen'>
+            <div className='flex relative h-screen '>
                 <Sidebar />
-                <main className='w-full h-full'>{children}</main>
+                <main className='w-full h-full card'>{children}</main>
             </div>
         </>
     )

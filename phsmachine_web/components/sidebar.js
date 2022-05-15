@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { useRouter } from "next/router"
 
-import { GiCctvCamera } from 'react-icons/gi'
+import { BsClipboardData } from 'react-icons/bs'
 import { FaThermometerHalf } from 'react-icons/fa'
 import { GoGear } from 'react-icons/go'
 
@@ -12,11 +12,11 @@ const sidebar = () => {
     const PHS_ROUTES = [
         {
             path: "/",
-            icon: GiCctvCamera
+            icon: FaThermometerHalf
         },
         {
             path: "/analysis",
-            icon: FaThermometerHalf
+            icon: BsClipboardData
         },
         {
             path: "/configuration",
@@ -38,7 +38,7 @@ const sidebar = () => {
                 <div className="flex flex-col items-center py-2 space-y-14 mb-3">
                     {PHS_ROUTES.map((routes, idx) => (
 
-                        <routes.icon onClick={()=> router.push(routes.path)} key={idx} className={`${router.pathname === routes.path ? 'scale-110' : ''} h-7 w-7 text-[#5C3858] cursor-pointer duration-300`} />
+                        <routes.icon onClick={()=> router.push(routes.path)} key={idx} className={`${router.pathname === routes.path ? 'scale-110' : 'opacity-50'} h-7 w-7 text-primary cursor-pointer duration-300`} />
 
                     ))}
                 </div>

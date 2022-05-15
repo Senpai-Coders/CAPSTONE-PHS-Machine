@@ -2,9 +2,9 @@ import Layout from '../components/layout'
 
 export default function Home() {
     return (
-        <>FaThermometerFull
-            <div className=''>
-                <p className='text-rose-800 text-4xl font-mono'>Hi welcome to PHS</p>
+        <>
+            <div className='p-10'>
+                <h1 className='text-xl card-title font-lato font-semibold'>Detection</h1>
             </div>
         </>
     )
