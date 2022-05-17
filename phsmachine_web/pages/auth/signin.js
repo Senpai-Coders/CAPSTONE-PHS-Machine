@@ -118,7 +118,7 @@ const signin = () => {
           {loading && (
             <div className="my-8 ">
               <p className="">Verifying...</p>
-              <progress className="progress"></progress>
+              <progress className="progress progress-primary"></progress>
             </div>
           )}
 

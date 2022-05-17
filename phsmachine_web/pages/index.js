@@ -1,5 +1,5 @@
 import Layout from "../components/layout";
-import Cameras from "../components/cameras";
+import Cameras from "../components/layout_camera";
 import SystemState from "../components/systemState";
 import Head from "next/head";
 

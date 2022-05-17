@@ -30,3 +30,20 @@ export const amISignedIn = async ()=> {
     }catch(e){ console.log("err") }
     return false
 }
+
+export const translateSystemState = (status) => {
+    if(status === 0) return 'Detecting'
+    if(status === 1) return 'Resolving'
+    if(status === 2) return 'Debugging'
+    if(status === -1) return 'Disabled'
+}
+
+export const dateToWord = (date) => {
+    let thisDate = new Date(date);
+  
+    let wordDate = `${thisDate.toLocaleString("en-us", {
+      month: "short",
+    })} ${thisDate.getDate()}, ${thisDate.getFullYear()}`;
+  
+    return wordDate
+  };

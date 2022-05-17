@@ -1,7 +1,34 @@
 import { GoCircuitBoard } from "react-icons/go";
 import { BsThermometerHalf } from "react-icons/bs";
+import { useEffect, useState } from "react";
+
+import { translateSystemState, dateToWord } from "../helpers";
 
 const systemState = () => {
+  const [DETECTIONSTODAY, setDETECTIONSTODAY] = useState(0)
+  const [ACTIONSTODAY, setACTIONSTODAY] = useState(0)
+  const [SYSSTATE, SETSYSSTATE] = useState({
+    status: 0, // -1 Disabled, 0 - Detecting, 1 - Resolving, 2 - Debugging
+    active_actions: "None",
+    lighting: "Off",
+    pig_count: 0,
+    stressed_pigcount: 0,
+    max_temp: 38.5,
+    average_temp: 36.4,
+    min_temp: 34.5,
+  });
+
+  const getSysStateStyle = (state) => {
+    if(state === -1) return 'text-error'
+    if(state === 0) return 'animate-pulse text-success'
+    if(state === 1) return 'animate-pulse text-accent'
+    if(state === 2) return 'animate-pulse text-warning'
+  }
+
+  const init = async () => {};
+
+  useEffect(() => {}, []);
+
   return (
     <div className="flex flex-wrap justify-center space-y-8">
       <div className="stats shadow">
@@ -9,7 +36,7 @@ const systemState = () => {
           <div className="stat-figure text-secondary"></div>
           <div className="stat-title">Total Detections (Today)</div>
           <div className="stat-value text-secondary">1</div>
-          <div className="stat-desc">May 15, 2022</div>
+          <div className="stat-desc">{ dateToWord(new Date()) }</div>
         </div>
 
         <div className="stat">
@@ -53,12 +80,18 @@ const systemState = () => {
         </div>
       </div>
 
-      <div className="flex">
+      <div className="flex flex-wrap">
         <div className="stats shadow">
           <div className="stat">
             <div className="stat-figure text-secondary"></div>
-            <div className="stat-title text-success">System Status</div>
-            <div className="stat-value text-lg">Detecting</div>
+            <div className="stat-title">System Status</div>
+            <div
+              className={`stat-value text-lg ${
+                getSysStateStyle(SYSSTATE.status)
+              }`}
+            >
+              {translateSystemState(SYSSTATE.status)}
+            </div>
             <div className="stat-desc"></div>
           </div>
 
@@ -78,6 +111,7 @@ const systemState = () => {
         </div>
 
         <div className="divider divider-horizontal"></div>
+
         <div className="stats shadow">
           <div className="stat">
             <div className="stat-figure text-base">

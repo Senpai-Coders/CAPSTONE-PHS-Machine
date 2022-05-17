@@ -50,9 +50,9 @@ const sidebar = () => {
   // hidden
   return (
     <>
-      <input type="checkbox" id="my-modal-6" className="modal-toggle" />
-      <div className="modal modal-bottom sm:modal-middle">
-        <div className="modal-box">
+      <input type="checkbox" id="my-modal-6" className="modal-toggle " />
+      <div className="modal font-inter backdrop-blur-sm modal-bottom sm:modal-middle">
+        <div className="modal-box ">
           <h3 className="font-bold text-lg">
             Signout 
           </h3>
@@ -60,10 +60,10 @@ const sidebar = () => {
             You are about to signout. Do you wish to proceed?
           </p>
           <div className="modal-action">
-            <label htmlFor="my-modal-6" className="btn btn-sm">
+            <label htmlFor="my-modal-6" className="btn">
               No
             </label>
-            <label onClick={() => signout()} htmlFor="my-modal-6" className="btn btn-sm">
+            <label onClick={() => signout()} htmlFor="my-modal-6" className="btn">
               Yes
             </label>
           </div>
