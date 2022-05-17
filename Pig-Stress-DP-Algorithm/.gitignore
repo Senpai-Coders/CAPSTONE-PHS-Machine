@@ -265,3 +265,6 @@ ui-tests/playwright-report
 
 # VSCode
 .vscode
+
+#phs-env-pi
+.pig-stress-env 

@@ -21,3 +21,5 @@ voila
 albumentations
 tqdm
 urllib3
+flask
+flask-socketio
