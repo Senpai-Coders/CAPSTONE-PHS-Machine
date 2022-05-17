@@ -1,14 +1,20 @@
 import '../styles/globals.css'
-import { loadTheme, setTheme } from "../helpers"
+import { loadTheme } from "../helpers"
+import { useRouter } from 'next/router'
 
 import { useEffect } from "react"
 
+
 function MyApp({ Component, pageProps }) {
+    const router = useRouter();
+
     const getLayout = Component.getLayout || ((page) => page)
 
-    useEffect(()=>{
+    const init = async () => {
         loadTheme()
-    })
+    }
+
+    useEffect(()=>{ init() }, [])
 
     return getLayout(<Component {...pageProps} />)
 }

@@ -1,4 +1,4 @@
-import { COMPARE_PASSWORD, GENERATE_JWT, setCookie } from "../../../helpers/api/index"
+import { COMPARE_PASSWORD, GENERATE_JWT } from "../../../helpers/api/index"
 import dbConnect from "../../../configs/dbConnection"
 const cookie = require("cookie")
 const users = require('../../../models/user')

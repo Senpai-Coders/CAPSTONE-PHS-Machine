@@ -7,11 +7,11 @@ dbConnect();
 
 const handler = async (req, res) => {
     try {
-        res.status(200).json({ goodies : "I'll give you this: 🍍 🍎"})
+        res.status(200).json({ auth : true})
     } catch (e) {
         console.log(e)
         res.status(500).json({
-            message: "Sorry, I ate all of them 😥"
+            message: "Sorry, you are not authorized"
         })
     }
 }
