@@ -34,6 +34,9 @@ Optional in environemnts
 
 
 ## For RPI
+https://github.com/PINTO0309/Tensorflow-bin/#usage:
+https://github.com/PINTO0309/Tensorflow-bin
+https://github.com/PINTO0309/Tensorflow-bin/tree/main/previous_versions
 
 1. Install Python Version 3.8
 
