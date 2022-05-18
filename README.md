@@ -1,4 +1,4 @@
-# PHS MACHINE
+# PHS MACHINE X
 
 Detection and Resolving Heat Stress from Pig that utilize Thermographic Imaging, Image processing, & Deep Learning
 
