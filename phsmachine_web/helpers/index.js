@@ -17,7 +17,7 @@ export const CtoF = (C) => {
 }
 
 export let API = axios.create({
-    baseURL : "http://127.0.0.1:3000",
+    baseURL : "",
     withCredentials : true
 })
 

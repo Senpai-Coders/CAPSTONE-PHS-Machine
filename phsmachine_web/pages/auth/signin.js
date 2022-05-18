@@ -22,6 +22,7 @@ const signin = () => {
       });
       router.push("/");
     } catch (e) {
+        console.log(e)
       setLoading(false);
       if (e.response) {
         //request was made but theres a response status code
