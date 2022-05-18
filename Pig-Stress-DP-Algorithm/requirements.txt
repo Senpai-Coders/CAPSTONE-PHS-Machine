@@ -7,7 +7,7 @@ Django
 djangorestframework
 django-filter
 markdown 
-tensorflow
+tensorflow==2.8.0
 tensorflow-hub
 tensorflow-gpu
 tensorflow-io
