@@ -23,3 +23,8 @@ tqdm
 urllib3
 flask
 flask-socketio
+cmapy
+RPI.GPIO
+Adafruit-Blinka
+adafruit-circuitpython-mlx90640
+scipy>=1.6.0
