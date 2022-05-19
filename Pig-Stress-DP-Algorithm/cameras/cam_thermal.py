@@ -1,42 +1,98 @@
-import time,board,busio, traceback
 import numpy as np
-import adafruit_mlx90640
-import datetime as dt
-import cv2
-import logging
 import cmapy
+import cv2
 from scipy import ndimage
+import adafruit_mlx90640
+import time,board,busio
 
-logging.basicConfig(filename='pithermcam.log',filemode='a',
-                    format='%(asctime)s %(levelname)-8s [%(filename)s:%(name)s:%(lineno)d] %(message)s',
-                    level=logging.WARNING,datefmt='%d-%b-%y %H:%M:%S')
-logger = logging.getLogger(__name__)
 
-class cam_thermal:
-    _colormap_list=['jet','bwr','seismic','coolwarm','PiYG_r','tab10','tab20','gnuplot2','brg']
-    _interpolation_list =[cv2.INTER_NEAREST,cv2.INTER_LINEAR,cv2.INTER_AREA,cv2.INTER_CUBIC,cv2.INTER_LANCZOS4,5,6]
-    _interpolation_list_name = ['Nearest','Inter Linear','Inter Area','Inter Cubic','Inter Lanczos4','Pure Scipy', 'Scipy/CV2 Mixed']
-    _current_frame_processed=False  # Tracks if the current processed image matches the current raw image
+class cam_therm:
     i2c=None
     mlx=None
-    _temp_min=None
-    _temp_max=None
-    _raw_image=None
-    _image=None
-    _file_saved_notification_start=None
-    _displaying_onscreen=False
-    _exit_requested=False
+    isRaw=False 
+    CV2_COLMAPS=['inferno','gnuplot2','gnuplot2_r','hot','magma']
+    INTERPOLS =[cv2.INTER_NEAREST,cv2.INTER_LINEAR,cv2.INTER_AREA,cv2.INTER_CUBIC,cv2.INTER_LANCZOS4,5,6]
+    TEMP_MIN=0
+    TEMP_MAX=120
+    RAW_THERMAL=None
+    PROCESSED_THERMAL=None
 
-    def __init__(self,use_f:bool = True, filter_image:bool = False, image_width:int=1200, 
-                image_height:int=900, output_folder:str = '/home/pi/pithermalcam/saved_snapshots/'):
-        self.use_f=use_f
-        self.filter_image=filter_image
-        self.image_width=image_width
-        self.image_height=image_height
-        self.output_folder=output_folder
-
-        self._colormap_index = 0
-        self._interpolation_index = 3
+    def __init__(self, IMG_WIDTH:int=400, IMG_HEIGHT:int=400 ):
+        self.IMG_WIDTH= IMG_WIDTH
+        self.IMG_HEIGHT= IMG_HEIGHT
+        self.CHOSEN_CV2_COLMAP = 4
+        self.INTERPOL = 3 #3 
         self._setup_therm_cam()
-        self._t0 = time.time()
-        self.update_image_frame()
+
+    def _setup_therm_cam(self):
+        self.i2c = busio.I2C(board.SCL, board.SDA, frequency=1000000)
+        self.mlx = adafruit_mlx90640.MLX90640(self.i2c)
+        self.mlx.refresh_rate = adafruit_mlx90640.RefreshRate.REFRESH_16_HZ  # set refresh rate
+        time.sleep(0.1)
+
+    def MINMAXAVG(self):
+        self.TEMP_MIN = np.min(self.RAW_THERMAL)
+        self.TEMP_MAX = np.max(self.RAW_THERMAL)
+
+    def READ_RAW_MLX_THERMAL(self):
+        self.RAW_THERMAL = np.zeros((24*32,))
+        try:
+            self.mlx.getFrame(self.RAW_THERMAL) 
+            print("R", self.RAW_THERMAL.shape)
+            self.RAW_THERMAL = self.RESCALE(self.RAW_THERMAL,self.TEMP_MIN,self.TEMP_MAX)
+            self.isRaw=False 
+            print("A2", self.RAW_THERMAL.shape)
+        except ValueError:
+            print("Math error; continuing...")
+            self.RAW_THERMAL = np.zeros((24*32,)) 
+            print("E1", self.RAW_THERMAL.shape)
+        except OSError:
+            print("IO Error; continuing...")
+            self.RAW_THERMAL = np.zeros((24*32,))
+            print("E2", self.RAW_THERMAL.shape)
+
+
+    def PROCESS_RAW(self):
+        try:
+            if self.INTERPOL==5:  # Scale via scipy only - slowest but seems higher quality
+                self.PROCESSED_THERMAL = ndimage.zoom(self.RAW_THERMAL,25)  # interpolate with scipy
+                self.PROCESSED_THERMAL = cv2.applyColorMap(self.PROCESSED_THERMAL, cmapy.cmap(self.CV2_COLMAPS[self.CHOSEN_CV2_COLMAP]))
+            elif self.INTERPOL==6:  # Scale partially via scipy and partially via cv2 - mix of speed and quality
+                self.PROCESSED_THERMAL = ndimage.zoom(self.RAW_THERMAL,10)  # interpolate with scipy
+                self.PROCESSED_THERMAL = cv2.applyColorMap(self.PROCESSED_THERMAL, cmapy.cmap(self.CV2_COLMAPS[self.CHOSEN_CV2_COLMAP]))
+                self.PROCESSED_THERMAL = cv2.resize(self.PROCESSED_THERMAL, (920,720), interpolation=cv2.INTER_CUBIC)
+            else:
+                self.PROCESSED_THERMAL = cv2.applyColorMap(self.RAW_THERMAL, cmapy.cmap(self.CV2_COLMAPS[self.CHOSEN_CV2_COLMAP]))
+                self.PROCESSED_THERMAL = cv2.resize(self.PROCESSED_THERMAL, (920,720), interpolation=self.INTERPOLS[self.INTERPOL])
+            self.PROCESSED_THERMAL = cv2.flip(self.PROCESSED_THERMAL, 1)
+        except Exception:
+            print("Err")
+
+    def UPDATE(self):
+        self.READ_RAW_MLX_THERMAL()
+        self.PROCESS_RAW()
+        self.isRaw=True
+        return self.PROCESSED_THERMAL
+
+    def RESCALE(self,f,Tmin,Tmax):
+        f=np.nan_to_num(f)
+        norm = np.uint8((f - Tmin)*255/(Tmax-Tmin))
+        norm.shape = (24,32)
+        return norm
+
+    def getThermal(self):
+        while True:
+            try:
+                PROCESSED = self.UPDATE()
+                RAW = self.RAW_THERMAL
+                return RAW, PROCESSED
+            except RuntimeError as e:
+                if e.message == 'Too many retries':
+                    print("i2c speed err")
+                    continue
+                raise
+
+if __name__ == "__main__":
+    thermcam = cam_therm()  # Instantiate class
+    thermcam.getThermal()
+
