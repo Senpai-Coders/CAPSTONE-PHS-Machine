@@ -17,7 +17,7 @@ class Cam_Norm(object):
     def get_frame(self):
         #extracting frames
             ret, frame = self.video.read()
-            frame=cv2.resize(frame,None,fx=ds_factor,fy=ds_factor, interpolation=cv2.INTER_AREA)                    
+            frame=cv2.resize(frame,(500,500),fx=ds_factor,fy=ds_factor, interpolation=cv2.INTER_AREA)                    
             ret, jpeg = cv2.imencode('.jpg', frame)
             byts = jpeg.tobytes()
             return frame, byts
