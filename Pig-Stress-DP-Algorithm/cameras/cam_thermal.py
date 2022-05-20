@@ -20,7 +20,7 @@ class cam_therm:
     def __init__(self, IMG_WIDTH:int=400, IMG_HEIGHT:int=400 ):
         self.IMG_WIDTH= IMG_WIDTH
         self.IMG_HEIGHT= IMG_HEIGHT
-        self.CHOSEN_CV2_COLMAP = 4
+        self.CHOSEN_CV2_COLMAP = 0
         self.INTERPOL = 3 #3 
         self._setup_therm_cam()
 
@@ -39,6 +39,8 @@ class cam_therm:
         try:
             self.mlx.getFrame(self.RAW_THERMAL) 
             print("R", self.RAW_THERMAL.shape)
+            self.TEMP_MIN = np.min(self.RAW_THERMAL)
+            self.TEMP_MAX = np.max(self.RAW_THERMAL)
             self.RAW_THERMAL = self.RESCALE(self.RAW_THERMAL,self.TEMP_MIN,self.TEMP_MAX)
             self.isRaw=False 
             print("A2", self.RAW_THERMAL.shape)
@@ -94,5 +96,11 @@ class cam_therm:
 
 if __name__ == "__main__":
     thermcam = cam_therm()  # Instantiate class
-    thermcam.getThermal()
-
+    while(True):
+        raw, frame = thermcam.getThermal()
+        cv2.imshow('frame', frame)
+      
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+  
+    cv2.destroyAllWindows()
