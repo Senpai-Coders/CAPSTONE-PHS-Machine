@@ -37,7 +37,11 @@ def get_ip_address():
 	s.close()
 	return ip_address
 
-def pull_images():
+def detectHeatStress():
+    while True:
+        print('detecting')
+
+def readCams():
     global IMG_NORMAL, THERMAL_CAM, IMG_THERMAL, RAW_THERMAL
     Cam = Cam_Norm()
     while THERMAL_CAM is not None:
@@ -84,9 +88,15 @@ def start_server():
     RAW_THERMAL = np.zeros((24*32,))
     THERMAL_CAM = cam_therm()
     time.sleep(0.1)
-    t = threading.Thread(target=pull_images)
-    t.daemon = True
-    t.start()
+
+    camThread = threading.Thread(target=readCams)
+    camThread.daemon = True
+    camThread.start()
+
+    detectThread = threading.Thread(target=detectHeatStress)
+    detectThread.daemon = True
+    detectThread.start()
+
     ip=get_ip_address()
     port=8000
     print(f'Server can be found at {ip}:{port}')
