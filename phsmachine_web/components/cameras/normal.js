@@ -9,21 +9,11 @@ const normal = () => {
     {
       name: "Camera",
       stream_url: "http://192.168.1.6:8000/normal_feed",
-    },
-    {
-      name: "Camera + Annotated",
-      // stream_url: "http://185.137.146.14/mjpg/video.mjpg?timestamp=1652597140056",
-      stream_url:
-        "https://www.anolytics.ai/wp-content/uploads/2020/01/2020-01-14.gif",
-    },
-    {
-      name: "Camera + Annotated + Thermal",
-      stream_url: "http://193.6.11.238/mjpg/video.mjpg",
-    },
+    }
   ];
 
   const [camstat, setCamStat] = useState(false);
-  const [view1, setView1] = useState(cam_var1[1]);
+  const [view1, setView1] = useState(cam_var1[0]);
 
   return (
     <div className="">

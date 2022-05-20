@@ -10,20 +10,11 @@ const normal = () => {
       name: "Thermal",
       stream_url:
         "http://192.168.1.6:8000/thermal_feed",
-    },
-    {
-      name: "Thermal + Annotated Ear",
-      stream_url:
-        "http://178.194.8.37:9000/mjpg/video.mjpg?timestamp=1652597508697",
-    },
-    {
-      name: "Penguin Desu",
-      stream_url: "http://89.145.222.232:80/mjpg/video.mjpg",
-    },
+    }
   ];
 
   const [camstat, setCamStat] = useState(false);
-  const [view1, setView1] = useState(cam_var1[1]);
+  const [view1, setView1] = useState(cam_var1[0]);
 
   return (
     <div className="">
