@@ -47,8 +47,6 @@ def detectHeatStress():
     while True:
         print('detecting ',counter)
         time.sleep(1)
-        with lock:
-            counter -= 6
 
 def readCams():
     global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, counter
@@ -68,7 +66,6 @@ def readCams():
                 IMG_NORMAL = current_frame.copy()
                 IMG_THERMAL = thermal_frame.copy()
                 RAW_THERMAL = raw_thermal.copy()
-                counter += 10
 
 def gen_normal():
 	global IMG_NORMAL, lock
@@ -111,7 +108,6 @@ def start_server():
     port=8000
     print(f'Server can be found at {ip}:{port}')
     app.run(host=ip, port=port, debug=True, threaded=True, use_reloader=False)
-
 
 if __name__ == '__main__':
 	start_server()
