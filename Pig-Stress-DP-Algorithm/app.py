@@ -48,7 +48,7 @@ def detectHeatStress():
         print('detecting ',counter)
         time.sleep(1)
         with lock:
-            counter += 1
+            counter -= 6
 
 def readCams():
     global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, counter
@@ -68,7 +68,7 @@ def readCams():
                 IMG_NORMAL = current_frame.copy()
                 IMG_THERMAL = thermal_frame.copy()
                 RAW_THERMAL = raw_thermal.copy()
-                counter += 2
+                counter += 10
 
 def gen_normal():
 	global IMG_NORMAL, lock
