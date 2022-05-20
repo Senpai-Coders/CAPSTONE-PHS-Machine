@@ -10,8 +10,13 @@ import numpy as np
 
 IMG_NORMAL=None
 IMG_THERMAL=None
-THERMAL_CAM=None
 RAW_THERMAL=None
+
+CAM_THERMAL=None
+CAM_NORMAL=None
+
+counter=0
+
 lock = threading.Lock()
 
 app = Flask(__name__)
@@ -38,19 +43,22 @@ def get_ip_address():
 	return ip_address
 
 def detectHeatStress():
+    global counter
     while True:
-        print('detecting')
+        print('detecting ',counter)
+        time.sleep(1)
+        with lock:
+            counter += 1
 
 def readCams():
-    global IMG_NORMAL, THERMAL_CAM, IMG_THERMAL, RAW_THERMAL
-    Cam = Cam_Norm()
-    while THERMAL_CAM is not None:
+    global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, counter
+    while CAM_THERMAL is not None:
         current_frame=None
         thermal_frame=None
         raw_thermal=None
         try:
-            current_frame, byts = Cam.get_frame()
-            raw, processed = THERMAL_CAM.getThermal()
+            current_frame, byts = CAM_NORMAL.get_frame()
+            raw, processed = CAM_THERMAL.getThermal()
             thermal_frame = processed
             raw_thermal = raw
         except Exception:
@@ -60,6 +68,7 @@ def readCams():
                 IMG_NORMAL = current_frame.copy()
                 IMG_THERMAL = thermal_frame.copy()
                 RAW_THERMAL = raw_thermal.copy()
+                counter += 2
 
 def gen_normal():
 	global IMG_NORMAL, lock
@@ -84,9 +93,10 @@ def gen_thermal():
 		yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
 def start_server():
-    global THERMAL_CAM, RAW_THERMAL
+    global CAM_THERMAL, CAM_NORMAL, RAW_THERMAL
     RAW_THERMAL = np.zeros((24*32,))
-    THERMAL_CAM = cam_therm()
+    CAM_THERMAL = cam_therm()
+    CAM_NORMAL = Cam_Norm()
     time.sleep(0.1)
 
     camThread = threading.Thread(target=readCams)
