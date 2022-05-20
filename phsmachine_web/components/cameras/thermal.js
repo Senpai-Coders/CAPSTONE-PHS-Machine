@@ -9,7 +9,7 @@ const normal = () => {
     {
       name: "Thermal",
       stream_url:
-        "https://i.pinimg.com/originals/22/23/6f/22236f3e1e301b5ad39e575067e740d6.gif",
+        "http://192.168.1.6:8000/thermal_feed",
     },
     {
       name: "Thermal + Annotated Ear",

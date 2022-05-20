@@ -8,7 +8,7 @@ const normal = () => {
   const cam_var1 = [
     {
       name: "Camera",
-      stream_url: "http://112.198.186.83:8081/mjpg/video.mjpg",
+      stream_url: "http://192.168.1.6:8000/normal_feed",
     },
     {
       name: "Camera + Annotated",
