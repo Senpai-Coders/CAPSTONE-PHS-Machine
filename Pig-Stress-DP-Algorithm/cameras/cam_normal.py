@@ -8,6 +8,7 @@ class Cam_Norm(object):
     def __init__(self):
        #capturing video
        self.video = cv2.VideoCapture(0)
+       self.video.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     
     def __del__(self):
         #releasing camera
