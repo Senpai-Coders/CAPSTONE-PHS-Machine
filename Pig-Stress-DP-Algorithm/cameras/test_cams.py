@@ -1,14 +1,15 @@
-from cam_therm import cam_therm
+#from cam_thermal import cam_therm
 from cam_normal import Camera
 import cv2
 import numpy as np
 
-x = cam_therm()
+#x = cam_therm()
 y = Camera()
 
 while True:
-    RAW, PROCESSED = x.getThermal()
+    #RAW, PROCESSED = x.getThermal()
     img2 = y.get_frame()
+    PROCESSED = img2
 
     IM1 = cv2.resize(PROCESSED, (400,400))
     IM2 = cv2.resize(img2, (400,400))

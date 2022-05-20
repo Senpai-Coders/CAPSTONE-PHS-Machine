@@ -268,3 +268,5 @@ ui-tests/playwright-report
 
 #phs-env-pi
 .pig-stress-env 
+testcodes
+#test_img
