@@ -1,10 +1,10 @@
-import { useState, Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 
 import { HiOutlineSelector } from "react-icons/hi";
 import { AiOutlineCheck } from "react-icons/ai";
 
-const normal = () => {
+const normal = ({ canStream }) => {
   const cam_var1 = [
     {
       name: "Thermal",
@@ -15,6 +15,10 @@ const normal = () => {
 
   const [camstat, setCamStat] = useState(false);
   const [view1, setView1] = useState(cam_var1[0]);
+
+  useEffect(()=>{
+    setCamStat(false)
+  }, [canStream])
 
   return (
     <div className="">
@@ -76,6 +80,7 @@ const normal = () => {
             <input
               type="checkbox"
               className="toggle"
+              disabled={ canStream }
               checked={camstat}
               onChange={() => setCamStat(!camstat)}
             />

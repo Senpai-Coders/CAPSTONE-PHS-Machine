@@ -39,17 +39,69 @@ const handler = async(req, res) => {
                 min_temp : 34.5, // min pig temp (realtime)
             },
             uby : new ObjectId("6277e36f94637471bdabb80d")
-        },{
+        },
+        
+        {
             category : "actions",
             config_name : "Mist",
             description : "This will be utilized by the AI",
             value : {
-                duration : 1, // Duration this device will be on
-                target_io : "relay_1", // relay_1 to relay_3
+                duration : 1, // Duration this device will be on in Seconds
+                target_io : "Relay_1", // relay_1 to relay_3
+            },
+            disabled : false,
+            uby : new ObjectId("6277e36f94637471bdabb80d")
+        },{
+            category : "actions",
+            config_name : "Fan",
+            description : "This will be utilized by the AI",
+            value : {
+                duration : 1,
+                target_io : "Relay_2", 
+            },
+            disabled : false,
+            uby : new ObjectId("6277e36f94637471bdabb80d")
+        },{
+            category : "actions",
+            config_name : "Lights",
+            description : "This will be utilized by the AI",
+            value : {
+                duration : 1,
+                target_io : "Relay_3", 
             },
             disabled : false,
             uby : new ObjectId("6277e36f94637471bdabb80d")
         },
+        
+        {
+            category : "relays",
+            config_name : "Relay_1",
+            description : "Relay 1 On 4 Channel Relay",
+            value : { GPIO_PIN : 14, isUsed : true },
+            disabled : false,
+            uby : new ObjectId("6277e36f94637471bdabb80d")
+        },{
+            category : "relays",
+            config_name : "Relay_2",
+            description : "Relay 2 On 4 Channel Relay",
+            value : { GPIO_PIN : 15, isUsed : true },
+            disabled : false,
+            uby : new ObjectId("6277e36f94637471bdabb80d")
+        },{
+            category : "relays",
+            config_name : "Relay_3",
+            description : "Relay 3 On 4 Channel Relay",
+            value : { GPIO_PIN : 17, isUsed : true },
+            disabled : false,
+            uby : new ObjectId("6277e36f94637471bdabb80d")
+        },{
+            category : "relays",
+            config_name : "Relay_4",
+            description : "Relay 4 On 4 Channel Relay",
+            value : { GPIO_PIN : 18, isUsed : false },
+            disabled : false,
+            uby : new ObjectId("6277e36f94637471bdabb80d")
+        }
     ]
 
     const del = await users.deleteMany({})

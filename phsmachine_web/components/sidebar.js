@@ -69,7 +69,7 @@ const sidebar = () => {
           </div>
         </div>
       </div>
-      <aside className="hidden relative z-30 flex-shrink-0 px-5 overflow-y-auhref dark:bg-gray-800 lg:block">
+      <aside className="hidden relative z-30 flex-shrink-0 px-5 overflow-y-auhref dark:bg-gray-800 shadow-lg lg:block">
         <div className="overflow-y-auto mt-8 overflow-x-hidden space-y-14 flex-grow">
           <div className="flex items-center my-4">
             <Link

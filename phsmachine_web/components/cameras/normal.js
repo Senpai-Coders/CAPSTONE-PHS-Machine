@@ -1,10 +1,10 @@
-import { useState, Fragment } from "react";
+import { useState, Fragment, useEffect } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 
 import { HiOutlineSelector } from "react-icons/hi";
 import { AiOutlineCheck } from "react-icons/ai";
 
-const normal = () => {
+const normal = ({ canStream }) => {
   const cam_var1 = [
     {
       name: "Camera",
@@ -14,6 +14,10 @@ const normal = () => {
 
   const [camstat, setCamStat] = useState(false);
   const [view1, setView1] = useState(cam_var1[0]);
+
+  useEffect(()=>{
+    setCamStat(false)
+  }, [canStream])
 
   return (
     <div className="">
@@ -74,6 +78,7 @@ const normal = () => {
           <label className="label cursor-pointer">
             <input
               type="checkbox"
+              disabled={ canStream }
               className="toggle"
               checked={camstat}
               onChange={() => setCamStat(!camstat)}

@@ -16,11 +16,7 @@ export const CtoF = (C) => {
   return C.toFixed(2)
 }
 
-export let API = axios.create({
-    baseURL : "",
-    withCredentials : true
-})
-
+export let API = axios.create({ baseURL : "", withCredentials : true })
 API.defaults.withCredentials = true
 
 export const amISignedIn = async ()=> {
@@ -35,7 +31,9 @@ export const translateSystemState = (status) => {
     if(status === 0) return 'Detecting'
     if(status === 1) return 'Resolving'
     if(status === 2) return 'Debugging'
+    if(status === 3) return 'Connecting'
     if(status === -1) return 'Disabled'
+    if(status === -2) return 'Off'
 }
 
 export const dateToWord = (date) => {
