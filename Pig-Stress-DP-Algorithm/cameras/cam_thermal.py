@@ -38,20 +38,14 @@ class cam_therm:
         self.RAW_THERMAL = np.zeros((24*32,))
         try:
             self.mlx.getFrame(self.RAW_THERMAL) 
-            print("R", self.RAW_THERMAL.shape)
             self.TEMP_MIN = np.min(self.RAW_THERMAL)
             self.TEMP_MAX = np.max(self.RAW_THERMAL)
             self.RAW_THERMAL = self.RESCALE(self.RAW_THERMAL,self.TEMP_MIN,self.TEMP_MAX)
             self.isRaw=False 
-            print("A2", self.RAW_THERMAL.shape)
         except ValueError:
-            print("Math error; continuing...")
             self.RAW_THERMAL = np.zeros((24*32,)) 
-            print("E1", self.RAW_THERMAL.shape)
         except OSError:
-            print("IO Error; continuing...")
             self.RAW_THERMAL = np.zeros((24*32,))
-            print("E2", self.RAW_THERMAL.shape)
 
 
     def PROCESS_RAW(self):
