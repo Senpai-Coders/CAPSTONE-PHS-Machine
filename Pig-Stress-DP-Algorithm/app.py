@@ -12,6 +12,7 @@ import numpy as np
 from bson import json_util
 import pymongo
 from utils.utils import mongoResToJson
+import atexit
 
 IMG_NORMAL=None
 IMG_THERMAL=None
@@ -29,7 +30,6 @@ lock = threading.Lock()
 app = Flask(__name__)
 #mongo = PyMongo(app, uri="mongodb://localhost:27017/PHS_MACHINE")
 
-
 @app.route("/")
 def index():
 	return "Hello"
@@ -38,6 +38,12 @@ def index():
 def getConfig():
     configs = list(DB_CONFIGS.find({'config_name' : 'system_state'}))
     return Response(mongoResToJson(configs), content_type='application/json'), 200
+
+@app.route("/emitRelay")
+def emitRelay():
+    target=request.params['target']
+    print("param received", target)
+    return Response(mongoResToJson(list({'status':'200','message':'ok 👌'})), content_type='application/json' ), 200
 
 @app.route("/normal_feed")
 def feed_normal():
@@ -119,6 +125,11 @@ def start_server():
     port=8000
     print(f'Server can be found at {ip}:{port}')
     app.run(host=ip, port=port, debug=True, threaded=True, use_reloader=False)
+
+@atexit.register
+def goodbye():
+    print("Setting state as Off")
+    print("Closing Relays")
 
 if __name__ == '__main__':
 	start_server()
