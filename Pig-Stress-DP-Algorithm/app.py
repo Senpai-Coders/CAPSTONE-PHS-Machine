@@ -36,7 +36,7 @@ def index():
 
 @app.route("/getConfig")
 def getConfig():
-    configs = DB_CONFIGS.find({'config_name' : 'system_state'})
+    configs = list(DB_CONFIGS.find({'config_name' : 'system_state'}))
     return Response(mongoResToJson(configs), content_type='application/json'), 200
 
 @app.route("/normal_feed")
