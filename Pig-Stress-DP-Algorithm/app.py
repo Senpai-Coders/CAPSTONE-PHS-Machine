@@ -7,6 +7,8 @@ import cv2
 from cameras.cam_normal import Cam_Norm
 from cameras.cam_thermal import cam_therm
 import numpy as np
+#from flask_pymongo import PyMongo
+import pymongo
 
 IMG_NORMAL=None
 IMG_THERMAL=None
@@ -15,15 +17,24 @@ RAW_THERMAL=None
 CAM_THERMAL=None
 CAM_NORMAL=None
 
-counter=0
+MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
+DB = MONGO_CONNECTION["PHS_MACHINE"]
+DB_CONFIGS = DB['configs']
 
 lock = threading.Lock()
 
 app = Flask(__name__)
+#mongo = PyMongo(app, uri="mongodb://localhost:27017/PHS_MACHINE")
+
 
 @app.route("/")
 def index():
 	return "Hello"
+
+@app.route("/getConfig")
+def getConfig():
+    configs = DB_CONFIGS.find({'config_name' : 'system_state'})
+    return flask.jsonify(message="success", configes=configs)
 
 @app.route("/normal_feed")
 def feed_normal():
@@ -31,8 +42,7 @@ def feed_normal():
 
 @app.route("/thermal_feed")
 def feed_thermal():
-	return Response(gen_thermal(), mimetype="multipart/x-mixed-replace; boundary=frame")
-    
+	return Response(gen_thermal(), mimetype="multipart/x-mixed-replace; boundary=frame")  
 
 def get_ip_address():
 	"""Find the current IP address of the device"""
@@ -43,13 +53,11 @@ def get_ip_address():
 	return ip_address
 
 def detectHeatStress():
-    global counter
     while True:
-        print('detecting ',counter)
         time.sleep(1)
 
 def readCams():
-    global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, counter
+    global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL
     while CAM_THERMAL is not None:
         current_frame=None
         thermal_frame=None

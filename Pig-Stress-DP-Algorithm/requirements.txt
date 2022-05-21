@@ -28,3 +28,4 @@ RPI.GPIO
 Adafruit-Blinka
 adafruit-circuitpython-mlx90640
 scipy>=1.6.0
+pymongo
