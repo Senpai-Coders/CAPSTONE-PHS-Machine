@@ -1,3 +1,4 @@
+from urllib import response
 from flask import Response, request
 from flask import Flask
 import flask
@@ -21,6 +22,9 @@ RAW_THERMAL=None
 CAM_THERMAL=None
 CAM_NORMAL=None
 
+SYSTEM_STATE=None
+RELAYS=None
+
 MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
 DB = MONGO_CONNECTION["PHS_MACHINE"]
 DB_CONFIGS = DB['configs']
@@ -34,10 +38,25 @@ app = Flask(__name__)
 def index():
 	return "Hello"
 
-@app.route("/getConfig")
+# @app.route("/getConfig")
+# def getConfig():
+#     configs = list(DB_CONFIGS.find({'config_name' : 'system_state'}))
+#     return Response(mongoResToJson(configs), content_type='application/json'), 200
+
+@app.route("/getSystemState")
 def getConfig():
-    configs = list(DB_CONFIGS.find({'config_name' : 'system_state'}))
-    return Response(mongoResToJson(configs), content_type='application/json'), 200
+    global SYSTEM_STATE
+    print(SYSTEM_STATE)
+    response = Response(mongoResToJson({ "state" : SYSTEM_STATE }), content_type='application/json' )
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 200
+
+@app.route("/updateState")
+def setState():
+    global SYSTEM_STATE
+    status = request.args.get('status')
+    SYSTEM_STATE['status']=int(status)
+    return Response( mongoResToJson({"status":200, "message":"Ok 👌"}) , content_type="application/json"), 200
 
 @app.route("/emitRelay")
 def emitRelay():
@@ -107,7 +126,18 @@ def gen_thermal():
 		yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
 def start_server():
-    global CAM_THERMAL, CAM_NORMAL, RAW_THERMAL
+    global CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE
+    SYSTEM_STATE = {
+        "status" : -1,
+        "active_actions" : "None",
+        "lighting" : "Off",
+        "pig_count" : 0,
+        "stressed_pigcount" : 0,
+        "max_temp" : 0,
+        "average_temp" : 0,
+        "min_temp" : 0
+    }
+
     RAW_THERMAL = np.zeros((24*32,))
     CAM_THERMAL = cam_therm()
     CAM_NORMAL = Cam_Norm()
@@ -128,6 +158,8 @@ def start_server():
 
 @atexit.register
 def goodbye():
+    print("\n")
+    print("---PHS STATE OFF---")
     print("Setting state as Off")
     print("Closing Relays")
 
