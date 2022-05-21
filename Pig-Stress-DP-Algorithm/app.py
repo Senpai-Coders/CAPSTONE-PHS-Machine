@@ -41,7 +41,7 @@ def getConfig():
 
 @app.route("/emitRelay")
 def emitRelay():
-    target=request.params['target']
+    target=request.args.get('target')
     print("param received", target)
     return Response(mongoResToJson(list({'status':'200','message':'ok 👌'})), content_type='application/json' ), 200
 
