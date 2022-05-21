@@ -1,5 +1,6 @@
 from flask import Response, request
 from flask import Flask
+import flask
 from flask import render_template
 import threading
 import time, socket, logging, traceback
@@ -8,7 +9,9 @@ from cameras.cam_normal import Cam_Norm
 from cameras.cam_thermal import cam_therm
 import numpy as np
 #from flask_pymongo import PyMongo
+from bson import json_util
 import pymongo
+from utils.utils import mongoResToJson
 
 IMG_NORMAL=None
 IMG_THERMAL=None
@@ -34,7 +37,7 @@ def index():
 @app.route("/getConfig")
 def getConfig():
     configs = DB_CONFIGS.find({'config_name' : 'system_state'})
-    return flask.jsonify(message="success", configes=configs)
+    return Response(mongoResToJson(configs), content_type='application/json'), 200
 
 @app.route("/normal_feed")
 def feed_normal():
