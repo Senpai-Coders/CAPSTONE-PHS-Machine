@@ -27,13 +27,13 @@ export default function Home() {
   const init = async () => {
     try {
       const phs_response = await axios.get(
-        "http://192.168.1.10:8000/getSystemState"
+        "http://192.168.1.6:8000/getSystemState"
       );
       SETSYSSTATE(phs_response.data.state);
       setIsDown(false);
     } catch (e) {
       setIsDown(true);
-      SETSYSSTATE({...SYSSTATE, status : -2})
+      SETSYSSTATE({ ...SYSSTATE, status: -2 });
     }
   };
 
@@ -51,17 +51,24 @@ export default function Home() {
       <div
         htmlFor="sys_off_modal"
         className={`modal ${
-          !seenModal && SYSSTATE.status === -2 ? "modal-open" : ""
+          !seenModal && (SYSSTATE.status === -2 || isDown) ? "modal-open" : ""
         } font-inter backdrop-blur-sm modal-bottom sm:modal-middle duration-200`}
       >
         <div className="modal-box">
-          <h3 className="font-bold text-lg">PHS Detection System</h3>
+          <div className="flex space-x-4">
+            <RiZzzFill className=" w-9 h-9" />
+            <h3 className="font-bold text-lg">PHS Detection System Is Off</h3>
+          </div>
           <p className="py-4">
-            The system is currently off, the system cannot detect the pig status
+            The system cannot analyze pig & you cannot change some of the
+            configurations
           </p>
           <div className="modal-action">
             <button
-              onClick={() => { setSeenModal(true); console.log(true, seenModal) }}
+              onClick={() => {
+                setSeenModal(true);
+                console.log(true, seenModal);
+              }}
               className="btn"
             >
               Ok
@@ -69,7 +76,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
       <h1 className="text-xl card-title font-lato font-semibold mb-2">
         Detection
       </h1>
@@ -87,7 +93,7 @@ export default function Home() {
               <div>
                 <RiZzzFill className="w-6 h-6 animate-pulse" />
                 <span>
-                  { SYSSTATE.status === -2
+                  {SYSSTATE.status === -2
                     ? "PHS Detection System is currently off..."
                     : "PHS Detection System is disabled, you can re-enable it on settings."}
                 </span>
@@ -111,7 +117,7 @@ export default function Home() {
               </div>
             </motion.div>
           )}
-          {( SYSSTATE.status === 2) && (
+          {SYSSTATE.status === 2 && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -127,10 +133,10 @@ export default function Home() {
               </div>
             </motion.div>
           )}
-          </AnimatePresence>
+        </AnimatePresence>
       </div>
       <div className="divider my-8">Realtime View</div>
-      <Cameras canStream={ isDown || SYSSTATE.status === -2 } />
+      <Cameras canStream={isDown || SYSSTATE.status === -2} />
     </>
   );
 }
