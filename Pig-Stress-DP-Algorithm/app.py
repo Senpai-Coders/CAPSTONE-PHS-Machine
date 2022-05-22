@@ -13,6 +13,7 @@ import numpy as np
 from bson import json_util
 import pymongo
 from utils.utils import mongoResToJson
+from component.r_controller import r_controller
 import atexit
 
 IMG_NORMAL=None
@@ -23,7 +24,7 @@ CAM_THERMAL=None
 CAM_NORMAL=None
 
 SYSTEM_STATE=None
-RELAYS=None
+R_CONTROLLER=None
 
 MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
 DB = MONGO_CONNECTION["PHS_MACHINE"]
@@ -44,9 +45,8 @@ def index():
 #     return Response(mongoResToJson(configs), content_type='application/json'), 200
 
 @app.route("/getSystemState")
-def getConfig():
+def getSyState():
     global SYSTEM_STATE
-    print(SYSTEM_STATE)
     response = Response(mongoResToJson({ "state" : SYSTEM_STATE }), content_type='application/json' )
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response, 200
@@ -56,13 +56,27 @@ def setState():
     global SYSTEM_STATE
     status = request.args.get('status')
     SYSTEM_STATE['status']=int(status)
-    return Response( mongoResToJson({"status":200, "message":"Ok 👌"}) , content_type="application/json"), 200
+    response = Response( mongoResToJson({"status":200, "message":"Ok "}) , content_type="application/json")
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 200
 
-@app.route("/emitRelay")
+@app.route("/emitRelay", methods=['POST'])
 def emitRelay():
-    target=request.args.get('target')
-    print("param received", target)
-    return Response(mongoResToJson(list({'status':'200','message':'ok 👌'})), content_type='application/json' ), 200
+    global R_CONTROLLER
+    ReqBod = request.get_json(force=True)
+    target = ReqBod['relay_name']
+    state = ReqBod['state']
+    R_CONTROLLER.toggleRelay(target,state)
+    res = Response(mongoResToJson(list({'status':'200','message':'ok 👌'})), content_type='application/json' )
+    res.headers.add("Access-Control-Allow-Origin", "*")
+    return res, 200
+
+@app.route("/getAllRelays", methods=['GET'])
+def getAvailableRelay():
+    global R_CONTROLLER
+    res = Response(mongoResToJson(R_CONTROLLER.getAllRelays()), content_type='application/json' )
+    res.headers.add("Access-Control-Allow-Origin", "*")
+    return res, 200
 
 @app.route("/normal_feed")
 def feed_normal():
@@ -126,9 +140,10 @@ def gen_thermal():
 		yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
 def start_server():
-    global CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE
+    global CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER
+
     SYSTEM_STATE = {
-        "status" : -1,
+        "status" : 0,
         "active_actions" : "None",
         "lighting" : "Off",
         "pig_count" : 0,
@@ -137,6 +152,10 @@ def start_server():
         "average_temp" : 0,
         "min_temp" : 0
     }
+
+    relays = list(DB_CONFIGS.find({ "category" : "relays" }))
+
+    R_CONTROLLER = r_controller(relays, True)
 
     RAW_THERMAL = np.zeros((24*32,))
     CAM_THERMAL = cam_therm()

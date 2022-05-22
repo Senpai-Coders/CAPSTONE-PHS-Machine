@@ -270,3 +270,4 @@ ui-tests/playwright-report
 .pig-stress-env 
 testcodes
 #test_img
+phstst.py
