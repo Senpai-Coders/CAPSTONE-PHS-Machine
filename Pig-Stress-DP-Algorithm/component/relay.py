@@ -20,8 +20,8 @@ class relay:
             "config_name" : self.NAME,
             "description" : self.DESCRIPTION,
             "GPIO_PIN" : self.GPIO_PIN,
-            "STATE" : self.STATE if not self.isActiveLow else not self.STATE,
-            "USED" : self.USED
+            "state" : self.STATE if not self.isActiveLow else not self.STATE,
+            "used" : self.USED
         }
         return DICT
 
@@ -44,4 +44,5 @@ class relay:
             return f"PIN: {self.GPIO_PIN}, Name: {self.NAME}, State: {self.STATE}, {self.stateToWord(self.STATE)}\nDescription: { self.DESCRIPTION }"
 
     def __del__(self):
+        self.toggle(False)
         GPIO.cleanup()

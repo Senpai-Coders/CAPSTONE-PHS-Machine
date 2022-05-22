@@ -35,3 +35,6 @@ class r_controller:
         for r in self.RELAYS:
             relDict.append(r.toDict())
         return relDict
+
+    def __del__(self):
+        self.RELAYS = []

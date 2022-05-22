@@ -15,6 +15,7 @@ import pymongo
 from utils.utils import mongoResToJson
 from component.r_controller import r_controller
 import atexit
+from flask_cors import CORS
 
 IMG_NORMAL=None
 IMG_THERMAL=None
@@ -33,6 +34,7 @@ DB_CONFIGS = DB['configs']
 lock = threading.Lock()
 
 app = Flask(__name__)
+cors = CORS(app, resources={f"/*":{"origins":"*"}})
 #mongo = PyMongo(app, uri="mongodb://localhost:27017/PHS_MACHINE")
 
 @app.route("/")
@@ -48,7 +50,6 @@ def index():
 def getSyState():
     global SYSTEM_STATE
     response = Response(mongoResToJson({ "state" : SYSTEM_STATE }), content_type='application/json' )
-    response.headers.add("Access-Control-Allow-Origin", "*")
     return response, 200
 
 @app.route("/updateState")
@@ -57,7 +58,6 @@ def setState():
     status = request.args.get('status')
     SYSTEM_STATE['status']=int(status)
     response = Response( mongoResToJson({"status":200, "message":"Ok "}) , content_type="application/json")
-    response.headers.add("Access-Control-Allow-Origin", "*")
     return response, 200
 
 @app.route("/emitRelay", methods=['POST'])
@@ -66,10 +66,10 @@ def emitRelay():
     ReqBod = request.get_json(force=True)
     target = ReqBod['relay_name']
     state = ReqBod['state']
+    print("REQ",target,state)
     R_CONTROLLER.toggleRelay(target,state)
-    res = Response(mongoResToJson(list({'status':'200','message':'ok 👌'})), content_type='application/json' )
-    res.headers.add("Access-Control-Allow-Origin", "*")
-    return res, 200
+    response = Response( mongoResToJson({"status":200, "message":"Ok "}) , content_type="application/json")
+    return response, 200
 
 @app.route("/getAllRelays", methods=['GET'])
 def getAvailableRelay():
@@ -177,10 +177,12 @@ def start_server():
 
 @atexit.register
 def goodbye():
+    global R_CONTROLLER
     print("\n")
     print("---PHS STATE OFF---")
     print("Setting state as Off")
     print("Closing Relays")
+    R_CONTROLLER.offAll()
 
 if __name__ == '__main__':
 	start_server()
