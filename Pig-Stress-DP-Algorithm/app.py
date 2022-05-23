@@ -16,6 +16,8 @@ from utils.utils import mongoResToJson
 from component.r_controller import r_controller
 import atexit
 from flask_cors import CORS
+import os
+from datetime import datetime
 
 IMG_NORMAL=None
 IMG_THERMAL=None
@@ -95,8 +97,12 @@ def get_ip_address():
 	return ip_address
 
 def detectHeatStress():
+    global IMG_NORMAL, IMG_THERMAL, RAW_THERMAL
     while True:
         time.sleep(1)
+        curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
+        if IMG_NORMAL is not None and IMG_THERMAL is not None:
+            saveDetection(IMG_NORMAL, IMG_THERMAL, RAW_THERMAL  , curt)
 
 def readCams():
     global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL
@@ -106,7 +112,7 @@ def readCams():
         raw_thermal=None
         try:
             current_frame, byts = CAM_NORMAL.get_frame()
-            raw, processed = CAM_THERMAL.getThermal()
+            raw, raw_rescaled, processed = CAM_THERMAL.getThermal()
             thermal_frame = processed
             raw_thermal = raw
         except Exception:
@@ -174,6 +180,24 @@ def start_server():
     port=8000
     print(f'Server can be found at {ip}:{port}')
     app.run(host=ip, port=port, debug=True, threaded=True, use_reloader=False)
+
+def saveDetection(normal,thermal,raw_thermal,stmp):
+    try:
+        if not os.path.exists("../phsmachine_web/public/normal/"):
+            os.makedirs("../phsmachine_web/public/normal/")
+        if not os.path.exists("../phsmachine_web/public/annotated/"):
+            os.makedirs("../phsmachine_web/public/annotated/")
+        if not os.path.exists("../phsmachine_web/public/thermal/"):
+            os.makedirs("../phsmachine_web/public/thermal/")
+        if not os.path.exists("../phsmachine_web/public/thermal_raw/"):
+            os.makedirs("../phsmachine_web/public/thermal_raw/")
+
+        cv2.imwrite(f"../phsmachine_web/public/normal/nrml{stmp}.png", normal)
+        cv2.imwrite(f"../phsmachine_web/public/thermal/thermal{stmp}.png", thermal)
+        p_rt = np.around(raw_thermal, decimals=1)
+        np.savetxt(f'../phsmachine_web/public/thermal_raw/r_thermal{stmp}.csv', p_rt , delimiter=",")
+    except Exception as e:
+        print(e)
 
 @atexit.register
 def goodbye():
