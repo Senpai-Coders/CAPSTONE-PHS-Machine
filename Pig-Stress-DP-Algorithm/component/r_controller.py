@@ -36,5 +36,17 @@ class r_controller:
             relDict.append(r.toDict())
         return relDict
 
+    def delRelays(self, relays):
+        self.RELAYS = []
+        for r in relays:
+            R = relay(
+                NAME=r['config_name'],
+                DESCRIPTION=r['description'],
+                GPIO_PIN=(r['value']['GPIO_PIN']),
+                USED=(r['value']['isUsed']),
+                isActiveLow=self.isActiveLow
+            )
+            self.RELAYS.append(R)
+
     def __del__(self):
         self.RELAYS = []

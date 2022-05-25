@@ -42,7 +42,3 @@ class relay:
 
     def __str__(self):
             return f"PIN: {self.GPIO_PIN}, Name: {self.NAME}, State: {self.STATE}, {self.stateToWord(self.STATE)}\nDescription: { self.DESCRIPTION }"
-
-    def __del__(self):
-        self.toggle(False)
-        GPIO.cleanup()

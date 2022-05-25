@@ -14,6 +14,7 @@ from bson import json_util
 import pymongo
 from utils.utils import mongoResToJson
 from component.r_controller import r_controller
+from action.a_controller import a_controller
 import atexit
 from flask_cors import CORS
 import os
@@ -22,11 +23,13 @@ from datetime import datetime
 IMG_NORMAL=None
 IMG_THERMAL=None
 RAW_THERMAL=None
+IMG_NORMAL_ANNOTATED=None
 
 CAM_THERMAL=None
 CAM_NORMAL=None
 
 SYSTEM_STATE=None
+ACTION_STATE=None
 R_CONTROLLER=None
 
 MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
@@ -53,6 +56,20 @@ def getSyState():
     global SYSTEM_STATE
     response = Response(mongoResToJson({ "state" : SYSTEM_STATE }), content_type='application/json' )
     return response, 200
+
+@app.route("/getActionState")
+def getActionState():
+    global SYSTEM_STATE
+    response = Response(mongoResToJson({ "actions" : ACTION_STATE.toDict() }), content_type='application/json' )
+    return response, 200
+
+@app.route("/updateActionState", methods=['POST'])
+def setActionState():
+    global ACTION_STATE
+    ReqBod = request.get_json(force=True)
+    config_name = ReqBod['config_name']
+    state = ReqBod['state']
+    ACTION_STATE.toggle(config_name, state)
 
 @app.route("/updateState")
 def setState():
@@ -88,6 +105,10 @@ def feed_normal():
 def feed_thermal():
 	return Response(gen_thermal(), mimetype="multipart/x-mixed-replace; boundary=frame")  
 
+@app.route("/annotate_feed")
+def feed_annotate():
+	return Response(gen_annotate(), mimetype="multipart/x-mixed-replace; boundary=frame")  
+
 def get_ip_address():
 	"""Find the current IP address of the device"""
 	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -99,13 +120,16 @@ def get_ip_address():
 def detectHeatStress():
     global IMG_NORMAL, IMG_THERMAL, RAW_THERMAL
     while True:
+        loadDbConfig()
         time.sleep(1)
-        curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
-        if IMG_NORMAL is not None and IMG_THERMAL is not None:
-            saveDetection(IMG_NORMAL, IMG_THERMAL, RAW_THERMAL  , curt)
+
+        #If heatstress detected do below
+        #curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
+        #if IMG_NORMAL is not None and IMG_THERMAL is not None:
+        #    saveDetection(IMG_NORMAL, IMG_THERMAL, RAW_THERMAL  , curt)
 
 def readCams():
-    global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL
+    global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, SYSTEM_STATE, IMG_NORMAL_ANNOTATED
     while CAM_THERMAL is not None:
         current_frame=None
         thermal_frame=None
@@ -115,6 +139,10 @@ def readCams():
             raw, raw_rescaled, processed = CAM_THERMAL.getThermal()
             thermal_frame = processed
             raw_thermal = raw
+            SYSTEM_STATE['max_temp'] = round(np.max(raw),2)
+            SYSTEM_STATE['average_temp'] = round(np.mean(raw), 2)
+            SYSTEM_STATE['min_temp'] = round(np.min(raw), 2)
+
         except Exception:
             print("Too many retries error caught; continuing...")
         if current_frame is not None and thermal_frame is not None:
@@ -122,6 +150,18 @@ def readCams():
                 IMG_NORMAL = current_frame.copy()
                 IMG_THERMAL = thermal_frame.copy()
                 RAW_THERMAL = raw_thermal.copy()
+                IMG_NORMAL_ANNOTATED = cv2.imread('annotate.png')
+
+def gen_annotate():
+	global IMG_NORMAL_ANNOTATED, lock
+	while True:
+		with lock:
+			if IMG_NORMAL_ANNOTATED is None:
+				continue
+			(flag, encodedImage) = cv2.imencode(".jpg", IMG_NORMAL_ANNOTATED)
+			if not flag:
+				continue
+		yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
 def gen_normal():
 	global IMG_NORMAL, lock
@@ -145,8 +185,22 @@ def gen_thermal():
 				continue
 		yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
+def loadDbConfig():
+    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE
+    relays = list(DB_CONFIGS.find({ "category" : "relays" }))
+    actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
+
+    if R_CONTROLLER is not None:
+        if len(R_CONTROLLER.getAllRelays()) != len(relays):
+            R_CONTROLLER.delRelays(relays)      
+    else:
+        R_CONTROLLER = r_controller(relays, True)
+
+    if len(ACTION_STATE.actions) != len(actions):
+        ACTION_STATE = a_controller(actions, ACTION_STATE.actions)
+        
 def start_server():
-    global CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER
+    global ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED
 
     SYSTEM_STATE = {
         "status" : 0,
@@ -158,10 +212,8 @@ def start_server():
         "average_temp" : 0,
         "min_temp" : 0
     }
-
-    relays = list(DB_CONFIGS.find({ "category" : "relays" }))
-
-    R_CONTROLLER = r_controller(relays, True)
+    ACTION_STATE = a_controller((),())
+    loadDbConfig()
 
     RAW_THERMAL = np.zeros((24*32,))
     CAM_THERMAL = cam_therm()
@@ -191,6 +243,7 @@ def saveDetection(normal,thermal,raw_thermal,stmp):
             os.makedirs("../phsmachine_web/public/thermal/")
         if not os.path.exists("../phsmachine_web/public/thermal_raw/"):
             os.makedirs("../phsmachine_web/public/thermal_raw/")
+            
 
         cv2.imwrite(f"../phsmachine_web/public/normal/nrml{stmp}.png", normal)
         cv2.imwrite(f"../phsmachine_web/public/thermal/thermal{stmp}.png", thermal)

@@ -61,10 +61,10 @@ class cam_therm:
             elif self.INTERPOL==6:  
                 self.PROCESSED_THERMAL = ndimage.zoom(self.RAW_THERMAL,10) 
                 self.PROCESSED_THERMAL = cv2.applyColorMap(self.PROCESSED_THERMAL, cmapy.cmap(self.CV2_COLMAPS[self.CHOSEN_CV2_COLMAP]))
-                self.PROCESSED_THERMAL = cv2.resize(self.PROCESSED_THERMAL, (920,720), interpolation=cv2.INTER_CUBIC)
+                self.PROCESSED_THERMAL = cv2.resize(self.PROCESSED_THERMAL, (640,480), interpolation=cv2.INTER_CUBIC)
             else:
                 self.PROCESSED_THERMAL = cv2.applyColorMap(self.RAW_THERMAL, cmapy.cmap(self.CV2_COLMAPS[self.CHOSEN_CV2_COLMAP]))
-                self.PROCESSED_THERMAL = cv2.resize(self.PROCESSED_THERMAL, (920,720), interpolation=self.INTERPOLS[self.INTERPOL])
+                self.PROCESSED_THERMAL = cv2.resize(self.PROCESSED_THERMAL, (640,480), interpolation=self.INTERPOLS[self.INTERPOL])
             self.PROCESSED_THERMAL = cv2.flip(self.PROCESSED_THERMAL, 1)
         except Exception:
             print("Err")
