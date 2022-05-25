@@ -2,16 +2,21 @@ import { useEffect, useState } from "react";
 import { VscDebugConsole } from "react-icons/vsc";
 import axios from "axios";
 import { GoCircuitBoard } from "react-icons/go";
-import { BsFillExclamationSquareFill } from "react-icons/bs";
+import {
+  BsFillExclamationSquareFill,
+  BsFillGearFill,
+  BsFillClockFill,
+} from "react-icons/bs";
 import { RiZzzFill } from "react-icons/ri";
 import { AiOutlinePlus } from "react-icons/ai";
 import { CgDetailsLess } from "react-icons/cg";
-import { VscDebugDisconnect } from "react-icons/vsc";
-import { FaConnectdevelop } from "react-icons/fa";
+import { VscDebugDisconnect, VscServerProcess } from "react-icons/vsc";
+import { FaConnectdevelop, FaBrain } from "react-icons/fa";
 import { API } from "../../helpers";
 import { GiPowerLightning } from "react-icons/gi";
 
 import CreateRelay from "../modalform/c_relay";
+import CreateAction from "../modalform/c_action";
 
 const debug = ({ STAT }) => {
   const [relays, setRelays] = useState([]);
@@ -30,10 +35,15 @@ const debug = ({ STAT }) => {
   const [isDown, setIsDown] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [seenModal, setSeenModal] = useState(false);
+
   const [selectedComponent, setSelectedComponent] = useState();
+  const [selectedAction, setSelectedAction] = useState();
 
   const [modalRelay, setMoadlRelay] = useState(false);
   const [modalRelayView, setMoadlRelayView] = useState(false);
+  const [modalAction, setMoadlAction] = useState(false);
+  const [modalActionView, setMoadlActionView] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
   const [] = useState(true);
@@ -70,8 +80,8 @@ const debug = ({ STAT }) => {
     try {
       setLoading(true);
       const emitRes = axios.post("http://192.168.1.5:8000/emitRelay", {
-        relay_name : config_name,
-        state : false,
+        relay_name: config_name,
+        state: false,
       });
       const add = await API.post("/api/phs/config/relays", {
         mode: -1,
@@ -79,6 +89,29 @@ const debug = ({ STAT }) => {
       });
       setLoading(false);
       setMoadlRelayView(false);
+    } catch (e) {
+      setLoading(false);
+      if (e.response) {
+        //request was made but theres a response status code
+        if (e.response.data.error === 409) setErr(e.response.data.message);
+      }
+    }
+  };
+
+  const delAction = async (config_name, target_relay) => {
+    try {
+      setLoading(true);
+      const emitRes = axios.post("http://192.168.1.5:8000/emitRelay", {
+        relay_name: target_relay,
+        state: false,
+      });
+      const add = await API.post("/api/phs/config/actions", {
+        mode: -1,
+        config_name,
+        target_relay
+      });
+      setLoading(false);
+      setMoadlActionView(false);
     } catch (e) {
       setLoading(false);
       if (e.response) {
@@ -142,6 +175,15 @@ const debug = ({ STAT }) => {
         <CreateRelay onClose={() => setMoadlRelay(false)} />
       </label>
 
+      <input type="checkbox" id="new_action_modal" className="modal-toggle" />
+      <label
+        className={`modal font-inter backdrop-blur-sm modal-bottom sm:modal-middle duration-200 ${
+          modalAction ? "modal-open" : ""
+        }`}
+      >
+        <CreateAction components={relays} onClose={() => setMoadlAction(false)} />
+      </label>
+
       <input type="checkbox" id="relay_view" className="modal-toggle" />
       <div
         className={`modal font-inter backdrop-blur-sm modal-bottom sm:modal-middle duration-200 ${
@@ -151,7 +193,6 @@ const debug = ({ STAT }) => {
         <div className="modal-box">
           {selectedComponent && (
             <>
-              
               <div className="mb-5 flex justify-between items-center">
                 <h3 className="font-bold text-lg">
                   {selectedComponent.config_name}
@@ -250,6 +291,119 @@ const debug = ({ STAT }) => {
         </div>
       </div>
 
+      <div
+        className={`modal font-inter backdrop-blur-sm modal-bottom sm:modal-middle duration-200 ${
+          modalActionView ? "modal-open" : ""
+        }`}
+      >
+        <div className="modal-box">
+          {selectedAction && (
+            <>
+              <div className="mb-5 flex justify-between items-center">
+                <h3 className="font-bold text-lg">
+                  {selectedAction.config_name}
+                </h3>
+                <div
+                  className={`flex justify-between items-center ${
+                    selectedAction.state && !isDown
+                      ? "text-accent animate-pulse"
+                      : "text-primary"
+                  }`}
+                >
+                  <p className="text-md font-bold">
+                    {selectedAction.state ? "Active" : "Standby"}
+                  </p>
+                  <VscServerProcess
+                    className={`ml-4 w-8 h-8 duration-500 ${
+                      selectedAction.state ? "shadow-xl shadow-accent" : ""
+                    }`}
+                  />
+                </div>
+              </div>
+              {selectedAction.state && (
+                <div className="alert shadow-lg">
+                  <div>
+                    <BsFillGearFill
+                      className={`ml-4 w-4 h-4 duration-500 text-primary ${
+                        selectedAction.state ? "animate-spin" : ""
+                      }`}
+                    />
+                    <span>This component is turned on by AI</span>
+                  </div>
+                </div>
+              )}
+              <div className="my-2 flex items-center">
+                <CgDetailsLess className="w-8 h-8 mr-4" />
+                <p className="">{selectedAction.description}</p>
+              </div>
+              <div
+                className={`my-2 flex items-center  ${
+                  selectedAction.state ? "text-accent " : ""
+                }`}
+              >
+                <GoCircuitBoard className={`w-5 h-5 mr-4`} />
+                <p className={`font-bold`}>
+                  Target : <span>{selectedAction.target_relay}</span>
+                </p>
+              </div>
+              <div
+                className={`my-2 flex items-center font-bold ${
+                  selectedAction.state ? "text-accent " : ""
+                }`}
+              >
+                <BsFillClockFill
+                  className={`w-5 h-5 mr-4 ${
+                    selectedAction.state ? "animate-spin-slow" : ""
+                  }`}
+                />
+                <p className="">{selectedAction.duration}s</p>
+              </div>
+              <div
+                className={`my-2 flex items-center font-bold ${
+                  selectedAction.state ? "text-accent " : ""
+                }`}
+              >
+                <FaBrain
+                  className={`w-5 h-5 mr-4 ${
+                    selectedAction.state ? "" : ""
+                  }`}
+                />
+                <p className="">Activator : {selectedAction.caller}</p>
+              </div>
+              {/* {!canDelete(selectedComponent.config_name) && (
+                <div className="alert shadow-lg">
+                  <div>
+                    <span>
+                      This component is use by another action. To delete this,
+                      delete the actions first.
+                    </span>
+                  </div>
+                </div>
+              )} */}
+              <div className="modal-action">
+                <button
+                  onClick={() => {
+                    setMoadlActionView(false);
+                  }}
+                  className="btn"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => {
+                    delAction(selectedAction.config_name, selectedAction.target_relay)
+                  }}
+                  className={`btn gap-2 btn-error ${loading ? "loading" : ""}`}
+                >
+                  <VscDebugDisconnect className="w-4 h-4 " />
+                  Delete
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
       <div className="divider"></div>
 
       {/** ALERTS */}
@@ -285,7 +439,7 @@ const debug = ({ STAT }) => {
           <span>
             When debugging mode is on, The AI cannot call any of the action that
             are using these componenents. Also debugging mode will let you
-            manually toggle these component.
+            manually toggle these components for testing.
           </span>
         </div>
       </div>
@@ -356,9 +510,70 @@ const debug = ({ STAT }) => {
 
       <div className="divider"></div>
       <p className="text-lg">Actions</p>
-      <label onClick={() => setMoadlRelay(true)} className="mt-4 btn">
+      <label onClick={() => setMoadlAction(true)} className="mt-4 btn">
         New Action <AiOutlinePlus className="ml-2 w-6 h-6" />
       </label>
+
+      <div className="flex space-x-3 bg-none items-center mt-6">
+        <BsFillExclamationSquareFill className={`text-accent w-4 h-4`} />
+        <span>
+          Actions are controlled by AI, but values & component can be assigned by the admin
+        </span>
+      </div>
+
+      <div className={` my-4 relative mb-6`}>
+        <div
+          className={`grid min-h-16 pt-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 duration-500`}
+        >
+          {ACTIONSTATE.map((act, i) => (
+            <div
+              onClick={() => {
+                setSelectedAction(act);
+                setMoadlActionView(true);
+              }}
+              key={i}
+              className={`p-2 rounded-lg bg-base-100/75 backdrop-blur-sm shadow-lg duration-700 ${
+                act.state ? "border-y-4 border-accent" : "border-y border-base"
+              }`}
+            >
+              <div className="card-body">
+                <div className="flex justify-between">
+                  <h2 className="card-title">{act.config_name}</h2>
+                  <BsFillGearFill
+                    className={`w-8 h-8 duration-500 ${
+                      act.state && !isDown
+                        ? "text-accent animate-pulse shadow-xl shadow-accent"
+                        : "text-primary"
+                    }`}
+                  />
+                </div>
+                <p>{act.description}</p>
+                {/* <div className="card-actions justify-evenly">
+                <p
+                  className={`font-inter font-semibold ${
+                    rel.state && !isDown ? "text-accent" : ""
+                  }`}
+                >
+                  {rel.state ? "ON" : "OFF"}
+                </p>
+                <input
+                  disabled={SYSSTATE.status !== 2}
+                  type="checkbox"
+                  className={`toggle toggle-accent ${
+                    SYSSTATE.status !== 2 ? "opacity-50" : "opacity-100"
+                  }`}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={() => {
+                    emitRelay(rel.config_name, !rel.state);
+                  }}
+                  checked={rel.state}
+                />
+              </div> */}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

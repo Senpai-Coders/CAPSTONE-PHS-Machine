@@ -41,7 +41,7 @@ const handler = async (req, res) => {
     } catch (e) {
         console.log(e)
         res.status(500).json({
-            message: "Sorry, I ate all of them 😥"
+            message: "Internal Server Error 😥"
         })
     }
 }

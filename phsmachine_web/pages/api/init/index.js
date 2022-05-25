@@ -32,6 +32,7 @@ const handler = async(req, res) => {
             value : {
                 duration : 1, // Duration this device will be on in Seconds
                 target_relay : "Relay_1", // relay_1 to relay_3
+                caller : "Pig Detector"
             },
             disabled : false,
             uby : new ObjectId("6277e36f94637471bdabb80d")
@@ -42,6 +43,7 @@ const handler = async(req, res) => {
             value : {
                 duration : 1,
                 target_relay : "Relay_2", 
+                caller : "Heat Stress Detector"
             },
             disabled : false,
             uby : new ObjectId("6277e36f94637471bdabb80d")
@@ -52,6 +54,7 @@ const handler = async(req, res) => {
             value : {
                 duration : 1,
                 target_relay : "Relay_3", 
+                caller : "Dark Scene Detector"
             },
             disabled : false,
             uby : new ObjectId("6277e36f94637471bdabb80d")
