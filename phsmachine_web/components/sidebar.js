@@ -28,8 +28,8 @@ const sidebar = () => {
       icon: FaThermometerHalf,
     },
     {
-      name: "Analysis",
-      path: "/analysis",
+      name: "events",
+      path: "/events",
       icon: BsClipboardData,
     },
     {

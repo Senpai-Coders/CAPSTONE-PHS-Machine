@@ -19,7 +19,10 @@ export default function Home() {
     max_temp: "-",
     average_temp: "-",
     min_temp: "-",
+    actions: []
   });
+
+  const [ACTIONSTATE, setACTIONSTATE] = useState([])
 
   const [isDown, setIsDown] = useState(false);
   const [seenModal, setSeenModal] = useState(false);
@@ -27,8 +30,10 @@ export default function Home() {
   const init = async () => {
     try {
       const phs_response = await axios.get(
-        "http://192.168.1.6:8000/getSystemState"
+        "http://192.168.1.5:8000/getSystemState"
       );
+      const phs_actions = await axios.get("http://192.168.1.5:8000/getActionState")
+      setACTIONSTATE(phs_actions.data.actions)
       SETSYSSTATE(phs_response.data.state);
       setIsDown(false);
     } catch (e) {
@@ -79,7 +84,7 @@ export default function Home() {
       <h1 className="text-xl card-title font-lato font-semibold mb-2">
         Detection
       </h1>
-      <SystemState SYSSTATE={SYSSTATE} />
+      <SystemState ACTIONSTATE={ACTIONSTATE} SYSSTATE={SYSSTATE} />
       <div className="mt-8 space-y-2">
         <AnimatePresence>
           {(isDown || SYSSTATE.status <= -1) && (
@@ -137,6 +142,7 @@ export default function Home() {
       </div>
       <div className="divider my-8">Realtime View</div>
       <Cameras canStream={isDown || SYSSTATE.status === -2} />
+      
     </>
   );
 }

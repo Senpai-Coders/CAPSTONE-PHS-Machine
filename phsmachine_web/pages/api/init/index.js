@@ -24,30 +24,14 @@ const handler = async(req, res) => {
     ]
 
     const DEFAULT_CONFIGS = [
-        {
-            category : "app_state",
-            config_name : "system_state",
-            description : "This indicate what the system is currently up to",
-            value : {
-                status : "Detecting", // Detecting, Resolving, Debugging
-                active_actions : "None", // None, Misting, Fan
-                lighting : "Off", // On, Off
-                pig_count : 0, // count of pigs on frame,
-                stressed_pigcount : 0, // count of pigs on frame that are stressed,
-                max_temp : 38.5, // max pig temp recorded (realtime)
-                average_temp : 36.4 , // average pig temp (realtime)
-                min_temp : 34.5, // min pig temp (realtime)
-            },
-            uby : new ObjectId("6277e36f94637471bdabb80d")
-        },
-        
+        //Actions
         {
             category : "actions",
             config_name : "Mist",
             description : "This will be utilized by the AI",
             value : {
                 duration : 1, // Duration this device will be on in Seconds
-                target_io : "Relay_1", // relay_1 to relay_3
+                target_relay : "Relay_1", // relay_1 to relay_3
             },
             disabled : false,
             uby : new ObjectId("6277e36f94637471bdabb80d")
@@ -57,7 +41,7 @@ const handler = async(req, res) => {
             description : "This will be utilized by the AI",
             value : {
                 duration : 1,
-                target_io : "Relay_2", 
+                target_relay : "Relay_2", 
             },
             disabled : false,
             uby : new ObjectId("6277e36f94637471bdabb80d")
@@ -67,31 +51,31 @@ const handler = async(req, res) => {
             description : "This will be utilized by the AI",
             value : {
                 duration : 1,
-                target_io : "Relay_3", 
+                target_relay : "Relay_3", 
             },
             disabled : false,
             uby : new ObjectId("6277e36f94637471bdabb80d")
         },
-        
+        // RELAYS
         {
             category : "relays",
             config_name : "Relay_1",
             description : "Relay 1 On 4 Channel Relay",
-            value : { GPIO_PIN : 14, isUsed : true },
+            value : { GPIO_PIN : 4, isUsed : true },
             disabled : false,
             uby : new ObjectId("6277e36f94637471bdabb80d")
         },{
             category : "relays",
             config_name : "Relay_2",
             description : "Relay 2 On 4 Channel Relay",
-            value : { GPIO_PIN : 15, isUsed : true },
+            value : { GPIO_PIN : 14, isUsed : true },
             disabled : false,
             uby : new ObjectId("6277e36f94637471bdabb80d")
         },{
             category : "relays",
             config_name : "Relay_3",
             description : "Relay 3 On 4 Channel Relay",
-            value : { GPIO_PIN : 17, isUsed : true },
+            value : { GPIO_PIN : 15, isUsed : true },
             disabled : false,
             uby : new ObjectId("6277e36f94637471bdabb80d")
         },{
@@ -102,6 +86,9 @@ const handler = async(req, res) => {
             disabled : false,
             uby : new ObjectId("6277e36f94637471bdabb80d")
         }
+
+
+
     ]
 
     const del = await users.deleteMany({})

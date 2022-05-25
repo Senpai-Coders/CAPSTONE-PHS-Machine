@@ -20,6 +20,7 @@ const configuration = () => {
         <title>Configuration</title>
       </Head>
       <input type="checkbox" id="sys_off_modal" className="modal-toggle" />
+
       <p className="text-2xl card-title font-lato font-semibold">
         Configuration
       </p>
@@ -27,7 +28,6 @@ const configuration = () => {
         <Debug />
         <ThemeChooser />
       </div>
-      
     </>
   );
 };

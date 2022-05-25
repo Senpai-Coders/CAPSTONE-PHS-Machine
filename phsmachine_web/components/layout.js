@@ -1,5 +1,4 @@
 import Sidebar from "./sidebar";
-import SystemState from "./systemState";
 
 export default function Layout({ children }) {
   return (

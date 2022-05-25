@@ -102,7 +102,7 @@ const signin = () => {
                   onClick={() => setShow(!show)}
                 >
                   <div
-                    class="tooltip tracking-wide"
+                    className="tooltip tracking-wide"
                     data-tip="show/hide password"
                   >
                     {!show ? (
