@@ -13,6 +13,7 @@ class a_controller:
                 description=A['description'],
                 duration=A['value']['duration'],
                 target_relay=A['value']['target_relay'],
+                caller=A['value']['caller'],
                 state=state
             )
 

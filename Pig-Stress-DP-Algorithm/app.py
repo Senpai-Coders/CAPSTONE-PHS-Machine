@@ -70,6 +70,7 @@ def setActionState():
     config_name = ReqBod['config_name']
     state = ReqBod['state']
     ACTION_STATE.toggle(config_name, state)
+    return "ok",200
 
 @app.route("/updateState")
 def setState():
@@ -124,9 +125,9 @@ def detectHeatStress():
         time.sleep(1)
 
         #If heatstress detected do below
-        #curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
-        #if IMG_NORMAL is not None and IMG_THERMAL is not None:
-        #    saveDetection(IMG_NORMAL, IMG_THERMAL, RAW_THERMAL  , curt)
+        curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
+        if IMG_NORMAL is not None and IMG_THERMAL is not None:
+            saveDetection(IMG_NORMAL, IMG_THERMAL, RAW_THERMAL  , curt)
 
 def readCams():
     global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, SYSTEM_STATE, IMG_NORMAL_ANNOTATED
