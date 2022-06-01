@@ -12,13 +12,25 @@ import numpy as np
 #from flask_pymongo import PyMongo
 from bson import json_util
 import pymongo
-from utils.utils import mongoResToJson
+from cust_utils.utils import mongoResToJson
 from component.r_controller import r_controller
 from action.a_controller import a_controller
 import atexit
 from flask_cors import CORS
 import os
 from datetime import datetime
+import cv2
+import torch
+from matplotlib import pyplot as plt
+from PIL import Image
+import numpy as np
+import warnings
+
+warnings.filterwarnings("ignore") # Warning will make operation confuse!!!
+
+YOLO_DIR = os.path.join('models','yolov5')
+WEIGHTS_DIR = os.path.join('best.pt')
+
 
 IMG_NORMAL=None
 IMG_THERMAL=None
@@ -31,6 +43,8 @@ CAM_NORMAL=None
 SYSTEM_STATE=None
 ACTION_STATE=None
 R_CONTROLLER=None
+
+Yolov5_PHD=None
 
 MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
 DB = MONGO_CONNECTION["PHS_MACHINE"]
@@ -118,19 +132,32 @@ def get_ip_address():
 	s.close()
 	return ip_address
 
-def detectHeatStress():
-    global IMG_NORMAL, IMG_THERMAL, RAW_THERMAL
+def loadRealTimeDb():
     while True:
         loadDbConfig()
-        time.sleep(1)
+
+def detectHeatStress():
+    global IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
+    while True:
+        # Detect Pigs
+        if IMG_NORMAL is not None:
+            print("Detecting Pig")
+            detect_pig_head = Yolov5_PHD(IMG_NORMAL) 
+            print("Done Detect")
+            print("Returned Bbox", detect_pig_head)
+            #detect_pig_head.pred
+            detect_annotation = np.squeeze(detect_pig_head.render())
+
+            with lock:
+                IMG_NORMAL_ANNOTATED = detect_annotation
 
         #If heatstress detected do below
         curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
-        if IMG_NORMAL is not None and IMG_THERMAL is not None:
-            saveDetection(IMG_NORMAL, IMG_THERMAL, RAW_THERMAL  , curt)
+        # if IMG_NORMAL is not None and IMG_THERMAL is not None:
+            # saveDetection(IMG_NORMAL, IMG_THERMAL, RAW_THERMAL  , curt)
 
 def readCams():
-    global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, SYSTEM_STATE, IMG_NORMAL_ANNOTATED
+    global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, SYSTEM_STATE
     while CAM_THERMAL is not None:
         current_frame=None
         thermal_frame=None
@@ -151,7 +178,6 @@ def readCams():
                 IMG_NORMAL = current_frame.copy()
                 IMG_THERMAL = thermal_frame.copy()
                 RAW_THERMAL = raw_thermal.copy()
-                IMG_NORMAL_ANNOTATED = cv2.imread('annotate.png')
 
 def gen_annotate():
 	global IMG_NORMAL_ANNOTATED, lock
@@ -201,7 +227,7 @@ def loadDbConfig():
         ACTION_STATE = a_controller(actions, ACTION_STATE.actions)
         
 def start_server():
-    global ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED
+    global Yolov5_PHD, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED
 
     SYSTEM_STATE = {
         "status" : 0,
@@ -221,6 +247,15 @@ def start_server():
     CAM_NORMAL = Cam_Norm()
     time.sleep(0.1)
 
+    Yolov5_PHD = torch.hub.load(
+        YOLO_DIR,
+        'custom',
+        path=WEIGHTS_DIR, 
+        source='local',
+        device = 'cpu',
+        force_reload=True
+    )
+
     camThread = threading.Thread(target=readCams)
     camThread.daemon = True
     camThread.start()
@@ -228,6 +263,10 @@ def start_server():
     detectThread = threading.Thread(target=detectHeatStress)
     detectThread.daemon = True
     detectThread.start()
+
+    dbrealtimeThread = threading.Thread(target=loadRealTimeDb)
+    dbrealtimeThread.daemon = True
+    dbrealtimeThread.start()
 
     ip=get_ip_address()
     port=8000
