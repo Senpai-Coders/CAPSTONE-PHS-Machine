@@ -8,11 +8,11 @@ const normal = ({ canStream }) => {
   const cam_var1 = [
     {
       name: "Camera",
-      stream_url: "http://192.168.1.5:8000/normal_feed",
+      stream_url: "http://192.168.1.6:8000/normal_feed",
     },
     {
         name: "Annotate",
-        stream_url: "http://192.168.1.5:8000/annotate_feed",
+        stream_url: "http://192.168.1.6:8000/annotate_feed",
     }
   ];
 
