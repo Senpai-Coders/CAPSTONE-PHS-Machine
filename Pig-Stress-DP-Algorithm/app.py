@@ -157,6 +157,10 @@ def detectHeatStress():
                     IMG_NORMAL_ANNOTATED = detect_annotation
                     #If heatstress detected do below
                     curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
+                    
+                    cv2.imsave("norm.png", c_IMG_NORMAL)
+                    cv2.imsave("annot.png", detect_annotation)
+
                     saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt)
                 else:
                     print("No Detection")
@@ -278,7 +282,7 @@ def start_server():
     print(f'Server can be found at {ip}:{port}')
     app.run(host=ip, port=port, debug=True, threaded=True, use_reloader=False)
 
-def saveDetection(normal,thermal,raw_thermal, normal_annotated,stmp):
+def saveDetection(normal, thermal, raw_thermal, normal_annotated,stmp):
     try:
         if not os.path.exists("../phsmachine_web/public/normal/"):
             os.makedirs("../phsmachine_web/public/normal/")
