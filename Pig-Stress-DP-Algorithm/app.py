@@ -143,9 +143,11 @@ def detectHeatStress():
             c_IMG_NORMAL = IMG_NORMAL
             c_IMG_THERMAL = IMG_THERMAL
             c_RAW_THERMAL = RAW_THERMAL
+
+            to_read = c_IMG_NORMAL.copy()
             
             print("Detecting Pig")
-            detect_pig_head = Yolov5_PHD(IMG_NORMAL) 
+            detect_pig_head = Yolov5_PHD(to_read) 
             print("Done Detect")
             print("Returned Bbox", detect_pig_head)
             detect_pig_head.pred
@@ -157,7 +159,7 @@ def detectHeatStress():
                     IMG_NORMAL_ANNOTATED = detect_annotation
                     #If heatstress detected do below
                     curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
-                    
+
                     cv2.imsave("norm.png", c_IMG_NORMAL)
                     cv2.imsave("annot.png", detect_annotation)
 
