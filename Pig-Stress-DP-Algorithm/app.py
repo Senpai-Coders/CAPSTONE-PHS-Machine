@@ -145,7 +145,7 @@ def detectHeatStress():
             c_RAW_THERMAL = RAW_THERMAL
             
             print("Detecting Pig")
-            detect_pig_head = Yolov5_PHD(c_IMG_NORMAL) 
+            detect_pig_head = Yolov5_PHD(IMG_NORMAL) 
             print("Done Detect")
             print("Returned Bbox", detect_pig_head)
             detect_pig_head.pred
@@ -157,6 +157,10 @@ def detectHeatStress():
                     IMG_NORMAL_ANNOTATED = detect_annotation
                     #If heatstress detected do below
                     curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
+                    
+                    cv2.imsave("norm.png", c_IMG_NORMAL)
+                    cv2.imsave("annot.png", detect_annotation)
+
                     saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt)
                 else:
                     print("No Detection")
@@ -278,7 +282,7 @@ def start_server():
     print(f'Server can be found at {ip}:{port}')
     app.run(host=ip, port=port, debug=True, threaded=True, use_reloader=False)
 
-def saveDetection(normal,thermal,raw_thermal, normal_annotated,stmp):
+def saveDetection(normal, thermal, raw_thermal, normal_annotated,stmp):
     try:
         if not os.path.exists("../phsmachine_web/public/normal/"):
             os.makedirs("../phsmachine_web/public/normal/")
@@ -291,8 +295,8 @@ def saveDetection(normal,thermal,raw_thermal, normal_annotated,stmp):
             
 
         cv2.imwrite(f"../phsmachine_web/public/normal/nrml{stmp}.png", normal)
-        cv2.imwrite(f"../phsmachine_web/public/annotated/annotated{stmp}.png", normal_annotated)
         cv2.imwrite(f"../phsmachine_web/public/thermal/thermal{stmp}.png", thermal)
+        cv2.imwrite(f"../phsmachine_web/public/annotated/annotated{stmp}.png", normal_annotated)
         p_rt = np.around(raw_thermal, decimals=1)
         np.savetxt(f'../phsmachine_web/public/thermal_raw/r_thermal{stmp}.csv', p_rt , delimiter=",")
         print("SAVED")
