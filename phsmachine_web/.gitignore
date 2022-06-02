@@ -30,3 +30,9 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# ignore pig datas
+public/thermal
+public/thermal_raw
+public/normal
+public/annotated
