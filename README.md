@@ -2,7 +2,7 @@
 
 Detection and Resolving Heat Stress from Pig that utilize Thermographic Imaging, Image processing, & Deep Learning
 
-## Deep Learning Environment
+## Deep Learning Environment 
 
 To get started with deep learning. Follow the steps below
 
