@@ -9,7 +9,6 @@ import cv2
 from cameras.cam_normal import Cam_Norm
 from cameras.cam_thermal import cam_therm
 import numpy as np
-#from flask_pymongo import PyMongo
 from bson import json_util
 import pymongo
 from cust_utils.utils import mongoResToJson
@@ -132,29 +131,35 @@ def get_ip_address():
 	s.close()
 	return ip_address
 
-def loadRealTimeDb():
-    while True:
-        loadDbConfig()
+#def loadRealTimeDb():
+    #while True:
 
 def detectHeatStress():
+    loadDbConfig()
     global IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
     while True:
         # Detect Pigs
-        if IMG_NORMAL is not None:
+        if IMG_NORMAL is not None and IMG_THERMAL is not None:
+            c_IMG_NORMAL = IMG_NORMAL
+            c_IMG_THERMAL = IMG_THERMAL
+            c_RAW_THERMAL = RAW_THERMAL
+            
             print("Detecting Pig")
-            detect_pig_head = Yolov5_PHD(IMG_NORMAL) 
+            detect_pig_head = Yolov5_PHD(c_IMG_NORMAL) 
             print("Done Detect")
             print("Returned Bbox", detect_pig_head)
-            #detect_pig_head.pred
+            detect_pig_head.pred
             detect_annotation = np.squeeze(detect_pig_head.render())
 
             with lock:
-                IMG_NORMAL_ANNOTATED = detect_annotation
-
-        #If heatstress detected do below
-        curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
-        # if IMG_NORMAL is not None and IMG_THERMAL is not None:
-            # saveDetection(IMG_NORMAL, IMG_THERMAL, RAW_THERMAL  , curt)
+                if len(detect_pig_head.pred) >= 1:
+                    print("Saving Detection")
+                    IMG_NORMAL_ANNOTATED = detect_annotation
+                    #If heatstress detected do below
+                    curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
+                    saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt)
+                else:
+                    print("No Detection")
 
 def readCams():
     global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, SYSTEM_STATE
@@ -264,16 +269,16 @@ def start_server():
     detectThread.daemon = True
     detectThread.start()
 
-    dbrealtimeThread = threading.Thread(target=loadRealTimeDb)
-    dbrealtimeThread.daemon = True
-    dbrealtimeThread.start()
+    #dbrealtimeThread = threading.Thread(target=loadRealTimeDb)
+    #dbrealtimeThread.daemon = True
+    #dbrealtimeThread.start()
 
     ip=get_ip_address()
     port=8000
     print(f'Server can be found at {ip}:{port}')
     app.run(host=ip, port=port, debug=True, threaded=True, use_reloader=False)
 
-def saveDetection(normal,thermal,raw_thermal,stmp):
+def saveDetection(normal,thermal,raw_thermal, normal_annotated,stmp):
     try:
         if not os.path.exists("../phsmachine_web/public/normal/"):
             os.makedirs("../phsmachine_web/public/normal/")
@@ -286,9 +291,11 @@ def saveDetection(normal,thermal,raw_thermal,stmp):
             
 
         cv2.imwrite(f"../phsmachine_web/public/normal/nrml{stmp}.png", normal)
+        cv2.imwrite(f"../phsmachine_web/public/annotated/annotated{stmp}.png", normal_annotated)
         cv2.imwrite(f"../phsmachine_web/public/thermal/thermal{stmp}.png", thermal)
         p_rt = np.around(raw_thermal, decimals=1)
         np.savetxt(f'../phsmachine_web/public/thermal_raw/r_thermal{stmp}.csv', p_rt , delimiter=",")
+        print("SAVED")
     except Exception as e:
         print(e)
 
