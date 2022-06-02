@@ -35,3 +35,4 @@ yarn-error.log*
 /public/normal
 /public/thermal
 /public/thermal_raw
+/public/annotated
