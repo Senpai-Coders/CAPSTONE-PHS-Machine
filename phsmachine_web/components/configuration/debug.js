@@ -51,12 +51,12 @@ const debug = ({ STAT }) => {
   const init = async () => {
     try {
       const phs_response = await axios.get(
-        "http://192.168.1.6:8000/getSystemState"
+        "http://192.168.1.2:8000/getSystemState"
       );
       SETSYSSTATE(phs_response.data.state);
-      const relays = await axios.get("http://192.168.1.6:8000/getAllRelays");
+      const relays = await axios.get("http://192.168.1.2:8000/getAllRelays");
       const phs_actions = await axios.get(
-        "http://192.168.1.6:8000/getActionState"
+        "http://192.168.1.2:8000/getActionState"
       );
       setACTIONSTATE(phs_actions.data.actions);
       setRelays(relays.data);
@@ -70,7 +70,7 @@ const debug = ({ STAT }) => {
 
   const emitRelay = (relay_name, state) => {
     setLoaded(false);
-    const emitRes = axios.post("http://192.168.1.6:8000/emitRelay", {
+    const emitRes = axios.post("http://192.168.1.2:8000/emitRelay", {
       relay_name,
       state,
     });
@@ -79,7 +79,7 @@ const debug = ({ STAT }) => {
   const delRelay = async (config_name) => {
     try {
       setLoading(true);
-      const emitRes = axios.post("http://192.168.1.6:8000/emitRelay", {
+      const emitRes = axios.post("http://192.168.1.2:8000/emitRelay", {
         relay_name: config_name,
         state: false,
       });
@@ -101,7 +101,7 @@ const debug = ({ STAT }) => {
   const delAction = async (config_name, target_relay) => {
     try {
       setLoading(true);
-      const emitRes = axios.post("http://192.168.1.6:8000/emitRelay", {
+      const emitRes = axios.post("http://192.168.1.2:8000/emitRelay", {
         relay_name: target_relay,
         state: false,
       });
@@ -425,7 +425,7 @@ const debug = ({ STAT }) => {
               checked={SYSSTATE.status === 2}
               onChange={(e) => {
                 axios.get(
-                  `http://192.168.1.6:8000/updateState?status=${
+                  `http://192.168.1.2:8000/updateState?status=${
                     SYSSTATE.status === 2 ? 0 : 2
                   }`
                 );
