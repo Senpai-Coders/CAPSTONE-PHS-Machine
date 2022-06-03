@@ -144,7 +144,7 @@ def detectHeatStress():
             c_IMG_THERMAL = IMG_THERMAL
             c_RAW_THERMAL = RAW_THERMAL
 
-            to_read = cv2.resize(c_IMG_NORMAL.copy(), (200,200))
+            to_read = c_IMG_NORMAL.copy()
             
             print("Detecting Pig")
             detect_pig_head = Yolov5_PHD(to_read) 
