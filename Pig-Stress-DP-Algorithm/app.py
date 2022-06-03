@@ -24,6 +24,7 @@ from matplotlib import pyplot as plt
 from PIL import Image
 import numpy as np
 import warnings
+import pickle
 
 warnings.filterwarnings("ignore") # Warning will make operation confuse!!!
 
@@ -281,13 +282,14 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated,stmp):
             os.makedirs("../phsmachine_web/public/thermal/")
         if not os.path.exists("../phsmachine_web/public/thermal_raw/"):
             os.makedirs("../phsmachine_web/public/thermal_raw/")
-            
 
         cv2.imwrite(f"../phsmachine_web/public/normal/nrml{stmp}.png", normal)
         cv2.imwrite(f"../phsmachine_web/public/thermal/thermal{stmp}.png", thermal)
         cv2.imwrite(f"../phsmachine_web/public/annotated/annotated{stmp}.png", normal_annotated)
-        p_rt = np.around(raw_thermal, decimals=1)
-        np.savetxt(f'../phsmachine_web/public/thermal_raw/r_thermal{stmp}.csv', p_rt , delimiter=",")
+
+        f_raw = open(f'../phsmachine_web/public/thermal_raw/r_thermal{stmp}.pkl', "wb")
+        p = pickle.dump(f_raw, raw_thermal)
+        p.close()
         print("SAVED")
     except Exception as e:
         print(e)
