@@ -131,14 +131,10 @@ def get_ip_address():
 	s.close()
 	return ip_address
 
-#def loadRealTimeDb():
-    #while True:
-
 def detectHeatStress():
     loadDbConfig()
     global IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
     while True:
-        # Detect Pigs
         if IMG_NORMAL is not None and IMG_THERMAL is not None:
             c_IMG_NORMAL = IMG_NORMAL
             c_IMG_THERMAL = IMG_THERMAL
@@ -157,7 +153,6 @@ def detectHeatStress():
                 if len(detect_pig_head.pred) >= 1:
                     print("Saving Detection")
                     IMG_NORMAL_ANNOTATED = detect_annotation
-                    #If heatstress detected do below
                     curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
                     saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt)
                 else:
@@ -270,10 +265,6 @@ def start_server():
     detectThread = threading.Thread(target=detectHeatStress)
     detectThread.daemon = True
     detectThread.start()
-
-    #dbrealtimeThread = threading.Thread(target=loadRealTimeDb)
-    #dbrealtimeThread.daemon = True
-    #dbrealtimeThread.start()
 
     ip=get_ip_address()
     port=8000
