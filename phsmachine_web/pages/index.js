@@ -30,9 +30,9 @@ export default function Home() {
   const init = async () => {
     try {
       const phs_response = await axios.get(
-        "http://192.168.1.6:8000/getSystemState"
+        "http://192.168.1.2:8000/getSystemState"
       );
-      const phs_actions = await axios.get("http://192.168.1.6:8000/getActionState")
+      const phs_actions = await axios.get("http://192.168.1.2:8000/getActionState")
       setACTIONSTATE(phs_actions.data.actions)
       SETSYSSTATE(phs_response.data.state);
       setIsDown(false);
