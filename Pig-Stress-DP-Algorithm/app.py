@@ -131,13 +131,10 @@ def get_ip_address():
 	s.close()
 	return ip_address
 
-#def loadRealTimeDb():
-    #while True:
-
 def detectHeatStress():
-    loadDbConfig()
     global IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
     while True:
+        loadDbConfig()
         # Detect Pigs
         if IMG_NORMAL is not None and IMG_THERMAL is not None:
             c_IMG_NORMAL = IMG_NORMAL
@@ -157,12 +154,7 @@ def detectHeatStress():
                 if len(detect_pig_head.pred) >= 1:
                     print("Saving Detection")
                     IMG_NORMAL_ANNOTATED = detect_annotation
-                    #If heatstress detected do below
                     curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
-
-                    cv2.imsave("norm.png", c_IMG_NORMAL)
-                    cv2.imsave("annot.png", detect_annotation)
-
                     saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt)
                 else:
                     print("No Detection")
@@ -275,10 +267,6 @@ def start_server():
     detectThread.daemon = True
     detectThread.start()
 
-    #dbrealtimeThread = threading.Thread(target=loadRealTimeDb)
-    #dbrealtimeThread.daemon = True
-    #dbrealtimeThread.start()
-
     ip=get_ip_address()
     port=8000
     print(f'Server can be found at {ip}:{port}')
@@ -295,7 +283,6 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated,stmp):
         if not os.path.exists("../phsmachine_web/public/thermal_raw/"):
             os.makedirs("../phsmachine_web/public/thermal_raw/")
             
-
         cv2.imwrite(f"../phsmachine_web/public/normal/nrml{stmp}.png", normal)
         cv2.imwrite(f"../phsmachine_web/public/thermal/thermal{stmp}.png", thermal)
         cv2.imwrite(f"../phsmachine_web/public/annotated/annotated{stmp}.png", normal_annotated)
