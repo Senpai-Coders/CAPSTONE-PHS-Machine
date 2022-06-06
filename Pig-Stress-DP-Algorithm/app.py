@@ -162,7 +162,7 @@ def detectHeatStress():
                 img_thermal_cropped = []
                 img_thermal_cropped_raw = []
                 detected = True
-
+                
                 for result in coords:
                     x1 = int(result['xmin'])
                     y1 = int(result['ymin'])
@@ -187,7 +187,7 @@ def detectHeatStress():
                     # Save Data to nextjs server
                     saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt, img_normal_cropped, img_thermal_cropped, img_thermal_cropped_raw, len(coords))
                     with lock:
-                        SYSTEM_STATE['status'] = 2
+                        SYSTEM_STATE['status'] = 1
                     # Do actions bind on Heat Stress Detection
 
                 with lock:
@@ -209,22 +209,22 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
         os.makedirs(path2)
 
         DATA_DICT =  {
-            img_normal: f"{server_path}/img_normal.png",
-            img_annotated: f"{server_path}/img_annotated.png",
-            img_thermal: f"{server_path}/img_thermal.png",
-            data: {
-                pig_count: total_pig,
-                stressed_pig: len(croped_normal),
-                breakdown: [],
+            "img_normal": f"{server_path}/img_normal.png",
+            "img_annotated": f"{server_path}/img_annotated.png",
+            "img_thermal": f"{server_path}/img_thermal.png",
+            "data": {
+                "pig_count": total_pig,
+                "stressed_pig": len(croped_normal),
+                "breakdown": [],
             },
-            actions: [
+            "actions": [
                 {
-                    action: "Mist",
-                    duration: 10,
+                    "action": "Mist",
+                    "duration": 10,
                 },
                 {
-                    action: "Fan",
-                    duration: 20,
+                    "action": "Fan",
+                    "duration": 20,
                 },
             ]
         }
@@ -238,9 +238,9 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
 
             DATA_DICT['data']['breakdown'].append(
                 {
-                    normal_thumb: f"{server_path}/Target/pig-{x}.png",
-                    thermal_thumb: f"{server_path}/Target/pig-thermal-processed{x}.png",
-                    thermal_raw_thumb: f"{server_path}/Target/pig-thermal-unprocessed{x}.png",
+                    "normal_thumb": f"{server_path}/Target/pig-{x}.png",
+                    "thermal_thumb": f"{server_path}/Target/pig-thermal-processed{x}.png",
+                    "thermal_raw_thumb": f"{server_path}/Target/pig-thermal-unprocessed{x}.png",
                 }
             )
 
