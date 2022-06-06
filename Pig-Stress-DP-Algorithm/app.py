@@ -49,6 +49,7 @@ Yolov5_PHD=None
 MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
 DB = MONGO_CONNECTION["PHS_MACHINE"]
 DB_CONFIGS = DB['configs']
+DB_DETECTIONS = DB['thermal_detections']
 
 lock = threading.Lock()
 
@@ -133,13 +134,15 @@ def get_ip_address():
 	return ip_address
 
 def detectHeatStress():
-    loadDbConfig()
     global IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
     while True:
+        loadDbConfig()
         if IMG_NORMAL is not None and IMG_THERMAL is not None:
             c_IMG_NORMAL = IMG_NORMAL
             c_IMG_THERMAL = IMG_THERMAL
             c_RAW_THERMAL = RAW_THERMAL
+            c_Raw_Reshaped = np.reshape(c_RAW_THERMAL.copy(), (24,32))
+            c_Raw_Reshaped = cv2.resize(c_Raw_Reshaped, (640, 480))
 
             to_read = c_IMG_NORMAL.copy()
             
@@ -147,17 +150,115 @@ def detectHeatStress():
             detect_pig_head = Yolov5_PHD(to_read) 
             print("Done Detect")
             print("Returned Bbox", detect_pig_head)
-            detect_pig_head.pred
-            detect_annotation = np.squeeze(detect_pig_head.render())
 
-            with lock:
-                if len(detect_pig_head.pred) >= 1:
-                    print("Saving Detection")
+            coords = detect_pig_head.pandas().xyxy[0].to_dict(orient="records")
+        
+            if len(coords) > 0:
+                detect_annotation = np.squeeze(detect_pig_head.render())
+                
+                print("Saving Detection", len(coords))
+
+                img_normal_cropped = []
+                img_thermal_cropped = []
+                img_thermal_cropped_raw = []
+                detected = True
+
+                for result in coords:
+                    x1 = int(result['xmin'])
+                    y1 = int(result['ymin'])
+                    x2 = int(result['xmax'])
+                    y2 = int(result['ymax'])
+                    # print(x1,y1,x2,y2)
+                    cpy_thrm_crop_raw = c_Raw_Reshaped[y1:y2, x1:x2]
+
+                    # detection = CNN ( RAW THERMAL )
+                    # If it does classified stressed then set as detected to true
+
+                    cpy_crop_normal = c_IMG_NORMAL[y1 : y2, x1 : x2]
+                    cpy_thrm_crop = c_IMG_THERMAL[y1 : y2, x1 : x2]
+
+                    img_thermal_cropped_raw.append(cpy_thrm_crop_raw)
+                    img_normal_cropped.append(cpy_crop_normal)
+                    img_thermal_cropped.append(cpy_thrm_crop)
+
+                curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
+
+                if detected:
+                    # Save Data to nextjs server
+                    saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt, img_normal_cropped, img_thermal_cropped, img_thermal_cropped_raw, len(coords))
+                    with lock:
+                        SYSTEM_STATE['status'] = 2
+                    # Do actions bind on Heat Stress Detection
+
+                with lock:
                     IMG_NORMAL_ANNOTATED = detect_annotation
-                    curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
-                    saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt)
-                else:
-                    print("No Detection")
+                    SYSTEM_STATE['pig_count'] = len(coords)
+
+            else:
+                with lock:
+                    SYSTEM_STATE['pig_count'] = 0
+
+def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_normal, croped_thermal, croped_thermal_raw, total_pig):
+    try:
+        path1 = f"../phsmachine_web/public/detection/Detection-{stmp}"
+        path2 = f"../phsmachine_web/public/detection/Detection-{stmp}/Target"
+
+        server_path = f"/detection/Detection-{stmp}"
+
+        os.makedirs(path1)
+        os.makedirs(path2)
+
+        DATA_DICT =  {
+            img_normal: f"{server_path}/img_normal.png",
+            img_annotated: f"{server_path}/img_annotated.png",
+            img_thermal: f"{server_path}/img_thermal.png",
+            data: {
+                pig_count: total_pig,
+                stressed_pig: len(croped_normal),
+                breakdown: [],
+            },
+            actions: [
+                {
+                    action: "Mist",
+                    duration: 10,
+                },
+                {
+                    action: "Fan",
+                    duration: 20,
+                },
+            ]
+        }
+
+        x = 1
+        print("RANGE", len(croped_normal))
+        for i in range(len(croped_normal)):
+            cv2.imwrite(f"{path2}/pig-{x}.png", croped_normal[i])
+            cv2.imwrite(f"{path2}/pig-thermal-processed{x}.png", croped_thermal[i])
+            cv2.imwrite(f"{path2}/pig-thermal-unprocessed{x}.png", croped_thermal_raw[i])
+
+            DATA_DICT['data']['breakdown'].append(
+                {
+                    normal_thumb: f"{server_path}/Target/pig-{x}.png",
+                    thermal_thumb: f"{server_path}/Target/pig-thermal-processed{x}.png",
+                    thermal_raw_thumb: f"{server_path}/Target/pig-thermal-unprocessed{x}.png",
+                }
+            )
+
+            x+=1
+
+        print(DATA_DICT)
+        
+        print("Saving Real Rec")
+        cv2.imwrite(f"{path1}/img_normal.png", normal)
+        cv2.imwrite(f"{path1}/img_annotated.png", normal_annotated)
+        cv2.imwrite(f"{path1}/img_thermal.png", thermal)
+
+        DB_DETECTIONS.insert_one( DATA_DICT )
+
+        p = pickle.dump( raw_thermal, open(f'../phsmachine_web/public/detection/Detection-{stmp}/raw_thermal.pkl', 'wb'))
+        print("SAVED")
+    except Exception as e:
+        print(e)
 
 def readCams():
     global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, SYSTEM_STATE
@@ -271,28 +372,6 @@ def start_server():
     port=8000
     print(f'Server can be found at {ip}:{port}')
     app.run(host=ip, port=port, debug=True, threaded=True, use_reloader=False)
-
-def saveDetection(normal, thermal, raw_thermal, normal_annotated,stmp):
-    try:
-        if not os.path.exists("../phsmachine_web/public/normal/"):
-            os.makedirs("../phsmachine_web/public/normal/")
-        if not os.path.exists("../phsmachine_web/public/annotated/"):
-            os.makedirs("../phsmachine_web/public/annotated/")
-        if not os.path.exists("../phsmachine_web/public/thermal/"):
-            os.makedirs("../phsmachine_web/public/thermal/")
-        if not os.path.exists("../phsmachine_web/public/thermal_raw/"):
-            os.makedirs("../phsmachine_web/public/thermal_raw/")
-
-        cv2.imwrite(f"../phsmachine_web/public/normal/nrml{stmp}.png", normal)
-        cv2.imwrite(f"../phsmachine_web/public/thermal/thermal{stmp}.png", thermal)
-        cv2.imwrite(f"../phsmachine_web/public/annotated/annotated{stmp}.png", normal_annotated)
-
-        f_raw = open(f'../phsmachine_web/public/thermal_raw/r_thermal{stmp}.pkl', "wb")
-        p = pickle.dump(f_raw, raw_thermal)
-        p.close()
-        print("SAVED")
-    except Exception as e:
-        print(e)
 
 @atexit.register
 def goodbye():
