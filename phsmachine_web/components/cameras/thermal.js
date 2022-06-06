@@ -9,7 +9,7 @@ const normal = ({ canStream }) => {
     {
       name: "Thermal",
       stream_url:
-        "http://192.168.1.2:8000/thermal_feed",
+        "http://192.168.1.8:8000/thermal_feed",
     }
   ];
 
