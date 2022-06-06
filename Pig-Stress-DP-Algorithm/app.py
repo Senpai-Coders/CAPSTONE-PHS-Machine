@@ -274,14 +274,13 @@ def start_server():
 
 def saveDetection(normal, thermal, raw_thermal, normal_annotated,stmp):
     try:
-        os.makedirs(f"../phsmachine_web/public/detection/Detection {stmp}/Detection {stmp}/")
+        os.makedirs(f"../phsmachine_web/public/detection/Detection-{stmp}")
         
-        cv2.imwrite(f"../phsmachine_web/public/detection/Detection {stmp}/img_normal{stmp}.png", normal)
-        cv2.imwrite(f"../phsmachine_web/public/detection/Detection {stmp}/img_annotated{stmp}.png", normal_annotated)
-        cv2.imwrite(f"../phsmachine_web/public/detection/Detection {stmp}/img_thermal{stmp}.png", thermal)
+        cv2.imwrite(f"../phsmachine_web/public/detection/Detection-{stmp}/img_normal.png", normal)
+        cv2.imwrite(f"../phsmachine_web/public/detection/Detection-{stmp}/img_annotated.png", normal_annotated)
+        cv2.imwrite(f"../phsmachine_web/public/detection/Detection-{stmp}/img_thermal.png", thermal)
 
-        f_raw = open(f'../phsmachine_web/public/detection/Detection {stmp}/raw_thermal{stmp}.pkl', "wb")
-        p = pickle.dump(f_raw, raw_thermal)
+        p = pickle.dump( raw_thermal, open(f'../phsmachine_web/public/detection/Detection-{stmp}/raw_thermal.pkl', 'wb'))
         p.close()
         print("SAVED")
     except Exception as e:
