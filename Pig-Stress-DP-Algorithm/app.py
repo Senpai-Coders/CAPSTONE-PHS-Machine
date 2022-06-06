@@ -274,20 +274,13 @@ def start_server():
 
 def saveDetection(normal, thermal, raw_thermal, normal_annotated,stmp):
     try:
-        if not os.path.exists("../phsmachine_web/public/normal/"):
-            os.makedirs("../phsmachine_web/public/normal/")
-        if not os.path.exists("../phsmachine_web/public/annotated/"):
-            os.makedirs("../phsmachine_web/public/annotated/")
-        if not os.path.exists("../phsmachine_web/public/thermal/"):
-            os.makedirs("../phsmachine_web/public/thermal/")
-        if not os.path.exists("../phsmachine_web/public/thermal_raw/"):
-            os.makedirs("../phsmachine_web/public/thermal_raw/")
+        os.makedirs(f"../phsmachine_web/public/detection/Detection {stmp}/Detection {stmp}/")
+        
+        cv2.imwrite(f"../phsmachine_web/public/detection/Detection {stmp}/img_normal{stmp}.png", normal)
+        cv2.imwrite(f"../phsmachine_web/public/detection/Detection {stmp}/img_annotated{stmp}.png", normal_annotated)
+        cv2.imwrite(f"../phsmachine_web/public/detection/Detection {stmp}/img_thermal{stmp}.png", thermal)
 
-        cv2.imwrite(f"../phsmachine_web/public/normal/nrml{stmp}.png", normal)
-        cv2.imwrite(f"../phsmachine_web/public/thermal/thermal{stmp}.png", thermal)
-        cv2.imwrite(f"../phsmachine_web/public/annotated/annotated{stmp}.png", normal_annotated)
-
-        f_raw = open(f'../phsmachine_web/public/thermal_raw/r_thermal{stmp}.pkl', "wb")
+        f_raw = open(f'../phsmachine_web/public/detection/Detection {stmp}/raw_thermal{stmp}.pkl', "wb")
         p = pickle.dump(f_raw, raw_thermal)
         p.close()
         print("SAVED")
