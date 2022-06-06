@@ -49,6 +49,7 @@ Yolov5_PHD=None
 MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
 DB = MONGO_CONNECTION["PHS_MACHINE"]
 DB_CONFIGS = DB['configs']
+DB_DETECTIONS = DB['thermal_detections']
 
 lock = threading.Lock()
 
@@ -133,9 +134,9 @@ def get_ip_address():
 	return ip_address
 
 def detectHeatStress():
-    loadDbConfig()
     global IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
     while True:
+        loadDbConfig()
         if IMG_NORMAL is not None and IMG_THERMAL is not None:
             c_IMG_NORMAL = IMG_NORMAL
             c_IMG_THERMAL = IMG_THERMAL
@@ -151,34 +152,113 @@ def detectHeatStress():
             print("Returned Bbox", detect_pig_head)
 
             coords = detect_pig_head.pandas().xyxy[0].to_dict(orient="records")
-            detect_annotation = np.squeeze(detect_pig_head.render())
+        
+            if len(coords) > 0:
+                detect_annotation = np.squeeze(detect_pig_head.render())
+                
+                print("Saving Detection", len(coords))
 
-            print("Saving Detection")
+                img_normal_cropped = []
+                img_thermal_cropped = []
+                img_thermal_cropped_raw = []
+                detected = True
 
-            img_normal_cropped = []
-            img_thermal_cropped = []
-            img_thermal_cropped_raw = []
+                for result in coords:
+                    x1 = int(result['xmin'])
+                    y1 = int(result['ymin'])
+                    x2 = int(result['xmax'])
+                    y2 = int(result['ymax'])
+                    # print(x1,y1,x2,y2)
+                    cpy_thrm_crop_raw = c_Raw_Reshaped[y1:y2, x1:x2]
 
-            for result in coords:
-                x1 = int(result['xmin'])
-                y1 = int(result['ymin'])
-                x2 = int(result['xmax'])
-                y2 = int(result['ymax'])
-                # print(x1,y1,x2,y2)
-                cpy_crop_normal = c_IMG_NORMAL[y1 : y2, x1 : x2]
-                img_normal_cropped.append(cpy_crop_normal)
+                    # detection = CNN ( RAW THERMAL )
+                    # If it does classified stressed then set as detected to true
 
-                cpy_thrm_crop = c_IMG_THERMAL[y1 : y2, x1 : x2]
-                img_thermal_cropped.append(cpy_thrm_crop)
+                    cpy_crop_normal = c_IMG_NORMAL[y1 : y2, x1 : x2]
+                    cpy_thrm_crop = c_IMG_THERMAL[y1 : y2, x1 : x2]
 
-                cpy_thrm_crop_raw = c_Raw_Reshaped[y1:y2, x1:x2]
-                img_thermal_cropped_raw.append(cpy_thrm_crop_raw)
+                    img_thermal_cropped_raw.append(cpy_thrm_crop_raw)
+                    img_normal_cropped.append(cpy_crop_normal)
+                    img_thermal_cropped.append(cpy_thrm_crop)
 
-            curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
-            saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt, img_normal_cropped, img_thermal_cropped, img_thermal_cropped_raw)
+                curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
 
-            with lock:
-                IMG_NORMAL_ANNOTATED = detect_annotation
+                if detected:
+                    # Save Data to nextjs server
+                    saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt, img_normal_cropped, img_thermal_cropped, img_thermal_cropped_raw, len(coords))
+                    with lock:
+                        SYSTEM_STATE['status'] = 2
+                    # Do actions bind on Heat Stress Detection
+
+                with lock:
+                    IMG_NORMAL_ANNOTATED = detect_annotation
+                    SYSTEM_STATE['pig_count'] = len(coords)
+
+            else:
+                with lock:
+                    SYSTEM_STATE['pig_count'] = 0
+
+def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_normal, croped_thermal, croped_thermal_raw, total_pig):
+    try:
+        path1 = f"../phsmachine_web/public/detection/Detection-{stmp}"
+        path2 = f"../phsmachine_web/public/detection/Detection-{stmp}/Target"
+
+        server_path = f"/detection/Detection-{stmp}"
+
+        os.makedirs(path1)
+        os.makedirs(path2)
+
+        DATA_DICT =  {
+            img_normal: f"{server_path}/img_normal.png",
+            img_annotated: f"{server_path}/img_annotated.png",
+            img_thermal: f"{server_path}/img_thermal.png",
+            data: {
+                pig_count: total_pig,
+                stressed_pig: len(croped_normal),
+                breakdown: [],
+            },
+            actions: [
+                {
+                    action: "Mist",
+                    duration: 10,
+                },
+                {
+                    action: "Fan",
+                    duration: 20,
+                },
+            ]
+        }
+
+        x = 1
+        print("RANGE", len(croped_normal))
+        for i in range(len(croped_normal)):
+            cv2.imwrite(f"{path2}/pig-{x}.png", croped_normal[i])
+            cv2.imwrite(f"{path2}/pig-thermal-processed{x}.png", croped_thermal[i])
+            cv2.imwrite(f"{path2}/pig-thermal-unprocessed{x}.png", croped_thermal_raw[i])
+
+            DATA_DICT['data']['breakdown'].append(
+                {
+                    normal_thumb: f"{server_path}/Target/pig-{x}.png",
+                    thermal_thumb: f"{server_path}/Target/pig-thermal-processed{x}.png",
+                    thermal_raw_thumb: f"{server_path}/Target/pig-thermal-unprocessed{x}.png",
+                }
+            )
+
+            x+=1
+
+        print(DATA_DICT)
+        
+        print("Saving Real Rec")
+        cv2.imwrite(f"{path1}/img_normal.png", normal)
+        cv2.imwrite(f"{path1}/img_annotated.png", normal_annotated)
+        cv2.imwrite(f"{path1}/img_thermal.png", thermal)
+
+        DB_DETECTIONS.insert_one( DATA_DICT )
+
+        p = pickle.dump( raw_thermal, open(f'../phsmachine_web/public/detection/Detection-{stmp}/raw_thermal.pkl', 'wb'))
+        print("SAVED")
+    except Exception as e:
+        print(e)
 
 def readCams():
     global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, SYSTEM_STATE
@@ -292,29 +372,6 @@ def start_server():
     port=8000
     print(f'Server can be found at {ip}:{port}')
     app.run(host=ip, port=port, debug=True, threaded=True, use_reloader=False)
-
-def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_normal, croped_thermal, croped_thermal_raw):
-    try:
-        os.makedirs(f"../phsmachine_web/public/detection/Detection-{stmp}")
-        os.makedirs(f"../phsmachine_web/public/detection/Detection-{stmp}/Target")
-
-        x = 1
-        print("RANGE", len(croped_normal))
-        for i in range(len(croped_normal)):
-            cv2.imwrite(f"../phsmachine_web/public/detection/Detection-{stmp}/Target/pig-{x}.png", croped_normal[i])
-            cv2.imwrite(f"../phsmachine_web/public/detection/Detection-{stmp}/Target/pig-thermal-processed{x}.png", croped_thermal[i])
-            cv2.imwrite(f"../phsmachine_web/public/detection/Detection-{stmp}/Target/pig-thermal-unprocessed{x}.png", croped_thermal_raw[i])
-            x+=1
-        
-        print("Saving Real Rec")
-        cv2.imwrite(f"../phsmachine_web/public/detection/Detection-{stmp}/img_normal.png", normal)
-        cv2.imwrite(f"../phsmachine_web/public/detection/Detection-{stmp}/img_annotated.png", normal_annotated)
-        cv2.imwrite(f"../phsmachine_web/public/detection/Detection-{stmp}/img_thermal.png", thermal)
-
-        p = pickle.dump( raw_thermal, open(f'../phsmachine_web/public/detection/Detection-{stmp}/raw_thermal.pkl', 'wb'))
-        print("SAVED")
-    except Exception as e:
-        print(e)
 
 @atexit.register
 def goodbye():
