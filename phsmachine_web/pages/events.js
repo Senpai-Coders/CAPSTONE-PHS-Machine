@@ -7,29 +7,38 @@ import axios from "axios";
 
 const Events = () => {
   const [detections, setDetections] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const init = async () => {
-    try{
-        const resp = await axios.post("/api/phs/detection",{ mode : 0 })
-        setDetections(resp.data.detection_data)
-    }catch(e){
-        console.log(e)
+    try {
+      const resp = await axios.post("/api/phs/detection", { mode: 0 });
+      setDetections(resp.data.detection_data);
+      setLoading(false);
+    } catch (e) {
+      console.log(e);
     }
-  }
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     init();
-  }, [])
+  }, []);
 
   return (
     <>
       <Head>
         <title>Events</title>
       </Head>
-      <p className="text-xl card-title font-lato font-semibold">
-        Event History
-      </p>
-      <div className="mt-8">
+      <div className="flex items-center">
+        <p className="text-xl card-title font-lato font-semibold">
+          Event History
+        </p>
+        {loading && (
+          <div className="mx-10 w-1/12 flex items-center space-x-4">
+            <progress className="progress"></progress>
+          </div>
+        )}
+      </div>
+      <div className="mt-8 relative">
         <div className="grid gap-4 md:grid-cols-2">
           {detections.map((record) => (
             <div
@@ -37,8 +46,14 @@ const Events = () => {
               className="card card-side space-x-2 shadow-xl"
             >
               <figure className="w-1/2 flex space-x-4">
-                <img className="rounded-l-lg object-cover h-full w-1/2" src={record.img_normal}></img>
-                <img className=" rounded-r-lg object-cover h-full w-1/2" src={record.img_thermal}></img>
+                <img
+                  className="rounded-l-lg object-cover h-full w-1/2"
+                  src={record.img_normal}
+                ></img>
+                <img
+                  className=" rounded-r-lg object-cover h-full w-1/2"
+                  src={record.img_thermal}
+                ></img>
               </figure>
               <div className="w-1/2 card-body font-inter">
                 <p className="font-bold text-lg">
@@ -54,23 +69,34 @@ const Events = () => {
                   {"   "}{" "}
                 </p>
                 <p className="text-lg">
-                  Max Temp:{" "}
-                  {"   "} <span className="font-medium text-error">39.4°C</span>
+                  Max Temp: {"   "}{" "}
+                  <span className="font-medium text-error">39.4°C</span>
                 </p>
                 <p className="font-bold text-lg">
-                  <span className="text-warning">{record.data.stressed_pig}</span> Stressed Pig
+                  <span className="text-warning">
+                    {record.data.stressed_pig}
+                  </span>{" "}
+                  Stressed Pig
                 </p>
                 <p className="text-sm">{record.date}</p>
                 <div className="card-actions justify-end">
-                  <button className="btn">More Info</button>
+                  <a
+                    href={`/detection_details?_id=${record._id}`}
+                    target="blank"
+                    className="btn"
+                  >
+                    More Info
+                  </a>
                 </div>
               </div>
             </div>
           ))}
         </div>
-        {
-              detections.length === 0 && <p className="tracking-wider opacity-70 text-sm font-inter text-center">There are 0 detections</p>
-        }
+        {!loading && detections.length === 0 && (
+          <p className="tracking-wider opacity-70 text-sm font-inter text-center">
+            There are 0 detections
+          </p>
+        )}
       </div>
     </>
   );

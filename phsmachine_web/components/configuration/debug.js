@@ -449,7 +449,9 @@ const debug = ({ STAT }) => {
 
       <div className={` my-4 relative mb-6`}>
         {!loaded && (
-          <progress className="progress progress-warning absolute top-0 left-0 w-full"></progress>
+            <div className=" w-1/12 flex items-center space-x-4">
+              <progress className="progress"></progress>
+            </div>
         )}
 
         <label onClick={() => setMoadlRelay(true)} className="mt-4 btn">

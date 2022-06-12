@@ -38,10 +38,9 @@ export const translateSystemState = (status) => {
 
 export const dateToWord = (date) => {
     let thisDate = new Date(date);
-  
-    let wordDate = `${thisDate.toLocaleString("en-us", {
-      month: "short",
-    })} ${thisDate.getDate()}, ${thisDate.getFullYear()}`;
-  
+    let wordDate = `${thisDate.toLocaleString("en-us", { month: "short" })} ${thisDate.getDate()}, ${thisDate.getFullYear()} - ${thisDate.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })}`;
     return wordDate
   };
