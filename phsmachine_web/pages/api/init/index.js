@@ -10,7 +10,7 @@ let ObjectId = require("mongoose").Types.ObjectId;
 dbConnect();
 
 const handler = async (req, res) => {
-  console.log("Called")
+  console.log("Called");
   const DEFAULT_USERs = [
     {
       user_name: "PHS_SYSTEM_V1",
@@ -99,163 +99,2636 @@ const handler = async (req, res) => {
 
   const DEFAULT_DETECTS = [
     {
-      img_normal: "/detection/Detection-2022_06_06-12:14:38_PM/img_normal.png",
+      img_normal: "/detection/Detection-2022_06_07-04:25:25_AM/img_normal.png",
       img_annotated:
-        "/detection/Detection-2022_06_06-12:14:38_PM/img_annotated.png",
+        "/detection/Detection-2022_06_07-04:25:25_AM/img_annotated.png",
       img_thermal:
-        "/detection/Detection-2022_06_06-12:14:38_PM/img_thermal.png",
+        "/detection/Detection-2022_06_07-04:25:25_AM/img_thermal.png",
       data: {
-        pig_count: 3,
-        stressed_pig: 3,
+        pig_count: 1,
+        stressed_pig: 1,
         breakdown: [
           {
             normal_thumb:
-              "/detection/Detection-2022_06_06-12:14:38_PM/Target/pig-1.png",
+              "/detection/Detection-2022_06_07-04:25:25_AM/Target/pig-1.png",
             thermal_thumb:
-              "/detection/Detection-2022_06_06-12:14:38_PM/Target/pig-thermal-processed1.png",
+              "/detection/Detection-2022_06_07-04:25:25_AM/Target/pig-thermal-processed1.png",
             thermal_raw_thumb:
-              "/detection/Detection-2022_06_06-12:14:38_PM/Target/pig-thermal-unprocessed1.png",
-          },
-          {
-            normal_thumb:
-              "/detection/Detection-2022_06_06-12:14:38_PM/Target/pig-2.png",
-            thermal_thumb:
-              "/detection/Detection-2022_06_06-12:14:38_PM/Target/pig-thermal-processed2.png",
-            thermal_raw_thumb:
-              "/detection/Detection-2022_06_06-12:14:38_PM/Target/pig-thermal-unprocessed2.png",
-          },
-          {
-            normal_thumb:
-              "/detection/Detection-2022_06_06-12:14:38_PM/Target/pig-1.png",
-            thermal_thumb:
-              "/detection/Detection-2022_06_06-12:14:38_PM/Target/pig-thermal-processed2.png",
-            thermal_raw_thumb:
-              "/detection/Detection-2022_06_06-12:14:38_PM/Target/pig-thermal-unprocessed2.png",
+              "/detection/Detection-2022_06_07-04:25:25_AM/Target/pig-thermal-unprocessed1.png",
           },
         ],
       },
       actions: [
-        {
-          action: "Mist",
-          duration: 10,
-        },
-        {
-          action: "Fan",
-          duration: 20,
-        },
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
       ],
-      date: "6/6/2022",
     },
     {
-      img_normal: "/detection/Detection-2022_06_06-12:14:42_PM/img_normal.png",
+      img_normal: "/detection/Detection-2022_06_07-04:28:14_AM/img_normal.png",
       img_annotated:
-        "/detection/Detection-2022_06_06-12:14:42_PM/img_annotated.png",
+        "/detection/Detection-2022_06_07-04:28:14_AM/img_annotated.png",
       img_thermal:
-        "/detection/Detection-2022_06_06-12:14:42_PM/img_thermal.png",
+        "/detection/Detection-2022_06_07-04:28:14_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:14_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:14_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:14_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:28:21_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:28:21_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:28:21_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:21_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:21_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:21_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:28:35_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:28:35_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:28:35_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:35_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:35_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:35_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:35_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:35_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:35_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:28:41_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:28:41_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:28:41_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:41_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:41_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:41_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:41_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:41_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:41_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:19:29_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:19:29_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:19:29_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:19:29_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:19:29_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:19:29_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:20:10_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:20:10_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:20:10_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:20:10_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:20:10_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:20:10_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:20:10_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:20:10_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:20:10_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:20:17_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:20:17_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:20:17_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:20:17_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:20:17_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:20:17_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:20:24_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:20:24_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:20:24_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:20:24_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:20:24_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:20:24_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:20:24_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:20:24_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:20:24_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:20:31_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:20:31_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:20:31_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:20:31_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:20:31_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:20:31_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:20:37_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:20:37_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:20:37_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:20:37_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:20:37_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:20:37_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:20:37_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:20:37_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:20:37_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:20:44_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:20:44_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:20:44_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:20:44_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:20:44_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:20:44_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:20:44_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:20:44_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:20:44_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:20:57_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:20:57_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:20:57_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:20:57_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:20:57_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:20:57_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:21:10_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:21:10_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:21:10_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:21:10_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:21:10_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:21:10_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:21:10_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:21:10_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:21:10_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:21:35_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:21:35_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:21:35_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:21:35_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:21:35_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:21:35_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:21:41_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:21:41_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:21:41_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:21:41_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:21:41_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:21:41_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:21:49_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:21:49_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:21:49_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:21:49_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:21:49_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:21:49_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:21:56_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:21:56_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:21:56_AM/img_thermal.png",
+      data: {
+        pig_count: 4,
+        stressed_pig: 4,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:21:56_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:21:56_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:21:56_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:21:56_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:21:56_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:21:56_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:21:56_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:21:56_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:21:56_AM/Target/pig-thermal-unprocessed3.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:21:56_AM/Target/pig-4.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:21:56_AM/Target/pig-thermal-processed4.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:21:56_AM/Target/pig-thermal-unprocessed4.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:22:03_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:22:03_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:22:03_AM/img_thermal.png",
       data: {
         pig_count: 3,
         stressed_pig: 3,
         breakdown: [
           {
             normal_thumb:
-              "/detection/Detection-2022_06_06-12:14:42_PM/Target/pig-1.png",
+              "/detection/Detection-2022_06_07-04:22:03_AM/Target/pig-1.png",
             thermal_thumb:
-              "/detection/Detection-2022_06_06-12:14:42_PM/Target/pig-thermal-processed1.png",
+              "/detection/Detection-2022_06_07-04:22:03_AM/Target/pig-thermal-processed1.png",
             thermal_raw_thumb:
-              "/detection/Detection-2022_06_06-12:14:42_PM/Target/pig-thermal-unprocessed1.png",
+              "/detection/Detection-2022_06_07-04:22:03_AM/Target/pig-thermal-unprocessed1.png",
           },
           {
             normal_thumb:
-              "/detection/Detection-2022_06_06-12:14:42_PM/Target/pig-2.png",
+              "/detection/Detection-2022_06_07-04:22:03_AM/Target/pig-2.png",
             thermal_thumb:
-              "/detection/Detection-2022_06_06-12:14:42_PM/Target/pig-thermal-processed2.png",
+              "/detection/Detection-2022_06_07-04:22:03_AM/Target/pig-thermal-processed2.png",
             thermal_raw_thumb:
-              "/detection/Detection-2022_06_06-12:14:42_PM/Target/pig-thermal-unprocessed2.png",
+              "/detection/Detection-2022_06_07-04:22:03_AM/Target/pig-thermal-unprocessed2.png",
           },
           {
             normal_thumb:
-              "/detection/Detection-2022_06_06-12:14:42_PM/Target/pig-1.png",
+              "/detection/Detection-2022_06_07-04:22:03_AM/Target/pig-3.png",
             thermal_thumb:
-              "/detection/Detection-2022_06_06-12:14:42_PM/Target/pig-thermal-processed2.png",
+              "/detection/Detection-2022_06_07-04:22:03_AM/Target/pig-thermal-processed3.png",
             thermal_raw_thumb:
-              "/detection/Detection-2022_06_06-12:14:42_PM/Target/pig-thermal-unprocessed2.png",
+              "/detection/Detection-2022_06_07-04:22:03_AM/Target/pig-thermal-unprocessed3.png",
           },
         ],
-        
-      },actions: [
-        {
-          action: "Mist",
-          duration: 10,
-        },
-        {
-          action: "Fan",
-          duration: 20,
-        },
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
       ],
-      date: "6/6/2022",
     },
     {
-      img_normal: "/detection/Detection-2022_06_06-12:14:45_PM/img_normal.png",
+      img_normal: "/detection/Detection-2022_06_07-04:22:10_AM/img_normal.png",
       img_annotated:
-        "/detection/Detection-2022_06_06-12:14:45_PM/img_annotated.png",
+        "/detection/Detection-2022_06_07-04:22:10_AM/img_annotated.png",
       img_thermal:
-        "/detection/Detection-2022_06_06-12:14:45_PM/img_thermal.png",
+        "/detection/Detection-2022_06_07-04:22:10_AM/img_thermal.png",
       data: {
-        pig_count: 4,
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:22:10_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:22:10_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:22:10_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:22:30_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:22:30_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:22:30_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:22:30_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:22:30_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:22:30_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:22:36_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:22:36_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:22:36_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:22:36_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:22:36_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:22:36_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:22:36_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:22:36_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:22:36_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:22:44_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:22:44_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:22:44_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:22:44_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:22:44_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:22:44_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:22:54_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:22:54_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:22:54_AM/img_thermal.png",
+      data: {
+        pig_count: 3,
         stressed_pig: 3,
         breakdown: [
           {
             normal_thumb:
-              "/detection/Detection-2022_06_06-12:14:45_PM/Target/pig-1.png",
+              "/detection/Detection-2022_06_07-04:22:54_AM/Target/pig-1.png",
             thermal_thumb:
-              "/detection/Detection-2022_06_06-12:14:45_PM/Target/pig-thermal-processed1.png",
+              "/detection/Detection-2022_06_07-04:22:54_AM/Target/pig-thermal-processed1.png",
             thermal_raw_thumb:
-              "/detection/Detection-2022_06_06-12:14:45_PM/Target/pig-thermal-unprocessed1.png",
+              "/detection/Detection-2022_06_07-04:22:54_AM/Target/pig-thermal-unprocessed1.png",
           },
           {
             normal_thumb:
-              "/detection/Detection-2022_06_06-12:14:45_PM/Target/pig-2.png",
+              "/detection/Detection-2022_06_07-04:22:54_AM/Target/pig-2.png",
             thermal_thumb:
-              "/detection/Detection-2022_06_06-12:14:45_PM/Target/pig-thermal-processed2.png",
+              "/detection/Detection-2022_06_07-04:22:54_AM/Target/pig-thermal-processed2.png",
             thermal_raw_thumb:
-              "/detection/Detection-2022_06_06-12:14:45_PM/Target/pig-thermal-unprocessed2.png",
+              "/detection/Detection-2022_06_07-04:22:54_AM/Target/pig-thermal-unprocessed2.png",
           },
           {
             normal_thumb:
-              "/detection/Detection-2022_06_06-12:14:45_PM/Target/pig-1.png",
+              "/detection/Detection-2022_06_07-04:22:54_AM/Target/pig-3.png",
             thermal_thumb:
-              "/detection/Detection-2022_06_06-12:14:45_PM/Target/pig-thermal-processed2.png",
+              "/detection/Detection-2022_06_07-04:22:54_AM/Target/pig-thermal-processed3.png",
             thermal_raw_thumb:
-              "/detection/Detection-2022_06_06-12:14:45_PM/Target/pig-thermal-unprocessed2.png",
+              "/detection/Detection-2022_06_07-04:22:54_AM/Target/pig-thermal-unprocessed3.png",
           },
-        ]
-      },actions: [
-        {
-          action: "Mist",
-          duration: 10,
-        },
-        {
-          action: "Fan",
-          duration: 20,
-        },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
       ],
-      date: "6/6/2022",
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:23:03_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:23:03_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:23:03_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:23:03_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:23:03_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:23:03_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:23:03_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:23:03_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:23:03_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:23:29_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:23:29_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:23:29_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:23:29_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:23:29_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:23:29_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:23:35_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:23:35_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:23:35_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:23:35_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:23:35_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:23:35_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:24:14_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:24:14_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:24:14_AM/img_thermal.png",
+      data: {
+        pig_count: 3,
+        stressed_pig: 3,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:24:14_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:24:14_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:24:14_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:24:14_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:24:14_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:24:14_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:24:14_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:24:14_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:24:14_AM/Target/pig-thermal-unprocessed3.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:24:33_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:24:33_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:24:33_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:24:33_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:24:33_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:24:33_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:24:40_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:24:40_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:24:40_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:24:40_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:24:40_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:24:40_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:24:40_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:24:40_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:24:40_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:24:47_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:24:47_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:24:47_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:24:47_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:24:47_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:24:47_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:24:47_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:24:47_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:24:47_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:24:54_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:24:54_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:24:54_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:24:54_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:24:54_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:24:54_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:25:01_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:25:01_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:25:01_AM/img_thermal.png",
+      data: {
+        pig_count: 3,
+        stressed_pig: 3,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:25:01_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:25:01_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:25:01_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:25:01_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:25:01_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:25:01_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:25:01_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:25:01_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:25:01_AM/Target/pig-thermal-unprocessed3.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:25:14_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:25:14_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:25:14_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:25:14_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:25:14_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:25:14_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:25:21_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:25:21_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:25:21_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:25:21_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:25:21_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:25:21_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:25:31_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:25:31_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:25:31_AM/img_thermal.png",
+      data: {
+        pig_count: 3,
+        stressed_pig: 3,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:25:31_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:25:31_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:25:31_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:25:31_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:25:31_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:25:31_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:25:31_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:25:31_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:25:31_AM/Target/pig-thermal-unprocessed3.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:25:50_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:25:50_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:25:50_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:25:50_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:25:50_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:25:50_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:25:50_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:25:50_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:25:50_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:26:03_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:26:03_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:26:03_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:03_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:03_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:03_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:26:10_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:26:10_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:26:10_AM/img_thermal.png",
+      data: {
+        pig_count: 5,
+        stressed_pig: 5,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:10_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:10_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:10_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:10_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:10_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:10_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:10_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:10_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:10_AM/Target/pig-thermal-unprocessed3.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:10_AM/Target/pig-4.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:10_AM/Target/pig-thermal-processed4.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:10_AM/Target/pig-thermal-unprocessed4.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:10_AM/Target/pig-5.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:10_AM/Target/pig-thermal-processed5.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:10_AM/Target/pig-thermal-unprocessed5.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:26:15_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:26:15_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:26:15_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:15_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:15_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:15_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:26:22_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:26:22_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:26:22_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:22_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:22_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:22_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:26:29_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:26:29_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:26:29_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:29_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:29_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:29_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:29_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:29_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:29_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:26:36_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:26:36_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:26:36_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:36_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:36_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:36_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:36_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:36_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:36_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:26:43_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:26:43_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:26:43_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:43_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:43_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:43_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:26:49_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:26:49_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:26:49_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:49_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:49_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:49_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:26:56_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:26:56_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:26:56_AM/img_thermal.png",
+      data: {
+        pig_count: 3,
+        stressed_pig: 3,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:56_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:56_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:56_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:56_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:56_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:56_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:26:56_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:26:56_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:26:56_AM/Target/pig-thermal-unprocessed3.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:27:02_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:27:02_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:27:02_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:27:02_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:27:02_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:27:02_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:27:28_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:27:28_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:27:28_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:27:28_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:27:28_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:27:28_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:27:35_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:27:35_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:27:35_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:27:35_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:27:35_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:27:35_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:27:35_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:27:35_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:27:35_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:27:49_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:27:49_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:27:49_AM/img_thermal.png",
+      data: {
+        pig_count: 4,
+        stressed_pig: 4,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:27:49_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:27:49_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:27:49_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:27:49_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:27:49_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:27:49_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:27:49_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:27:49_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:27:49_AM/Target/pig-thermal-unprocessed3.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:27:49_AM/Target/pig-4.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:27:49_AM/Target/pig-thermal-processed4.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:27:49_AM/Target/pig-thermal-unprocessed4.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:27:55_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:27:55_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:27:55_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:27:55_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:27:55_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:27:55_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:27:55_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:27:55_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:27:55_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:28:02_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:28:02_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:28:02_AM/img_thermal.png",
+      data: {
+        pig_count: 3,
+        stressed_pig: 3,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:02_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:02_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:02_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:02_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:02_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:02_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:02_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:02_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:02_AM/Target/pig-thermal-unprocessed3.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:28:09_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:28:09_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:28:09_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:09_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:09_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:09_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:09_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:09_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:09_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:28:22_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:28:22_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:28:22_AM/img_thermal.png",
+      data: {
+        pig_count: 4,
+        stressed_pig: 4,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:22_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:22_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:22_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:22_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:22_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:22_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:22_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:22_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:22_AM/Target/pig-thermal-unprocessed3.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:22_AM/Target/pig-4.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:22_AM/Target/pig-thermal-processed4.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:22_AM/Target/pig-thermal-unprocessed4.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:28:29_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:28:29_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:28:29_AM/img_thermal.png",
+      data: {
+        pig_count: 3,
+        stressed_pig: 3,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:29_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:29_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:29_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:29_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:29_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:29_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:29_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:29_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:29_AM/Target/pig-thermal-unprocessed3.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:28:42_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:28:42_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:28:42_AM/img_thermal.png",
+      data: {
+        pig_count: 4,
+        stressed_pig: 4,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:42_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:42_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:42_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:42_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:42_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:42_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:42_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:42_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:42_AM/Target/pig-thermal-unprocessed3.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:42_AM/Target/pig-4.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:42_AM/Target/pig-thermal-processed4.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:42_AM/Target/pig-thermal-unprocessed4.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:28:50_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:28:50_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:28:50_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:50_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:50_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:50_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:28:57_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:28:57_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:28:57_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:57_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:57_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:57_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:28:57_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:28:57_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:28:57_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:29:03_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:29:03_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:29:03_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:29:03_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:29:03_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:29:03_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:29:10_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:29:10_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:29:10_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:29:10_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:29:10_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:29:10_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:29:17_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:29:17_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:29:17_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:29:17_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:29:17_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:29:17_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:29:30_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:29:30_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:29:30_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:29:30_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:29:30_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:29:30_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:29:37_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:29:37_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:29:37_AM/img_thermal.png",
+      data: {
+        pig_count: 3,
+        stressed_pig: 3,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:29:37_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:29:37_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:29:37_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:29:37_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:29:37_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:29:37_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:29:37_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:29:37_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:29:37_AM/Target/pig-thermal-unprocessed3.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:29:43_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:29:43_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:29:43_AM/img_thermal.png",
+      data: {
+        pig_count: 4,
+        stressed_pig: 4,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:29:43_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:29:43_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:29:43_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:29:43_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:29:43_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:29:43_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:29:43_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:29:43_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:29:43_AM/Target/pig-thermal-unprocessed3.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:29:43_AM/Target/pig-4.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:29:43_AM/Target/pig-thermal-processed4.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:29:43_AM/Target/pig-thermal-unprocessed4.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:29:49_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:29:49_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:29:49_AM/img_thermal.png",
+      data: {
+        pig_count: 3,
+        stressed_pig: 3,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:29:49_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:29:49_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:29:49_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:29:49_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:29:49_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:29:49_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:29:49_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:29:49_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:29:49_AM/Target/pig-thermal-unprocessed3.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:30:02_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:30:02_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:30:02_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:02_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:02_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:02_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:30:08_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:30:08_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:30:08_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:08_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:08_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:08_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:08_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:08_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:08_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:30:22_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:30:22_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:30:22_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:22_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:22_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:22_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:22_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:22_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:22_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:30:29_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:30:29_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:30:29_AM/img_thermal.png",
+      data: {
+        pig_count: 3,
+        stressed_pig: 3,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:29_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:29_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:29_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:29_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:29_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:29_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:29_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:29_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:29_AM/Target/pig-thermal-unprocessed3.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:30:36_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:30:36_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:30:36_AM/img_thermal.png",
+      data: {
+        pig_count: 5,
+        stressed_pig: 5,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:36_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:36_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:36_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:36_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:36_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:36_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:36_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:36_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:36_AM/Target/pig-thermal-unprocessed3.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:36_AM/Target/pig-4.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:36_AM/Target/pig-thermal-processed4.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:36_AM/Target/pig-thermal-unprocessed4.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:36_AM/Target/pig-5.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:36_AM/Target/pig-thermal-processed5.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:36_AM/Target/pig-thermal-unprocessed5.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:30:43_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:30:43_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:30:43_AM/img_thermal.png",
+      data: {
+        pig_count: 3,
+        stressed_pig: 3,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:43_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:43_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:43_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:43_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:43_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:43_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:43_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:43_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:43_AM/Target/pig-thermal-unprocessed3.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:30:49_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:30:49_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:30:49_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:49_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:49_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:49_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:49_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:49_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:49_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:30:55_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:30:55_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:30:55_AM/img_thermal.png",
+      data: {
+        pig_count: 4,
+        stressed_pig: 4,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:55_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:55_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:55_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:55_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:55_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:55_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:55_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:55_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:55_AM/Target/pig-thermal-unprocessed3.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:30:55_AM/Target/pig-4.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:30:55_AM/Target/pig-thermal-processed4.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:30:55_AM/Target/pig-thermal-unprocessed4.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:31:02_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:31:02_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:31:02_AM/img_thermal.png",
+      data: {
+        pig_count: 4,
+        stressed_pig: 4,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:31:02_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:31:02_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:31:02_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:31:02_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:31:02_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:31:02_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:31:02_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:31:02_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:31:02_AM/Target/pig-thermal-unprocessed3.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:31:02_AM/Target/pig-4.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:31:02_AM/Target/pig-thermal-processed4.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:31:02_AM/Target/pig-thermal-unprocessed4.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:31:08_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:31:08_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:31:08_AM/img_thermal.png",
+      data: {
+        pig_count: 2,
+        stressed_pig: 2,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:31:08_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:31:08_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:31:08_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:31:08_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:31:08_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:31:08_AM/Target/pig-thermal-unprocessed2.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:31:22_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:31:22_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:31:22_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:31:22_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:31:22_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:31:22_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:31:28_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:31:28_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:31:28_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:31:28_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:31:28_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:31:28_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:31:35_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:31:35_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:31:35_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:31:35_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:31:35_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:31:35_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:31:43_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:31:43_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:31:43_AM/img_thermal.png",
+      data: {
+        pig_count: 3,
+        stressed_pig: 3,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:31:43_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:31:43_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:31:43_AM/Target/pig-thermal-unprocessed1.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:31:43_AM/Target/pig-2.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:31:43_AM/Target/pig-thermal-processed2.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:31:43_AM/Target/pig-thermal-unprocessed2.png",
+          },
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:31:43_AM/Target/pig-3.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:31:43_AM/Target/pig-thermal-processed3.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:31:43_AM/Target/pig-thermal-unprocessed3.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
+    },
+    {
+      img_normal: "/detection/Detection-2022_06_07-04:31:49_AM/img_normal.png",
+      img_annotated:
+        "/detection/Detection-2022_06_07-04:31:49_AM/img_annotated.png",
+      img_thermal:
+        "/detection/Detection-2022_06_07-04:31:49_AM/img_thermal.png",
+      data: {
+        pig_count: 1,
+        stressed_pig: 1,
+        breakdown: [
+          {
+            normal_thumb:
+              "/detection/Detection-2022_06_07-04:31:49_AM/Target/pig-1.png",
+            thermal_thumb:
+              "/detection/Detection-2022_06_07-04:31:49_AM/Target/pig-thermal-processed1.png",
+            thermal_raw_thumb:
+              "/detection/Detection-2022_06_07-04:31:49_AM/Target/pig-thermal-unprocessed1.png",
+          },
+        ],
+      },
+      actions: [
+        { action: "Mist", duration: 10 },
+        { action: "Fan", duration: 20 },
+      ],
     },
   ];
 
-  console.log("Defined Defaults")
+  console.log("Defined Defaults");
 
   try {
     const del = await users.deleteMany({});
     const del2 = await configs.deleteMany({});
-    const del3 = await detections.deleteMany({})
+    const del3 = await detections.deleteMany({});
 
     const resp = await users.insertMany(DEFAULT_USERs);
-    console.log("1")
+    console.log("1");
     const resp2 = await configs.insertMany(DEFAULT_CONFIGS);
-    console.log("2")
+    console.log("2");
     const resp3 = await detections.insertMany(DEFAULT_DETECTS);
-    console.log("3")
+    console.log("3");
   } catch (e) {
     console.log(e);
   }
