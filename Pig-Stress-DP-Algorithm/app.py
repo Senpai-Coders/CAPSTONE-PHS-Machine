@@ -25,6 +25,7 @@ from PIL import Image
 import numpy as np
 import warnings
 import pickle
+import tensorflow as tf
 
 warnings.filterwarnings("ignore") # Warning will make operation confuse!!!
 
@@ -45,6 +46,7 @@ ACTION_STATE=None
 R_CONTROLLER=None
 
 Yolov5_PHD=None
+PHS_CNN=None
 
 MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
 DB = MONGO_CONNECTION["PHS_MACHINE"]
@@ -133,8 +135,12 @@ def get_ip_address():
 	s.close()
 	return ip_address
 
+def conv_img(img):
+    new_img = cv2.resize(img, 120,120)
+    return np.array(new_img).reshape(-1, 120, 120, 1)
+
 def detectHeatStress():
-    global IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
+    global IMG_NORMAL_ANNOTATED, PHS_CNN, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
     while True:
         loadDbConfig()
         if IMG_NORMAL is not None and IMG_THERMAL is not None:
@@ -161,7 +167,9 @@ def detectHeatStress():
                 img_normal_cropped = []
                 img_thermal_cropped = []
                 img_thermal_cropped_raw = []
-                detected = True
+
+
+                detected = False
                 
                 for result in coords:
                     x1 = int(result['xmin'])
@@ -172,6 +180,15 @@ def detectHeatStress():
                     cpy_thrm_crop_raw = c_Raw_Reshaped[y1:y2, x1:x2]
 
                     # detection = CNN ( RAW THERMAL )
+                    conv_img = conv_img(cpy_thrm_crop_raw)
+                    identify_pig_stress = PHS_CNN.predict(conv_img)
+                    classes =  ['Heat Stressed', 'Normal']
+                    classification = classes[np.argmax(res)]
+
+                    if classification == classes[1]:
+                        continue
+                        
+                    detected = True
                     # If it does classified stressed then set as detected to true
 
                     cpy_crop_normal = c_IMG_NORMAL[y1 : y2, x1 : x2]
@@ -331,7 +348,7 @@ def loadDbConfig():
         ACTION_STATE = a_controller(actions, ACTION_STATE.actions)
         
 def start_server():
-    global Yolov5_PHD, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED
+    global Yolov5_PHD, PHS_CNN, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED
 
     SYSTEM_STATE = {
         "status" : 0,
@@ -359,6 +376,12 @@ def start_server():
         device = 'cpu',
         force_reload=True
     )
+
+    print("Loading PHS Heat Stress CNN..")
+
+    PHS_CNN = tf.keras.models.load_model(os.path.join('models','mai_Net.h5'))
+
+    print("Loaded PHS Heat Stress CNN!")
 
     camThread = threading.Thread(target=readCams)
     camThread.daemon = True
