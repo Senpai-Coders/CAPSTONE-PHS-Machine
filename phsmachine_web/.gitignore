@@ -33,3 +33,4 @@ yarn-error.log*
 
 # ignore pig datas
 /public/detection
+/public/images

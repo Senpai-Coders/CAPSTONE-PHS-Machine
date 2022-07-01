@@ -14,9 +14,7 @@ const Events = () => {
       const resp = await axios.post("/api/phs/detection", { mode: 0 });
       setDetections(resp.data.detection_data);
       setLoading(false);
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) { console.log(e); }
   };
 
   useEffect(() => {
@@ -43,9 +41,9 @@ const Events = () => {
           {detections.map((record) => (
             <div
               key={record._id}
-              className="card card-side space-x-2 shadow-xl"
+              className="card md:card-side space-x-2 shadow-xl"
             >
-              <figure className="w-1/2 flex space-x-4">
+              <figure className="md:w-1/2 flex">
                 <img
                   className="rounded-l-lg object-cover h-full w-1/2"
                   src={record.img_normal}
@@ -55,7 +53,7 @@ const Events = () => {
                   src={record.img_thermal}
                 ></img>
               </figure>
-              <div className="w-1/2 card-body font-inter">
+              <div className="md:w-1/2 card-body font-inter">
                 <p className="font-bold text-lg">
                   {record.data.pig_count} Pigs Onframe
                 </p>
@@ -83,7 +81,7 @@ const Events = () => {
                   <a
                     href={`/detection_details?_id=${record._id}`}
                     target="blank"
-                    className="btn"
+                    className="btn btn-block"
                   >
                     More Info
                   </a>

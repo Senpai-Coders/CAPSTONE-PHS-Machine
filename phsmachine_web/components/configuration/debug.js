@@ -215,7 +215,7 @@ const debug = ({ STAT }) => {
                 </div>
               </div>
               {selectedComponent.state && (
-                <div className="alert shadow-lg">
+                <div className="alert text-sm shadow-lg">
                   <div>
                     <GiPowerLightning
                       className={`ml-4 w-4 h-4 duration-500 ${
@@ -257,7 +257,7 @@ const debug = ({ STAT }) => {
                 </p>
               </div>
               {!canDelete(selectedComponent.config_name) && (
-                <div className="alert shadow-lg">
+                <div className="alert text-sm shadow-lg">
                   <div>
                     <span>
                       This component is use by another action. To delete this,
@@ -321,7 +321,7 @@ const debug = ({ STAT }) => {
                 </div>
               </div>
               {selectedAction.state && (
-                <div className="alert shadow-lg">
+                <div className="alert text-sm shadow-lg">
                   <div>
                     <BsFillGearFill
                       className={`ml-4 w-4 h-4 duration-500 text-primary ${
@@ -408,7 +408,7 @@ const debug = ({ STAT }) => {
 
       {/** ALERTS */}
       <div>
-        <div className="alert text-warning shadow-lg">
+        <div className="alert text-sm text-warning shadow-lg">
           <div className={` ${SYSSTATE.status === 2 && "animate-pulse "}`}>
             <VscDebugConsole className={`w-7 h-7`} />
             <span>
@@ -434,7 +434,7 @@ const debug = ({ STAT }) => {
           </div>
         </div>
 
-        <div className="flex space-x-3 bg-none items-center mt-6">
+        <div className="flex space-x-3 bg-none items-center text-sm mt-6">
           <BsFillExclamationSquareFill className={`text-accent w-4 h-4`} />
           <span>
             When debugging mode is on, The AI cannot call any of the action that

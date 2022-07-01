@@ -57,13 +57,13 @@ const systemState = ({ ACTIONSTATE, SYSSTATE }) => {
           <div className="stat snap-center">
             <div className="stat-figure text-secondary"></div>
             <div className="stat-title">Total Detections (Today)</div>
-            <div className="stat-value text-primary">1</div>
+            <div className="stat-value text-primary">{DETECTIONSTODAY}</div>
             <div className="stat-desc"></div>
           </div>
           <div className="stat snap-center">
             <div className="stat-figure text-secondary"></div>
             <div className="stat-title">Total Actions (Today)</div>
-            <div className="stat-value text-primary">2</div>
+            <div className="stat-value text-primary">{ACTIONSTODAY}</div>
             <div className="stat-desc"></div>
           </div>
         </div>
@@ -107,8 +107,8 @@ const systemState = ({ ACTIONSTATE, SYSSTATE }) => {
       </div>
 
       <div className="flex justify-center">
-        {ACTIONSTATE.length === 0 && (
-          <div className="alert shadow-lg">
+        {ACTIONSTATE.length === 0 && SYSSTATE.status >= 0 && SYSSTATE.status !== 3 && (
+          <div className="alert text-sm shadow-lg">
           <div className="items-center">
             <RiAlarmWarningFill className="w-6 h-6"/>
             <span>There are 0 actions. You can add on settings</span>

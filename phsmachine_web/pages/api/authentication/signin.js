@@ -31,7 +31,12 @@ const handler = async (req, res) => {
             })
 
         const JWT = GENERATE_JWT(USER);
-
+        const updateLastSignIn = await users.updateOne({_id : USER._id}, { $set : {
+            sign_in : new Date() },
+            $inc : {
+                login_count : 1
+            }
+        })
 
         //create a COOKIE
         res.setHeader("Set-Cookie", cookie.serialize("authorization", JWT, {

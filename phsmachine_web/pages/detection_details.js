@@ -334,7 +334,7 @@ export default function _detection_details() {
               </div>
             ))}
           </div>
-          <div className="my-8 alert shadow-lg">
+          <div className="my-8 text-sm alert shadow-lg">
             <div>
               <TiInfoLarge className="stroke-info flex-shrink-0 w-6 h-6" />
               <span>

@@ -93,7 +93,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6 }}
               exit={{ opacity: 0 }}
-              className="alert alert-error shadow-lg"
+              className="alert text-sm alert-error shadow-lg"
             >
               <div>
                 <RiZzzFill className="w-6 h-6 animate-pulse" />
@@ -111,7 +111,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6 }}
               exit={{ opacity: 0 }}
-              className="alert shadow-lg"
+              className="alert text-sm shadow-lg"
             >
               <div>
                 <AiOutlineInfoCircle className="w-6 h-6" />
@@ -128,7 +128,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6 }}
               exit={{ opacity: 0 }}
-              className="alert alert-warning shadow-lg"
+              className="alert text-sm alert-warning shadow-lg"
             >
               <div>
                 <AiOutlineWarning className="w-6 h-6 animate-pulse" />

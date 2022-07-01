@@ -22,7 +22,7 @@ const signin = () => {
       });
       router.push("/");
     } catch (e) {
-        console.log(e)
+      console.log(e);
       setLoading(false);
       if (e.response) {
         //request was made but theres a response status code
@@ -39,7 +39,7 @@ const signin = () => {
   };
 
   return (
-    <div className="grid grid-cols-2 h-screen w-screen">
+    <div className="grid grid-cols-1 md:grid-cols-2 h-screen w-screen">
       <div className="flex items-center bg-[#FDE9F4]">
         <div className="m-auto my-10 w-9/12 text-[#663A52]">
           <p className="font-inter text-xl opacity-80 font-light tracking-wide mb-8">
@@ -54,7 +54,7 @@ const signin = () => {
         onSubmit={(e) => signin(e)}
         className="flex font-inter items-center"
       >
-        <div className="m-auto w-7/12">
+        <div className="m-auto py-8 md:py-0 w-9/12 md:w-7/12">
           <p className=" text-2xl font-semibold tracking-wide mb-8">
             Signin To PHS
           </p>
@@ -135,10 +135,29 @@ const signin = () => {
               username.length === 0 || password.length === 0 || loading
                 ? "btn-disabled"
                 : ""
-            } btn btn-primary btn-md btn-wide `}
+            } btn btn-primary btn-md btn-block md:btn-wide `}
           >
             Sign In
           </button>
+
+          <div className="alert text-sm mt-4 shadow-lg">
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                className="stroke-info flex-shrink-0 w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <span>If you forgot your password, contact the root admin.</span>
+            </div>
+          </div>
         </div>
       </form>
     </div>

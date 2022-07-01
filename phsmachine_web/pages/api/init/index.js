@@ -18,9 +18,29 @@ const handler = async (req, res) => {
       role: 3, // 3 -> Root, 2 -> Admin, 1 -> Employee, 0 -> Viewer
     },
     {
-      user_name: "Emp1",
+      user_name: "Employee 1",
       password: "$2a$10$Vl27DB4G4SrJp0YKpqmtl.q5vebNpHQy2StjA30Lw3DqRQjxFAlnK", // helloworld
       role: 1, // 3 -> Root, 2 -> Admin, 1 -> Employee, 0 -> Viewer
+    },
+    {
+      user_name: "Admin 1",
+      password: "$2a$10$Vl27DB4G4SrJp0YKpqmtl.q5vebNpHQy2StjA30Lw3DqRQjxFAlnK", // helloworld
+      role: 2, // 3 -> Root, 2 -> Admin, 1 -> Employee, 0 -> Viewer
+    },
+    {
+      user_name: "Employee 2",
+      password: "$2a$10$Vl27DB4G4SrJp0YKpqmtl.q5vebNpHQy2StjA30Lw3DqRQjxFAlnK", // helloworld
+      role: 1, // 3 -> Root, 2 -> Admin, 1 -> Employee, 0 -> Viewer
+    },
+    {
+      user_name: "Viewer 1",
+      password: "$2a$10$Vl27DB4G4SrJp0YKpqmtl.q5vebNpHQy2StjA30Lw3DqRQjxFAlnK", // helloworld
+      role: 0, // 3 -> Root, 2 -> Admin, 1 -> Employee, 0 -> Viewer
+    },
+    {
+      user_name: "Admin 2",
+      password: "$2a$10$Vl27DB4G4SrJp0YKpqmtl.q5vebNpHQy2StjA30Lw3DqRQjxFAlnK", // helloworld
+      role: 2, // 3 -> Root, 2 -> Admin, 1 -> Employee, 0 -> Viewer
     },
   ];
 
@@ -2719,22 +2739,31 @@ const handler = async (req, res) => {
   console.log("Defined Defaults");
 
   try {
-    const del = await users.deleteMany({});
-    const del2 = await configs.deleteMany({});
-    const del3 = await detections.deleteMany({});
+    const { us, conf, det } = req.body;
 
-    const resp = await users.insertMany(DEFAULT_USERs);
-    console.log("1");
-    const resp2 = await configs.insertMany(DEFAULT_CONFIGS);
-    console.log("2");
-    const resp3 = await detections.insertMany(DEFAULT_DETECTS);
-    console.log("3");
+    if (us) {
+        console.log("init us")
+        const del = await users.deleteMany({});
+        const resp = await users.insertMany(DEFAULT_USERs);
+        console.log(del, resp)
+    }
+
+    if (conf) {
+        console.log("init conf")
+
+      const del2 = await configs.deleteMany({});
+      const resp2 = await configs.insertMany(DEFAULT_CONFIGS);
+    }
+    if (det) {
+        console.log("init det")
+
+      const del3 = await detections.deleteMany({});
+      const resp3 = await detections.insertMany(DEFAULT_DETECTS);
+    }
   } catch (e) {
     console.log(e);
   }
-  res.status(200).json({
-    status: "Initialized Db 👌",
-  });
+  res.status(200).json({ status: "Initialized Db 👌" });
 };
 
 export default handler;
