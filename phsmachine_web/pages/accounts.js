@@ -114,7 +114,8 @@ const Accounts = () => {
           <TiInfoLarge className={`text-blue-600 w-5 h-5    `} />
           <span>You can't edit users that have higher role than you</span>
         </div>
-        <button onClick={()=>newUser()} className="btn mb-2 mt-6">
+        <button onClick={()=>{if(loading) return; newUser()}} className={`btn mb-2 mt-6 ${ !loading && userData.role < 1 ? "btn-disabled" :""}`}>
+
           <TiUserAdd className="mr-2 h-5 w-5" />
           New User
         </button>

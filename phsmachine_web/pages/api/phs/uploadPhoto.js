@@ -16,7 +16,6 @@ const post = async (req, res) => {
       const photoURL = await saveFile(files.file);
 
       const updatePhoto = await users.updateOne({_id : uid}, {$set : { photo : photoURL }})
-      console.log(uid, updatePhoto)
 
       return res.status(201).json({status : 'ok', url : photoURL});
     });

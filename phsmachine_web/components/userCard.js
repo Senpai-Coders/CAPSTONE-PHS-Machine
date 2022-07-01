@@ -182,19 +182,19 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                   className="dropdown-content font-inter menu p-2 shadow bg-base-100/25 backdrop-blur-md rounded-box w-48"
                 >
                   <p className="my-4 mx-2">Change Role</p>
-                  <li onClick={() => updateRole(2)}>
+	  { editor_info.role > 2 && <li onClick={() => updateRole(2)}>
                     <div className="flex w-full items-center justify-start">
                       {getRoleIcon(2)}
                       <a>Admin</a>
                     </div>
-                  </li>
+                  </li>}
                   <li onClick={() => updateRole(1)}>
                     <div className="flex w-full items-center justify-start">
                       {getRoleIcon(1)}
                       <a>Employee</a>
                     </div>
                   </li>
-                  <li onClick={() => updateRole(0)}>
+				  <li onClick={() => updateRole(0)}>
                     <div className="flex w-full items-center justify-start">
                       {getRoleIcon(0)}
                       <a>Viewer</a>
