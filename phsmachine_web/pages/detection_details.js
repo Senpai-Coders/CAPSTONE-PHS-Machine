@@ -6,7 +6,7 @@ import { dateToWord } from "../helpers";
 import { RiCloseLine } from "react-icons/ri";
 import { FaTemperatureHigh, FaTemperatureLow } from "react-icons/fa";
 import { GiPowerLightning, GiTargeting, GiDustCloud } from "react-icons/gi";
-import { BsFillLayersFill } from "react-icons/bs";
+import { BsFillLayersFill, BsFolderFill } from "react-icons/bs";
 import { TiInfoLarge } from "react-icons/ti";
 
 import Head from "next/head";
@@ -58,14 +58,14 @@ export default function _detection_details() {
     try {
       if (!_id) return;
 
-      var focPath = detection.img_normal
-      var fslash = focPath.indexOf("/",1)
-      var sslash = focPath.indexOf("/",fslash + 1)
-      var delFold = focPath.substring(fslash + 1, sslash)
+      var focPath = detection.img_normal;
+      var fslash = focPath.indexOf("/", 1);
+      var sslash = focPath.indexOf("/", fslash + 1);
+      var delFold = focPath.substring(fslash + 1, sslash);
       const resp = await axios.post("/api/phs/detection", {
         mode: -1,
         detection_id: _id,
-        path : delFold
+        path: delFold,
       });
       close();
     } catch (e) {
@@ -91,11 +91,14 @@ export default function _detection_details() {
       <input type="checkbox" id="del-rec-confirm" className="modal-toggle" />
       <div className="modal bg-base-100/60 backdrop-blur-md modal-bottom sm:modal-middle">
         <div className="modal-box">
-            <div className="flex items-center justify-between">
-                <h3 className="font-bold text-lg">Destroy Data</h3>
-                <GiDustCloud className="w-8 h-8" />
-            </div>
-          <p className="py-4">You are about to destroy/delete this record forever, are you sure to proceed?</p>
+          <div className="flex items-center justify-between">
+            <h3 className="font-bold text-lg">Destroy Data</h3>
+            <GiDustCloud className="w-8 h-8" />
+          </div>
+          <p className="py-4">
+            You are about to destroy/delete this record forever, are you sure to
+            proceed?
+          </p>
           <div className="modal-action">
             <label htmlFor="del-rec-confirm" className="btn">
               No
@@ -143,8 +146,8 @@ export default function _detection_details() {
       {err && (
         <div className="flex p-32 mt-8 items-center justify-center">
           <h1 className="font-inter text-error">
-            Sorry, but we cannot retrieve this record, the record might be deleted or corrupted. Please go back and reload
-            the web page.
+            Sorry, but we cannot retrieve this record, the record might be
+            deleted or corrupted. Please go back and reload the web page.
           </h1>
         </div>
       )}
@@ -179,6 +182,13 @@ export default function _detection_details() {
             Detection ID -{" "}
             <span className="font-lato text-sm">{detection._id}</span>
           </p>
+
+          <div className="my-4 text-sm alert shadow-lg">
+            <div>
+              <BsFolderFill className="stroke-info text-accent flex-shrink-0 w-6 h-6" />
+              <span className="font-inter">Raw Data & Images can be found at <span className="font-semibold">phsmachine_web/public{`${detection.img_normal.substring(0,detection.img_normal.lastIndexOf('/'))}`}</span></span>
+            </div>
+          </div>
 
           <div className="flex justify-center">
             <div className="stats card bg-base-200 overflow-x-scroll snap-x rounded-box mt-8 font-inter shadow">
@@ -334,6 +344,7 @@ export default function _detection_details() {
               </div>
             ))}
           </div>
+
           <div className="my-8 text-sm alert shadow-lg">
             <div>
               <TiInfoLarge className="stroke-info flex-shrink-0 w-6 h-6" />
