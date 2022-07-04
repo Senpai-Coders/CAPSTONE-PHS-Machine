@@ -36,3 +36,4 @@ yarn-error.log*
 /public/thermal
 /public/thermal_raw
 /public/detection
+/public/images

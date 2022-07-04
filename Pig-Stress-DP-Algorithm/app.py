@@ -1,15 +1,12 @@
-from urllib import response
+from datetime import datetime, timedelta
 from flask import Response, request
 from flask import Flask
-import flask
-from flask import render_template
 import threading
-import time, socket, logging, traceback
+import time, socket
 import cv2
 from cameras.cam_normal import Cam_Norm
 from cameras.cam_thermal import cam_therm
 import numpy as np
-from bson import json_util
 import pymongo
 from cust_utils.utils import mongoResToJson
 from component.r_controller import r_controller
@@ -20,8 +17,6 @@ import os
 from datetime import datetime
 import cv2
 import torch
-from matplotlib import pyplot as plt
-from PIL import Image
 import numpy as np
 import warnings
 import pickle
@@ -277,6 +272,21 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
     except Exception as e:
         print(e)
 
+def updateJobs():
+    global SYSTEM_STATE
+
+    for idx, job in enumerate(SYSTEM_STATE['jobs']):
+        endTime = jobs['end']
+        curTime = datetime.now()
+        if curTime >= curTime:
+            print('end action')
+            R_CONTROLLER.toggleRelay(job['name'],False)
+            SYSTEM_STATE['jobs'].pop(idx)
+        else
+            print('on action ', job['name'])
+            R_CONTROLLER.toggleRelay(job['name'],True)
+
+
 def readCams():
     global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, SYSTEM_STATE
     while CAM_THERMAL is not None:
@@ -346,6 +356,8 @@ def loadDbConfig():
 
     if len(ACTION_STATE.actions) != len(actions):
         ACTION_STATE = a_controller(actions, ACTION_STATE.actions)
+
+    updateJobs()
         
 def start_server():
     global Yolov5_PHD, PHS_CNN, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED
@@ -358,7 +370,8 @@ def start_server():
         "stressed_pigcount" : 0,
         "max_temp" : 0,
         "average_temp" : 0,
-        "min_temp" : 0
+        "min_temp" : 0,
+        "jobs" : []
     }
     ACTION_STATE = a_controller((),())
     loadDbConfig()
