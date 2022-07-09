@@ -21,7 +21,7 @@ model = torch.hub.load(
     force_reload=True
 ) 
 
-img = 'pig-gty-er-220319_1647715358563_hpMain_16x9_992.jpg'
+img = 'a.jpg'
 img = cv2.imread(img)
 results = model(img)
 results.pred

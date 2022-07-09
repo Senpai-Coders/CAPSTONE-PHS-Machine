@@ -1,16 +1,22 @@
+isPi = False
+
 from datetime import datetime, timedelta
 from flask import Response, request
 from flask import Flask
 import threading
 import time, socket
 import cv2
-from cameras.cam_normal import Cam_Norm
-from cameras.cam_thermal import cam_therm
-import numpy as np
-import pymongo
-from cust_utils.utils import mongoResToJson
+import logging
+
+if isPi:
+    from cameras.cam_normal import Cam_Norm
+    from cameras.cam_thermal import cam_therm
+
 from component.r_controller import r_controller
 from action.a_controller import a_controller
+from cust_utils.utils import mongoResToJson
+import numpy as np
+import pymongo
 import atexit
 from flask_cors import CORS
 import os
@@ -23,6 +29,9 @@ import pickle
 import tensorflow as tf
 
 warnings.filterwarnings("ignore") # Warning will make operation confuse!!!
+tf.get_logger().setLevel(logging.ERROR)
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 
 YOLO_DIR = os.path.join('models','yolov5')
 WEIGHTS_DIR = os.path.join('best.pt')
@@ -39,11 +48,18 @@ CAM_NORMAL=None
 SYSTEM_STATE=None
 ACTION_STATE=None
 R_CONTROLLER=None
+EMERGENCY_STOP=False
 
 Yolov5_PHD=None
 PHS_CNN=None
 
-MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
+MONGO_CONNECTION=None
+
+if isPi:
+   MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
+else:
+   MONGO_CONNECTION=pymongo.MongoClient("mongodb+srv://Jervx:helloworld@capstone.nv1cu.mongodb.net/?retryWrites=true&w=majority") 
+
 DB = MONGO_CONNECTION["PHS_MACHINE"]
 DB_CONFIGS = DB['configs']
 DB_DETECTIONS = DB['thermal_detections']
@@ -136,7 +152,7 @@ def conv_img(img):
 
 def detectHeatStress():
     global IMG_NORMAL_ANNOTATED, PHS_CNN, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
-    while True:
+    while True and isPi:
         loadDbConfig()
         if IMG_NORMAL is not None and IMG_THERMAL is not None:
             c_IMG_NORMAL = IMG_NORMAL
@@ -201,6 +217,8 @@ def detectHeatStress():
                     with lock:
                         SYSTEM_STATE['status'] = 1
                     # Do actions bind on Heat Stress Detection
+                    if not EMERGENCY_STOP:
+                        print('do action here later')
 
                 with lock:
                     IMG_NORMAL_ANNOTATED = detect_annotation
@@ -275,6 +293,9 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
 def updateJobs():
     global SYSTEM_STATE
 
+    if EMERGENCY_STOP:
+        SYSTEM_STATE['jobs'] = []
+
     for idx, job in enumerate(SYSTEM_STATE['jobs']):
         endTime = jobs['end']
         curTime = datetime.now()
@@ -282,7 +303,7 @@ def updateJobs():
             print('end action')
             R_CONTROLLER.toggleRelay(job['name'],False)
             SYSTEM_STATE['jobs'].pop(idx)
-        else
+        else:
             print('on action ', job['name'])
             R_CONTROLLER.toggleRelay(job['name'],True)
 
@@ -347,14 +368,16 @@ def loadDbConfig():
     global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE
     relays = list(DB_CONFIGS.find({ "category" : "relays" }))
     actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
-
+    
+    
     if R_CONTROLLER is not None:
-        if len(R_CONTROLLER.getAllRelays()) != len(relays):
+        if len(R_CONTROLLER.getAllRelays()) != len(relays) and isPi:
             R_CONTROLLER.delRelays(relays)      
     else:
-        R_CONTROLLER = r_controller(relays, True)
+        R_CONTROLLER = r_controller(relays, True, isPi)
+        # R_CONTROLLER = None
 
-    if len(ACTION_STATE.actions) != len(actions):
+    if len(ACTION_STATE.actions) != len(actions) and isPi:
         ACTION_STATE = a_controller(actions, ACTION_STATE.actions)
 
     updateJobs()
@@ -373,22 +396,29 @@ def start_server():
         "min_temp" : 0,
         "jobs" : []
     }
+    
+    if isPi:
+        CAM_THERMAL = cam_therm()
+        CAM_NORMAL = Cam_Norm()
+        time.sleep(0.1)
+
     ACTION_STATE = a_controller((),())
+
     loadDbConfig()
 
-    RAW_THERMAL = np.zeros((24*32,))
-    CAM_THERMAL = cam_therm()
-    CAM_NORMAL = Cam_Norm()
-    time.sleep(0.1)
-
-    Yolov5_PHD = torch.hub.load(
-        YOLO_DIR,
-        'custom',
-        path=WEIGHTS_DIR, 
-        source='local',
-        device = 'cpu',
-        force_reload=True
-    )
+    RAW_THERMAL = np.zeros((24*32,))        
+    try:
+        Yolov5_PHD = torch.hub.load(
+                YOLO_DIR,
+                'custom',
+                path=WEIGHTS_DIR, 
+                source='local',
+                device = 'cpu',
+                force_reload=True
+            )
+        print("done loading yolo")
+    except Exception as e:
+        print("ERROR PHS YOLO V5",e)
 
     print("Loading PHS Heat Stress CNN..")
 
@@ -416,7 +446,8 @@ def goodbye():
     print("---PHS STATE OFF---")
     print("Setting state as Off")
     print("Closing Relays")
-    R_CONTROLLER.offAll()
+    if isPi:
+        R_CONTROLLER.offAll()
 
 if __name__ == '__main__':
 	start_server()
