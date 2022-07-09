@@ -4,12 +4,14 @@ import { Listbox, Transition } from "@headlessui/react";
 import { HiOutlineSelector } from "react-icons/hi";
 import { AiOutlineCheck } from "react-icons/ai";
 
+const PI_IP = process.env.PI_IP
+
 const normal = ({ canStream }) => {
   const cam_var1 = [
     {
       name: "Thermal",
       stream_url:
-        "http://192.168.1.8:8000/thermal_feed",
+        `http://${PI_IP}:8000/thermal_feed`,
     }
   ];
 

@@ -22,6 +22,8 @@ export default function Home() {
     actions: []
   });
 
+  const PI_IP = process.env.PI_IP
+
   const [ACTIONSTATE, setACTIONSTATE] = useState([])
 
   const [isDown, setIsDown] = useState(false);
@@ -30,9 +32,9 @@ export default function Home() {
   const init = async () => {
     try {
       const phs_response = await axios.get(
-        "http://192.168.1.8:8000/getSystemState"
+        `http://${PI_IP}:8000/getSystemState`
       );
-      const phs_actions = await axios.get("http://192.168.1.8:8000/getActionState")
+      const phs_actions = await axios.get(`http://${PI_IP}:8000/getActionState`)
       setACTIONSTATE(phs_actions.data.actions)
       SETSYSSTATE(phs_response.data.state);
       setIsDown(false);
