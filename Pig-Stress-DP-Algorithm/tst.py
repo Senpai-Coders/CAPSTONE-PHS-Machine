@@ -7,7 +7,7 @@ import os
 import warnings
 warnings.filterwarnings("ignore") # Warning will make operation confuse!!!
 
-YOLO_DIR = os.path.join('models','yolov5')
+YOLO_DIR = os.path.join('models','Yolov5')
 WEIGHTS_DIR = os.path.join('best.pt')
 
 print("YOLDIR",YOLO_DIR,"WEIGHTS", WEIGHTS_DIR)
@@ -21,7 +21,7 @@ model = torch.hub.load(
     force_reload=True
 ) 
 
-img = 'a.jpg'
+img = 'dummy_data/img_normal.png'
 img = cv2.imread(img)
 results = model(img)
 results.pred

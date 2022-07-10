@@ -33,7 +33,7 @@ tf.get_logger().setLevel(logging.ERROR)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
-YOLO_DIR = os.path.join('models','yolov5')
+YOLO_DIR = os.path.join('models','Yolov5')
 WEIGHTS_DIR = os.path.join('best.pt')
 
 
