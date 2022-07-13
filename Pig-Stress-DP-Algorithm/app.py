@@ -12,6 +12,9 @@ if isPi:
     from cameras.cam_normal import Cam_Norm
     from cameras.cam_thermal import cam_therm
 
+
+from cameras.cam_normal import Cam_Norm
+
 from component.r_controller import r_controller
 from action.a_controller import a_controller
 from cust_utils.utils import mongoResToJson
@@ -178,7 +181,7 @@ def detectHeatStress():
                 img_normal_cropped = []
                 img_thermal_cropped = []
                 img_thermal_cropped_raw = []
-
+                img_thermal_cropped_info = []
 
                 detected = False
                 
@@ -187,7 +190,7 @@ def detectHeatStress():
                     y1 = int(result['ymin'])
                     x2 = int(result['xmax'])
                     y2 = int(result['ymax'])
-                    # print(x1,y1,x2,y2)
+                    print('pig at coord :',x1,y1,x2,y2)
                     cpy_thrm_crop_raw = c_Raw_Reshaped[y1:y2, x1:x2]
 
                     # detection = CNN ( RAW THERMAL )
@@ -195,7 +198,6 @@ def detectHeatStress():
                     identify_pig_stress = PHS_CNN.predict(conv_img)
                     classes =  ['Heat Stressed', 'Normal']
                     classification = classes[np.argmax(res)]
-
                     if classification == classes[1]:
                         continue
                         
@@ -209,11 +211,19 @@ def detectHeatStress():
                     img_normal_cropped.append(cpy_crop_normal)
                     img_thermal_cropped.append(cpy_thrm_crop)
 
+                    # constructing subinfo of the subcropped coords
+                    min_temp = np.min(cpy_thrm_crop_raw)
+                    avg_temp = np.mean(cpy_thrm_crop_raw)
+                    max_temp = np.max(cpy_thrm_crop_raw)
+
+                    infoObj = { 'min_temp' : min_temp, 'avg_temp' : avg_temp, 'max_temp' : max_temp }
+                    img_thermal_cropped_info.append(infoObj)
+
                 curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
 
                 if detected:
                     # Save Data to nextjs server
-                    saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt, img_normal_cropped, img_thermal_cropped, img_thermal_cropped_raw, len(coords))
+                    saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt, img_normal_cropped, img_thermal_cropped, img_thermal_cropped_raw, len(coords), img_thermal_cropped_info)
                     with lock:
                         SYSTEM_STATE['status'] = 1
                     # Do actions bind on Heat Stress Detection
@@ -228,7 +238,7 @@ def detectHeatStress():
                 with lock:
                     SYSTEM_STATE['pig_count'] = 0
 
-def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_normal, croped_thermal, croped_thermal_raw, total_pig):
+def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_normal, croped_thermal, croped_thermal_raw, total_pig, sub_info):
     try:
         path1 = f"../phsmachine_web/public/detection/Detection-{stmp}"
         path2 = f"../phsmachine_web/public/detection/Detection-{stmp}/Target"
@@ -271,6 +281,7 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
                     "normal_thumb": f"{server_path}/Target/pig-{x}.png",
                     "thermal_thumb": f"{server_path}/Target/pig-thermal-processed{x}.png",
                     "thermal_raw_thumb": f"{server_path}/Target/pig-thermal-unprocessed{x}.png",
+                    "info" : sub_info
                 }
             )
 
@@ -309,7 +320,20 @@ def updateJobs():
 
 
 def readCams():
-    global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, SYSTEM_STATE
+    global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, SYSTEM_STATE, isPi
+    
+    if not isPi:
+        while CAM_NORMAL is not None:
+            current_frame = None
+            try:
+                current_frame, byts = CAM_NORMAL.get_frame()
+            except Exception:
+                print("err")
+            if current_frame is not None:
+                with lock:
+                    IMG_NORMAL = current_frame
+
+    else: return
     while CAM_THERMAL is not None:
         current_frame=None
         thermal_frame=None
@@ -381,9 +405,16 @@ def loadDbConfig():
         ACTION_STATE = a_controller(actions, ACTION_STATE.actions)
 
     updateJobs()
+
+def process(raw):
+    try:
+        raw.shape = (24,32)
+        raw = cv2.flip(raw,1)
+        return raw
+    except Exception as e: print("Err",e)
         
 def start_server():
-    global Yolov5_PHD, PHS_CNN, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED
+    global Yolov5_PHD, PHS_CNN, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL
 
     SYSTEM_STATE = {
         "status" : 0,
@@ -397,10 +428,15 @@ def start_server():
         "jobs" : []
     }
     
+    CAM_NORMAL = Cam_Norm()
+
     if isPi:
         CAM_THERMAL = cam_therm()
-        CAM_NORMAL = Cam_Norm()
         time.sleep(0.1)
+    else:
+        RAW_THERMAL = pickle.load(open('dummy_data/raw_thermal.pkl','rb'))
+        IMG_THERMAL = process(RAW_THERMAL) 
+        IMG_NORMAL = cv2.imread('dummy_data/img_normal.png')
 
     ACTION_STATE = a_controller((),())
 
