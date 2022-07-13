@@ -229,8 +229,13 @@ def detectHeatStress():
                 curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
 
                 if detected:
-                    # Save Data to nextjs server
-                    saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt, img_normal_cropped, img_thermal_cropped, img_thermal_cropped_raw, len(coords), img_thermal_cropped_info)
+                    
+                    overal_min_temp = sum(mins) / len(mins)
+                    overal_avg_temp = sum(avgs) / len(avgs)
+                    overal_max_temp = sum(maxs) / len(maxs)
+                    
+                    #call save function XD to save the heat stress event
+                    saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt, img_normal_cropped, img_thermal_cropped, img_thermal_cropped_raw, len(coords), img_thermal_cropped_info, overal_min_temp, overal_avg_temp, overal_max_temp)
                     with lock:
                         SYSTEM_STATE['status'] = 1
                     # Do actions bind on Heat Stress Detection
@@ -245,7 +250,7 @@ def detectHeatStress():
                 with lock:
                     SYSTEM_STATE['pig_count'] = 0
 
-def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_normal, croped_thermal, croped_thermal_raw, total_pig, sub_info):
+def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_normal, croped_thermal, croped_thermal_raw, total_pig, sub_info, o_min_temp, o_avg_temp, o_max_temp):
     try:
         path1 = f"../phsmachine_web/public/detection/Detection-{stmp}"
         path2 = f"../phsmachine_web/public/detection/Detection-{stmp}/Target"
@@ -260,6 +265,9 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
             "img_annotated": f"{server_path}/img_annotated.png",
             "img_thermal": f"{server_path}/img_thermal.png",
             "data": {
+                "min_temp" : o_min_temp,
+                "avg_temp" : o_avg_temp,
+                "max_temp" : o_max_temp,
                 "pig_count": total_pig,
                 "stressed_pig": len(croped_normal),
                 "breakdown": [],
