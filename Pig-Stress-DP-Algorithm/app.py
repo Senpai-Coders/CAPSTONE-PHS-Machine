@@ -155,7 +155,7 @@ def conv_img(img):
 
 def detectHeatStress():
     global IMG_NORMAL_ANNOTATED, PHS_CNN, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
-    while True and isPi:
+    while True and not isPi:
         loadDbConfig()
         if IMG_NORMAL is not None and IMG_THERMAL is not None:
             c_IMG_NORMAL = IMG_NORMAL
@@ -182,6 +182,10 @@ def detectHeatStress():
                 img_thermal_cropped = []
                 img_thermal_cropped_raw = []
                 img_thermal_cropped_info = []
+
+                mins = []
+                avgs = []
+                maxs = []
 
                 detected = False
                 
@@ -218,6 +222,9 @@ def detectHeatStress():
 
                     infoObj = { 'min_temp' : min_temp, 'avg_temp' : avg_temp, 'max_temp' : max_temp }
                     img_thermal_cropped_info.append(infoObj)
+                    mins.append(min_temp)
+                    avgs.append(avg_temp)
+                    maxs.append(max_temp)
 
                 curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
 
