@@ -1,6 +1,6 @@
-isPi = True
+isPi = False
 
-from datetime import datetime, timedelta 
+from datetime import datetime, timedelta
 from flask import Response, request
 from flask import Flask
 import threading
@@ -49,7 +49,6 @@ CAM_THERMAL=None
 CAM_NORMAL=None
 
 SYSTEM_STATE=None
-UPDATE_STAMP=None
 ACTION_STATE=None
 R_CONTROLLER=None
 EMERGENCY_STOP=False
@@ -83,26 +82,15 @@ def index():
 #     configs = list(DB_CONFIGS.find({'config_name' : 'system_state'}))
 #     return Response(mongoResToJson(configs), content_type='application/json'), 200
 
-
 @app.route("/getSystemState")
 def getSyState():
     global SYSTEM_STATE
     response = Response(mongoResToJson({ "state" : SYSTEM_STATE }), content_type='application/json' )
     return response, 200
 
-@app.route("/emergencyStop")
-def setEmergencyStop():
-    global EMERGENCY_STOP, SYSTEM_STATE
-    with lock:
-        EMERGENCY_STOP = True
-        SYSTEM_STATE['status'] = -1
-    response = Response(mongoResToJson({ "message" : "ok" }), content_type='application/json')
-    return response, 200
-
 @app.route("/getActionState")
 def getActionState():
     global SYSTEM_STATE
-
     response = Response(mongoResToJson({ "actions" : ACTION_STATE.toDict() }), content_type='application/json' )
     return response, 200
 
@@ -117,18 +105,8 @@ def setActionState():
 
 @app.route("/updateState")
 def setState():
-    global SYSTEM_STATE,R_CONTROLLER
-    # -2 Off
-    # -1 Disabled
-    # 0 Detecting
-    # 1 Resolving
-    # 2 Debugging
-    # 3 Connecting
+    global SYSTEM_STATE
     status = request.args.get('status')
-    if(int(status) == 2):
-        R_CONTROLLER.offAll()
-    elif int(status) == 0:
-        R_CONTROLLER.offAll()
     SYSTEM_STATE['status']=int(status)
     response = Response( mongoResToJson({"status":200, "message":"Ok "}) , content_type="application/json")
     return response, 200
@@ -172,23 +150,22 @@ def get_ip_address():
 	return ip_address
 
 def conv_img(img):
-    print('img conv type', type(img), img.shape)
-    print(img)
-    img = cv2. resize(img, (120, 120)) /255.
-    return np.array(img).reshape(-1, 120, 120, 1)
+    new_img = cv2.resize(img, 120,120)
+    return np.array(new_img).reshape(-1, 120, 120, 1)
 
 def detectHeatStress():
     global IMG_NORMAL_ANNOTATED, PHS_CNN, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
-    print('init detect heatstress', isPi)
     while True and isPi:
         loadDbConfig()
+
+        print('will detect', IMG_NORMAL is not Non, IMG_THERMAL is not None)
+
         if IMG_NORMAL is not None and IMG_THERMAL is not None:
             c_IMG_NORMAL = IMG_NORMAL
             c_IMG_THERMAL = IMG_THERMAL
             c_RAW_THERMAL = RAW_THERMAL
             c_Raw_Reshaped = np.reshape(c_RAW_THERMAL.copy(), (24,32))
             c_Raw_Reshaped = cv2.resize(c_Raw_Reshaped, (640, 480))
-            c_Raw_Reshaped = cv2.flip(c_Raw_Reshaped, 1)
 
             to_read = c_IMG_NORMAL.copy()
             
@@ -224,11 +201,10 @@ def detectHeatStress():
                     cpy_thrm_crop_raw = c_Raw_Reshaped[y1:y2, x1:x2]
 
                     # detection = CNN ( RAW THERMAL )
-                    converted_img = conv_img(cpy_thrm_crop_raw)
-                    identify_pig_stress = PHS_CNN.predict(converted_img)
+                    conv_img = conv_img(cpy_thrm_crop_raw)
+                    identify_pig_stress = PHS_CNN.predict(conv_img)
                     classes =  ['Heat Stressed', 'Normal']
-                    classification = classes[np.argmax(identify_pig_stress)]
-                    print('CLASSIFICATION : ', classification)
+                    classification = classes[np.argmax(res)]
                     if classification == classes[1]:
                         continue
                         
@@ -329,7 +305,7 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
 
             x+=1
 
-        # print(DATA_DICT)
+        print(DATA_DICT)
         
         print("Saving Real Rec")
         cv2.imwrite(f"{path1}/img_normal.png", normal)
@@ -343,28 +319,22 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
     except Exception as e:
         print(e)
 
-def activateJob(name, duration):
-    # TODO
-    x = datetime.now() + timedelta(seconds=3)
-    x += timedelta(seconds=3)
-
 def updateJobs():
-    global SYSTEM_STATE, R_CONTROLLER
+    global SYSTEM_STATE
 
     if EMERGENCY_STOP:
         SYSTEM_STATE['jobs'] = []
-        R_CONTROLLER.offAll()
 
     for idx, job in enumerate(SYSTEM_STATE['jobs']):
         endTime = jobs['end']
         curTime = datetime.now()
         if curTime >= curTime:
             print('end action')
-            R_CONTROLLER.toggleRelay(job['relay_name'],False)
+            R_CONTROLLER.toggleRelay(job['name'],False)
             SYSTEM_STATE['jobs'].pop(idx)
         else:
             print('on action ', job['name'])
-            R_CONTROLLER.toggleRelay(job['relay_name'],True)
+            R_CONTROLLER.toggleRelay(job['name'],True)
 
 
 def readCams():
@@ -380,8 +350,8 @@ def readCams():
             if current_frame is not None:
                 with lock:
                     IMG_NORMAL = current_frame
-        return
 
+    else: return
     while CAM_THERMAL is not None:
         current_frame=None
         thermal_frame=None
@@ -437,24 +407,17 @@ def gen_thermal():
 		yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
 def loadDbConfig():
-    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP
+    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE
     relays = list(DB_CONFIGS.find({ "category" : "relays" }))
     actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
-    updateStamp = DB_CONFIGS.find_one({"category" : "update", "config_name" : "update_stamp"})
     
-    newUpdateStamp = updateStamp['value'] 
-    hasNewUpdateStamp = False
     
-    if UPDATE_STAMP is None or UPDATE_STAMP != newUpdateStamp:
-        hasNewUpdateStamp = True
-        with lock:
-            UPDATE_STAMP = newUpdateStamp
-   
     if R_CONTROLLER is not None:
-        if (len(R_CONTROLLER.getAllRelays()) != len(relays) or hasNewUpdateStamp)  and isPi:
+        if len(R_CONTROLLER.getAllRelays()) != len(relays) and isPi:
             R_CONTROLLER.delRelays(relays)      
     else:
         R_CONTROLLER = r_controller(relays, True, isPi)
+        # R_CONTROLLER = None
 
     if len(ACTION_STATE.actions) != len(actions) and isPi:
         ACTION_STATE = a_controller(actions, ACTION_STATE.actions)

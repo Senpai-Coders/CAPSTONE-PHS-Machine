@@ -1,4 +1,5 @@
 from fnmatch import translate
+from .relay import relay
 
 class r_controller:    
     

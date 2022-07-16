@@ -15,6 +15,5 @@ def process(raw):
 
 img_thermal = process(thermal_data)
 
-print(img_thermal.shape )
+print(img_thermal )
 
-cv2.imwrite('test.png',img_thermal)
