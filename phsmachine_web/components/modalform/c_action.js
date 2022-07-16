@@ -18,6 +18,11 @@ const c_action = ( {onClose, components} ) => {
   const save = async() => { 
     try{
         setLoading(true)
+		if(target_relay.length === 0 || target_relay === ''){
+		  alert('no selected relay')
+		  setLoading(false)
+		  return;
+	    }
         const add = await API.post("/api/phs/config/actions", {
             mode:0, 
             config_name,
@@ -111,6 +116,7 @@ const c_action = ( {onClose, components} ) => {
             Target
           </label>
           <select placeholder="Choose AI that will handle this action" onChange={(e)=>{setTargetRelay(e.target.value)}} className="select select-bordered w-full max-w-xs">
+			     <option>Select Target Relay</option>
                 {
                     components.filter((rel,i)=> !rel.used ).map((rel, i) => <option key={i}>{rel.config_name}</option> )
                 }
@@ -121,6 +127,7 @@ const c_action = ( {onClose, components} ) => {
             Caller/AI
           </label>
           <select placeholder="Choose AI that will handle this action" onChange={(e)=>{setCaller(e.target.value)}} className="select select-bordered w-full max-w-xs">
+			    <option>Select Event</option>
                 <option>Heat Stress Detector</option>
                 <option>Pig Detector</option>
                 <option>Dark Scene Detector</option>

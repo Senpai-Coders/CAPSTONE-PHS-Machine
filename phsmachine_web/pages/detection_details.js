@@ -195,7 +195,7 @@ export default function _detection_details() {
               <div className="stat snap-center">
                 <div className="stat-figure text-primary">
                   <img src={`/pig.svg`} className="w-10 h-10" />
-                </div>
+		  </div>
                 <div className="stat-title">Identified Pig</div>
                 <div className="stat-value text-primary">
                   {detection.data.pig_count}
@@ -327,19 +327,23 @@ export default function _detection_details() {
                   <p>processed thermal</p>
                 </div>
                 <div className="mt-2 font-inter">
-                  <p className="text-lg">
-                    Min Temp:{" "}
-                    <span className="font-medium text-primary">34.4°C</span>{" "}
-                  </p>
-                  <p className="text-lg">
-                    Average Temp:{" "}
-                    <span className="font-medium text-primary">34.4°C</span>{" "}
-                    {"   "}{" "}
-                  </p>
-                  <p className="text-lg">
-                    Max Temp: {"   "}{" "}
-                    <span className="font-medium text-error">39.4°C</span>
-                  </p>
+				{ data.info ?
+					  <>
+							<p className="text-lg">
+							Min Temp:{" "}
+							<span className="font-medium text-primary">{data.info.min_temp}°C</span>{" "}
+						  </p>
+						  <p className="text-lg">
+							Average Temp:{" "}
+							<span className="font-medium text-primary">{data.info.avg_temp}°C</span>{" "}
+							{"   "}{" "}
+						  </p>
+						  <p className="text-lg">
+							Max Temp: {"   "}{" "}
+							<span className="font-medium text-error">{data.info.max_temp}°C</span>
+						  </p>
+					</> : <p className='text-xs opacity-80'> No Sub Info To Show </p>
+				}
                 </div>
               </div>
             ))}
