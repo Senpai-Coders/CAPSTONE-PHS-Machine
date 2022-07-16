@@ -100,7 +100,7 @@ def setEmergencyStop():
     return response, 200
 
 @app.route("/getActionState")
-def getActionState():
+def getActiGonState():
     global SYSTEM_STATE
 
     response = Response(mongoResToJson({ "actions" : ACTION_STATE.toDict() }), content_type='application/json' )
@@ -172,10 +172,19 @@ def get_ip_address():
 	return ip_address
 
 def conv_img(img):
-    print('img conv type', type(img), img.shape)
-    print(img)
-    img = cv2. resize(img, (120, 120)) /255.
+    # rescale to big to ensure enough pixel data
+    height, width = img.shape[:2]
+    img = cv2.resize(img, (640, 480), interpolation = cv2.INTER_CUBIC)
+    img = cv2.resize(img, (120, 120)) /255.
     return np.array(img).reshape(-1, 120, 120, 1)
+
+def hasNoPendingHeatStressJob():
+    global SYSTEM_STATE
+    res = True
+    for idx, job in enumerate(SYSTEM_STATE['jobs']):
+        if job['caller'] == 'Heat Stress Detector':
+            return False
+    return res
 
 def detectHeatStress():
     global IMG_NORMAL_ANNOTATED, PHS_CNN, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
@@ -190,8 +199,17 @@ def detectHeatStress():
             c_Raw_Reshaped = cv2.resize(c_Raw_Reshaped, (640, 480))
             c_Raw_Reshaped = cv2.flip(c_Raw_Reshaped, 1)
 
+            curACTIONS = []
+
             to_read = c_IMG_NORMAL.copy()
+
+            # DETECT IF SCENE IS DARK
+            # CALL ALL ACTION THAT IS BIND TO DARK SCENE EVENT
+            Dark_Scene_Detector = isDarkScene(to_read) 
+            if Dark_Scene_Detector:
+                curACTIONS = activateCategory(curACTIONS, "Dark Scene Detector")
             
+            # FEEDING IMAGE FOR FINDING THE PIG LOCATION ON PICTURE USING YOLOV5s 
             print("Detecting Pig")
             detect_pig_head = Yolov5_PHD(to_read) 
             print("Done Detect")
@@ -200,6 +218,10 @@ def detectHeatStress():
             coords = detect_pig_head.pandas().xyxy[0].to_dict(orient="records")
         
             if len(coords) > 0:
+                # CALL ALL ACTIONS FOR PIG DETECTOR
+                curACTIONS = activateCategory(curACTIONS, "Pig Detector")
+                print(f"PHS Detect detected {len(coords)} pigs🐖")
+
                 detect_annotation = np.squeeze(detect_pig_head.render())
                 
                 print("Saving Detection", len(coords))
@@ -216,6 +238,9 @@ def detectHeatStress():
                 detected = False
                 
                 for result in coords:
+                    if not hasNoPendingHeatStressJob():
+                        break
+
                     x1 = int(result['xmin'])
                     y1 = int(result['ymin'])
                     x2 = int(result['xmax'])
@@ -229,11 +254,16 @@ def detectHeatStress():
                     classes =  ['Heat Stressed', 'Normal']
                     classification = classes[np.argmax(identify_pig_stress)]
                     print('CLASSIFICATION : ', classification)
-                    if classification == classes[1]:
+                    
+                    # TODO # NOTE Remove 'np.max <=39.0' On Final Training of PHS Detector
+                    if classification == classes[1] and np.max(cpy_thrm_crop_raw) <= 39.0:
                         continue
                         
                     detected = True
                     # If it does classified stressed then set as detected to true
+                    # also call the action bind to HEAT STRESS DETECTOR  
+                    curACTIONS = activateCategory(curACTIONS, "Heat Stress Detector")
+                    print("PHS Detected 🔥  Heat Stress on pig")
 
                     cpy_crop_normal = c_IMG_NORMAL[y1 : y2, x1 : x2]
                     cpy_thrm_crop = c_IMG_THERMAL[y1 : y2, x1 : x2]
@@ -256,16 +286,14 @@ def detectHeatStress():
                 curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
 
                 if detected:
-                    
                     overal_min_temp = sum(mins) / len(mins)
                     overal_avg_temp = sum(avgs) / len(avgs)
                     overal_max_temp = sum(maxs) / len(maxs)
                     
                     #call save function XD to save the heat stress event
-                    saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt, img_normal_cropped, img_thermal_cropped, img_thermal_cropped_raw, len(coords), img_thermal_cropped_info, overal_min_temp, overal_avg_temp, overal_max_temp)
+                    saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt, img_normal_cropped, img_thermal_cropped, img_thermal_cropped_raw, len(coords), img_thermal_cropped_info, overal_min_temp, overal_avg_temp, overal_max_temp, curACTIONS)
                     with lock:
                         SYSTEM_STATE['status'] = 1
-                    # Do actions bind on Heat Stress Detection
                     if not EMERGENCY_STOP:
                         print('do action here later')
 
@@ -277,7 +305,7 @@ def detectHeatStress():
                 with lock:
                     SYSTEM_STATE['pig_count'] = 0
 
-def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_normal, croped_thermal, croped_thermal_raw, total_pig, sub_info, o_min_temp, o_avg_temp, o_max_temp):
+def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_normal, croped_thermal, croped_thermal_raw, total_pig, sub_info, o_min_temp, o_avg_temp, o_max_temp, Actions_did):
     try:
         path1 = f"../phsmachine_web/public/detection/Detection-{stmp}"
         path2 = f"../phsmachine_web/public/detection/Detection-{stmp}/Target"
@@ -299,16 +327,7 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
                 "stressed_pig": len(croped_normal),
                 "breakdown": [],
             },
-            "actions": [
-                {
-                    "action": "Mist",
-                    "duration": 10,
-                },
-                {
-                    "action": "Fan",
-                    "duration": 20,
-                },
-            ]
+            "actions": Actions_did
         }
 
         x = 1
@@ -317,20 +336,22 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
             cv2.imwrite(f"{path2}/pig-{x}.png", croped_normal[i])
             cv2.imwrite(f"{path2}/pig-thermal-processed{x}.png", croped_thermal[i])
             cv2.imwrite(f"{path2}/pig-thermal-unprocessed{x}.png", croped_thermal_raw[i])
+            
+            rdata = croped_thermal_raw[i]
+            rdata = cv2.resize(rdata, (24,32))
 
             DATA_DICT['data']['breakdown'].append(
                 {
                     "normal_thumb": f"{server_path}/Target/pig-{x}.png",
                     "thermal_thumb": f"{server_path}/Target/pig-thermal-processed{x}.png",
                     "thermal_raw_thumb": f"{server_path}/Target/pig-thermal-unprocessed{x}.png",
-                    "info" : sub_info
+                    "info" : sub_info[i],
+                    "raw" : rdata.tolist()
                 }
             )
 
             x+=1
 
-        # print(DATA_DICT)
-        
         print("Saving Real Rec")
         cv2.imwrite(f"{path1}/img_normal.png", normal)
         cv2.imwrite(f"{path1}/img_annotated.png", normal_annotated)
@@ -343,29 +364,93 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
     except Exception as e:
         print(e)
 
-def activateJob(name, duration):
-    # TODO
-    x = datetime.now() + timedelta(seconds=3)
-    x += timedelta(seconds=3)
+
+# This is for testing only to test if activate action is working
+@app.route("/DummyActivateCategory", methods=['POST'])
+def fakeActivate():
+    global ACTION_STATE
+    ReqBod = request.get_json(force=True)
+    callerName = ReqBod['caller']
+    activateCategory([ ], callerName)
+
+    return "ok",200
+
+
+def activateCategory(old_activate, caller):
+    global ACTION_STATE, SYSTEM_STATE
+
+    if SYSTEM_STATE['status'] == 2:
+        return
+
+    actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
+    
+    new_activated = []
+
+    for action in actions:
+        act_caller = action['value']['caller']
+        target_relay = action['value']['target_relay']
+        duration = int(action['value']['duration'])
+        action_name = action['config_name']
+
+        if act_caller == caller:
+            activated = activateJob(target_relay, duration, action_name, caller)
+            ACTION_STATE.toggle(action_name, True)
+            new_activated.append(activated)
+
+    return old_activate + new_activated
+
+def activateJob(name, duration, action_name, caller):
+    global SYSTEM_STATE
+
+    endTime = datetime.now() + timedelta(seconds=duration)
+
+    newJob = {
+            "action_name" : action_name,
+            "relay_name" : name,
+            "caller" : caller,
+            "duration" : duration,
+            "end" : endTime
+            }
+    SYSTEM_STATE['jobs'].append(newJob)
+    return newJob
 
 def updateJobs():
-    global SYSTEM_STATE, R_CONTROLLER
+    global SYSTEM_STATE, R_CONTROLLER, ACTION_STATE
 
-    if EMERGENCY_STOP:
+    if EMERGENCY_STOP or SYSTEM_STATE['status'] == 2:
         SYSTEM_STATE['jobs'] = []
         R_CONTROLLER.offAll()
+        ACTION_STATE.offAll()
+    
+    print("*********** PHS ACTIONS JOBS *****************\n")
+    print(SYSTEM_STATE['jobs'])
+    print("\n**********************************************")
 
     for idx, job in enumerate(SYSTEM_STATE['jobs']):
-        endTime = jobs['end']
+        endTime = job['end']
         curTime = datetime.now()
-        if curTime >= curTime:
-            print('end action')
+        if curTime >= endTime:
+            print('PHS JOB : ACTION ENDED ')
             R_CONTROLLER.toggleRelay(job['relay_name'],False)
             SYSTEM_STATE['jobs'].pop(idx)
+            ACTION_STATE.toggle(job['action_name'], False)
         else:
-            print('on action ', job['name'])
+            print('PHS JOB : ACTIVE ACTION/JOB ', job['relay_name'])
             R_CONTROLLER.toggleRelay(job['relay_name'],True)
 
+def isDarkScene(image):
+    dim=20
+    thresh=0.3
+
+    image = cv2.resize(image, (dim, dim))
+    L, A, B = cv2.split(cv2.cvtColor(image, cv2.COLOR_BGR2LAB))
+    L = L/np.max(L)
+    res = np.mean(L) < thresh
+    if res:
+        print(f"PHS Camera Seems seing very 🌃 dark scene.{np.mean(L)} gastug di ako makakita 😣")
+    else:
+        print(f"PHS Camera seems seing👀 fine.{np.mean(L)}")
+    return res
 
 def readCams():
     global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, SYSTEM_STATE, isPi
@@ -528,7 +613,11 @@ def start_server():
     ip=get_ip_address()
     port=8000
     print(f'Server can be found at {ip}:{port}')
-    app.run(host=ip, port=port, debug=True, threaded=True, use_reloader=False)
+    
+    log = logging.getLogger('werkzeug')
+    log.disabled = True
+
+    app.run(host=ip, port=port, debug=False, threaded=True, use_reloader=False)
 
 @atexit.register
 def goodbye():

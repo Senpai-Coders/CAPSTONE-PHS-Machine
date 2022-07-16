@@ -31,6 +31,10 @@ class a_controller:
             if A.config_name == config_name:
                 A.toggle(state)
 
+    def offAll(self):
+        for A in self.actions:
+            A.toggle(False)
+
     def toDict(self):
         actions = []
         for A in self.actions:
