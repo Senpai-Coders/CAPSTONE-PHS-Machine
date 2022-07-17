@@ -385,7 +385,7 @@ def activateCategory(old_activate, caller):
     actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
     
     new_activated = []
-
+    
     for action in actions:
         act_caller = action['value']['caller']
         target_relay = action['value']['target_relay']
@@ -426,9 +426,15 @@ def updateJobs():
     print(SYSTEM_STATE['jobs'])
     print("\n**********************************************")
 
+    heatStressResolveJobs = 0
+
     for idx, job in enumerate(SYSTEM_STATE['jobs']):
         endTime = job['end']
         curTime = datetime.now()
+        
+        if job['caller'] == 'Heat Stress Detector':
+            heatStressResolveJobs += 1
+
         if curTime >= endTime:
             print('PHS JOB : ACTION ENDED ')
             R_CONTROLLER.toggleRelay(job['relay_name'],False)
@@ -437,6 +443,10 @@ def updateJobs():
         else:
             print('PHS JOB : ACTIVE ACTION/JOB ', job['relay_name'])
             R_CONTROLLER.toggleRelay(job['relay_name'],True)
+    if heatStressResolveJobs <= 0:
+        curSysStatus = SYSTEM_STATE['status']
+        if curSysStatus not in [ -1, -2, 2 ]:
+            SYSTEM_STATE['status'] = 0
 
 def isDarkScene(image):
     dim=20
