@@ -10,6 +10,10 @@ export const loadTheme = () => {
     document.getElementsByTagName('html')[0].setAttribute('data-theme', savedTheme)
 }
 
+export const tempParser = (C) => {
+  return C.toFixed(2)
+}
+
 export const CtoF = (C) => {
   var cTemp = C;
   var cToFahr = cTemp * 9 / 5 + 32;

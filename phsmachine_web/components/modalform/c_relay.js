@@ -3,8 +3,6 @@ import { useState } from "react";
 import { GoCircuitBoard } from "react-icons/go";
 import { BsFillSaveFill } from "react-icons/bs"
 
-
-
 const c_relay = ( {onClose} ) => {
   const [config_name, setConfig_name] = useState("");
   const [description, setDescription] = useState("");
@@ -12,6 +10,7 @@ const c_relay = ( {onClose} ) => {
 
   const [loading, setLoading] = useState(false)
   const [err, setErr] = useState("");
+  const [availablePins, setAvailablePins] = useState([4,14,15,17,18,27,22,23,24,10,9,25,11,8,7,0,1,5,6,12,13,19,16,26,20,21])
 
   const save = async() => { 
     try{
@@ -94,6 +93,8 @@ const c_relay = ( {onClose} ) => {
             required
           />
         </div>
+
+		{/*
         <div className="mb-6">
           <label className="block mb-2 text-sm font-medium  dark:text-gray-300">
             GPIO Pin
@@ -111,10 +112,33 @@ const c_relay = ( {onClose} ) => {
             }`}
             required
           />
+        </div>*/}
+
+
+		<div className="mb-6">
+          <label className="block mb-2 text-sm font-medium  dark:text-gray-300">
+            Choose Output (GPIO Pin)
+          </label>
+          <select placeholder="Choose AI that will handle this action" onChange={(e)=>{
+		  setErr("");
+		  setGPIO_PIN(e.target.value)}} 
+		  className="select select-bordered w-full max-w-xs">
+			    <option>Choose</option>
+				{/** USED : 2, 3
+				  USABLE : 4, 14, 15, 17, 18, 27, 22, 23, 24, 10, 9, 25, 11, 8, 7, 0, 1, 5, 6, 12, 13, 19, 16, 26, 20, 21
+				*/}
+				{
+	  				availablePins.map((pin, idx)=>
+					  <option key={idx}>{pin}</option>
+					)
+ 				}
+          </select>
         </div>
+
         <p className="text-center text-error font-inter text-sm">{err}</p>
       </div>
-      
+     
+
       <div className="modal-action">
         <label  onClick={()=>{ setLoading(false); onClose() }} className="btn">
           Cancel 

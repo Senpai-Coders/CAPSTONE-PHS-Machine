@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { dateToWord } from "../helpers";
+import { dateToWord, tempParser } from "../helpers";
 
 import { RiCloseLine } from "react-icons/ri";
 import { FaTemperatureHigh, FaTemperatureLow } from "react-icons/fa";
@@ -226,7 +226,7 @@ export default function _detection_details() {
                   <FaTemperatureLow className="w-8 h-8" />
                 </div>
                 <div className="stat-title">Minimum Temp</div>
-                <div className="stat-value ">{37} C</div>
+                <div className="stat-value ">{tempParser(detection.data.min_temp)} C</div>
                 <div className="stat-desc"></div>
               </div>
 
@@ -235,7 +235,7 @@ export default function _detection_details() {
                   <FaTemperatureLow className="w-8 h-8" />
                 </div>
                 <div className="stat-title">Average Temp</div>
-                <div className="stat-value ">{37} C</div>
+                <div className="stat-value ">{tempParser(detection.data.avg_temp)} C</div>
                 <div className="stat-desc"></div>
               </div>
 
@@ -244,7 +244,7 @@ export default function _detection_details() {
                   <FaTemperatureHigh className="w-8 h-8" />
                 </div>
                 <div className="stat-title">Maximum Temp</div>
-                <div className="stat-value ">{37} C</div>
+                <div className="stat-value ">{tempParser(detection.data.max_temp)} C</div>
                 <div className="stat-desc"></div>
               </div>
             </div>
@@ -331,16 +331,16 @@ export default function _detection_details() {
 					  <>
 							<p className="text-lg">
 							Min Temp:{" "}
-							<span className="font-medium text-primary">{data.info.min_temp}°C</span>{" "}
+							<span className="font-medium text-primary">{tempParser(data.info.min_temp)} °C</span>{" "}
 						  </p>
 						  <p className="text-lg">
 							Average Temp:{" "}
-							<span className="font-medium text-primary">{data.info.avg_temp}°C</span>{" "}
+							<span className="font-medium text-primary">{tempParser(data.info.avg_temp)} °C</span>{" "}
 							{"   "}{" "}
 						  </p>
 						  <p className="text-lg">
 							Max Temp: {"   "}{" "}
-							<span className="font-medium text-error">{data.info.max_temp}°C</span>
+							<span className="font-medium text-error">{tempParser(data.info.max_temp)} °C</span>
 						  </p>
 					</> : <p className='text-xs opacity-80'> No Sub Info To Show </p>
 				}
