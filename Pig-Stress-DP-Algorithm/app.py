@@ -244,7 +244,7 @@ def detectHeatStress():
                     y1 = int(result['ymin'])
                     x2 = int(result['xmax'])
                     y2 = int(result['ymax'])
-                    print('🐖 pig at coord :',x1,y1,x2,y2)
+                    print('🐷 pig at coord :',x1,y1,x2,y2, end='')
                     cpy_thrm_crop_raw = c_Raw_Reshaped[y1:y2, x1:x2]
 
                     # detection = CNN ( RAW THERMAL )
@@ -252,7 +252,7 @@ def detectHeatStress():
                     identify_pig_stress = PHS_CNN.predict(converted_img)
                     classes =  ['Heat Stressed', 'Normal']
                     classification = classes[np.argmax(identify_pig_stress)]
-                    print('CLASSIFICATION : ', classification)
+                    print(' - Classified as ', classification)
                     
                     # TODO # NOTE Remove 'np.max <=39.0' On Final Training of PHS Detector
                     if classification == classes[1] and np.max(cpy_thrm_crop_raw) <= 39.0:
@@ -508,6 +508,7 @@ def gen_annotate():
 				continue
 		yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
+
 def gen_normal():
 	global IMG_NORMAL, lock
 	while True:
@@ -565,6 +566,9 @@ def process(raw):
 def start_server():
     global Yolov5_PHD, PHS_CNN, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL
     print("⏳ Starting PHS ")
+
+    IMG_NORMAL_ANNOTATED = cv2.imread('misc/annotation_init.jpg')
+
     SYSTEM_STATE = {
         "status" : 0,
         "active_actions" : "None",
