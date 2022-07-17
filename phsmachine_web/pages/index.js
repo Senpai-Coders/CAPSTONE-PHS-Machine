@@ -2,7 +2,7 @@ import { RiZzzFill } from "react-icons/ri";
 import { AiOutlineInfoCircle, AiOutlineWarning } from "react-icons/ai";
 
 import Layout from "../components/layout";
-import Cameras from "../components/layout_camera";
+import Cameras from "../components/layout_camera_v2";
 import SystemState from "../components/systemState";
 import Head from "next/head";
 import { useEffect, useState } from "react";
@@ -86,6 +86,7 @@ export default function Home() {
       <h1 className="text-xl card-title font-lato font-semibold mb-2">
         Detection
       </h1>
+      <Cameras canStream={!isDown || SYSSTATE.status !== -2} />
       <SystemState ACTIONSTATE={ACTIONSTATE} SYSSTATE={SYSSTATE} />
       <div className="mt-8 space-y-2">
         <AnimatePresence>
@@ -143,8 +144,6 @@ export default function Home() {
         </AnimatePresence>
       </div>
       <div className="divider my-8">Realtime View</div>
-      <Cameras canStream={isDown || SYSSTATE.status === -2} />
-      
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, Fragment, useEffect } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 
 import { HiOutlineSelector } from "react-icons/hi";
@@ -7,6 +7,7 @@ import { AiOutlineCheck } from "react-icons/ai";
 const PI_IP = process.env.PI_IP
 
 const normal = ({ canStream }) => {
+       // stream_url: `http://${PI_IP}:8000/annotate_feed`,
   const [camstat, setCamStat] = useState(false);
 
   useEffect(()=>{
@@ -20,7 +21,7 @@ const normal = ({ canStream }) => {
           <>
             <img
               className="rounded-lg w-full aspect-video"
-              src={`http://${PI_IP}:8000/thermal_feed`}
+              src={`http://${PI_IP}:8000/annotate_feed`}
             ></img>
           </>
         ) : (

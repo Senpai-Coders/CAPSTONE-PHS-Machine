@@ -118,9 +118,9 @@ const sidebar = () => {
                 } h-7 w-7 text-primary cursor-pointer duration-300`}
               />
             ))}
-			<GiStopSign
+			{/*<GiStopSign
                 className={`opacity-90 h-7 w-7 text-error cursor-pointer duration-300`}
-              />
+              />*/}
           </div>
         </div>
 

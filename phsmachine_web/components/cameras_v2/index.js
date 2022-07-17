@@ -1,5 +1,5 @@
 import Camera from "./normal"
 import Thermal from "./thermal"
+import Annotated from "./annotated"
 
-
-export { Camera , Thermal }
+export { Camera , Annotated, Thermal }
