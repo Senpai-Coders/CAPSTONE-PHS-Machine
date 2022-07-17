@@ -117,7 +117,7 @@ def setActionState():
 
 @app.route("/updateState")
 def setState():
-    global SYSTEM_STATE,R_CONTROLLER
+    global SYSTEM_STATE,R_CONTROLLER, ACTION_STATE
     # -2 Off
     # -1 Disabled
     # 0 Detecting
@@ -126,7 +126,9 @@ def setState():
     # 3 Connecting
     status = request.args.get('status')
     if(int(status) == 2):
+        SYSTEM_STATE['jobs'] = []
         R_CONTROLLER.offAll()
+        ACTION_STATE.offAll()
     elif int(status) == 0:
         R_CONTROLLER.offAll()
     SYSTEM_STATE['status']=int(status)
@@ -210,22 +212,20 @@ def detectHeatStress():
                 curACTIONS = activateCategory(curACTIONS, "Dark Scene Detector")
             
             # FEEDING IMAGE FOR FINDING THE PIG LOCATION ON PICTURE USING YOLOV5s 
-            print("Detecting Pig")
+            print("🟠 YoloV5 Detecting Pig 🐷")
             detect_pig_head = Yolov5_PHD(to_read) 
-            print("Done Detect")
-            print("Returned Bbox", detect_pig_head)
+            print("🟢 YoloV5 Detection Complete")
+            print("🗃  Returned Bbox", detect_pig_head)
 
             coords = detect_pig_head.pandas().xyxy[0].to_dict(orient="records")
         
             if len(coords) > 0:
                 # CALL ALL ACTIONS FOR PIG DETECTOR
                 curACTIONS = activateCategory(curACTIONS, "Pig Detector")
-                print(f"PHS Detect detected {len(coords)} pigs🐖")
+                print(f"🐖 PHS Detect detected {len(coords)} pigs")
 
                 detect_annotation = np.squeeze(detect_pig_head.render())
                 
-                print("Saving Detection", len(coords))
-
                 img_normal_cropped = []
                 img_thermal_cropped = []
                 img_thermal_cropped_raw = []
@@ -245,7 +245,7 @@ def detectHeatStress():
                     y1 = int(result['ymin'])
                     x2 = int(result['xmax'])
                     y2 = int(result['ymax'])
-                    print('pig at coord :',x1,y1,x2,y2)
+                    print('🐖 pig at coord :',x1,y1,x2,y2)
                     cpy_thrm_crop_raw = c_Raw_Reshaped[y1:y2, x1:x2]
 
                     # detection = CNN ( RAW THERMAL )
@@ -263,7 +263,7 @@ def detectHeatStress():
                     # If it does classified stressed then set as detected to true
                     # also call the action bind to HEAT STRESS DETECTOR  
                     curACTIONS = activateCategory(curACTIONS, "Heat Stress Detector")
-                    print("PHS Detected 🔥  Heat Stress on pig")
+                    print("Detected 🔥 Heat Stress on pig")
 
                     cpy_crop_normal = c_IMG_NORMAL[y1 : y2, x1 : x2]
                     cpy_thrm_crop = c_IMG_THERMAL[y1 : y2, x1 : x2]
@@ -294,13 +294,9 @@ def detectHeatStress():
                     saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt, img_normal_cropped, img_thermal_cropped, img_thermal_cropped_raw, len(coords), img_thermal_cropped_info, overal_min_temp, overal_avg_temp, overal_max_temp, curACTIONS)
                     with lock:
                         SYSTEM_STATE['status'] = 1
-                    if not EMERGENCY_STOP:
-                        print('do action here later')
-
                 with lock:
                     IMG_NORMAL_ANNOTATED = detect_annotation
                     SYSTEM_STATE['pig_count'] = len(coords)
-
             else:
                 with lock:
                     SYSTEM_STATE['pig_count'] = 0
@@ -331,8 +327,10 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
         }
 
         x = 1
-        print("RANGE", len(croped_normal))
+
+        print(f"💾 Writing {len(croped_norlmal)} Sub Detect Pig Data : ", end='')
         for i in range(len(croped_normal)):
+            print(".", end='')
             cv2.imwrite(f"{path2}/pig-{x}.png", croped_normal[i])
             cv2.imwrite(f"{path2}/pig-thermal-processed{x}.png", croped_thermal[i])
             cv2.imwrite(f"{path2}/pig-thermal-unprocessed{x}.png", croped_thermal_raw[i])
@@ -352,7 +350,7 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
 
             x+=1
 
-        print("Saving Real Rec")
+        print("💾 Writing Master Images")
         cv2.imwrite(f"{path1}/img_normal.png", normal)
         cv2.imwrite(f"{path1}/img_annotated.png", normal_annotated)
         cv2.imwrite(f"{path1}/img_thermal.png", thermal)
@@ -360,9 +358,8 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
         DB_DETECTIONS.insert_one( DATA_DICT )
 
         p = pickle.dump( raw_thermal, open(f'../phsmachine_web/public/detection/Detection-{stmp}/raw_thermal.pkl', 'wb'))
-        print("SAVED")
-    except Exception as e:
-        print(e)
+        print("✅ Done Saving Event Data 👌")
+    except Exception as e: print("🚩 Can't Save cuz of this err 👉 ",e)
 
 
 # This is for testing only to test if activate action is working
@@ -401,7 +398,7 @@ def activateCategory(old_activate, caller):
 
 def activateJob(name, duration, action_name, caller):
     global SYSTEM_STATE
-
+    
     endTime = datetime.now() + timedelta(seconds=duration)
 
     newJob = {
@@ -411,20 +408,21 @@ def activateJob(name, duration, action_name, caller):
             "duration" : duration,
             "end" : endTime
             }
+    
+    if SYSTEM_STATE['status'] == 2: return newJob
+
     SYSTEM_STATE['jobs'].append(newJob)
     return newJob
 
 def updateJobs():
     global SYSTEM_STATE, R_CONTROLLER, ACTION_STATE
-
-    if EMERGENCY_STOP or SYSTEM_STATE['status'] == 2:
+     
+    if EMERGENCY_STOP:
         SYSTEM_STATE['jobs'] = []
         R_CONTROLLER.offAll()
         ACTION_STATE.offAll()
     
-    print("*********** PHS ACTIONS JOBS *****************\n")
-    print(SYSTEM_STATE['jobs'])
-    print("\n**********************************************")
+    print(f"*********** 🔼 PHS ACTIONS HAS {len(SYSTEM_STATE['jobs'])} JOBS 🔼 *****************\n")
 
     heatStressResolveJobs = 0
 
@@ -436,13 +434,14 @@ def updateJobs():
             heatStressResolveJobs += 1
 
         if curTime >= endTime:
-            print('PHS JOB : ACTION ENDED ')
+            print('PHS JOB 🔶 : ✅ ACTION ENDED :', end='')
             R_CONTROLLER.toggleRelay(job['relay_name'],False)
             SYSTEM_STATE['jobs'].pop(idx)
             ACTION_STATE.toggle(job['action_name'], False)
         else:
-            print('PHS JOB : ACTIVE ACTION/JOB ', job['relay_name'])
+            print('PHS JOB 🔶 : ⚡ ACTIVE ACTION/JOB ', end='')
             R_CONTROLLER.toggleRelay(job['relay_name'],True)
+            ACTION_STATE.toggle(job['action_name'], True)
     if heatStressResolveJobs <= 0:
         curSysStatus = SYSTEM_STATE['status']
         if curSysStatus not in [ -1, -2, 2 ]:
@@ -457,9 +456,9 @@ def isDarkScene(image):
     L = L/np.max(L)
     res = np.mean(L) < thresh
     if res:
-        print(f"PHS Camera Seems seing very 🌃 dark scene.{np.mean(L)} gastug di ako makakita 😣")
+        print(f"📹 Camera Seems seing very 🌃 dark scene.{np.mean(L)} gastug di ako makakita 😣")
     else:
-        print(f"PHS Camera seems seing👀 fine.{np.mean(L)}")
+        print(f"📹 Camera seems seing👀 fine.{np.mean(L)}")
     return res
 
 def readCams():
@@ -561,7 +560,7 @@ def process(raw):
         raw.shape = (24,32)
         raw = cv2.flip(raw,1)
         return raw
-    except Exception as e: print("Err",e)
+    except Exception as e: print("🚩 Can't Processs this raw thermal",e)
         
 def start_server():
     global Yolov5_PHD, PHS_CNN, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL

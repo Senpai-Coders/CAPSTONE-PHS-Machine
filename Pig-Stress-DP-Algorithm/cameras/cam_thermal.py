@@ -67,7 +67,7 @@ class cam_therm:
                 self.PROCESSED_THERMAL = cv2.resize(self.PROCESSED_THERMAL, (640,480), interpolation=self.INTERPOLS[self.INTERPOL])
             self.PROCESSED_THERMAL = cv2.flip(self.PROCESSED_THERMAL, 1)
         except Exception:
-            print("Err")
+            print("🚩 Err : Thermal Cam 🌡📹")
 
     def UPDATE(self):
         self.READ_RAW_MLX_THERMAL()
@@ -90,7 +90,7 @@ class cam_therm:
                 return ORIGINAL, RAW, PROCESSED
             except RuntimeError as e:
                 if e.message == 'Too many retries':
-                    print("i2c speed err")
+                    print("🚩 Err : i2c speed error")
                     continue
                 raise
 
