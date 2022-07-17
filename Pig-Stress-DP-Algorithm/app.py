@@ -190,7 +190,6 @@ def hasNoPendingHeatStressJob():
 
 def detectHeatStress():
     global IMG_NORMAL_ANNOTATED, PHS_CNN, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
-    print('init detect heatstress', isPi)
     while True and isPi:
         loadDbConfig()
         if IMG_NORMAL is not None and IMG_THERMAL is not None:
@@ -300,6 +299,8 @@ def detectHeatStress():
             else:
                 with lock:
                     SYSTEM_STATE['pig_count'] = 0
+        else:
+            time.sleep(4.5)
 
 def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_normal, croped_thermal, croped_thermal_raw, total_pig, sub_info, o_min_temp, o_avg_temp, o_max_temp, Actions_did):
     try:
@@ -463,7 +464,6 @@ def isDarkScene(image):
 
 def readCams():
     global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, SYSTEM_STATE, isPi
-    print('init thread readcams', CAM_THERMAL, CAM_NORMAL)    
     if not isPi:
         while CAM_NORMAL is not None:
             current_frame = None
@@ -564,7 +564,7 @@ def process(raw):
         
 def start_server():
     global Yolov5_PHD, PHS_CNN, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL
-
+    print("⏳ Starting PHS ")
     SYSTEM_STATE = {
         "status" : 0,
         "active_actions" : "None",
@@ -588,11 +588,13 @@ def start_server():
         IMG_NORMAL = cv2.imread('dummy_data/img_normal.png')
 
     ACTION_STATE = a_controller((),())
-
+    
+    print("⏳ Pulling Configs From DB")
     loadDbConfig()
 
     RAW_THERMAL = np.zeros((24*32,))        
     try:
+        print("⏳ Loading Yolo V5 ")
         Yolov5_PHD = torch.hub.load(
                 YOLO_DIR,
                 'custom',
@@ -601,27 +603,28 @@ def start_server():
                 device = 'cpu',
                 force_reload=True
             )
-        print("done loading yolo")
+        print("✅ Done loading yolo")
     except Exception as e:
         print("ERROR PHS YOLO V5",e)
-
-    print("Loading PHS Heat Stress CNN..")
+    print("⏳ Loading PHS Heat Stress CNN")
 
     PHS_CNN = tf.keras.models.load_model(os.path.join('models','mai_Net.h5'))
-
-    print("Loaded PHS Heat Stress CNN!")
+    
+    print("✅ Loaded PHS Heat Stress CNN!")
 
     camThread = threading.Thread(target=readCams)
     camThread.daemon = True
     camThread.start()
+    print("🧵 Init Thread Read Cameras")
 
     detectThread = threading.Thread(target=detectHeatStress)
     detectThread.daemon = True
     detectThread.start()
+    print("🧵 Init Thread Heat Stress Detection")
 
     ip=get_ip_address()
     port=8000
-    print(f'Server can be found at {ip}:{port}')
+    print(f'📍 Server can be found at http://{ip}:{port} or http://localhost:{port}')
     
     log = logging.getLogger('werkzeug')
     log.disabled = True
@@ -632,11 +635,10 @@ def start_server():
 def goodbye():
     global R_CONTROLLER
     print("\n")
-    print("---PHS STATE OFF---")
-    print("Setting state as Off")
-    print("Closing Relays")
+    print("⏾ PHS Turning OFF")
     if isPi:
         R_CONTROLLER.offAll()
+    print("💤 Good Bye ....")
 
 if __name__ == '__main__':
 	start_server()
