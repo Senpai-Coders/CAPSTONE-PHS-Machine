@@ -2,7 +2,7 @@ import Layout from "../components/layout";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 
-import { API } from "../helpers";
+import { API, tempParser } from "../helpers";
 import axios from "axios";
 
 const Events = () => {
@@ -59,16 +59,16 @@ const Events = () => {
                 </p>
                 <p className="text-lg">
                   Min Temp:{" "}
-                  <span className="font-medium text-primary">34.4°C</span>{" "}
+                  <span className="font-medium text-primary">{tempParser(record.data.min_temp)}{" "}°C</span>{" "}
                 </p>
                 <p className="text-lg">
                   Average Temp:{" "}
-                  <span className="font-medium text-primary">34.4°C</span>{" "}
+                  <span className="font-medium text-primary">{tempParser(record.data.avg_temp)}{" "}°°C</span>{" "}
                   {"   "}{" "}
                 </p>
                 <p className="text-lg">
                   Max Temp: {"   "}{" "}
-                  <span className="font-medium text-error">39.4°C</span>
+                  <span className="font-medium text-error">{tempParser(record.data.max_temp)}°C</span>
                 </p>
                 <p className="font-bold text-lg">
                   <span className="text-warning">
