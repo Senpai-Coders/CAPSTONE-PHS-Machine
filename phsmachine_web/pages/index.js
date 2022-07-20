@@ -14,7 +14,8 @@ import {
   SystemStateBlock,
   ThermalReadingBlock,
   ActionBlock,
-  QuickControlsBlock
+  QuickControlsBlock,
+  PhsStorageBlock
 } from "../components/Blocks";
 
 export default function Home() {
@@ -121,6 +122,9 @@ export default function Home() {
 
               {/** THERMAL READING BLOCK */}
               <ThermalReadingBlock SYSSTATE={SYSSTATE} />
+
+              {/** Server Storage Status */}
+              <PhsStorageBlock />
             </div>
 
             {/** COL 2 */}
@@ -169,7 +173,6 @@ export default function Home() {
             <div class="w-full sm:w-1/2 xl:w-1/5">
               {/** QUICK CONTROLS */}
               <QuickControlsBlock />
-
             </div>
           </div>
         </div>
