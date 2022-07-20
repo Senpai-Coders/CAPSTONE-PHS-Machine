@@ -28,12 +28,15 @@ const handler = async (req, res) => {
         }else if(mode === -1){
             const del = await configs.deleteOne({ config_name })
 
+            // update relay to unused
             const updateRelay = await configs.updateOne({ config_name : target_relay }, { $set : {
                 "value.isUsed" : false, uby : editorDetails._id
             }})
-            // update relay to unused
+        }else if(mode === 2){ // gettingAllDbActions
+            const actions = await configs.find({ category : "actions"})
+            return res.status(200).json({ actions })
         }
-
+        
 		// set app config to forceUpdate all info in phs machine
 		const updateStamp = `${new Date().valueOf()}`
 		const updatePHSSys = await configs.updateOne({ category : 'update', config_name : 'update_stamp'}, { $set : { category : 'update', config_name : 'update_stamp', description : 'This will update phs system infos forced', value : updateStamp, uby : editorDetails._id }})

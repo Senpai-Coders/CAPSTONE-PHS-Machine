@@ -1,11 +1,11 @@
-import Sidebar from "./sidebar";
+import NavBar from "./navbar";
 
 export default function Layout({ children }) {
   return (
     <>
-      <div className="md:flex relative h-screen ">
-        <Sidebar />
-        <main className="relative w-full h-full overflow-y-auto card bg-stone-50/5">
+      <div className=" relative h-screen ">
+        <NavBar />
+        <main className="relative card bg-stone-50/5">
           <div className="p-5 md:p-10">
             {children}
           </div>

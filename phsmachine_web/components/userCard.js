@@ -10,6 +10,7 @@ import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { TiUserDelete } from "react-icons/ti";
 
 import axios from "axios";
+import { getRole, getRoleIcon } from '../helpers'
 
 const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
   const [editing, setEditing] = useState(false);
@@ -22,21 +23,6 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
   const [createObjectURL, setCreateObjectURL] = useState("");
 
   const [loading, setLoading] = useState(false);
-
-  const getRoleIcon = (role) => {
-    if (role === 3) return <BsFillShieldLockFill className="w-5 h-5" />;
-    if (role === 2) return <BsFillShieldFill className="w-5 h-5" />;
-    if (role === 1) return <FaUserAlt className="w-5 h-5" />;
-
-    return <AiFillEye className="w-5 h-5" />;
-  };
-
-  const getRole = (role) => {
-    if (role === 3) return "Root";
-    if (role === 2) return "Admin";
-    if (role === 1) return "Employee";
-    return "Viewer";
-  };
 
   const editable = () => {
     if (u._id === editor_info._id ) return true;
