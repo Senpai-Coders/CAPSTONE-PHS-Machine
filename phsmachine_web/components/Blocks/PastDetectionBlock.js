@@ -37,9 +37,21 @@ const PastDetectionBlock = ({ pastDetection }) => {
             </li>
           ))}
           {pastDetection.length === 0 && (
-            <p className="opacity-40 text-center my-2 text-sm">
-              No Past Heatstress Detection
-            </p>
+            <li>
+              <p className="opacity-40 text-center my-2 text-sm">
+                No Past Heatstress Detection
+              </p>
+            </li>
+          )}
+          {pastDetection.length === 10 && (
+            <li className="text-center my-2">
+              <a
+                href="/detections"
+                className="text-primary text-sm"
+              >
+                View More Records
+              </a>
+            </li>
           )}
         </ul>
       </div>

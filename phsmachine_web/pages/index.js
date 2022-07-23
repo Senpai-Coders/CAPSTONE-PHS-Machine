@@ -5,7 +5,11 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import { OffAlert, RebootConfirm, ShutdownConfirm } from "../components/modals/";
+import {
+  OffAlert,
+  RebootConfirm,
+  ShutdownConfirm,
+} from "../components/modals/";
 import { PI_IP } from "../helpers";
 
 import { GiPig } from "react-icons/gi";
@@ -23,12 +27,11 @@ import {
 } from "../components/Blocks";
 
 export default function Home() {
-  const router = useRouter()
+  const router = useRouter();
 
   const [SYSSTATE, SETSYSSTATE] = useState({
     status: 3, // -2 Off, -1 Disabled, 0 - Detecting, 1 - Resolving, 2 - Debugging, 3 - Connecting
     active_actions: "None",
-    lighting: "Off",
     pig_count: 0,
     stressed_pigcount: 0,
     max_temp: "-",
@@ -45,7 +48,6 @@ export default function Home() {
   const [dbPastDetection, setPastDetection] = useState([]);
 
   const [viewMode, setViewMode] = useState(0); // 0 - 3iple, 1 - dual (1 with dropdown option select), 2 - Merged Normal & Thermal
-
   const [selectedModal, setSelectedModal] = useState(-1); // -1 off or no shown modal by default
   // -1 off modal
   // -2 shutdown confirm
@@ -76,15 +78,14 @@ export default function Home() {
 
   const phs_init = async () => {
     try {
+      if(exited) return;
       const phs_response = await axios.get(
         `http://${PI_IP}:8000/getSystemState`
       );
-
       const phs_actions = await axios.get(
         `http://${PI_IP}:8000/getActionState`
       );
       if (exited) return;
-
       setACTIONSTATE(phs_actions.data.actions);
       SETSYSSTATE(phs_response.data.state);
       setIsDown(false);
@@ -143,19 +144,27 @@ export default function Home() {
         }}
       />
 
-      <ShutdownConfirm shown={selectedModal === -2} onAccept={()=>{
-        router.push("/shutdown");
-        console.log("TODO SHUTDOWN LINE 148")
-      }} close={()=>{
-        setSelectedModal(-1)
-      }} />
+      <ShutdownConfirm
+        shown={selectedModal === -2}
+        onAccept={() => {
+          router.push("/shutdown");
+          console.log("TODO SHUTDOWN LINE 148");
+        }}
+        close={() => {
+          setSelectedModal(-1);
+        }}
+      />
 
-      <RebootConfirm shown={selectedModal === -3} onAccept={()=>{
-        router.push("/reboot");
-        console.log("TODO REBOOT LINE 155")
-      }} close={()=>{
-        setSelectedModal(-1)
-      }} />
+      <RebootConfirm
+        shown={selectedModal === -3}
+        onAccept={() => {
+          router.push("/reboot");
+          console.log("TODO REBOOT LINE 155");
+        }}
+        close={() => {
+          setSelectedModal(-1);
+        }}
+      />
 
       {/** MAIN CONTAINER */}
       <div className="mt-8 space-y-2 relative min-h-screen">
@@ -217,13 +226,20 @@ export default function Home() {
 
             {/** COL 3 */}
             <div class="w-full sm:w-1/2 xl:w-1/5">
-              <ActionBlock db_actions={dbActions} phsActions={phsActions} />
+              <ActionBlock
+                db_actions={dbActions}
+                state={SYSSTATE.status}
+                phsActions={phsActions}
+              />
             </div>
 
             {/** COL 4 */}
             <div class="w-full sm:w-1/2 xl:w-1/5">
               {/** QUICK CONTROLS */}
-              <QuickControlsBlock state={ SYSSTATE.status } setSelectedModal={setSelectedModal} />
+              <QuickControlsBlock
+                state={SYSSTATE.status}
+                setSelectedModal={setSelectedModal}
+              />
 
               {/** Active Users */}
               <ActiveUserBlock users={dbActiveUsers} />

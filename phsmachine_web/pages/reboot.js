@@ -1,7 +1,25 @@
+import axios from "axios";
 import { motion } from "framer-motion";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { RiRestartLine } from "react-icons/ri"
 
 export default function reboot() {
+    const router = useRouter()
+    const [started, setStarted] = useState(false)
+
+  useEffect(()=>{
+    let connectChecker = setInterval(async()=>{
+        try{
+            if(started) return
+            const response = await axios.post("/api/connectivity")
+            if(started) return
+            router.push("/");
+        }catch(e){ }
+    },3000)
+    return ()=>clearInterval(connectChecker)
+  }, [])
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
