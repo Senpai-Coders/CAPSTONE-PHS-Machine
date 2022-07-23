@@ -4,15 +4,15 @@ import { Listbox, Transition } from "@headlessui/react";
 import { HiOutlineSelector } from "react-icons/hi";
 import { AiOutlineCheck } from "react-icons/ai";
 
-const PI_IP = process.env.PI_IP
+const PI_IP = process.env.PI_IP;
 
 const normal = ({ canStream }) => {
-       // stream_url: `http://${PI_IP}:8000/annotate_feed`,
+  // stream_url: `http://${PI_IP}:8000/annotate_feed`,
   const [camstat, setCamStat] = useState(false);
 
-  useEffect(()=>{
-    setCamStat(canStream)
-  }, [canStream])
+  useEffect(() => {
+    setCamStat(canStream);
+  }, [canStream]);
 
   return (
     <div className="">

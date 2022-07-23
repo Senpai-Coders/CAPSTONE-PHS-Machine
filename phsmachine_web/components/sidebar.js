@@ -89,7 +89,7 @@ const sidebar = () => {
             } h-5 w-5 text-primary cursor-pointer duration-300`}
           />
         ))}
-	    
+
         <label htmlFor="my-modal-6" className="modal-button">
           <FaSignOutAlt
             className={`hover:scale-110 hover:opacity-100 opacity-50 h-5 w-5 text-primary cursor-pointer duration-300`}
@@ -118,7 +118,7 @@ const sidebar = () => {
                 } h-7 w-7 text-primary cursor-pointer duration-300`}
               />
             ))}
-			{/*<GiStopSign
+            {/*<GiStopSign
                 className={`opacity-90 h-7 w-7 text-error cursor-pointer duration-300`}
               />*/}
           </div>

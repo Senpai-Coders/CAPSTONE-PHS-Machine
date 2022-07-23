@@ -1,7 +1,7 @@
 import { GoCircuitBoard } from "react-icons/go";
 import { BsThermometerHalf } from "react-icons/bs";
 import { useState } from "react";
-import { RiAlarmWarningFill } from 'react-icons/ri'
+import { RiAlarmWarningFill } from "react-icons/ri";
 
 import { translateSystemState, dateToWord } from "../helpers";
 
@@ -107,14 +107,16 @@ const systemState = ({ ACTIONSTATE, SYSSTATE }) => {
       </div>
 
       <div className="flex justify-center">
-        {ACTIONSTATE.length === 0 && SYSSTATE.status >= 0 && SYSSTATE.status !== 3 && (
-          <div className="alert text-sm shadow-lg">
-          <div className="items-center">
-            <RiAlarmWarningFill className="w-6 h-6"/>
-            <span>There are 0 actions. You can add on settings</span>
-          </div>
-        </div>
-        )}
+        {ACTIONSTATE.length === 0 &&
+          SYSSTATE.status >= 0 &&
+          SYSSTATE.status !== 3 && (
+            <div className="alert text-sm shadow-lg">
+              <div className="items-center">
+                <RiAlarmWarningFill className="w-6 h-6" />
+                <span>There are 0 actions. You can add on settings</span>
+              </div>
+            </div>
+          )}
         <div className="stats snap-x shadow">
           {ACTIONSTATE.map((def_ac, i) => (
             <div
@@ -128,7 +130,11 @@ const systemState = ({ ACTIONSTATE, SYSSTATE }) => {
                   def_ac.state ? "text-accent animate-pulse" : ""
                 }`}
               >
-                <GoCircuitBoard className={ `w-6 h-6 ${def_ac.state ? "shadow-xl shadow-accent" : ''}`} />
+                <GoCircuitBoard
+                  className={`w-6 h-6 ${
+                    def_ac.state ? "shadow-xl shadow-accent" : ""
+                  }`}
+                />
               </div>
               <div className="stat-title ">{def_ac.config_name}</div>
               <div

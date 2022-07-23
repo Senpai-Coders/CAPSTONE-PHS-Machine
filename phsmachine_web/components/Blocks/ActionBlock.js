@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { RiListSettingsLine, RiTimerFill } from "react-icons/ri";
 import { AiFillThunderbolt } from "react-icons/ai";
 
-const ActionBlock = ({ db_actions, phsActions }) => {
+const ActionBlock = ({ db_actions, phsActions, state }) => {
   const [mergedActions, setMergedActions] = useState([]);
   const getMatchingAction = (action) => {
     let toReturn = { state: false, duration: "-", caller: "-" };
@@ -21,7 +21,7 @@ const ActionBlock = ({ db_actions, phsActions }) => {
   useEffect(() => {
     let merge = [...db_actions];
 
-    for (var x = 0; x < merge.length; x++) {
+    for (var x = 0; x < merge.length && state >= 0; x++) {
       let new_fields = getMatchingAction(merge[x]);
       merge[x] = { ...merge[x], ...new_fields };
     }
@@ -59,9 +59,7 @@ const ActionBlock = ({ db_actions, phsActions }) => {
                 <RiTimerFill className={getIconActiveStyle(action.state)} />
                 {action.config_name}
               </p>
-              <p className="text-xs">
-                {action.value.target_relay}
-              </p>
+              <p className="text-xs">{action.value.target_relay}</p>
             </div>
             <div className="flex items-center">
               <span className="text-xs text-gray-400 mr-2 ml-2 md:ml-4">
@@ -76,6 +74,10 @@ const ActionBlock = ({ db_actions, phsActions }) => {
             </div>
           </div>
         ))}
+
+        {mergedActions.length === 0 && (
+          <p className="opacity-40 text-center my-2 text-sm">No Actions</p>
+        )}
       </div>
     </div>
   );

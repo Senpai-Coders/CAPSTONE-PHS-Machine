@@ -186,7 +186,16 @@ export default function _detection_details() {
           <div className="my-4 text-sm alert shadow-lg">
             <div>
               <BsFolderFill className="stroke-info text-accent flex-shrink-0 w-6 h-6" />
-              <span className="font-inter">Raw Data & Images can be found at <span className="font-semibold">phsmachine_web/public{`${detection.img_normal.substring(0,detection.img_normal.lastIndexOf('/'))}`}</span></span>
+              <span className="font-inter">
+                Raw Data & Images can be found at{" "}
+                <span className="font-semibold">
+                  phsmachine_web/public
+                  {`${detection.img_normal.substring(
+                    0,
+                    detection.img_normal.lastIndexOf("/")
+                  )}`}
+                </span>
+              </span>
             </div>
           </div>
 
@@ -195,7 +204,7 @@ export default function _detection_details() {
               <div className="stat snap-center">
                 <div className="stat-figure text-primary">
                   <img src={`/pig.svg`} className="w-10 h-10" />
-		  </div>
+                </div>
                 <div className="stat-title">Identified Pig</div>
                 <div className="stat-value text-primary">
                   {detection.data.pig_count}
@@ -226,7 +235,9 @@ export default function _detection_details() {
                   <FaTemperatureLow className="w-8 h-8" />
                 </div>
                 <div className="stat-title">Minimum Temp</div>
-                <div className="stat-value ">{tempParser(detection.data.min_temp)} C</div>
+                <div className="stat-value ">
+                  {tempParser(detection.data.min_temp)} C
+                </div>
                 <div className="stat-desc"></div>
               </div>
 
@@ -235,7 +246,9 @@ export default function _detection_details() {
                   <FaTemperatureLow className="w-8 h-8" />
                 </div>
                 <div className="stat-title">Average Temp</div>
-                <div className="stat-value ">{tempParser(detection.data.avg_temp)} C</div>
+                <div className="stat-value ">
+                  {tempParser(detection.data.avg_temp)} C
+                </div>
                 <div className="stat-desc"></div>
               </div>
 
@@ -244,7 +257,9 @@ export default function _detection_details() {
                   <FaTemperatureHigh className="w-8 h-8" />
                 </div>
                 <div className="stat-title">Maximum Temp</div>
-                <div className="stat-value ">{tempParser(detection.data.max_temp)} C</div>
+                <div className="stat-value ">
+                  {tempParser(detection.data.max_temp)} C
+                </div>
                 <div className="stat-desc"></div>
               </div>
             </div>
@@ -327,23 +342,31 @@ export default function _detection_details() {
                   <p>processed thermal</p>
                 </div>
                 <div className="mt-2 font-inter">
-				{ data.info ?
-					  <>
-							<p className="text-lg">
-							Min Temp:{" "}
-							<span className="font-medium text-primary">{tempParser(data.info.min_temp)} °C</span>{" "}
-						  </p>
-						  <p className="text-lg">
-							Average Temp:{" "}
-							<span className="font-medium text-primary">{tempParser(data.info.avg_temp)} °C</span>{" "}
-							{"   "}{" "}
-						  </p>
-						  <p className="text-lg">
-							Max Temp: {"   "}{" "}
-							<span className="font-medium text-error">{tempParser(data.info.max_temp)} °C</span>
-						  </p>
-					</> : <p className='text-xs opacity-80'> No Sub Info To Show </p>
-				}
+                  {data.info ? (
+                    <>
+                      <p className="text-lg">
+                        Min Temp:{" "}
+                        <span className="font-medium text-primary">
+                          {tempParser(data.info.min_temp)} °C
+                        </span>{" "}
+                      </p>
+                      <p className="text-lg">
+                        Average Temp:{" "}
+                        <span className="font-medium text-primary">
+                          {tempParser(data.info.avg_temp)} °C
+                        </span>{" "}
+                        {"   "}{" "}
+                      </p>
+                      <p className="text-lg">
+                        Max Temp: {"   "}{" "}
+                        <span className="font-medium text-error">
+                          {tempParser(data.info.max_temp)} °C
+                        </span>
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-xs opacity-80"> No Sub Info To Show </p>
+                  )}
                 </div>
               </div>
             ))}

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { API } from "../../helpers";
 
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
-import { GoInfo } from "react-icons/go"
+import { GoInfo } from "react-icons/go";
 
 const signin = () => {
   const router = useRouter();
@@ -143,8 +143,8 @@ const signin = () => {
 
           <div className="alert text-sm mt-4 shadow-lg">
             <div>
-			  <GoInfo className="h-5 w-5" />
-			  <span>If you forgot your password, contact the root admin.</span>
+              <GoInfo className="h-5 w-5" />
+              <span>If you forgot your password, contact the root admin.</span>
             </div>
           </div>
         </div>

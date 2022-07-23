@@ -114,7 +114,9 @@ const navbar = () => {
                 key={idx}
                 onClick={() => router.push(routes.path)}
                 className={`${
-                  router.pathname === routes.path ? "scale-110 text-primary" : "opacity-50"
+                  router.pathname === routes.path
+                    ? "scale-110 text-primary"
+                    : "opacity-50"
                 } cursor-pointer duration-300`}
               >
                 {routes.name}
@@ -140,7 +142,7 @@ const navbar = () => {
           {/* USER INFO & SIGNOUT */}
           <div className="flex justify-end items-center my-4 space-x-8">
             <Time_Strip />
-            {loading ? (
+            {!userData ? (
               <div className="w-5/12 flex items-center space-x-4">
                 <progress className="progress progress-primary"></progress>
               </div>

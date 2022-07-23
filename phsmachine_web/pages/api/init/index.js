@@ -2742,20 +2742,20 @@ const handler = async (req, res) => {
     const { us, conf, det } = req.body;
 
     if (us) {
-        console.log("init us")
-        const del = await users.deleteMany({});
-        const resp = await users.insertMany(DEFAULT_USERs);
-        console.log(del, resp)
+      console.log("init us");
+      const del = await users.deleteMany({});
+      const resp = await users.insertMany(DEFAULT_USERs);
+      console.log(del, resp);
     }
 
     if (conf) {
-        console.log("init conf")
+      console.log("init conf");
 
       const del2 = await configs.deleteMany({});
       const resp2 = await configs.insertMany(DEFAULT_CONFIGS);
     }
     if (det) {
-        console.log("init det")
+      console.log("init det");
 
       const del3 = await detections.deleteMany({});
       const resp3 = await detections.insertMany(DEFAULT_DETECTS);

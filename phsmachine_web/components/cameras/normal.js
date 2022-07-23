@@ -4,7 +4,7 @@ import { Listbox, Transition } from "@headlessui/react";
 import { HiOutlineSelector } from "react-icons/hi";
 import { AiOutlineCheck } from "react-icons/ai";
 
-const PI_IP = process.env.PI_IP
+const PI_IP = process.env.PI_IP;
 
 const normal = ({ canStream }) => {
   const cam_var1 = [
@@ -13,17 +13,17 @@ const normal = ({ canStream }) => {
       stream_url: `http://${PI_IP}:8000/normal_feed`,
     },
     {
-        name: "Annotate",
-        stream_url: `http://${PI_IP}:8000/annotate_feed`,
-    }
+      name: "Annotate",
+      stream_url: `http://${PI_IP}:8000/annotate_feed`,
+    },
   ];
 
   const [camstat, setCamStat] = useState(false);
   const [view1, setView1] = useState(cam_var1[0]);
 
-  useEffect(()=>{
-    setCamStat(false)
-  }, [canStream])
+  useEffect(() => {
+    setCamStat(false);
+  }, [canStream]);
 
   return (
     <div className="">
@@ -84,7 +84,7 @@ const normal = ({ canStream }) => {
           <label className="label cursor-pointer">
             <input
               type="checkbox"
-              disabled={ canStream }
+              disabled={canStream}
               className="toggle"
               checked={camstat}
               onChange={() => setCamStat(!camstat)}

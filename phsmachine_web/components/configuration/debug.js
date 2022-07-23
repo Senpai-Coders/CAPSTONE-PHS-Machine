@@ -48,8 +48,7 @@ const debug = ({ STAT }) => {
 
   const [] = useState(true);
 
-  const PI_IP = process.env.PI_IP
-
+  const PI_IP = process.env.PI_IP;
 
   const init = async () => {
     try {
@@ -111,7 +110,7 @@ const debug = ({ STAT }) => {
       const add = await API.post("/api/phs/config/actions", {
         mode: -1,
         config_name,
-        target_relay
+        target_relay,
       });
       setLoading(false);
       setMoadlActionView(false);
@@ -184,7 +183,10 @@ const debug = ({ STAT }) => {
           modalAction ? "modal-open" : ""
         }`}
       >
-        <CreateAction components={relays} onClose={() => setMoadlAction(false)} />
+        <CreateAction
+          components={relays}
+          onClose={() => setMoadlAction(false)}
+        />
       </label>
 
       <input type="checkbox" id="relay_view" className="modal-toggle" />
@@ -367,9 +369,7 @@ const debug = ({ STAT }) => {
                 }`}
               >
                 <FaBrain
-                  className={`w-5 h-5 mr-4 ${
-                    selectedAction.state ? "" : ""
-                  }`}
+                  className={`w-5 h-5 mr-4 ${selectedAction.state ? "" : ""}`}
                 />
                 <p className="">Activator : {selectedAction.caller}</p>
               </div>
@@ -394,7 +394,10 @@ const debug = ({ STAT }) => {
                 </button>
                 <button
                   onClick={() => {
-                    delAction(selectedAction.config_name, selectedAction.target_relay)
+                    delAction(
+                      selectedAction.config_name,
+                      selectedAction.target_relay
+                    );
                   }}
                   className={`btn gap-2 btn-error ${loading ? "loading" : ""}`}
                 >
@@ -452,9 +455,9 @@ const debug = ({ STAT }) => {
 
       <div className={` my-4 relative mb-6`}>
         {!loaded && (
-            <div className=" w-1/12 flex items-center space-x-4">
-              <progress className="progress"></progress>
-            </div>
+          <div className=" w-1/12 flex items-center space-x-4">
+            <progress className="progress"></progress>
+          </div>
         )}
 
         <label onClick={() => setMoadlRelay(true)} className="mt-4 btn">
@@ -522,7 +525,8 @@ const debug = ({ STAT }) => {
       <div className="flex space-x-3 bg-none items-center mt-6">
         <BsFillExclamationSquareFill className={`text-accent w-4 h-4`} />
         <span>
-          Actions are controlled by AI, but values & component can be assigned by the admin
+          Actions are controlled by AI, but values & component can be assigned
+          by the admin
         </span>
       </div>
 

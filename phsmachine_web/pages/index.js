@@ -1,9 +1,11 @@
 import Layout from "../components/layout";
+import { useRouter } from "next/router";
+
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import MODAL_SYSTEM_OFF from "../components/modals/off_alert";
+import { OffAlert, RebootConfirm, ShutdownConfirm } from "../components/modals/";
 import { PI_IP } from "../helpers";
 
 import { GiPig } from "react-icons/gi";
@@ -12,15 +14,19 @@ import { BsHash } from "react-icons/bs";
 import {
   StreamLayoutBlock,
   SystemStateBlock,
+  ActiveUserBlock,
   ThermalReadingBlock,
   ActionBlock,
   QuickControlsBlock,
-  PhsStorageBlock
+  PhsStorageBlock,
+  PastDetectionBlock,
 } from "../components/Blocks";
 
 export default function Home() {
+  const router = useRouter()
+
   const [SYSSTATE, SETSYSSTATE] = useState({
-    status: -2, // -2 Off, -1 Disabled, 0 - Detecting, 1 - Resolving, 2 - Debugging, 3 - Connecting
+    status: 3, // -2 Off, -1 Disabled, 0 - Detecting, 1 - Resolving, 2 - Debugging, 3 - Connecting
     active_actions: "None",
     lighting: "Off",
     pig_count: 0,
@@ -30,13 +36,23 @@ export default function Home() {
     min_temp: "-",
     actions: [],
   });
+
+  const [exited, setExited] = useState(false);
+  const [stamp, setStamp] = useState(0);
+
   const [isDown, setIsDown] = useState(true);
   const [seenModal, setSeenModal] = useState(false);
+  const [dbPastDetection, setPastDetection] = useState([]);
 
   const [viewMode, setViewMode] = useState(0); // 0 - 3iple, 1 - dual (1 with dropdown option select), 2 - Merged Normal & Thermal
+
   const [selectedModal, setSelectedModal] = useState(-1); // -1 off or no shown modal by default
+  // -1 off modal
+  // -2 shutdown confirm
+  // -3 Reboot Confirm
 
   const [dbActions, setDbActions] = useState([]);
+  const [dbActiveUsers, setDbActiveUsers] = useState([]);
   const [phsActions, setPhsActions] = useState([
     {
       config_name: "Mist",
@@ -67,6 +83,7 @@ export default function Home() {
       const phs_actions = await axios.get(
         `http://${PI_IP}:8000/getActionState`
       );
+      if (exited) return;
 
       setACTIONSTATE(phs_actions.data.actions);
       SETSYSSTATE(phs_response.data.state);
@@ -78,18 +95,37 @@ export default function Home() {
   };
 
   const init = async () => {
-    await phs_init();
     try {
+      if (exited) return;
       const db_actions = await axios.post("/api/phs/config/actions", {
         mode: 2,
       });
+      const db_active_users = await axios.post("/api/phs/activeUsers", {});
+      const db_past_detections = await axios.post("/api/phs/detection", {
+        mode: 3,
+      });
       setDbActions(db_actions.data.actions);
+      setDbActiveUsers(db_active_users.data.activeUsers);
+      setPastDetection(db_past_detections.data.detections);
     } catch (e) {}
   };
 
   useEffect(() => {
-    var loader = setInterval(() => init(), 1000);
-    return () => clearInterval(loader);
+    let stmp = new Date().getTime();
+
+    var loader = setInterval(async () => {
+      if (exited) return;
+      setStamp(stmp);
+      console.log("Render", stmp);
+      phs_init();
+      init();
+    }, 2000);
+
+    return () => {
+      clearInterval(loader);
+      console.log("unmounted stmp ", stmp);
+      setExited(true);
+    };
   }, []);
 
   return (
@@ -99,13 +135,27 @@ export default function Home() {
       </Head>
 
       {/** MODALS */}
-      <MODAL_SYSTEM_OFF
+      <OffAlert
         shown={isDown && !seenModal}
         close={() => {
           setSelectedModal(-1);
           setSeenModal(true);
         }}
       />
+
+      <ShutdownConfirm shown={selectedModal === -2} onAccept={()=>{
+        router.push("/shutdown");
+        console.log("TODO SHUTDOWN LINE 148")
+      }} close={()=>{
+        setSelectedModal(-1)
+      }} />
+
+      <RebootConfirm shown={selectedModal === -3} onAccept={()=>{
+        router.push("/reboot");
+        console.log("TODO REBOOT LINE 155")
+      }} close={()=>{
+        setSelectedModal(-1)
+      }} />
 
       {/** MAIN CONTAINER */}
       <div className="mt-8 space-y-2 relative min-h-screen">
@@ -136,7 +186,7 @@ export default function Home() {
                     <GiPig className="w-7 h-7 text-pink-200" />
                     <p class="ml-2 font-bold text-md">{0} Pig On Frame</p>
                   </div>
-                  <div className="mx-4 text-lg mb-4 flex justify-between itms-center">
+                  <div className="mx-4 mb-4 flex justify-between itms-center">
                     <p className="text-success">{0} Normal</p>
                     <p className="text-error"> {1} Heat Stress </p>
                   </div>
@@ -150,7 +200,7 @@ export default function Home() {
                     <BsHash className="w-7 h-7 text-warning" />
                     <p class="ml-1 font-bold text-md">Detection ( Today )</p>
                   </div>
-                  <div className="mx-4 text-lg mb-4 flex justify-between itms-center">
+                  <div className="mx-4  mb-4 flex justify-between itms-center">
                     <p className="text-error"> {1} Heat Stress Detection </p>
                   </div>
                 </div>
@@ -170,9 +220,18 @@ export default function Home() {
               <ActionBlock db_actions={dbActions} phsActions={phsActions} />
             </div>
 
+            {/** COL 4 */}
             <div class="w-full sm:w-1/2 xl:w-1/5">
               {/** QUICK CONTROLS */}
-              <QuickControlsBlock />
+              <QuickControlsBlock state={ SYSSTATE.status } setSelectedModal={setSelectedModal} />
+
+              {/** Active Users */}
+              <ActiveUserBlock users={dbActiveUsers} />
+            </div>
+
+            {/** COL 5 */}
+            <div class="w-full sm:w-1/2 xl:w-1/5">
+              <PastDetectionBlock pastDetection={dbPastDetection} />
             </div>
           </div>
         </div>

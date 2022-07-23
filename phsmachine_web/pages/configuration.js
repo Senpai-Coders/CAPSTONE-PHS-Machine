@@ -6,14 +6,13 @@ import Layout from "../components/layout";
 import ThemeChooser from "../components/configuration/themeChooser";
 import Debug from "../components/configuration/debug";
 
-import axios from 'axios'
+import axios from "axios";
 
 // import { FcCheckmark } from "react-icons/fc";
 // import { HiOutlineSelector } from "react-icons/hi";
 // import { Listbox, Transition } from "@headlessui/react";
 
 const configuration = () => {
-  
   return (
     <>
       <Head>

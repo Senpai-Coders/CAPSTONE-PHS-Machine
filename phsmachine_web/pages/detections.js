@@ -14,7 +14,9 @@ const Events = () => {
       const resp = await axios.post("/api/phs/detection", { mode: 0 });
       setDetections(resp.data.detection_data);
       setLoading(false);
-    } catch (e) { console.log(e); }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   useEffect(() => {
@@ -59,16 +61,22 @@ const Events = () => {
                 </p>
                 <p className="text-lg">
                   Min Temp:{" "}
-                  <span className="font-medium text-primary">{tempParser(record.data.min_temp)}{" "}°C</span>{" "}
+                  <span className="font-medium text-primary">
+                    {tempParser(record.data.min_temp)} °C
+                  </span>{" "}
                 </p>
                 <p className="text-lg">
                   Average Temp:{" "}
-                  <span className="font-medium text-primary">{tempParser(record.data.avg_temp)}{" "}°°C</span>{" "}
+                  <span className="font-medium text-primary">
+                    {tempParser(record.data.avg_temp)} °°C
+                  </span>{" "}
                   {"   "}{" "}
                 </p>
                 <p className="text-lg">
                   Max Temp: {"   "}{" "}
-                  <span className="font-medium text-error">{tempParser(record.data.max_temp)}°C</span>
+                  <span className="font-medium text-error">
+                    {tempParser(record.data.max_temp)}°C
+                  </span>
                 </p>
                 <p className="font-bold text-lg">
                   <span className="text-warning">

@@ -1,5 +1,4 @@
-import Camera from "./normal"
-import Thermal from "./thermal"
+import Camera from "./normal";
+import Thermal from "./thermal";
 
-
-export { Camera , Thermal }
+export { Camera, Thermal };

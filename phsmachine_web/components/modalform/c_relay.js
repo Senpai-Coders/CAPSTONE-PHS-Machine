@@ -1,45 +1,47 @@
 import { API } from "../../helpers";
 import { useState } from "react";
 import { GoCircuitBoard } from "react-icons/go";
-import { BsFillSaveFill } from "react-icons/bs"
+import { BsFillSaveFill } from "react-icons/bs";
 
-const c_relay = ( {onClose} ) => {
+const c_relay = ({ onClose }) => {
   const [config_name, setConfig_name] = useState("");
   const [description, setDescription] = useState("");
   const [GPIO_PIN, setGPIO_PIN] = useState("");
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
-  const [availablePins, setAvailablePins] = useState([4,14,15,17,18,27,22,23,24,10,9,25,11,8,7,0,1,5,6,12,13,19,16,26,20,21])
+  const [availablePins, setAvailablePins] = useState([
+    4, 14, 15, 17, 18, 27, 22, 23, 24, 10, 9, 25, 11, 8, 7, 0, 1, 5, 6, 12, 13,
+    19, 16, 26, 20, 21,
+  ]);
 
-  const save = async() => { 
-    try{
-        setLoading(true)
-        const add = await API.post("/api/phs/config/relays", {
-            mode:0, 
-            config_name,
-            description,
-            GPIO_PIN : parseInt(GPIO_PIN)
-        })
-        setLoading(false)
-        onClose()
-    }catch(e){
-        setLoading(false);
-        console.log(e.response.data.message)
-        if (e.response) {
-          //request was made but theres a response status code
-          if (e.response.status === 409)
-            setErr(e.response.data.message);
-        }
+  const save = async () => {
+    try {
+      setLoading(true);
+      const add = await API.post("/api/phs/config/relays", {
+        mode: 0,
+        config_name,
+        description,
+        GPIO_PIN: parseInt(GPIO_PIN),
+      });
+      setLoading(false);
+      onClose();
+    } catch (e) {
+      setLoading(false);
+      console.log(e.response.data.message);
+      if (e.response) {
+        //request was made but theres a response status code
+        if (e.response.status === 409) setErr(e.response.data.message);
+      }
     }
-  }
+  };
 
   const canSave = () => {
-      if(config_name.length === 0) return false
-      if(description.length === 0) return false
-      if(GPIO_PIN.length === 0 || isNaN(parseInt(GPIO_PIN))) return false
-      return true
-  }
+    if (config_name.length === 0) return false;
+    if (description.length === 0) return false;
+    if (GPIO_PIN.length === 0 || isNaN(parseInt(GPIO_PIN))) return false;
+    return true;
+  };
 
   return (
     <label className="modal-box w-full md:w-11/12" htmlFor="">
@@ -94,7 +96,7 @@ const c_relay = ( {onClose} ) => {
           />
         </div>
 
-		{/*
+        {/*
         <div className="mb-6">
           <label className="block mb-2 text-sm font-medium  dark:text-gray-300">
             GPIO Pin
@@ -114,36 +116,46 @@ const c_relay = ( {onClose} ) => {
           />
         </div>*/}
 
-
-		<div className="mb-6">
+        <div className="mb-6">
           <label className="block mb-2 text-sm font-medium  dark:text-gray-300">
             Choose Output (GPIO Pin)
           </label>
-          <select placeholder="Choose AI that will handle this action" onChange={(e)=>{
-		  setErr("");
-		  setGPIO_PIN(e.target.value)}} 
-		  className="select select-bordered w-full max-w-xs">
-			    <option>Choose</option>
-				{/** USED : 2, 3
+          <select
+            placeholder="Choose AI that will handle this action"
+            onChange={(e) => {
+              setErr("");
+              setGPIO_PIN(e.target.value);
+            }}
+            className="select select-bordered w-full max-w-xs"
+          >
+            <option>Choose</option>
+            {/** USED : 2, 3
 				  USABLE : 4, 14, 15, 17, 18, 27, 22, 23, 24, 10, 9, 25, 11, 8, 7, 0, 1, 5, 6, 12, 13, 19, 16, 26, 20, 21
 				*/}
-				{
-	  				availablePins.map((pin, idx)=>
-					  <option key={idx}>{pin}</option>
-					)
- 				}
+            {availablePins.map((pin, idx) => (
+              <option key={idx}>{pin}</option>
+            ))}
           </select>
         </div>
 
         <p className="text-center text-error font-inter text-sm">{err}</p>
       </div>
-     
 
       <div className="modal-action">
-        <label  onClick={()=>{ setLoading(false); onClose() }} className="btn">
-          Cancel 
+        <label
+          onClick={() => {
+            setLoading(false);
+            onClose();
+          }}
+          className="btn"
+        >
+          Cancel
         </label>
-        <button disabled={ !canSave() } onClick={()=>save()}  className={`btn ${loading ? "loading" : ""}`}>
+        <button
+          disabled={!canSave()}
+          onClick={() => save()}
+          className={`btn ${loading ? "loading" : ""}`}
+        >
           Save <BsFillSaveFill className="ml-3 w-4 h-4" />
         </button>
       </div>

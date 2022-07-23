@@ -22,7 +22,10 @@ const PhsStorageBlock = () => {
           value={6.4}
           max={32}
         ></progress>
-        <p className="text-warning text-xs mt-2">If the storage get's too small, PHS will stop saving detections & you must delete some detection records to free some storage</p>
+        <p className="text-warning text-xs mt-2">
+          If the storage get's too small, PHS will stop saving detections & you
+          must delete some detection records to free some storage
+        </p>
       </div>
     </div>
   );

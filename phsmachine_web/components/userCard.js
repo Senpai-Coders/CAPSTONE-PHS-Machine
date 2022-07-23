@@ -10,7 +10,7 @@ import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { TiUserDelete } from "react-icons/ti";
 
 import axios from "axios";
-import { getRole, getRoleIcon } from '../helpers'
+import { getRole, getRoleIcon } from "../helpers";
 
 const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
   const [editing, setEditing] = useState(false);
@@ -25,8 +25,8 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
   const [loading, setLoading] = useState(false);
 
   const editable = () => {
-    if (u._id === editor_info._id ) return true;
-    if ( u.role === 3 ) return false;
+    if (u._id === editor_info._id) return true;
+    if (u.role === 3) return false;
     return editor_info.role >= u.role;
   };
 
@@ -136,7 +136,10 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
             </div>
           </div>
           <div className="flex items-center">
-            <div className="tooltip" data-tip={editing? "Cancel Edit" : "Edit"}>
+            <div
+              className="tooltip"
+              data-tip={editing ? "Cancel Edit" : "Edit"}
+            >
               <button
                 className={`btn btn-sm btn-square ${
                   editable() ? "" : "btn-disabled"
@@ -168,19 +171,21 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                   className="dropdown-content font-inter menu p-2 shadow bg-base-100/25 backdrop-blur-md rounded-box w-48"
                 >
                   <p className="my-4 mx-2">Change Role</p>
-	  { editor_info.role > 2 && <li onClick={() => updateRole(2)}>
-                    <div className="flex w-full items-center justify-start">
-                      {getRoleIcon(2)}
-                      <a>Admin</a>
-                    </div>
-                  </li>}
+                  {editor_info.role > 2 && (
+                    <li onClick={() => updateRole(2)}>
+                      <div className="flex w-full items-center justify-start">
+                        {getRoleIcon(2)}
+                        <a>Admin</a>
+                      </div>
+                    </li>
+                  )}
                   <li onClick={() => updateRole(1)}>
                     <div className="flex w-full items-center justify-start">
                       {getRoleIcon(1)}
                       <a>Employee</a>
                     </div>
                   </li>
-				  <li onClick={() => updateRole(0)}>
+                  <li onClick={() => updateRole(0)}>
                     <div className="flex w-full items-center justify-start">
                       {getRoleIcon(0)}
                       <a>Viewer</a>
@@ -190,13 +195,13 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
               </div>
             </div>
             <div className="tooltip" data-tip="Delete User">
-              <label htmlFor="modal-user-delete"
+              <label
+                htmlFor="modal-user-delete"
                 className={`btn btn-sm btn-square  ${
                   changableRole() ? "" : "btn-disabled"
                 }`}
-
-                onClick={()=>{
-                    onDelete(u._id)
+                onClick={() => {
+                  onDelete(u._id);
                 }}
               >
                 <TiUserDelete className="h-5 w-5" />
@@ -227,10 +232,11 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                 </div>
                 {!hasNewImage ? (
                   <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.4 }}
-                  className="flex justify-center mb-4">
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.4 }}
+                    className="flex justify-center mb-4"
+                  >
                     <label className="">
                       <span className="sr-only">Choose profile photo</span>
                       <input
@@ -241,11 +247,13 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                     </label>
                   </motion.div>
                 ) : (
-                    <motion.div
+                  <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.4 }}
-                    exit={{ opacity: 0 }} className="flex mb-4">
+                    exit={{ opacity: 0 }}
+                    className="flex mb-4"
+                  >
                     <button
                       onClick={() => uploadToServer()}
                       className="btn w-1/2 btn-sm"

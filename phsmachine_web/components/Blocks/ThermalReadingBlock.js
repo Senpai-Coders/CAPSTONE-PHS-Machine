@@ -1,7 +1,7 @@
 import React from "react";
-import { GiMedicalThermometer } from "react-icons/gi"
+import { GiMedicalThermometer } from "react-icons/gi";
 
-const ThermalReadingBlock = ({SYSSTATE}) => {
+const ThermalReadingBlock = ({ SYSSTATE }) => {
   return (
     <div className="mb-2">
       <div className="shadow-lg rounded-2xl p-4 card bg-base-100 w-full">
@@ -16,17 +16,17 @@ const ThermalReadingBlock = ({SYSSTATE}) => {
           </div>
         </div>
 
-        <div className="mx-2 text-lg mb-4 flex justify-between itms-center">
+        <div className="mx-2 mb-4 flex justify-between itms-center">
           <p>MIN</p>
           <p className="text-2xl text-orange-300">{SYSSTATE.min_temp}°C</p>
         </div>
 
-        <div className="mx-2 text-lg mb-4 flex justify-between itms-center">
+        <div className="mx-2 mb-4 flex justify-between itms-center">
           <p>AVG</p>
           <p className="text-2xl text-orange-500">{SYSSTATE.average_temp}°C</p>
         </div>
 
-        <div className="mx-2 text-lg mb-4 flex justify-between itms-center">
+        <div className="mx-2 mb-4 flex justify-between itms-center">
           <p>MAX</p>
           <p className="text-2xl text-error">{SYSSTATE.max_temp}°C</p>
         </div>
