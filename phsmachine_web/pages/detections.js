@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 
 import { API, tempParser } from "../helpers";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const Events = () => {
+    const router = useRouter()
+
   const [detections, setDetections] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -86,13 +89,14 @@ const Events = () => {
                 </p>
                 <p className="text-sm">{record.date}</p>
                 <div className="card-actions justify-end">
-                  <a
-                    href={`/detection_details?_id=${record._id}`}
-                    target="blank"
+                  <button
+                    onClick={()=>
+                        router.push(`/detection_details?_id=${record._id}`)
+                    }
                     className="btn btn-block"
                   >
                     More Info
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>

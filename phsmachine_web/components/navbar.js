@@ -152,15 +152,13 @@ const navbar = () => {
                   className="tooltip tooltip-bottom"
                   data-tip={`Your Role : ${getRole(userData.role)}`}
                 >
-                  <label className={`btn btn-sm btn-ghost btn-square m-1`}>
-                    {getRoleIcon(userData.role)}
-                  </label>
-                </div>
-                <div className="avatar">
-                  <div className="w-10 mask mask-hexagon-2">
-                    <img src={userData.photo} />
+                  <div className="avatar">
+                    <div className="w-10 mask mask-hexagon-2">
+                      <img src={userData.photo} />
+                    </div>
                   </div>
                 </div>
+
                 <p>{userData.user_name}</p>
                 <p></p>
               </>

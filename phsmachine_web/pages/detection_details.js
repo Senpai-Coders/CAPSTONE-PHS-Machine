@@ -54,6 +54,8 @@ export default function _detection_details() {
     }
   };
 
+  const goBack = () => { router.back() }
+
   const del = async () => {
     try {
       if (!_id) return;
@@ -67,7 +69,7 @@ export default function _detection_details() {
         detection_id: _id,
         path: delFold,
       });
-      close();
+      goBack();
     } catch (e) {
       console.log(e);
     }
@@ -122,7 +124,7 @@ export default function _detection_details() {
         )}
         <button
           onClick={() => {
-            close();
+            goBack();
           }}
           className="btn btn-sm btn-square btn-outline"
         >
@@ -170,7 +172,7 @@ export default function _detection_details() {
             </label>
             <button
               onClick={() => {
-                close();
+                goBack();
               }}
               className="btn btn-sm btn-square btn-outline"
             >
