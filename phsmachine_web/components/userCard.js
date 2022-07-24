@@ -24,6 +24,8 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
 
   const [loading, setLoading] = useState(false);
 
+  const [errMsg, setErrMsg] = useState("")
+
   const editable = () => {
     if (u._id === editor_info._id) return true;
     if (u.role === 3) return false;
@@ -79,17 +81,39 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
     try {
       let update = {};
       setLoading(true);
-      if (pass.length === 0)
+
+      if(hasNewImage){
+        const body = new FormData();
+        body.append("file", image);
+        body.append("uid", u._id);
+        const response = await fetch("/api/phs/uploadPhoto", {
+            method: "POST",
+            body,
+        });
+      }
+
+      if(pass.length === 0 && username.length === 0){
+        setLoading(false);
+        init();
+        onUpdate();
+        return
+      }
+
+      if ( pass.length === 0){
+        console.log(username)
         update = await axios.post("/api/phs/updateUser", {
           _id: u._id,
           mode: 1,
+          old_u_name : u.user_name,
           updates: { user_name: username },
         });
+    }
       else
         update = await axios.post("/api/phs/updateUser", {
           _id: u._id,
           mode: 1,
-          updates: { user_name: username, password: pass },
+          old_u_name : u.user_name,
+          updates: { user_name : username, password: pass },
           hasNewPassword: true,
         });
       setLoading(false);
@@ -97,6 +121,17 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
       onUpdate();
     } catch (e) {
       console.log(e);
+      setLoading(false);
+      if (e.response) {
+        //request was made but theres a response status code
+        //console.log(e.response.data);
+        if (e.response.data.error === 409) setErrMsg(e.response.data.message);
+      } else if (e.request) {
+        // The request was made but no response was received
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        //console.log("Error", error.message);
+      }
     }
   };
 
@@ -185,12 +220,12 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                       <a>Employee</a>
                     </div>
                   </li>
-                  <li onClick={() => updateRole(0)}>
+                  {/* <li onClick={() => updateRole(0)}>
                     <div className="flex w-full items-center justify-start">
                       {getRoleIcon(0)}
                       <a>Viewer</a>
                     </div>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>
@@ -230,7 +265,7 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                     </div>
                   </div>
                 </div>
-                {!hasNewImage ? (
+                {!hasNewImage && (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -246,30 +281,6 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                       />
                     </label>
                   </motion.div>
-                ) : (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.4 }}
-                    exit={{ opacity: 0 }}
-                    className="flex mb-4"
-                  >
-                    <button
-                      onClick={() => uploadToServer()}
-                      className="btn w-1/2 btn-sm"
-                    >
-                      Save Photo
-                    </button>
-                    <button
-                      onClick={() => {
-                        setCreateObjectURL(u.photo);
-                        setHasNewImage(false);
-                      }}
-                      className="btn w-1/2 btn-sm glass"
-                    >
-                      Reset Photo
-                    </button>
-                  </motion.div>
                 )}
               </div>
 
@@ -283,6 +294,7 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                   value={username}
                   onChange={(e) => {
                     // setErr("");
+                    setErrMsg('')
                     setUserName(e.target.value);
                   }}
                   className={`tracking-wider input-sm input input-bordered w-full input-md`}
@@ -301,6 +313,7 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                       value={pass}
                       onChange={(e) => {
                         //setErr("");
+                        setErrMsg('')
                         setPass(e.target.value);
                       }}
                       required
@@ -324,8 +337,10 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                     </span>
                   </label>
                 </div>
-              </div>
-              {(username !== u.user_name || pass.length !== 0) && (
+              </div>{
+                (errMsg.length > 0 && <p className="text-center text-error my-2 text-sm">{errMsg}</p>)
+              }
+              {((username !== u.user_name || pass.length !== 0 || hasNewImage) && username.length !== 0) && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -337,13 +352,13 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                     onClick={() => {
                       updateInfo();
                     }}
-                    disabled={username === u.user_name && pass.length === 0}
+                    disabled={username === u.user_name && pass.length === 0 && !hasNewImage}
                     className="btn w-1/2 btn-sm"
                   >
                     Save
                   </button>
                   <button
-                    disabled={username === u.user_name && pass.length === 0}
+                    disabled={username === u.user_name && pass.length === 0 && !hasNewImage}
                     onClick={() => {
                       init();
                       setPass("");

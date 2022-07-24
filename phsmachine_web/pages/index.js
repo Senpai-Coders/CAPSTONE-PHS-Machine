@@ -29,6 +29,8 @@ import {
 export default function Home() {
   const router = useRouter();
 
+  axios.defaults.timeout = 4 * 1000
+
   const [SYSSTATE, SETSYSSTATE] = useState({
     status: 3, // -2 Off, -1 Disabled, 0 - Detecting, 1 - Resolving, 2 - Debugging, 3 - Connecting
     active_actions: "None",
@@ -81,10 +83,10 @@ export default function Home() {
       if(exited) return;
       const phs_response = await axios.get(
         `http://${PI_IP}:8000/getSystemState`
-      );
+      , {});
       const phs_actions = await axios.get(
         `http://${PI_IP}:8000/getActionState`
-      );
+      , {});
       if (exited) return;
       setACTIONSTATE(phs_actions.data.actions);
       SETSYSSTATE(phs_response.data.state);
@@ -148,7 +150,7 @@ export default function Home() {
         shown={selectedModal === -2}
         onAccept={() => {
           router.push("/shutdown");
-          console.log("TODO SHUTDOWN LINE 148");
+          axios.post("/api/phs/config/power", { mode : 0 })
         }}
         close={() => {
           setSelectedModal(-1);
@@ -159,7 +161,7 @@ export default function Home() {
         shown={selectedModal === -3}
         onAccept={() => {
           router.push("/reboot");
-          console.log("TODO REBOOT LINE 155");
+          axios.post("/api/phs/config/power", { mode : 1 })
         }}
         close={() => {
           setSelectedModal(-1);

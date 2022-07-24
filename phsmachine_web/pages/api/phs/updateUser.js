@@ -7,15 +7,26 @@ dbConnect();
 
 const handler = async (req, res) => {
   try {
-    const { updates, _id, mode, hasNewPassword } = req.body;
+    const { updates, _id, mode, hasNewPassword, old_u_name } = req.body;
     let action = {};
     if (mode === -1) {
       action = await users.deleteOne({ _id });
     } else if (mode === 1) {
+      let up_userName = updates.user_name;
+
+      if( up_userName && up_userName !== old_u_name ){
+
+        if( up_userName.length === 0 )
+            return res.status(400).json({error : 400, message : "Username must not be empty"})
+
+        const hasDuplicate = await users.find({ user_name : up_userName}) 
+        if( hasDuplicate.length > 0 )
+            return res.status(409).json({error : 409, message : "User Already Exist With That Username"})
+      }
+
       if (!hasNewPassword)
         action = await users.updateOne({ _id }, { $set: { ...updates } });
       else {
-        let up_userName = updates.username;
         let up_password = await HASH_PASSWORD(updates.password);
 
         action = await users.updateOne(
