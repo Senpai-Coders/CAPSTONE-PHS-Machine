@@ -30,7 +30,7 @@ const PastDetectionBlock = ({ pastDetection }) => {
                 className="tooltip tooltip-left"
                 data-tip="View Detection Info"
               >
-                <a href={`/detection_details?_id=${det._id}`} target="blank">
+                <a href={`/detection_details?_id=${det._id}`} >
                   <FaEye className="text-secondary w-4 h-4 mr-2" />
                 </a>
               </div>

@@ -6,7 +6,8 @@ import { BsClipboardData } from "react-icons/bs";
 import { FaThermometerHalf, FaSignOutAlt } from "react-icons/fa";
 import { IoPeopleSharp } from "react-icons/io5";
 import { GoGear } from "react-icons/go";
-import { API, amISignedIn, getMyData, getRoleIcon, getRole } from "../helpers";
+import { API, amISignedIn, getMyData, getRole } from "../helpers";
+import ThemeChooser from "./configuration/themeChooser";
 
 import Time_Strip from "./Time_Strp";
 
@@ -142,6 +143,7 @@ const navbar = () => {
           {/* USER INFO & SIGNOUT */}
           <div className="flex justify-end items-center my-4 space-x-8">
             <Time_Strip />
+            <ThemeChooser />
             {!userData ? (
               <div className="w-5/12 flex items-center space-x-4">
                 <progress className="progress progress-primary"></progress>
