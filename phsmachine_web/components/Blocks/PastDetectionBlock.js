@@ -1,7 +1,9 @@
 // import { FiHardDrive } from "react-icons/fi";
+import { useRouter } from "next/router";
 import { FaEye } from "react-icons/fa";
 
 const PastDetectionBlock = ({ pastDetection }) => {
+    const router = useRouter()
   return (
     <div className="mb-2">
       <div className="shadow-lg rounded-2xl p-4 card bg-base-100 w-full">
@@ -30,8 +32,8 @@ const PastDetectionBlock = ({ pastDetection }) => {
                 className="tooltip tooltip-left"
                 data-tip="View Detection Info"
               >
-                <a href={`/detection_details?_id=${det._id}`} >
-                  <FaEye className="text-secondary w-4 h-4 mr-2" />
+                <a onClick={()=>router.push(`/detection_details?_id=${det._id}`)} >
+                  <FaEye className="text-secondary w-4 h-4 mr-2 cursor-pointer" />
                 </a>
               </div>
             </li>
@@ -46,8 +48,8 @@ const PastDetectionBlock = ({ pastDetection }) => {
           {pastDetection.length === 10 && (
             <li className="text-center my-2">
               <a
-                href="/detections"
-                className="text-primary text-sm"
+                onClick={()=> router.push("/detections")}
+                className="text-primary text-sm cursor-pointer"
               >
                 View More Records
               </a>

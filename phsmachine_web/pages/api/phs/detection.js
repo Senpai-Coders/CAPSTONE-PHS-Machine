@@ -52,6 +52,17 @@ const handler = async (req, res) => {
         else console.log("deleted successfuly");
       });
       return res.status(200).json({ message: "Deleted!" });
+    } else if (mode === -2) {
+      const { ids } = req.body;
+      for (var x = 0; x < ids.length; x++) {
+        const update = await detections.deleteOne({ _id : new ObjectId(ids[x].id) });
+        fs.rmdir(`public/detection/${ids[x].path}`, { recursive: true }, (err) => {
+          if (err) console.log("Err deletion of folder record", err);
+          else console.log("deleted successfuly");
+        });
+      }
+
+      return res.status(200).json({ message: "Deleted!" });
     }
   } catch (e) {
     console.log(e);

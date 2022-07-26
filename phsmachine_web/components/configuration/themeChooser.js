@@ -47,7 +47,7 @@ const themeChooser = () => {
 
   return (
     <div className="dropdown">
-      <label tabindex="0" className="btn btn-ghost btn-square m-1">
+      <label tabindex="0" className="btn btn-ghost btn-sm btn-square m-1">
         <AiFillFormatPainter className="w-6 h-6" />
       </label>
       <ul

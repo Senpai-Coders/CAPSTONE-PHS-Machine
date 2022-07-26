@@ -141,7 +141,7 @@ const navbar = () => {
           </div>
 
           {/* USER INFO & SIGNOUT */}
-          <div className="flex justify-end items-center my-4 space-x-8">
+          <div className="flex justify-end items-center space-x-8">
             <Time_Strip />
             <ThemeChooser />
             {!userData ? (

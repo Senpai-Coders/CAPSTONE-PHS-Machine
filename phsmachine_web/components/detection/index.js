@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { IoReloadCircleSharp } from "react-icons/io5";
+import { IoReloadCircleSharp, IoTrashBinSharp } from "react-icons/io5";
+import { dateToWord } from "../../helpers";
+import { DeleteConfirm } from "../modals"
 
 const index = () => {
   const router = useRouter();
@@ -9,6 +11,7 @@ const index = () => {
   const [detections, setDetections] = useState([]);
 
   const [selected, setSelected] = useState([]);
+  const [modal, setModal] = useState(-1)
 
   const [filterMode, setFilterMode] = useState([0]); // 0 - all, 1 ( Only One Specific Date), 2 ( ranged )
 
@@ -25,6 +28,36 @@ const index = () => {
     }
   };
 
+  const getObjIndex = (id) => {
+    return detections.findIndex((obj) => { return obj._id === id})
+  }
+
+  const deleteSelected = async () => {
+    try {
+      let ids = []
+      
+      selected.forEach((id) => {
+        let foundIdx = getObjIndex(id)
+        if(foundIdx > -1){
+            var focPath = detections[foundIdx].img_normal;
+            var fslash = focPath.indexOf("/", 1);
+            var sslash = focPath.indexOf("/", fslash + 1);
+            var delFold = focPath.substring(fslash + 1, sslash);
+            ids.push({ id, path : delFold })
+        }
+      })
+
+      const resp = await axios.post("/api/phs/detection", {
+        mode: -2,
+        ids
+      });
+      setSelected([])
+      init()
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
     init();
   }, []);
@@ -36,11 +69,15 @@ const index = () => {
           <progress className="progress"></progress>
         </div>
       )}
-
+      {
+        modal === 1 && <DeleteConfirm close={setModal(-1)} onAccept={deleteSelected} />
+      }
       <div className="px-4 ">
         <div className="flex items-center space-x-2 justify-start">
           <p className="btn btn-sm" onClick={() => init()}>
-            <IoReloadCircleSharp className="mr-2" />
+            <IoReloadCircleSharp
+              className={`mr-2 ${loading ? "animate-spin" : ""}`}
+            />
             Refresh{" "}
           </p>
           {selected.length > 0 && (
@@ -55,7 +92,7 @@ const index = () => {
                 {" "}
                 Unselect All{" "}
               </p>
-              <p className="btn btn-sm"> Delete Selected </p>
+              <p onClick={()=>setModal(1)} className="btn btn-sm btn-square"> <IoTrashBinSharp /> </p>
             </>
           )}
         </div>
@@ -67,7 +104,7 @@ const index = () => {
             <tr className="h-16 bg-base-200 rounded-lg shadow-sm">
               <th>
                 <input
-                  checked={selected.length === detections.length && !loading}
+                  checked={selected.length === detections.length && detections.length !== 0 && !loading}
                   onChange={(e) => {
                     if (e.target.checked) {
                       let fltrd = [];
@@ -90,7 +127,15 @@ const index = () => {
           <tbody className="">
             {detections.map((detection) => (
               <>
-                <tr className="even:bg-base-100/30 border-b border-base-100">
+                <tr
+                  className={` border-b border-base-100 ${
+                    selected.filter((id) => {
+                      return id === detection._id;
+                    }).length !== 0
+                      ? "bg-base-300"
+                      : "even:bg-base-100/30"
+                  }`}
+                >
                   <td>
                     <div className="flex justify-center py-2">
                       <div className="">
@@ -119,7 +164,9 @@ const index = () => {
                   <td className="">
                     <div className="flex items-center">
                       <p className="text-base font-medium text-center">
-                        11/11/2021
+                        {detection.uat
+                          ? dateToWord(detection.uat)
+                          : dateToWord(new Date())}
                       </p>
                     </div>
                   </td>
@@ -127,21 +174,28 @@ const index = () => {
                   <td className="">
                     <div className="flex items-center justify-end">
                       <div className="py-1 px-2 rounded-full ">
-                        <p className="text-base  font-medium">9</p>
+                        <p className="text-base  font-medium">
+                          {detection.data.pig_count}
+                        </p>
                       </div>
                     </div>
                   </td>
                   <td className="">
                     <div className="flex items-center justify-center">
                       <div className="py-1 px-2 rounded-full ">
-                        <p className="text-base  font-medium">3</p>
+                        <p className="text-base  font-medium">
+                          {detection.data.stressed_pig}
+                        </p>
                       </div>
                     </div>
                   </td>
                   <td className="">
                     <div className="flex items-center justify-start">
                       <div className="py-1 px-2 rounded-full ">
-                        <p className="text-base  font-medium">6</p>
+                        <p className="text-base  font-medium">
+                          {detection.data.pig_count -
+                            detection.data.stressed_pig}
+                        </p>
                       </div>
                     </div>
                   </td>
@@ -160,6 +214,9 @@ const index = () => {
             ))}
           </tbody>
         </table>
+        {loading && (
+          <p className="text-sm my-2 text-center">loading please wait..</p>
+        )}
       </div>
 
       {/** OLD VERSION */}
@@ -225,7 +282,7 @@ const index = () => {
       </div> */}
 
       {!loading && detections.length === 0 && (
-        <p className="tracking-wider opacity-70 text-sm font-inter text-center">
+        <p className="tracking-wider opacity-70 text-sm font-inter text-center my-4">
           There are 0 detections
         </p>
       )}

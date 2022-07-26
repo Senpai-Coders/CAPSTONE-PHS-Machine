@@ -31,7 +31,7 @@ const Events = () => {
             onClick={() => setTab(0)}
             className={`${tab === 0 ? "tab-active" : ""} tab-lg tab tab-lifted`}
           >
-            Heat Stress Events
+            Records
           </a>
           <a
             onClick={() => setTab(1)}
