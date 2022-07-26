@@ -47,11 +47,11 @@ const themeChooser = () => {
 
   return (
     <div className="dropdown">
-      <label tabindex="0" className="btn btn-ghost btn-sm btn-square m-1">
+      <label tabIndex="0" className="btn btn-ghost btn-sm btn-square m-1">
         <AiFillFormatPainter className="w-6 h-6" />
       </label>
       <ul
-        tabindex="0"
+        tabIndex="0"
         className="dropdown-content menu max-h-80 overflow-y-scroll px-3 py-4 shadow backdrop-blur-sm bg-base-100/60 rounded-sm"
       >
         {themes.map((th, i) => (

@@ -103,3 +103,19 @@ export const dateToWord = (date) => {
   )}`;
   return wordDate;
 };
+
+export const dateMMDDYYYY=(date, sep) => {
+        if(isNaN(date)) return `-${sep}-${sep}`
+        let year = date.getFullYear();
+        let month = (1 + date.getMonth()).toString().padStart(2, '0');
+        let day = date.getDate().toString().padStart(2, '0');
+        return `${month}${sep}${day}${sep}${year}`
+}
+
+export const dateYYYYMMDD=(date,sep) => {
+    let year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString().padStart(2, '0');
+    let day = date.getDate().toString().padStart(2, '0');
+    let str = `${year}${sep}${month}${sep}${day}`
+    return str;
+}

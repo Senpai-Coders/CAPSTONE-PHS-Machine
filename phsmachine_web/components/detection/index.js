@@ -2,26 +2,67 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { IoReloadCircleSharp, IoTrashBinSharp } from "react-icons/io5";
+import { GoPrimitiveDot } from "react-icons/go"
+
 import { dateToWord } from "../../helpers";
-import { DeleteConfirm } from "../modals"
+import { DeleteConfirm, InfoCustom } from "../modals";
+import { RangePick, SinglePick } from "../DatePick";
 
 const index = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [detections, setDetections] = useState([]);
+  const [copDet, setCopDet] = useState([]) //copy of detections state
 
   const [selected, setSelected] = useState([]);
-  const [modal, setModal] = useState(-1)
+  const [modal, setModal] = useState(-1);
 
-  const [filterMode, setFilterMode] = useState([0]); // 0 - all, 1 ( Only One Specific Date), 2 ( ranged )
+  const [dateMode, setDateMode] = useState(0);
+  const [fromDate, setFromDate] = useState(new Date());
+  const [toDate, setToDate] = useState(new Date());
+  const [dateChanged, setDateChange] = useState(false);
 
-  const filterer = () => {};
+  const filterDateRange = (from, to, date) => {
+    let FROM = new Date(from)
+    FROM.setDate(FROM.getDate());
+    let TO = new Date(to)
+    TO.setDate(TO.getDate() + 1);
+    return date >= FROM && date <= TO;
+  };
 
-  const init = async () => {
+  const filterDateEqual = (to, date) => { return to.toDateString() === date.toDateString(); };
+
+  const filterData = (data) => {
+    let filtered = [];
+    if (dateMode === 0) return data;
+    if (dateMode === 1) {
+      data.forEach((det) => {
+        let focObj = { ...det };
+        if (!det.cat) focObj = { ...det, cat: new Date() };
+        if (filterDateEqual(fromDate, new Date(focObj.cat)))
+          filtered.push(focObj);
+      });
+
+      return filtered;
+    }
+    if (dateMode === 2) {
+      data.forEach((det) => {
+        let focObj = { ...det };
+        if (!det.cat) focObj = { ...det, cat: new Date() };
+        if (filterDateRange(fromDate, toDate, new Date(focObj.cat)))
+          filtered.push(focObj);
+      });
+      return filtered;
+    }
+  };
+
+  const init = async (t) => {
     try {
       setLoading(true);
       const resp = await axios.post("/api/phs/detection", { mode: 0 });
-      setDetections(resp.data.detection_data);
+      let det = resp.data.detection_data
+      setDetections(filterData(det));
+      setCopDet(det)
       setLoading(false);
     } catch (e) {
       console.log(e);
@@ -29,30 +70,32 @@ const index = () => {
   };
 
   const getObjIndex = (id) => {
-    return detections.findIndex((obj) => { return obj._id === id})
-  }
+    return detections.findIndex((obj) => {
+      return obj._id === id;
+    });
+  };
 
   const deleteSelected = async () => {
     try {
-      let ids = []
-      
+      let ids = [];
+
       selected.forEach((id) => {
-        let foundIdx = getObjIndex(id)
-        if(foundIdx > -1){
-            var focPath = detections[foundIdx].img_normal;
-            var fslash = focPath.indexOf("/", 1);
-            var sslash = focPath.indexOf("/", fslash + 1);
-            var delFold = focPath.substring(fslash + 1, sslash);
-            ids.push({ id, path : delFold })
+        let foundIdx = getObjIndex(id);
+        if (foundIdx > -1) {
+          var focPath = detections[foundIdx].img_normal;
+          var fslash = focPath.indexOf("/", 1);
+          var sslash = focPath.indexOf("/", fslash + 1);
+          var delFold = focPath.substring(fslash + 1, sslash);
+          ids.push({ id, path: delFold });
         }
-      })
+      });
 
       const resp = await axios.post("/api/phs/detection", {
         mode: -2,
-        ids
+        ids,
       });
-      setSelected([])
-      init()
+      setSelected([]);
+      init();
     } catch (e) {
       console.log(e);
     }
@@ -69,22 +112,125 @@ const index = () => {
           <progress className="progress"></progress>
         </div>
       )}
-      {
-        modal === 1 && <DeleteConfirm close={setModal(-1)} onAccept={deleteSelected} />
-      }
+
+      <DeleteConfirm
+        shown={modal === 1}
+        close={setModal}
+        onAccept={deleteSelected}
+      />
+
+      <InfoCustom
+        shown={modal === 2}
+        close={setModal}
+        title={"Invalid Date"}
+        content={<div>
+            <p className="mt-2">Please follow this rule</p>
+            <ul className="my-2">
+                <li className="flex items-center"><GoPrimitiveDot className="mr-2"/>Start Date must always greater than End Date</li>
+                <li className="flex items-center"><GoPrimitiveDot className="mr-2"/>End Date must always less than Start Date</li>
+            </ul>
+        </div>}
+        onAcceptText={"ok"}
+      />
+
+      {/** MENU */}
       <div className="px-4 ">
-        <div className="flex items-center space-x-2 justify-start">
-          <p className="btn btn-sm" onClick={() => init()}>
+        <div className="flex md:space-x-2 items-center flex-wrap justify-start">
+          <p className="btn btn-sm mr-2 md:mr-0" onClick={() => init()}>
             <IoReloadCircleSharp
               className={`mr-2 ${loading ? "animate-spin" : ""}`}
             />
             Refresh{" "}
           </p>
+
+          <div className="dropdown mr-2 md:mr-0 dropdown-hover">
+            <label tabindex="0" className="btn btn-sm">
+              {dateMode === 0 && "All"}
+              {dateMode === 1 && "Single Date"}
+              {dateMode === 2 && "Range Date"}
+            </label>
+            <ul
+              tabindex="0"
+              className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+            >
+              <li>
+                <a
+                  onClick={() => {
+                    setDateMode(0);
+                    setDetections(copDet)
+                    init()
+                  }}
+                >
+                  All Date
+                </a>
+              </li>
+              <li>
+                <a
+                  onClick={() => {
+                    setDateMode(1);
+                  }}
+                >
+                  Single Date
+                </a>
+              </li>
+              <li>
+                <a
+                  onClick={() => {
+                    setDateMode(2);
+                  }}
+                >
+                  Range Date
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {dateMode === 1 && (
+            <SinglePick
+              onApply={() => {
+                setDateChange(false);
+                init();
+              }}
+              textDescription={"Choose Date"}
+              defaultDate={fromDate}
+              dateChanged={dateChanged}
+              setDate={(date) => {
+                setFromDate(date);
+                setDateChange(true);
+              }}
+            />
+          )}
+
+          {dateMode === 2 && (
+            <RangePick
+              onApply={() => {
+                if(toDate <= fromDate){
+                    setModal(2)
+                    return
+                }
+                setDateChange(false);
+                init();
+              }}
+              dateChanged={dateChanged}
+              textDescription={"Choose Start & End Date"}
+              date1={fromDate}
+              date2={toDate}
+              setDate1={(date) => {
+                setDateChange(true);
+                setFromDate(date);
+              }}
+              setDate2={(date) => {
+                setDateChange(true);
+                setToDate(date);
+              }}
+            />
+          )}
+
           {selected.length > 0 && (
             <>
               <p className=""> {selected.length} Record Selected </p>
               <p
-                className="btn btn-sm"
+                className="btn btn-sm mr-2  md:mr-0"
                 onClick={() => {
                   setSelected([]);
                 }}
@@ -92,7 +238,16 @@ const index = () => {
                 {" "}
                 Unselect All{" "}
               </p>
-              <p onClick={()=>setModal(1)} className="btn btn-sm btn-square"> <IoTrashBinSharp /> </p>
+              <p
+                onClick={() => {
+                  console.log(1);
+                  setModal(1);
+                }}
+                className="btn btn-sm mr-2 md:mr-0 btn-square"
+              >
+                {" "}
+                <IoTrashBinSharp />{" "}
+              </p>
             </>
           )}
         </div>
@@ -104,7 +259,11 @@ const index = () => {
             <tr className="h-16 bg-base-200 rounded-lg shadow-sm">
               <th>
                 <input
-                  checked={selected.length === detections.length && detections.length !== 0 && !loading}
+                  checked={
+                    selected.length === detections.length &&
+                    detections.length !== 0 &&
+                    !loading
+                  }
                   onChange={(e) => {
                     if (e.target.checked) {
                       let fltrd = [];
@@ -204,7 +363,7 @@ const index = () => {
                       onClick={() =>
                         router.push(`/detection_details?_id=${detection._id}`)
                       }
-                      className="btn btn-sm"
+                      className="btn btn-sm btn-outline"
                     >
                       View
                     </button>

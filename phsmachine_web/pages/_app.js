@@ -1,8 +1,8 @@
 import "../styles/globals.css";
 import { loadTheme } from "../helpers";
 import { useRouter } from "next/router";
-
 import { useEffect } from "react";
+import 'react-calendar/dist/Calendar.css';
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();

@@ -17,10 +17,10 @@ const deleteConfirm = ({ close, shown, onAccept }) => {
           Selected record will be deleted forever. Are you sure to proceed?
         </p>
         <div className="modal-action">
-          <label onClick={() => { close(); onAccept(); }} className="btn">
+          <label onClick={() => { close(-1); onAccept(); }} className="btn">
             Yes
           </label>
-          <label onClick={() => close()} className="btn">
+          <label onClick={() => close(-1)} className="btn">
             No
           </label>
         </div>
