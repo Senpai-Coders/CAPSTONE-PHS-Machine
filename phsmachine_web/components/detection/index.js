@@ -8,6 +8,7 @@ import { dateToWord } from "../../helpers";
 import { DeleteConfirm, InfoCustom } from "../modals";
 import { RangePick, SinglePick } from "../DatePick";
 
+
 const index = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);

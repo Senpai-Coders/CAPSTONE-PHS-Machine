@@ -9,6 +9,8 @@ import { GiCyberEye } from "react-icons/gi";
 
 export const PI_IP = process.env.PI_IP;
 
+export const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+
 export const getMyData = async () => {
   try {
     const myData = await axios.post("/api/phs/userDetails");

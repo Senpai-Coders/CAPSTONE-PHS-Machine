@@ -3,9 +3,11 @@ import Head from "next/head";
 import { useState } from "react";
 
 import DetectionList from "../components/detection";
+import Statistics from "../components/detection/Statistics"
+
 
 const Events = () => {
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useState(1);
 
   return (
     <>
@@ -44,6 +46,7 @@ const Events = () => {
 
       {/** RECORD LIST */}
       {tab === 0 && <DetectionList />}
+      {tab === 1 && <Statistics />}
     </>
   );
 };

@@ -1,6 +1,6 @@
 import ReactEcharts from "echarts-for-react";
 
-const HeatMapCalendar = ({ option, data }) => {
+const HeatMapCalendar = ({ option }) => {
   return (
     <div className="h-64">
       <ReactEcharts

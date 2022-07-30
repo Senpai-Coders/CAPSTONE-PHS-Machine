@@ -4,6 +4,10 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Lato:ital,wght@0,300;0,400;0,700;1,100;1,300;1,400;1,700&display=swap");
 
+::-webkit-calendar-picker-indicator {
+    filter: invert(0.5);
+}
+
 .font-lato {
   font-family: "Lato", sans-serif;
 }
