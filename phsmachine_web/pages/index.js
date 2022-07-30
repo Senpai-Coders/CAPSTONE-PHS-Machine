@@ -55,6 +55,11 @@ export default function Home() {
   // -2 shutdown confirm
   // -3 Reboot Confirm
 
+  const [phsStorage, setPhsStorage] = useState({
+        diskPath: '/',
+        free: 0,
+        size: 0
+  })
   const [dbActions, setDbActions] = useState([]);
   const [dbActiveUsers, setDbActiveUsers] = useState([]);
   const [phsActions, setPhsActions] = useState([
@@ -107,6 +112,9 @@ export default function Home() {
       const db_past_detections = await axios.post("/api/phs/detection", {
         mode: 3,
       });
+
+      const phs_storage = await axios.post("/api/phs/phs_storage", {})
+      setPhsStorage(phs_storage.data.storage)
       setDbActions(db_actions.data.actions);
       setDbActiveUsers(db_active_users.data.activeUsers);
       setPastDetection(db_past_detections.data.detections);
@@ -185,7 +193,7 @@ export default function Home() {
               <ThermalReadingBlock SYSSTATE={SYSSTATE} />
 
               {/** Server Storage Status */}
-              <PhsStorageBlock />
+              <PhsStorageBlock storageInfo={phsStorage} />
             </div>
 
             {/** COL 2 */}

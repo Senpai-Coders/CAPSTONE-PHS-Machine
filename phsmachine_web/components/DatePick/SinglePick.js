@@ -7,6 +7,7 @@ const SinglePick = ({
   textDescription,
   setDate,
   defaultDate,
+  hideApply
 }) => {
   const feature1 = false;
 
@@ -37,7 +38,7 @@ const SinglePick = ({
           </div>
 
           {feature1 && <Calendar onChange={setDate} value={defaultDate} />}
-          {dateChanged && (
+          { !hideApply && dateChanged && (
             <div className="card-actions justify-end">
               <button onClick={() => onApply()} class="btn btn-sm">
                 apply

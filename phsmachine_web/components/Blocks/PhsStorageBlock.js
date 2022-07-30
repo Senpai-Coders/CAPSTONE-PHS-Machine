@@ -1,6 +1,22 @@
+import { useEffect, useState } from "react";
 import { FiHardDrive } from "react-icons/fi";
 
-const PhsStorageBlock = () => {
+import { bytesToMegaBytes, mbToGB } from "../../helpers"
+
+const PhsStorageBlock = ({storageInfo}) => {
+
+  const [used, setUsed] = useState(0)
+  const [free, setFree] = useState(0)
+  const [size, setSize] = useState(0)
+
+  useEffect(()=>{
+    console.log(storageInfo)
+    let Size = mbToGB(bytesToMegaBytes(storageInfo.size)), Free = mbToGB(bytesToMegaBytes(storageInfo.free))
+    setSize(Size.toFixed(1))
+    setFree(Free.toFixed(1))
+    setUsed((Size - Free).toFixed(1))
+  },[storageInfo])
+
   return (
     <div className="mb-2">
       <div className="shadow-lg rounded-2xl p-4 card bg-base-100 w-full">
@@ -16,11 +32,11 @@ const PhsStorageBlock = () => {
             </div>
           </div>
         </div>
-        <p>6.4 used out of 32Gb</p>
+        <p>{used} GB used out of {size} Gb</p>
         <progress
           className="mt-1 progress progress-primary"
-          value={6.4}
-          max={32}
+          value={used}
+          max={size}
         ></progress>
         <p className="text-warning text-xs mt-2">
           If the storage get's too small, PHS will stop saving detections & you

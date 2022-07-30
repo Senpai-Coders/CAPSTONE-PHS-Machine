@@ -37,10 +37,8 @@ const index = ({ refresh, data }) => {
         </p>
 
         <SinglePick
-              onApply={() => {
-                setDateChange(false);
-                init();
-              }}
+        hideApply={true}
+              onApply={() => {}}
               textDescription={"Choose Date"}
               defaultDate={date}
               dateChanged={()=>{}}
