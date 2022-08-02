@@ -1,42 +1,105 @@
 import { useState, useEffect } from "react";
-import { dateYYYYMMDD } from "../../helpers";
+import { dateYYYYMMDD, dateToBeutify} from "../../helpers";
 import HeatmapCalendar from "../charts/HeatmapCalendar";
+import { InfoCustom } from "../modals/";
 
-const index = ({ detections, yearChosen }) => {
+import { FiChevronRight } from "react-icons/fi";
+import { BsClipboardData } from "react-icons/bs";
+import { useRouter } from "next/router";
+
+const index = ({ detections, yearChosen, hoverSeriesName }) => {
+  const router = useRouter()
+
+  const [dateSelected, setDateSelected] = useState(
+    dateYYYYMMDD(new Date(), "-")
+  );
+  const [showModal, setShowModal] = useState(-1);
+
   const [data, setData] = useState([
     ["2022-01-06", 14],
     ["2022-01-04", 5],
   ]);
 
   const findFromDatas = (datas, dateString) => {
-    for(var x = 0; x < datas.length; x++){
-        if(datas[x][0] === dateString) return x
+    for (var x = 0; x < datas.length; x++) {
+      if (datas[x][0] === dateString) return x;
     }
-    return -1
-}
+    return -1;
+  };
 
   const parseData = () => {
     let datas = [];
     detections.forEach((det) => {
-        let date = det.cat ? new Date(det.cat) : new Date()
-        let dString = dateYYYYMMDD(date, '-')
-        let idx = findFromDatas(datas, dString)
-        if(idx === -1)  datas.push([dString, 1])
-        else datas[idx][1] += 1
-    })
+      let date = det.cat ? new Date(det.cat) : new Date();
+      let dString = dateYYYYMMDD(date, "-");
+      let idx = findFromDatas(datas, dString);
+      if (idx === -1) datas.push([dString, 1]);
+      else datas[idx][1] += 1;
 
-    setData(datas)
-  }
+      // if(idx === -1)  datas.push({ name : dString, value : 1 })
+      // else datas[idx].value += 1
+    });
 
-  useEffect(() => { parseData() }, [yearChosen, detections]);
+    setData(datas);
+  };
 
+  const getSpecificDetection = (date) => {
+    let dets = [];
+
+    detections.forEach((detection, i) => {
+      const dt = dateYYYYMMDD(new Date(detection.cat), "-");
+      if (dt === dateSelected) dets.push(detection);
+    });
+
+    return dets;
+  };
+
+  useEffect(() => {
+    parseData();
+  }, [yearChosen, detections]);
 
   return (
     <div className=" md:mx-8 lg:mx-16 ">
+      {/** MODAL */}
+      <InfoCustom
+        content={
+          <div className="h-96 overflow-y-scroll mt-2">
+            {getSpecificDetection(dateSelected).map((det, i) => (
+              <div className="flex hover:bg-base-200 px-2 rounded-md py-4 items-center justify-between border-b border-accent/20">
+                <div className="flex items-center justify-start">
+                  <BsClipboardData className="w-6 h-6 text-secondary mr-2" />
+                  <div>
+                    <p>{dateToBeutify(new Date(det.cat), "-")}</p>
+                  </div>
+                </div>
+                <a target='blank' className="flex items-center hover:text-primary" href={`/detection_details?_id=${det._id}`} >
+                    View
+                  <FiChevronRight className="h-5 w-5" />
+                </a>
+                {/* <div onClick={()=>router.push(`/detection_details?_id=${det._id}`)} className="cursor-pointer hover:text-primary flex items-center">
+                  View
+                  <FiChevronRight className="h-5 w-5" />
+                </div> */}
+              </div>
+            ))}
+          </div>
+        }
+        title={`Detections on ${dateSelected}`}
+        onAcceptText={"close"}
+        shown={showModal === 1}
+        close={setShowModal}
+      />
+
       <div>
         {/** SIMPLE STATS */}
         <div className="py-5 ">
           <HeatmapCalendar
+            onEvents={{
+              click: (e) => {
+                setShowModal(1);
+                setDateSelected(e.value[0]);
+              },
+            }}
             option={{
               toolbox: {
                 show: true,
@@ -65,7 +128,7 @@ const index = ({ detections, yearChosen }) => {
                 orient: "horizontal",
                 left: "center",
                 itemWidth: 30,
-                precision : 0,
+                precision: 0,
                 top: 20,
                 // pieces: [
                 //   { min: 1, max: 10 },
@@ -101,6 +164,7 @@ const index = ({ detections, yearChosen }) => {
                 },
               },
               series: {
+                name: hoverSeriesName,
                 type: "heatmap",
                 coordinateSystem: "calendar",
                 data: data,

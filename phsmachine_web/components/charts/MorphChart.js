@@ -1,6 +1,6 @@
 import ReactEcharts from "echarts-for-react";
 
-const MorphChart = ({ option, data }) => {
+const MorphChart = ({ option }) => {
   return (
     <div className="h-64">
       <ReactEcharts

@@ -7,8 +7,10 @@ import { FiZapOff, FiSlash } from "react-icons/fi";
 import { BsFillBugFill } from "react-icons/bs";
 import { GiCyberEye } from "react-icons/gi";
 
-export const bytesToMegaBytes = bytes => bytes / (1024 ** 2)
+export const bytesToMegaBytes = bytes => bytes / 1000000 //bytes / (1024 ** 2)
 export const mbToGB = mb => mb / 1000
+
+export const getPercentUsage = (total, taken) => taken / total * 100
 
 export const PI_IP = process.env.PI_IP;
 
@@ -124,3 +126,17 @@ export const dateYYYYMMDD=(date,sep) => {
     let str = `${year}${sep}${month}${sep}${day}`
     return str;
 }
+
+export const dateToBeutify = (date) => {
+    let thisDate = new Date(date);
+    let wordDate = `${thisDate.toLocaleString("en-us", {
+      month: "short",
+    })} ${thisDate.getDate()}, ${thisDate.getFullYear()} at ${thisDate.toLocaleTimeString(
+      "en-US",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    )}`;
+    return wordDate;
+  };

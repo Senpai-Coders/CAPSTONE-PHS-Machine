@@ -64,11 +64,11 @@ const QuickControlsBlock = ({ state, setSelectedModal }) => {
             <FaStopCircle className="w-4 h-4 text-error mr-2" />
             Stop All Actions
           </button>
-          <button onClick={()=>setSelectedModal(-2)} className="btn glass btn-xs my-1 text-white bg-red-600">
+          <button onClick={()=>setSelectedModal(-2)} className="btn glass btn-xs my-1 text-gray-400 bg-red-600">
             <FiZapOff className="w-4 h-4 text-error-content mr-2" />
             Shutdown PHS
           </button>          
-          <button onClick={()=>setSelectedModal(-3)} className="btn glass btn-xs my-1 text-white bg-slate-700">
+          <button onClick={()=>setSelectedModal(-3)} className="btn glass btn-xs my-1 text-gray-400 bg-slate-700">
             <BsBootstrapReboot className="w-4 h-4 text-error-content mr-2" />
             Reboot PHS
           </button>

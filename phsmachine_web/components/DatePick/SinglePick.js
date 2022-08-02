@@ -7,7 +7,7 @@ const SinglePick = ({
   textDescription,
   setDate,
   defaultDate,
-  hideApply
+  hideApply,
 }) => {
   const feature1 = false;
 
@@ -18,13 +18,13 @@ const SinglePick = ({
       </label>
       <div
         tabIndex="0"
-        className="dropdown-content w-64 bg-base-100/90 backdrop-blur-sm card card-compact p-1 shadow "
+        className="dropdown-content w-64 bg-base-100/90 backdrop-blur-sm card card-compact p-1 shadow-xl "
       >
         <div className="card-body">
           <h2 className="card-title text-lg">{textDescription}</h2>
-          <div class="form-control w-full max-w-xs">
-            <label class="label">
-              <span class="label-text">Select Start Date</span>
+          <div className="form-control w-full max-w-xs">
+            <label className="label">
+              <span className="label-text">Select Date</span>
             </label>
             <input
               value={dateYYYYMMDD(defaultDate, "-")}
@@ -33,14 +33,14 @@ const SinglePick = ({
                 setDate(new Date(e.target.value));
               }}
               placeholder="Type here"
-              class="input input-bordered"
+              className="input input-bordered"
             />
           </div>
 
           {feature1 && <Calendar onChange={setDate} value={defaultDate} />}
-          { !hideApply && dateChanged && (
+          {!hideApply && dateChanged && (
             <div className="card-actions justify-end">
-              <button onClick={() => onApply()} class="btn btn-sm">
+              <button onClick={() => onApply()} className="btn btn-sm">
                 apply
               </button>
             </div>

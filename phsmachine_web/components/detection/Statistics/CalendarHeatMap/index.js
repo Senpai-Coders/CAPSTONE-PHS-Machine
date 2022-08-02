@@ -25,7 +25,7 @@ const index = ({ refresh, data, loading }) => {
   }, [fromYear, toYear]);
 
   return (
-    <div>
+    <div className="mt-4">
       <p className="text-lg mb-6">Calendar Detection</p>
       <div className="flex items-center justify-start">
         <p className="btn btn-sm mr-2 md:mr-2" onClick={() => refresh()}>
@@ -123,7 +123,7 @@ const index = ({ refresh, data, loading }) => {
             //   <p key={idx}>{year}</p>
             <Year yearChosen={year} key={idx} />
           ))} */}
-          {<Year detections={data} yearChosen={selectedYear} />}
+          {<Year hoverSeriesName={'Number of detections'} detections={data} yearChosen={selectedYear} />}
         </div>
       </div>
     </div>

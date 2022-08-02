@@ -39,7 +39,7 @@ const index = ({ refresh, data }) => {
         <SinglePick
         hideApply={true}
               onApply={() => {}}
-              textDescription={"Choose Date"}
+              textDescription={"Choose A Day"}
               defaultDate={date}
               dateChanged={()=>{}}
               setDate={(date) => { setDate(date) }}

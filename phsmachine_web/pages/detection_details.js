@@ -54,7 +54,12 @@ export default function _detection_details() {
     }
   };
 
-  const goBack = () => { router.back() }
+  const goBack = () => { 
+    let goBacks = router.back()
+    if(goBacks === undefined){
+        close()
+    }
+}
 
   const del = async () => {
     try {
