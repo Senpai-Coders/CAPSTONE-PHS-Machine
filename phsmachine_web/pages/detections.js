@@ -39,7 +39,7 @@ const Events = () => {
             onClick={() => setTab(1)}
             className={`${tab === 1 ? "tab-active" : ""} tab-lg tab tab-lifted`}
           >
-            Statistics
+            Visualization
           </a>
         </div>
       </div>

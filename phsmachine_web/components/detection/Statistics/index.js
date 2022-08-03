@@ -24,8 +24,9 @@ const index = () => {
   }, [])
 
   return <div className="min-h-screen">
-    <CalendarHeatMap refresh={init} data={detections} />
-    <WeekDetection refresh={init} data={detections} />
+    <CalendarHeatMap loading={loading} refresh={init} data={detections} />
+    <div className="divider my-8"></div> 
+    <WeekDetection loading={loading} refresh={init} data={detections} />
   </div>;
 };
 

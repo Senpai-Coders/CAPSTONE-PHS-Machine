@@ -5,11 +5,8 @@ import { InfoCustom } from "../modals/";
 
 import { FiChevronRight } from "react-icons/fi";
 import { BsClipboardData } from "react-icons/bs";
-import { useRouter } from "next/router";
 
-const index = ({ detections, yearChosen, hoverSeriesName }) => {
-  const router = useRouter()
-
+const index = ({ saveFileName, detections, yearChosen, hoverSeriesName, textColor }) => {
   const [dateSelected, setDateSelected] = useState(
     dateYYYYMMDD(new Date(), "-")
   );
@@ -104,7 +101,7 @@ const index = ({ detections, yearChosen, hoverSeriesName }) => {
               toolbox: {
                 show: true,
                 feature: {
-                  saveAsImage: { title: "Save", show: true },
+                  saveAsImage: { name : !saveFileName ? 'chart' : saveFileName, title: "Save", show: true },
                 },
               },
               //   title: {
@@ -140,7 +137,7 @@ const index = ({ detections, yearChosen, hoverSeriesName }) => {
                 //   { min: 91, max: 100 }
                 // ],
                 textStyle: {
-                  color: "#7d6d72",
+                  color: textColor,
                 },
                 inRange: {
                   color: ["#ffd2ce", "#ff4b58"],
@@ -155,13 +152,23 @@ const index = ({ detections, yearChosen, hoverSeriesName }) => {
                   borderWidth: 0.1,
                   borderRadius: 10,
                   borderColor: "none",
-                  color: "rgba(255,255,255,0)",
+                  color: "rgba(255,255,255,0.1)",
                 },
                 yearLabel: {
                   show: true,
-                  color: "#7d6d72",
+                  color: textColor,
                   fontSize: 30,
                 },
+                monthLabel: {
+                    show: true,
+                    color: textColor,
+                    fontSize: 15,
+                  },
+                  dayLabel: {
+                    show: true,
+                    color: textColor,
+                    fontSize: 15,
+                  }
               },
               series: {
                 name: hoverSeriesName,

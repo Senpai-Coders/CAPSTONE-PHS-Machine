@@ -3,7 +3,7 @@ import { FiZapOff } from "react-icons/fi";
 const off_alert = ({ close, shown }) => {
   return (
     <div
-      className={`modal modal-bottom sm:modal-middle ${
+      className={`modal backdrop-blur-sm modal-bottom sm:modal-middle ${
         shown ? "modal-open" : ""
       }`}
     >

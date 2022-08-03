@@ -4,7 +4,7 @@ import { BsBootstrapReboot } from "react-icons/bs"
 const RebootConfirm = ({ close, shown, onAccept }) => {
   return (
     <div
-      className={`modal modal-bottom sm:modal-middle ${
+      className={`modal backdrop-blur-sm modal-bottom sm:modal-middle ${
         shown ? "modal-open" : ""
       }`}
     >

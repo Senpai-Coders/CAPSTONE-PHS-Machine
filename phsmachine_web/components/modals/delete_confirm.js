@@ -4,7 +4,7 @@ import { IoTrashBinSharp } from "react-icons/io5"
 const deleteConfirm = ({ close, shown, onAccept }) => {
   return (
     <div
-      className={`modal modal-bottom sm:modal-middle ${
+      className={`modal backdrop-blur-sm modal-bottom sm:modal-middle ${
         shown ? "modal-open" : ""
       }`}
     >

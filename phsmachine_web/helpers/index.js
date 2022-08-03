@@ -140,3 +140,15 @@ export const dateToBeutify = (date) => {
     )}`;
     return wordDate;
   };
+
+export const getMonthName = (date) => {
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+    ];
+
+    return monthNames[date.getMonth()];
+}
+
+export const dateMwDDYYYY = (date) => {
+    return `${getMonthName(date)} ${date.getDate()}, ${date.getFullYear()}`
+}

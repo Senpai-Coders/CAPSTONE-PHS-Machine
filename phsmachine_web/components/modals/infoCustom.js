@@ -4,7 +4,7 @@ import { AiOutlineInfo } from "react-icons/ai"
 const deleteConfirm = ({ close, shown, onAccept, onAcceptText, title, content}) => {
   return (
     <div
-      className={`modal modal-bottom sm:modal-middle ${
+      className={`modal backdrop-blur-sm modal-bottom sm:modal-middle ${
         shown ? "modal-open" : ""
       }`}
     >

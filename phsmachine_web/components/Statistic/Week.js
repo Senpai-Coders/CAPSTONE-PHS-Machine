@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { MorphChart } from "../charts"
 
-const index = ({max, days, data, hours, title }) => {
+const index = ({saveFileName, max, days, data, hours, title, onEvents, textColor }) => {
   return (
           <MorphChart
+            onEvents={onEvents}
             option={{
                 toolbox: {
                     show: true,
                     feature: {
-                      saveAsImage: { title: "Save", show: true },
+                      saveAsImage: { name : !saveFileName ? 'chart' : saveFileName, title: "Save", show: true },
                     },
                   },
                 tooltip: {
@@ -23,14 +24,22 @@ const index = ({max, days, data, hours, title }) => {
                   data: hours,
                   splitArea: {
                     show: true
-                  }
+                  },
+                  axisLabel : {
+                    color: textColor,
+                    fontSize : 15
+                  },
                 },
                 yAxis: {
                   type: 'category',
                   data: days,
                   splitArea: {
                     show: true
-                  }
+                  },
+                  axisLabel : {
+                    color: textColor,
+                    fontSize : 15
+                  },
                 },
                 visualMap: {
                   min: 0,
@@ -40,7 +49,7 @@ const index = ({max, days, data, hours, title }) => {
                   left: 'center',
                   top: '5%',
                   textStyle: {
-                    color: "#7d6d72",
+                    color: textColor,
                   },
                   inRange: {
                     color: ["#ffd2ce", "#ff4b58"],
@@ -57,7 +66,7 @@ const index = ({max, days, data, hours, title }) => {
                     },
                     emphasis: {
                       itemStyle: {
-                        shadowBlur: 10,
+                        shadowBlur: 40,
                         shadowColor: 'rgba(0, 0, 0, 0.5)'
                       }
                     }
