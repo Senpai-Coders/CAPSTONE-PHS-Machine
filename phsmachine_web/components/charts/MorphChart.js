@@ -1,12 +1,14 @@
 import ReactEcharts from "echarts-for-react";
 
-const MorphChart = ({ option }) => {
+const MorphChart = ({ option, onEvents }) => {
   return (
-    <div className="h-64">
+    <div className="h-full">
       <ReactEcharts
+        onEvents={onEvents}
         option={option}
-        style={{ height: "100%", left: 50, top: 50, width: "90vw" }}
-        opts={{ renderer: "svg" }}
+        style={{ height: "100%", width: "100%" }}
+        theme={'infographic'}
+        opts={{ renderer: "canvas" }}
       />
     </div>
   );

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { MorphChart } from "../charts"
 
 const index = () => {
   const [data, setData] = useState([
@@ -12,7 +13,7 @@ const index = () => {
       <div>
         {/** SIMPLE STATS */}
         <div className="py-10 mb-32 ">
-          <HeatmapCalendar
+          <MorphChart
             option={{
               toolbox: {
                 show: true,
