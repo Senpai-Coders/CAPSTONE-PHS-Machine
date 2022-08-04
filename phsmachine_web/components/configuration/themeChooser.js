@@ -1,11 +1,11 @@
-import { setTheme } from "../../helpers";
+import { setTheme, loadTheme } from "../../helpers";
 
 import { MdDarkMode, MdOutlineLightMode } from "react-icons/md";
 
 import { AiFillFormatPainter } from "react-icons/ai";
 import { useEffect, useState } from "react";
 
-const themeChooser = () => {
+const themeChooser = ( { textMode } ) => {
   const themes = [
     { name: "light", type: "light" },
     { name: "dark", type: "dark" },
@@ -18,7 +18,7 @@ const themeChooser = () => {
     { name: "valentine", type: "light" },
     { name: "dracula", type: "dark" },
     { name: "fantasy", type: "light" },
-    { name: "luxury", type: "dark" },
+    //{ name: "luxury", type: "dark" },
     { name: "lofi", type: "light" },
     { name: "coffee", type: "dark" },
     { name: "pastel", type: "light" },
@@ -45,21 +45,26 @@ const themeChooser = () => {
     setTheme(selected.name);
   }, [selected]);
 
+  useEffect(()=>{
+    let chosen = loadTheme()
+    setSelected({ name : chosen })
+  },[])
+
   return (
     <div className="dropdown">
-      <label tabIndex="0" className="btn btn-ghost btn-sm btn-square m-1">
-        <AiFillFormatPainter className="w-6 h-6" />
+      <label tabIndex="0" className="btn flex btn-ghost shadow-md btn-sm m-1">
+        { !textMode ? <AiFillFormatPainter className="w-6 h-6" /> : <p className="uppercase">{selected.name}</p> }
       </label>
       <ul
         tabIndex="0"
-        className="dropdown-content menu max-h-80 overflow-y-scroll px-3 py-4 shadow backdrop-blur-sm bg-base-100/60 rounded-sm"
+        className="dropdown-content menu max-h-56 overflow-y-scroll px-3 py-4 shadow backdrop-blur-sm bg-base-100/60 rounded-sm"
       >
         {themes.map((th, i) => (
           <li
             tabIndex={i+1}
             key={th.name}
             onClick={() => setSelected(th)}
-            className="cursor-pointer duration-100 m-1 snap-center"
+            className={`cursor-pointer duration-100 m-1 snap-center ${th.name === selected.name ? "bg-base-200 outline outline-1" : ""}`}
           >
             <div className="flex p-4 justify-between">
               <p className="text-sm">{th.name}</p>

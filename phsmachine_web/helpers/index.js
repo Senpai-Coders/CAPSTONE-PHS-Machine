@@ -58,11 +58,22 @@ export const setTheme = (t) => {
   window.localStorage.setItem("phs-theme", t);
 };
 
+export const setCamMode = (mode) => {
+    window.localStorage.setItem("phs-CamMode", mode);
+}
+
+export const getCamMode = () => {
+    let found = localStorage.getItem("phs-CamMode");
+    console.log(found)
+    return found ? found : 0
+}
+
 export const loadTheme = () => {
   let savedTheme = localStorage.getItem("phs-theme");
   document
     .getElementsByTagName("html")[0]
     .setAttribute("data-theme", savedTheme);
+  return savedTheme
 };
 
 export const tempParser = (C) => {

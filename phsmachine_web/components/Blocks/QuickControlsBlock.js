@@ -42,7 +42,7 @@ const QuickControlsBlock = ({ state, setSelectedModal }) => {
             />
           </label>
           <label className="label cursor-pointer">
-            <span className="label-text">{ state === -1 ? "Enable Detection" : "Disable Detection" }</span>
+            <span className="label-text">{ state === -1 ? "Enable PHS" : "Disable PHS" }</span>
             <input
               onChange={(e) => {
                 chooseState(state === -1 ? 0 : -1);

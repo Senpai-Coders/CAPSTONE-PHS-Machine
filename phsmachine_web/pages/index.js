@@ -10,7 +10,7 @@ import {
   RebootConfirm,
   ShutdownConfirm,
 } from "../components/modals/";
-import { PI_IP } from "../helpers";
+import { PI_IP, getCamMode, setCamMode } from "../helpers";
 
 import { GiPig } from "react-icons/gi";
 import { BsHash } from "react-icons/bs";
@@ -45,11 +45,11 @@ export default function Home() {
   const [exited, setExited] = useState(false);
   const [stamp, setStamp] = useState(0);
 
-  const [isDown, setIsDown] = useState(true);
+  const [isDown, setIsDown] = useState(false);
   const [seenModal, setSeenModal] = useState(false);
   const [dbPastDetection, setPastDetection] = useState([]);
 
-  const [viewMode, setViewMode] = useState(0); // 0 - 3iple, 1 - dual (1 with dropdown option select), 2 - Merged Normal & Thermal
+  const [viewMode, setViewMode] = useState(-1); // 0 - 3iple, 1 - dual (1 with dropdown option select), 2 - Merged Normal & Thermal
   const [selectedModal, setSelectedModal] = useState(-1); // -1 off or no shown modal by default
   // -1 off modal
   // -2 shutdown confirm
@@ -138,6 +138,16 @@ export default function Home() {
       setExited(true);
     };
   }, []);
+
+  useEffect(() => {
+    if(viewMode === -1) return
+    setCamMode(viewMode);
+  }, [viewMode]);
+
+  useEffect(()=>{
+    let chosen = getCamMode()
+    setViewMode(Number.parseInt(chosen))
+  },[])
 
   return (
     <>

@@ -7,7 +7,7 @@ import Statistics from "../components/detection/Statistics"
 
 
 const Events = () => {
-  const [tab, setTab] = useState(1);
+  const [tab, setTab] = useState(0);
 
   return (
     <>
