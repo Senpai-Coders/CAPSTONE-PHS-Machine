@@ -195,7 +195,7 @@ export default function _detection_details() {
               <BsFolderFill className="stroke-info text-accent flex-shrink-0 w-6 h-6" />
               <span className="font-inter">
                 Raw Data & Images can be found at{" "}
-                <span className="font-semibold">
+                <span className="break-all font-semibold ">
                   phsmachine_web/public
                   {`${detection.img_normal.substring(
                     0,

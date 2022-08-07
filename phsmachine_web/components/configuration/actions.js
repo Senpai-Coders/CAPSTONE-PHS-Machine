@@ -1,9 +1,55 @@
-import React from 'react'
+import { useEffect, useState } from "react";
 
-const actions = () => {
+import ActionComponent from "./component/actionComponent";
+import NewActionComponent from "./component/newComponent";
+import Loading from "../loading"
+
+const Actions = ({ actions, relays, coreActions }) => {
+  const [fActions, setFActions] = useState([]);
+  const [newAct, setNewAct] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setFActions(actions);
+    setLoading(false)
+  }, [actions]);
+
   return (
-    <div>actions</div>
-  )
-}
+    <div className="min-h-screen">
+        {
+            loading && <Loading />
+        }
+      <p className="mt-4 text-sm">
+        You can define different actions that will use devices that can be
+        toggled by relays on or off
+      </p>
+      {!newAct && (
+        <button className="btn btn-sm mt-4" onClick={() => setNewAct(true)}>
+          New Action
+        </button>
+      )}
+      {newAct && (
+        <NewActionComponent
+          relayOptions={relays}
+          close={() => {
+            setNewAct(false);
+          }}
+          onSave={setLoading}
+        />
+      )}
+      <div className="mt-4">
+        {fActions.map((factions, idx) => (
+          <ActionComponent
+            onSave={setLoading}
+            relayOptions={relays}
+            data={factions}
+            key={idx}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
 
-export default actions
+export default Actions;

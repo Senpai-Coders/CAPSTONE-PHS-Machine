@@ -115,6 +115,34 @@ const handler = async (req, res) => {
       disabled: false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
     },
+    // CONFIG
+    {
+      category: "update",
+      config_name: "update_stamp",
+      description: "This will update phs system infos forced",
+      value: "1659839703437",
+      disabled: false,
+      uby: new ObjectId("6277e36f94637471bdabb80d"),
+    },
+    {
+      category: "config",
+      config_name: "DetectionMode",
+      description: "Specify How PHS will identify heat stress",
+      value: {
+        mode: true,
+        temperatureThreshold: "47.2",
+      },
+      disabled: false,
+      uby: new ObjectId("6277e36f94637471bdabb80d"),
+    },
+    {
+        category: "config",
+        config_name: "storageAutoDelete",
+        description: "Specify if PHS will auto delete old records",
+        value: false,
+        disabled: false,
+        uby: new ObjectId("6277e36f94637471bdabb80d"),
+      }
   ];
 
   const DEFAULT_DETECTS = [
@@ -2750,7 +2778,6 @@ const handler = async (req, res) => {
 
     if (conf) {
       console.log("init conf");
-
       const del2 = await configs.deleteMany({});
       const resp2 = await configs.insertMany(DEFAULT_CONFIGS);
     }

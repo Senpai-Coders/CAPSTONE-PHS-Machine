@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import HoverHelp from "../hoverHelp";
+import Loading from "../loading";
 import ThemeChoser from "./themeChooser";
 import CamLayoutChoser from "./streamLayoutChoser";
 import { RebootConfirm, ShutdownConfirm } from "../modals";
@@ -19,7 +19,7 @@ import { bytesToMegaBytes, mbToGB, getPercentUsage } from "../../helpers";
 
 import axios from "axios";
 
-const phsSettings = ({ state, detectionMode, storageInfo }) => {
+const phsSettings = ({ autoDelete, state, detectionMode, storageInfo }) => {
   const router = useRouter();
   const [selectedModal, setSelectedModal] = useState(-1);
   const [tempThresh, setTempThresh] = useState(
@@ -27,6 +27,8 @@ const phsSettings = ({ state, detectionMode, storageInfo }) => {
   );
   const [saving, setSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+
+  const [updating, setUpdating] = useState("");
 
   const [used, setUsed] = useState(0);
   const [free, setFree] = useState(0);
@@ -43,9 +45,22 @@ const phsSettings = ({ state, detectionMode, storageInfo }) => {
     setPerc(getPercentUsage(Size, Used));
   }, [storageInfo]);
 
+  const updateAutoDelete = async () => {
+    setUpdating("storage");
+    let updateAutoDelete = await axios.post(
+      "/api/phs/config/storageAutoDelete",
+      { mode: 1, value: !autoDelete.value }
+    );
+  };
+
+  useEffect(() => {
+    setUpdating("");
+  }, [autoDelete, storageInfo]);
+
   const saveChange = async (val) => {
     try {
       setSaving(true);
+      setUpdating("autodetect");
 
       if (val) {
         const updateDetMode = await axios.post(
@@ -82,7 +97,7 @@ const phsSettings = ({ state, detectionMode, storageInfo }) => {
   }, [detectionMode]);
 
   return (
-    <div>
+    <div className="">
       <ShutdownConfirm
         shown={selectedModal === -2}
         onAccept={() => {
@@ -105,7 +120,7 @@ const phsSettings = ({ state, detectionMode, storageInfo }) => {
         }}
       />
       {state === -2 && (
-        <div className="alert alert-warning shadow-lg mb-2 animate-pulse">
+        <div className="alert alert-warning shadow-lg my-4 animate-pulse">
           <div className="">
             <TiWarningOutline className="hidden sm:block h-4 w-4" />
             <span>
@@ -201,6 +216,7 @@ const phsSettings = ({ state, detectionMode, storageInfo }) => {
       </div>
 
       <div className="mx-1 md:mx-2 rounded-md p-4 md:p-4 outline mt-4 bg-base-100 shadow-sm outline-1 outline-base-300">
+        {updating === "autodetect" && <Loading />}
         <p className="font-inter font-medium mb-2 text-lg md:text-xl">
           Heat Stress Detection
         </p>
@@ -361,24 +377,22 @@ const phsSettings = ({ state, detectionMode, storageInfo }) => {
       </div>
 
       <div className="mx-1 md:mx-2 overflow-visible rounded-md p-4 md:p-4 outline mt-4 bg-base-100 shadow-sm outline-1 outline-base-300">
+        {updating === "storage" && <Loading />}
         <p className="font-inter font-medium mb-2 text-lg md:text-xl">
           System Storage
         </p>
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center">
+          <div className="flex items-center" >
             <div className="p-2 rounded-xl bg-base-300 mr-2">
               <FiHardDrive className="w-6 h-6" />
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-md  ml-2">
-                PHS Server Storage
-              </span>
+              <p className="">
+                {used} GB used out of {size} Gb ({perc.toFixed(1)}%)
+              </p>
             </div>
           </div>
         </div>
-        <p className="">
-          {used} GB used out of {size} Gb ({perc.toFixed(1)}%)
-        </p>
 
         <progress
           className="mx-2 progress progress-primary"
@@ -406,7 +420,14 @@ const phsSettings = ({ state, detectionMode, storageInfo }) => {
                   to store new records & prevent unexpected system malfunctions.
                 </p>
               </div>
-              <input type="checkbox" className="toggle  mt-4 md:mt-0" />
+              <input
+                type="checkbox"
+                checked={autoDelete.value}
+                onChange={(e) => {
+                  updateAutoDelete();
+                }}
+                className="toggle  mt-4 md:mt-0"
+              />
             </div>
           </div>
         </div>

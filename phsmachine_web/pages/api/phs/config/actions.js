@@ -14,8 +14,16 @@ const handler = async (req, res) => {
   try {
     const auth = req.cookies.authorization;
     const editorDetails = VERIFY_AUTHORIZATION(auth);
-    const { mode, config_name, description, target_relay, duration, caller } =
-      req.body;
+    const {
+      mode,
+      old_config_name,
+      config_name,
+      description,
+      target_relay,
+      old_target_relay,
+      duration,
+      caller,
+    } = req.body;
     if (mode === 0) {
       // check if action exist
       const isExist = await configs.findOne({ config_name });
@@ -63,6 +71,48 @@ const handler = async (req, res) => {
       // gettingAllDbActions
       const actions = await configs.find({ category: "actions" });
       return res.status(200).json({ actions });
+    } else if (mode === 1) {
+      // check if action exist
+      const isExist = await configs.findOne({ config_name });
+      const isRelayUsed = await configs.findOne({
+        config_name,
+        "value.isUsed": true,
+      });
+      // check if relay in use
+
+      if (isExist)
+        return res.status(409).json({ message: "Action name already exist" });
+      if (isRelayUsed)
+        return res
+          .status(409)
+          .json({ message: "Relay is already used by other actions" });
+
+      const insert = await configs.updateOne(
+        { config_name: old_config_name },
+        {
+          $set: {
+            category: "actions",
+            config_name,
+            description,
+            value: { target_relay, duration, caller },
+            uby: editorDetails._id,
+          },
+        }
+      );
+
+      // insert
+      const upconf = await configs.updateOne(
+        { config_name: target_relay },
+        { $set: { "value.isUsed": true, uby: editorDetails._id } }
+      );
+
+      if (old_target_relay !== target_relay) {
+        const upconf2 = await configs.updateOne(
+            { config_name: old_target_relay },
+            { $set: { "value.isUsed": false, uby: editorDetails._id } }
+          );
+      }
+      // update relay to use
     }
 
     // set app config to forceUpdate all info in phs machine

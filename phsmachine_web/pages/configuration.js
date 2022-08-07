@@ -5,6 +5,8 @@ import Debug from "../components/configuration/debug";
 import axios from "axios";
 
 import PhsSettingsV2 from "../components/configuration/phsSettingsv2";
+import Actions from "../components/configuration/actions"
+import Relays from "../components/configuration/relays"
 
 // import ThemeChooser from "../components/configuration/themeChooser";
 // import { FcCheckmark } from "react-icons/fc";
@@ -12,7 +14,7 @@ import PhsSettingsV2 from "../components/configuration/phsSettingsv2";
 // import { Listbox, Transition } from "@headlessui/react";
 
 const configuration = () => {
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useState(2);
   const [exited, setExited] = useState(false);
 
   const [SYSSTATE, SETSYSSTATE] = useState({
@@ -31,11 +33,14 @@ const configuration = () => {
     size: 0,
   });
 
+  const [coreActions, setCoreActions] = useState([])
+  const [phsAutoDelete, setPhsAutoDelete] = useState({ value : false })
   const [detectionMode, setDetectionMode] = useState({
     value: { mode: true, temperatureThreshold: -34 },
   });
 
   const [dbActions, setDbActions] = useState([]);
+  const [dbRelays, setDbRelays] = useState([])
 
   const phs_init = async () => {
     try {
@@ -49,7 +54,7 @@ const configuration = () => {
         {}
       );
       if (exited) return;
-      // setACTIONSTATE(phs_actions.data.actions);
+      setCoreActions(phs_actions.data.actions);
       SETSYSSTATE(phs_response.data.state);
       //setIsDown(false);
     } catch (e) {
@@ -71,8 +76,17 @@ const configuration = () => {
 
       const phs_storage = await axios.post("/api/phs/phs_storage", {});
 
-      setDetectionMode(db_detMode.data);
+      const phs_autodelete = await axios.post("/api/phs/config/storageAutoDelete", {
+        mode : 0
+      })
 
+      const phs_relays = await axios.post("/api/phs/config/relays", {
+        mode : 3
+      })
+
+      setDbRelays(phs_relays.data)
+      setDetectionMode(db_detMode.data);
+      setPhsAutoDelete(phs_autodelete.data);
       setPhsStorage(phs_storage.data.storage);
       setDbActions(db_actions.data.actions);
       // setDbActiveUsers(db_active_users.data.activeUsers);
@@ -110,7 +124,7 @@ const configuration = () => {
                 onClick={() => setTab(0)}
                 className={`${
                   tab === 0 ? "tab-active" : ""
-                } tab-lg tab tab-lifted tab-sm sm:tab-md md:tab-md `}
+                } tab tab-lifted`}
               >
                 Settings
               </a>
@@ -118,7 +132,7 @@ const configuration = () => {
                 onClick={() => setTab(1)}
                 className={`${
                   tab === 1 ? "tab-active" : ""
-                } tab-lg tab tab-lifted tab-sm sm:tab-md md:tab-md `}
+                } tab tab-lifted`}
               >
                 Actions
               </a>
@@ -126,7 +140,7 @@ const configuration = () => {
                 onClick={() => setTab(2)}
                 className={`${
                   tab === 2 ? "tab-active" : ""
-                } tab-lg tab tab-lifted tab-sm sm:tab-md md:tab-md `}
+                } tab tab-lifted`}
               >
                 Relays
               </a>
@@ -135,11 +149,22 @@ const configuration = () => {
           <div>
             {tab === 0 && (
               <PhsSettingsV2
+                autoDelete={phsAutoDelete}
                 storageInfo={phsStorage}
                 detectionMode={detectionMode}
                 state={SYSSTATE.status}
               />
             )}
+            {
+                tab === 1 && (
+                    <Actions actions={dbActions} relays={dbRelays} coreActions={coreActions}/>
+                )
+            }
+            {
+                tab === 2 && (
+                    <Relays/>
+                )
+            }
             {/* <Debug /> */}
             {/* <ThemeChooser /> */}
           </div>

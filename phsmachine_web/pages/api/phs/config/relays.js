@@ -17,11 +17,11 @@ const handler = async (req, res) => {
     const { mode, config_name, description, GPIO_PIN } = req.body;
     if (mode === 0) {
       // check if relay exist
-
       const doesExist = await configs.findOne({
         category: "relays",
         config_name,
       });
+
       const gpioExist = await configs.findOne({ "value.GPIO_PIN": GPIO_PIN });
       if (doesExist || gpioExist)
         return res.status(409).json({
@@ -41,6 +41,10 @@ const handler = async (req, res) => {
       });
     } else if (mode === -1) {
       const del = await configs.deleteOne({ config_name });
+    }else if(mode === 3){
+        const rels = await configs.find({ category: "relays" });
+
+        return res.status(200).json(rels)
     }
 
     // set app config to forceUpdate all info in phs machine

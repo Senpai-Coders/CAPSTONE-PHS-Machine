@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { BsFillShieldLockFill, BsFillShieldFill } from "react-icons/bs";
 import { AiFillEdit } from "react-icons/ai";
-import { FaUserAlt } from "react-icons/fa";
 import { VscClose } from "react-icons/vsc";
 
 import { AnimatePresence, motion } from "framer-motion";
