@@ -101,7 +101,7 @@ const phsSettings = ({ state, detectionMode, storageInfo }) => {
         }}
       />
 
-      <div className="mx-2">
+      <div className="mx-1 md:mx-2">
         {/** Simple Control & Status */}
         <p className="font-medium mb-4 text-xl">System State</p>
         {state === -2 && (
@@ -111,18 +111,18 @@ const phsSettings = ({ state, detectionMode, storageInfo }) => {
           </p>
         )}
         <div
-          className={`grid grid-cols-1 md:mx-3/12 bg-base-300 md:p-4 md:grid-cols-2 w-full ${
+          className={`grid grid-cols-1 md:mx-3/12 md:p-4 w-full ${
             state === -2 || state === 3 ? "opacity-50" : ""
           }`}
         >
           <div className="mx-0 md:m-2 outline outline-1 outline-base-300 card bg-base-100 shadow-md">
-            <div className="card-body">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center justify-start">
-                  <VscDebugConsole className="hidden md:block  w-8 h-8  mr-8" />
+            <div className="card-body p-2 md:p-4 ">
+              <div className="md:flex items-center justify-between">
+                <div className="md:flex items-center justify-start mr-4">
+                  <VscDebugConsole className="mb-2 md:block  w-8 h-8  mr-8" />
                   <div>
                     <p className="text-lg">Debug Mode</p>
-                    <p className="text-sm">
+                    <p className="text-xs">
                       This will disable detection & actions
                     </p>
                   </div>
@@ -130,7 +130,7 @@ const phsSettings = ({ state, detectionMode, storageInfo }) => {
                 <input
                   type="checkbox"
                   disabled={state === -2}
-                  className="toggle"
+                  className="toggle mt-4 md:mt-0"
                 />
               </div>
             </div>

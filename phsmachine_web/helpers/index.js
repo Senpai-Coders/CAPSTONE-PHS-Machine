@@ -10,7 +10,10 @@ import { GiCyberEye } from "react-icons/gi";
 export const bytesToMegaBytes = bytes => bytes / 1000000 //bytes / (1024 ** 2)
 export const mbToGB = mb => mb / 1000
 
-export const getPercentUsage = (total, taken) => taken / total * 100
+export const getPercentUsage = (total, taken) => {
+    var tk = taken / total * 100
+    return isNaN(tk)? 0 : tk
+}
 
 export const PI_IP = process.env.PI_IP;
 

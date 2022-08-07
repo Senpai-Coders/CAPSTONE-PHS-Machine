@@ -4,7 +4,7 @@ import Layout from "../components/layout";
 import Debug from "../components/configuration/debug";
 import axios from "axios";
 
-import PhsSettings from "../components/configuration/phsSettings"
+import PhsSettingsV2 from "../components/configuration/phsSettingsv2";
 
 // import ThemeChooser from "../components/configuration/themeChooser";
 // import { FcCheckmark } from "react-icons/fc";
@@ -13,7 +13,7 @@ import PhsSettings from "../components/configuration/phsSettings"
 
 const configuration = () => {
   const [tab, setTab] = useState(0);
-  const [exited, setExited] = useState(false)
+  const [exited, setExited] = useState(false);
 
   const [SYSSTATE, SETSYSSTATE] = useState({
     status: 3, // -2 Off, -1 Disabled, 0 - Detecting, 1 - Resolving, 2 - Debugging, 3 - Connecting
@@ -26,15 +26,17 @@ const configuration = () => {
     actions: [],
   });
   const [phsStorage, setPhsStorage] = useState({
-    diskPath: '/',
+    diskPath: "/",
     free: 0,
-    size: 0
-})
+    size: 0,
+  });
 
-  const [detectionMode, setDetectionMode] = useState({ value : { mode : true, temperatureThreshold : -34 }})
+  const [detectionMode, setDetectionMode] = useState({
+    value: { mode: true, temperatureThreshold: -34 },
+  });
 
-  const [dbActions, setDbActions] = useState([])
-  
+  const [dbActions, setDbActions] = useState([]);
+
   const phs_init = async () => {
     try {
       if (exited) return;
@@ -67,9 +69,9 @@ const configuration = () => {
         mode: 0,
       });
 
-      const phs_storage = await axios.post("/api/phs/phs_storage", {})
+      const phs_storage = await axios.post("/api/phs/phs_storage", {});
 
-      setDetectionMode(db_detMode.data)
+      setDetectionMode(db_detMode.data);
 
       setPhsStorage(phs_storage.data.storage);
       setDbActions(db_actions.data.actions);
@@ -97,38 +99,51 @@ const configuration = () => {
         <title>Configuration</title>
       </Head>
       <input type="checkbox" id="sys_off_modal" className="modal-toggle" />
-
-      <p className="text-2xl card-title font-lato font-semibold">
-        Configuration
-      </p>
-      <div className="my-4 ">
-        <div className="tabs">
-          <a
-            onClick={() => setTab(0)}
-            className={`${tab === 0 ? "tab-active" : ""} tab-lg tab tab-lifted`}
-          >
-            PHS Settings
-          </a>
-          <a
-            onClick={() => setTab(1)}
-            className={`${tab === 1 ? "tab-active" : ""} tab-lg tab tab-lifted`}
-          >
-            Actions
-          </a>
-          <a
-            onClick={() => setTab(2)}
-            className={`${tab === 2 ? "tab-active" : ""} tab-lg tab tab-lifted`}
-          >
-            Relays
-          </a>
+      <div className="flex justify-center">
+        <div className="w-full mx-0 md:mx-4 md:w-1/2">
+          <p className="text-2xl card-title font-lato font-semibold">
+            {/* Configuration */}
+          </p>
+          <div className="my-2 ">
+            <div className="tabs">
+              <a
+                onClick={() => setTab(0)}
+                className={`${
+                  tab === 0 ? "tab-active" : ""
+                } tab-lg tab tab-lifted tab-sm sm:tab-md md:tab-md `}
+              >
+                Settings
+              </a>
+              <a
+                onClick={() => setTab(1)}
+                className={`${
+                  tab === 1 ? "tab-active" : ""
+                } tab-lg tab tab-lifted tab-sm sm:tab-md md:tab-md `}
+              >
+                Actions
+              </a>
+              <a
+                onClick={() => setTab(2)}
+                className={`${
+                  tab === 2 ? "tab-active" : ""
+                } tab-lg tab tab-lifted tab-sm sm:tab-md md:tab-md `}
+              >
+                Relays
+              </a>
+            </div>
+          </div>
+          <div>
+            {tab === 0 && (
+              <PhsSettingsV2
+                storageInfo={phsStorage}
+                detectionMode={detectionMode}
+                state={SYSSTATE.status}
+              />
+            )}
+            {/* <Debug /> */}
+            {/* <ThemeChooser /> */}
+          </div>
         </div>
-      </div>
-      <div>
-        {
-            tab === 0 && <PhsSettings storageInfo={phsStorage} detectionMode={detectionMode} state={SYSSTATE.status} />
-        }
-        {/* <Debug /> */}
-        {/* <ThemeChooser /> */}
       </div>
     </>
   );
