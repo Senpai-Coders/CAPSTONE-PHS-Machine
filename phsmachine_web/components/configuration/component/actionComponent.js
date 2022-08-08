@@ -1,13 +1,19 @@
 import { useState, useEffect } from "react";
 
 import { AiFillEdit } from "react-icons/ai";
+import {
+  RiListSettingsLine,
+  RiListSettingsFill,
+  RiTimerFill,
+} from "react-icons/ri";
+import { MdMyLocation } from "react-icons/md";
+import { GiProcessor } from "react-icons/gi";
 import { GoCircuitBoard } from "react-icons/go";
-import { RiListSettingsLine, RiTimerFill } from "react-icons/ri";
-import { AiFillThunderbolt } from "react-icons/ai";
+import { CgDetailsLess } from "react-icons/cg";
 
 import axios from "axios";
 
-const actionComponent = ({ relayOptions, data, onSave }) => {
+const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
   const [editing, setEditing] = useState(false);
 
   const [config_name, setConfig_name] = useState("");
@@ -15,6 +21,7 @@ const actionComponent = ({ relayOptions, data, onSave }) => {
   const [target_relay, setTargetRelay] = useState("");
   const [duration, setDuration] = useState(0);
   const [caller, setCaller] = useState("");
+  const [eventLocation, setEventLocation] = useState(-1);
 
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
@@ -26,6 +33,7 @@ const actionComponent = ({ relayOptions, data, onSave }) => {
     setTargetRelay(d.value.target_relay);
     setDuration(d.value.duration);
     setCaller(d.value.caller);
+    setEventLocation(d.value.eventLocation);
   };
 
   useEffect(() => {
@@ -35,7 +43,7 @@ const actionComponent = ({ relayOptions, data, onSave }) => {
   const save = async (md) => {
     try {
       setLoading(true);
-      onSave(true)
+      onSave(true);
       if (
         target_relay.length === 0 ||
         target_relay === "" ||
@@ -53,7 +61,9 @@ const actionComponent = ({ relayOptions, data, onSave }) => {
         duration,
         old_target_relay: data.value.target_relay,
         caller,
+        eventLocation,
       };
+      console.log("saving mode: ", md);
       if (md === 1) {
         if (config_name !== data.config_name)
           saving = {
@@ -61,6 +71,7 @@ const actionComponent = ({ relayOptions, data, onSave }) => {
             old_config_name: data.config_name,
             config_name,
           };
+        else saving = { ...saving, old_config_name: data.config_name };
       }
       const add = await axios.post("/api/phs/config/actions", saving);
       setLoading(false);
@@ -86,7 +97,7 @@ const actionComponent = ({ relayOptions, data, onSave }) => {
   const delAction = async (config_name, target_relay) => {
     try {
       setLoading(true);
-      onSave(true)
+      onSave(true);
       const add = await axios.post("/api/phs/config/actions", {
         mode: -1,
         config_name,
@@ -94,7 +105,7 @@ const actionComponent = ({ relayOptions, data, onSave }) => {
       });
       setLoading(false);
       setMoadlActionView(false);
-      onSave(false)
+      onSave(false);
     } catch (e) {
       setLoading(false);
       if (e.response) {
@@ -106,14 +117,21 @@ const actionComponent = ({ relayOptions, data, onSave }) => {
 
   return (
     <>
-      <div className="shadow-md py-4 outline outline-1 outline-base-300 bg-base-100 rounded-md my-2 px-3 md:px-4">
+      <div
+        className={`shadow-md py-4 outline outline-1 ${
+          editing ? "outline-accent-focus" : "outline-base-300"
+        } bg-base-100 rounded-md my-2 px-3 md:px-4`}
+      >
         {editing ? (
           <>
             <div className="flex items-center justify-between">
               <div className="form-control">
-                <label class="label">
-                  <span class="label-text">Action Name</span>
-                </label>
+                <div className="flex items-center justify-start mb-2">
+                  <div className="p-2 rounded-xl bg-base-300 mr-2">
+                    <RiListSettingsFill className="w-6 h-6" />
+                  </div>
+                  <p className="text-lg">Action Name</p>
+                </div>
                 <label className="input-group">
                   <input
                     type="text"
@@ -139,10 +157,14 @@ const actionComponent = ({ relayOptions, data, onSave }) => {
                 </label>
               </div>
             </div>
-            <div className="form-control mt-2">
-              <label className="label">
-                <span className="label-text">Action Description</span>
-              </label>
+
+            <div className="form-control mt-4">
+              <div className="flex items-center justify-start mb-2">
+                <div className="p-2 rounded-xl bg-base-300 mr-2">
+                  <CgDetailsLess className="w-6 h-6" />
+                </div>
+                <p className="text-lg">Description</p>
+              </div>
               <textarea
                 className="textarea textarea-bordered"
                 placeholder="Description"
@@ -154,9 +176,12 @@ const actionComponent = ({ relayOptions, data, onSave }) => {
             </div>
 
             <div className="mt-4">
-              <label className="block mb-2 text-sm  dark:text-gray-300">
-                Target Relay
-              </label>
+              <div className="flex items-center justify-start mb-2">
+                <div className="p-2 rounded-xl bg-base-300 mr-2">
+                  <GoCircuitBoard className="w-6 h-6" />
+                </div>
+                <p className="text-lg">Target Relay</p>
+              </div>
               <select
                 placeholder="Choose AI that will handle this action"
                 value={target_relay}
@@ -166,10 +191,12 @@ const actionComponent = ({ relayOptions, data, onSave }) => {
                 className="select select-bordered w-full max-w-xs"
               >
                 <option>Select Target Relay</option>
-                <option>{target_relay}</option>
+                {target_relay.length !== 0 &&
+                  target_relay !== "Select Target Relay" && (
+                    <option>{target_relay}</option>
+                  )}
                 {relayOptions
                   .filter((rel, i) => {
-                    console.log(rel.value);
                     return !rel.value.isUsed;
                   })
                   .map((rel, i) => (
@@ -178,10 +205,15 @@ const actionComponent = ({ relayOptions, data, onSave }) => {
               </select>
             </div>
 
-            <div className="mb-6">
-              <label className="block mt-4 text-sm dark:text-gray-300">
-                Duration
-              </label>
+            <div className="mt-4">
+              <div className="flex items-center justify-start mb-2">
+                <div className="p-2 rounded-xl bg-base-300 mr-2">
+                  <RiTimerFill className="w-6 h-6" />
+                </div>
+                <p className="text-lg">
+                  Action Duration (<span>sec</span>)
+                </p>
+              </div>
               <input
                 type="text"
                 placeholder="Seconds ex: 1, 2, 3, 4"
@@ -194,10 +226,13 @@ const actionComponent = ({ relayOptions, data, onSave }) => {
               />
             </div>
 
-            <div className="mb-6">
-              <label className="block mb-2 text-sm font-medium  dark:text-gray-300">
-                Event/AI/Caller
-              </label>
+            <div className="mt-4">
+              <div className="flex items-center justify-start mb-2">
+                <div className="p-2 rounded-xl bg-base-300 mr-2">
+                  <GiProcessor className="w-6 h-6" />
+                </div>
+                <p className="text-lg">Event/AI/Caller</p>
+              </div>
               <select
                 placeholder="Choose AI that will handle this action"
                 onChange={(e) => {
@@ -212,6 +247,69 @@ const actionComponent = ({ relayOptions, data, onSave }) => {
                 <option>Dark Scene Detector</option>
               </select>
             </div>
+
+            {/* <div className="mb-6">
+              <label className="block mb-2 text-sm ">Event Location</label>
+              <select
+                placeholder="Choose AI that will handle this action"
+                onChange={(e) => {
+                  setEventLocation(e.target.value);
+                }}
+                value={eventLocation}
+                className="select select-bordered w-full max-w-xs"
+              >
+                <option>Choose</option>
+                {
+                  // filter((e) => e !== data.value.eventLocation )
+                  Array.from({ length: divisionCount }, (_, i) => i + 1).map(
+                    (e, idx) => (
+                      <option key={idx}>{e}</option>
+                    )
+                  )
+                }
+              </select>
+            </div> */}
+
+            {(caller === "Heat Stress Detector" ||
+              caller === "Pig Detector") && (
+              <>
+                <div className="divider"></div>
+                <div className="mt-4">
+                  <div className="flex items-center justify-start mb-2">
+                    <div className="p-2 rounded-xl bg-base-300 mr-2">
+                      <MdMyLocation className="w-6 h-6" />
+                    </div>
+                    <p className="text-lg"> Choose event location</p>
+                  </div>
+                  <div className="relative mt-4">
+                    <div className="w-full h-64 bg-base-100"></div>
+                    <div className="w-full h-full py-2 flex overflow-hidden overflow-x-scroll absolute bottom-0 left-0">
+                      {
+                        // filter((e) => e !== data.value.eventLocation )
+                        Array.from(
+                          { length: divisionCount },
+                          (_, i) => i + 1
+                        ).map((e, idx) => (
+                          <div
+                            key={idx}
+                            onClick={() => {
+                              setEventLocation(e);
+                            }}
+                            className={`w-full mx-2 p-4 outline outline-1 ${
+                              eventLocation === e
+                                ? "bg-base-300 outline-secondary shadow-md"
+                                : "bg-base-100"
+                            } outline-base-300 rounded-sm`}
+                          >
+                            <p className="text-center text-sm">Division {e}</p>
+                          </div>
+                        ))
+                      }
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
 
             <div className="modal-action">
               <label
@@ -263,7 +361,6 @@ const actionComponent = ({ relayOptions, data, onSave }) => {
           </>
         )}
       </div>
-      
     </>
   );
 };

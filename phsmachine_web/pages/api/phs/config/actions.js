@@ -23,6 +23,7 @@ const handler = async (req, res) => {
       old_target_relay,
       duration,
       caller,
+      eventLocation
     } = req.body;
     if (mode === 0) {
       // check if action exist
@@ -44,7 +45,7 @@ const handler = async (req, res) => {
         category: "actions",
         config_name,
         description,
-        value: { target_relay, duration, caller },
+        value: { target_relay, duration, caller, eventLocation : eventLocation? eventLocation : -1 },
         uby: editorDetails._id,
       });
       // insert
@@ -94,11 +95,13 @@ const handler = async (req, res) => {
             category: "actions",
             config_name,
             description,
-            value: { target_relay, duration, caller },
+            value: { target_relay, duration, caller, eventLocation : eventLocation? eventLocation : -1 },
             uby: editorDetails._id,
           },
         }
       );
+
+      console.log( config_name, old_config_name ,insert, eventLocation)
 
       // insert
       const upconf = await configs.updateOne(

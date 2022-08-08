@@ -4,7 +4,7 @@ import ActionComponent from "./component/actionComponent";
 import NewActionComponent from "./component/newComponent";
 import Loading from "../loading"
 
-const Actions = ({ actions, relays, coreActions }) => {
+const Actions = ({ actions, relays, coreActions, divisionCount }) => {
   const [fActions, setFActions] = useState([]);
   const [newAct, setNewAct] = useState(false);
 
@@ -35,12 +35,14 @@ const Actions = ({ actions, relays, coreActions }) => {
           close={() => {
             setNewAct(false);
           }}
+          divisionCount = {divisionCount}
           onSave={setLoading}
         />
       )}
       <div className="mt-4">
         {fActions.map((factions, idx) => (
           <ActionComponent
+            divisionCount={divisionCount}
             onSave={setLoading}
             relayOptions={relays}
             data={factions}

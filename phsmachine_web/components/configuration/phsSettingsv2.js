@@ -12,14 +12,20 @@ import { FiHardDrive } from "react-icons/fi";
 import { MdAutoDelete } from "react-icons/md";
 import { AiFillStop } from "react-icons/ai";
 import { BiNetworkChart } from "react-icons/bi";
-import { BsGear } from "react-icons/bs";
+import { BsGear, BsLayoutThreeColumns } from "react-icons/bs";
 import { TiWarningOutline } from "react-icons/ti";
 
 import { bytesToMegaBytes, mbToGB, getPercentUsage } from "../../helpers";
 
 import axios from "axios";
 
-const phsSettings = ({ autoDelete, state, detectionMode, storageInfo }) => {
+const phsSettings = ({
+  autoDelete,
+  state,
+  detectionMode,
+  storageInfo,
+  divisionCount,
+}) => {
   const router = useRouter();
   const [selectedModal, setSelectedModal] = useState(-1);
   const [tempThresh, setTempThresh] = useState(
@@ -34,6 +40,13 @@ const phsSettings = ({ autoDelete, state, detectionMode, storageInfo }) => {
   const [free, setFree] = useState(0);
   const [size, setSize] = useState(0);
   const [perc, setPerc] = useState(0);
+
+  const [divisionCnt, setDivisionCnt] = useState(divisionCount)
+  
+  useEffect(()=>{
+    if(hasChanges) return;
+    setDivisionCnt(divisionCount)
+  }, [divisionCount])
 
   useEffect(() => {
     let Size = mbToGB(bytesToMegaBytes(storageInfo.size)),
@@ -52,6 +65,13 @@ const phsSettings = ({ autoDelete, state, detectionMode, storageInfo }) => {
       { mode: 1, value: !autoDelete.value }
     );
   };
+
+  const updateDivision = async () => {
+    try{
+        setUpdating("division")
+        const ph_division = await axios.post("/api/phs/config/divisions", { mode : 1, value : divisionCnt })
+    }catch(e){}
+  }
 
   useEffect(() => {
     setUpdating("");
@@ -377,15 +397,64 @@ const phsSettings = ({ autoDelete, state, detectionMode, storageInfo }) => {
       </div>
 
       <div className="mx-1 md:mx-2 overflow-visible rounded-md p-4 md:p-4 outline mt-4 bg-base-100 shadow-sm outline-1 outline-base-300">
-        {updating === "storage" && <Loading />}
-        <p className="font-inter font-medium mb-2 text-lg md:text-xl">
-          System Storage
-        </p>
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center" >
+        {updating === "storage" || updating === "division" && <Loading />}
+        <p className="font-inter font-medium mb-2 text-lg md:text-xl">PHS</p>
+
+        <div className="mt-4">
+          <div className="flex items-center justify-start mb-2">
             <div className="p-2 rounded-xl bg-base-300 mr-2">
-              <FiHardDrive className="w-6 h-6" />
+              <BsLayoutThreeColumns className="w-6 h-6" />
             </div>
+            <p className="text-lg">PHS POV division</p>
+          </div>
+          <div>
+            <div className="form-control drop-shadow-lg mr-3">
+              <label className="input-group input-group-sm">
+                <input
+                  type="number"
+                  onChange={(e) => {
+                    setDivisionCnt(e.target.value);
+                  }}
+                  placeholder="# Of Division"
+                  value={divisionCnt}
+                  className="input w-full text-lg font-mono max-w-xs text-neutral-content bg-neutral "
+                />
+                <span onClick={()=>{
+                    updateDivision()
+                }} className={`btn ${divisionCnt !== divisionCount? '' : 'hidden'}`}>Save</span>
+              </label>
+            </div>
+          </div>
+          <div className="relative mt-4">
+            <div className="w-full h-64 bg-base-100"></div>
+            <div className="w-full h-full py-2 flex overflow-hidden overflow-x-scroll absolute bottom-0 left-0">
+              {
+                // filter((e) => e !== data.value.eventLocation )
+                Array.from({ length: divisionCount }, (_, i) => i + 1).map(
+                  (e, idx) => (
+                    <div
+                      key={idx}
+                      className="w-full mx-2 p-4 outline outline-1 bg-base-100 outline-base-300 rounded-sm"
+                    >
+                      <p className="text-center text-sm">Division {e}</p>
+                    </div>
+                  )
+                )
+              }
+            </div>
+          </div>
+        </div>
+
+        <div className="divider"></div>
+
+        <div className="flex items-center justify-start mb-2">
+          <div className="p-2 rounded-xl bg-base-300 mr-2">
+            <FiHardDrive className="w-6 h-6" />
+          </div>
+          <p className="text-lg">Storage</p>
+        </div>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center">
             <div className="flex flex-col">
               <p className="">
                 {used} GB used out of {size} Gb ({perc.toFixed(1)}%)

@@ -54,6 +54,7 @@ const handler = async (req, res) => {
         duration: 1, // Duration this device will be on in Seconds
         target_relay: "Relay_1", // relay_1 to relay_3
         caller: "Pig Detector",
+        eventLocation : 1
       },
       disabled: false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
@@ -66,6 +67,7 @@ const handler = async (req, res) => {
         duration: 1,
         target_relay: "Relay_2",
         caller: "Heat Stress Detector",
+        eventLocation : 1
       },
       disabled: false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
@@ -78,6 +80,7 @@ const handler = async (req, res) => {
         duration: 1,
         target_relay: "Relay_3",
         caller: "Dark Scene Detector",
+        eventLocation : 2
       },
       disabled: false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
@@ -140,6 +143,14 @@ const handler = async (req, res) => {
         config_name: "storageAutoDelete",
         description: "Specify if PHS will auto delete old records",
         value: false,
+        disabled: false,
+        uby: new ObjectId("6277e36f94637471bdabb80d"),
+    },
+    {
+        category: "config",
+        config_name: "divisions",
+        description: "Specifies how many parts the visible area of piggery can be divided",
+        value: 3,
         disabled: false,
         uby: new ObjectId("6277e36f94637471bdabb80d"),
       }

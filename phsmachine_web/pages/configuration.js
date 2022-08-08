@@ -35,6 +35,7 @@ const configuration = () => {
 
   const [coreActions, setCoreActions] = useState([])
   const [phsAutoDelete, setPhsAutoDelete] = useState({ value : false })
+  const [phsDivision, setDivision] = useState({ value : 0 })
   const [detectionMode, setDetectionMode] = useState({
     value: { mode: true, temperatureThreshold: -34 },
   });
@@ -84,6 +85,11 @@ const configuration = () => {
         mode : 3
       })
 
+      const ph_division = await axios.post("/api/phs/config/divisions", {
+        mode : 0
+      })
+
+      setDivision(ph_division.data.value)
       setDbRelays(phs_relays.data)
       setDetectionMode(db_detMode.data);
       setPhsAutoDelete(phs_autodelete.data);
@@ -149,6 +155,7 @@ const configuration = () => {
           <div>
             {tab === 0 && (
               <PhsSettingsV2
+                divisionCount={phsDivision}
                 autoDelete={phsAutoDelete}
                 storageInfo={phsStorage}
                 detectionMode={detectionMode}
@@ -157,7 +164,7 @@ const configuration = () => {
             )}
             {
                 tab === 1 && (
-                    <Actions actions={dbActions} relays={dbRelays} coreActions={coreActions}/>
+                    <Actions divisionCount={phsDivision} actions={dbActions} relays={dbRelays} coreActions={coreActions}/>
                 )
             }
             {
