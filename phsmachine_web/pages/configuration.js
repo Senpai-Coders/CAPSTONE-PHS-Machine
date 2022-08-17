@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import Layout from "../components/layout";
-import Debug from "../components/configuration/debug";
 import axios from "axios";
+import Loader from "../components/loading"
 
 import PhsSettingsV2 from "../components/configuration/phsSettingsv2";
 import Actions from "../components/configuration/actions"
@@ -14,8 +14,11 @@ import Relays from "../components/configuration/relays"
 // import { Listbox, Transition } from "@headlessui/react";
 
 const configuration = () => {
-  const [tab, setTab] = useState(2);
+  const [tab, setTab] = useState(1);
   const [exited, setExited] = useState(false);
+
+  const [loadA, setLoadA] = useState(false)
+  const [loadB, setLoadB] = useState(false)
 
   const [SYSSTATE, SETSYSSTATE] = useState({
     status: 3, // -2 Off, -1 Disabled, 0 - Detecting, 1 - Resolving, 2 - Debugging, 3 - Connecting
@@ -35,7 +38,7 @@ const configuration = () => {
 
   const [coreActions, setCoreActions] = useState([])
   const [phsAutoDelete, setPhsAutoDelete] = useState({ value : false })
-  const [phsDivision, setDivision] = useState({ value : 0 })
+  const [phsDivision, setDivision] = useState({ value : { col : 1, row : 1} })
   const [detectionMode, setDetectionMode] = useState({
     value: { mode: true, temperatureThreshold: -34 },
   });
@@ -58,9 +61,11 @@ const configuration = () => {
       setCoreActions(phs_actions.data.actions);
       SETSYSSTATE(phs_response.data.state);
       //setIsDown(false);
+      setLoadA(true)
     } catch (e) {
       //setIsDown(true);
       SETSYSSTATE({ ...SYSSTATE, status: -2 });
+      setLoadA(true)
     }
   };
 
@@ -68,7 +73,7 @@ const configuration = () => {
     try {
       if (exited) return;
       const db_actions = await axios.post("/api/phs/config/actions", {
-        mode: 2,
+        mode: 0,
       });
 
       const db_detMode = await axios.post("/api/phs/config/detectionMode", {
@@ -97,7 +102,10 @@ const configuration = () => {
       setDbActions(db_actions.data.actions);
       // setDbActiveUsers(db_active_users.data.activeUsers);
       // setPastDetection(db_past_detections.data.detections);
-    } catch (e) {}
+      setLoadB(true)
+    } catch (e) { 
+      setLoadA(true)
+    }
   };
 
   useEffect(() => {
@@ -153,7 +161,10 @@ const configuration = () => {
             </div>
           </div>
           <div>
-            {tab === 0 && (
+
+            { !loadA || !loadB && <Loader /> }
+            
+            {tab === 0 && loadA && loadB && (
               <PhsSettingsV2
                 divisionCount={phsDivision}
                 autoDelete={phsAutoDelete}
@@ -163,12 +174,12 @@ const configuration = () => {
               />
             )}
             {
-                tab === 1 && (
+                tab === 1 && loadA && loadB &&  (
                     <Actions divisionCount={phsDivision} actions={dbActions} relays={dbRelays} coreActions={coreActions}/>
                 )
             }
             {
-                tab === 2 && (
+                tab === 2 &&  loadA && loadB && (
                     <Relays/>
                 )
             }

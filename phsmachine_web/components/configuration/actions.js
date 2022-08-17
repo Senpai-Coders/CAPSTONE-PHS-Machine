@@ -33,6 +33,7 @@ const Actions = ({ actions, relays, coreActions, divisionCount }) => {
         <NewActionComponent
           relayOptions={relays}
           close={() => {
+            console.log("Closed Call")
             setNewAct(false);
           }}
           divisionCount = {divisionCount}

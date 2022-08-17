@@ -57,7 +57,7 @@ const themeChooser = ( { textMode } ) => {
       </label>
       <ul
         tabIndex="0"
-        className="dropdown-content menu max-h-56 overflow-y-scroll px-3 py-4 shadow backdrop-blur-sm bg-base-100/60 rounded-sm"
+        className="dropdown-content outline outline-1 outline-accent menu max-h-56 overflow-y-scroll px-3 py-4 shadow backdrop-blur-sm bg-base-100/80 rounded-sm"
       >
         {themes.map((th, i) => (
           <li

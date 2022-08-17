@@ -106,7 +106,7 @@ export default function Home() {
     try {
       if (exited) return;
       const db_actions = await axios.post("/api/phs/config/actions", {
-        mode: 2,
+        mode: 0,
       });
       const db_active_users = await axios.post("/api/phs/activeUsers", {});
       const db_past_detections = await axios.post("/api/phs/detection", {

@@ -10,6 +10,7 @@ const configSchema = new mongoose.Schema({
   uat: { type: Date, default: Date.now },
   uby: { type: mongoose.ObjectId, required: true },
   disabled: { type: Boolean, default: false },
+  deletable : { type: Boolean, default : true}
 });
 
 module.exports =

@@ -48,76 +48,36 @@ const handler = async (req, res) => {
     //Actions
     {
       category: "actions",
-      config_name: "Mist",
+      config_name: "Mist Div 1",
       description: "This will be utilized by the AI",
       value: {
-        duration: 1, // Duration this device will be on in Seconds
-        target_relay: "Relay_1", // relay_1 to relay_3
+        targets : [{ target_relay : "18", duration : 1 }],
         caller: "Pig Detector",
+        forceActivate : true, // Regardless event location it will activate on caller
         eventLocation : 1
       },
-      disabled: false,
-      uby: new ObjectId("6277e36f94637471bdabb80d"),
-    },
-    {
-      category: "actions",
-      config_name: "Fan",
-      description: "This will be utilized by the AI",
-      value: {
-        duration: 1,
-        target_relay: "Relay_2",
-        caller: "Heat Stress Detector",
-        eventLocation : 1
-      },
-      disabled: false,
-      uby: new ObjectId("6277e36f94637471bdabb80d"),
-    },
-    {
-      category: "actions",
-      config_name: "Lights",
-      description: "This will be utilized by the AI",
-      value: {
-        duration: 1,
-        target_relay: "Relay_3",
-        caller: "Dark Scene Detector",
-        eventLocation : 2
-      },
-      disabled: false,
+      deletable : false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
     },
     // RELAYS
     {
       category: "relays",
-      config_name: "Relay_1",
-      description: "Relay 1 On 4 Channel Relay",
-      value: { GPIO_PIN: 4, isUsed: true },
+      config_name: "18",
+      description: " - ",
+      value: { GPIO_PIN: 18 },
       disabled: false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
+      deletable : false
     },
     {
       category: "relays",
-      config_name: "Relay_2",
-      description: "Relay 2 On 4 Channel Relay",
+      config_name: "Led Light",
+      description: "Lights is connected on Relay 2",
       value: { GPIO_PIN: 14, isUsed: true },
       disabled: false,
+      deletable : false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
-    },
-    {
-      category: "relays",
-      config_name: "Relay_3",
-      description: "Relay 3 On 4 Channel Relay",
-      value: { GPIO_PIN: 15, isUsed: true },
-      disabled: false,
-      uby: new ObjectId("6277e36f94637471bdabb80d"),
-    },
-    {
-      category: "relays",
-      config_name: "Relay_4",
-      description: "Relay 4 On 4 Channel Relay",
-      value: { GPIO_PIN: 18, isUsed: false },
-      disabled: false,
-      uby: new ObjectId("6277e36f94637471bdabb80d"),
-    },
+    }, 
     // CONFIG
     {
       category: "update",
@@ -126,6 +86,7 @@ const handler = async (req, res) => {
       value: "1659839703437",
       disabled: false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
+      deletable : true
     },
     {
       category: "config",
@@ -137,6 +98,7 @@ const handler = async (req, res) => {
       },
       disabled: false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
+      deletable : true
     },
     {
         category: "config",
@@ -145,14 +107,19 @@ const handler = async (req, res) => {
         value: false,
         disabled: false,
         uby: new ObjectId("6277e36f94637471bdabb80d"),
+        deletable : false
     },
     {
         category: "config",
         config_name: "divisions",
         description: "Specifies how many parts the visible area of piggery can be divided",
-        value: 3,
+        value: {
+            col : 4,
+            row : 2
+        },
         disabled: false,
         uby: new ObjectId("6277e36f94637471bdabb80d"),
+        deletable : false
       }
   ];
 

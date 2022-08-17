@@ -8,67 +8,18 @@ import dbConnect from "../../../../configs/dbConnection";
 const cookie = require("cookie");
 const configs = require("../../../../models/configs");
 
+let ObjectId = require("mongoose").Types.ObjectId;
+
+
 dbConnect();
 
 const handler = async (req, res) => {
   try {
     const auth = req.cookies.authorization;
     const editorDetails = VERIFY_AUTHORIZATION(auth);
-    const {
-      mode,
-      old_config_name,
-      config_name,
-      description,
-      target_relay,
-      old_target_relay,
-      duration,
-      caller,
-      eventLocation
-    } = req.body;
+    const { mode, _id, config_name, description, value } = req.body;
+
     if (mode === 0) {
-      // check if action exist
-      const isExist = await configs.findOne({ config_name });
-      const isRelayUsed = await configs.findOne({
-        config_name,
-        "value.isUsed": true,
-      });
-      // check if relay in use
-
-      if (isExist)
-        return res.status(409).json({ message: "Action name already exist" });
-      if (isRelayUsed)
-        return res
-          .status(409)
-          .json({ message: "Relay is already used by other actions" });
-
-      const insert = await configs.create({
-        category: "actions",
-        config_name,
-        description,
-        value: { target_relay, duration, caller, eventLocation : eventLocation? eventLocation : -1 },
-        uby: editorDetails._id,
-      });
-      // insert
-
-      const upconf = await configs.updateOne(
-        { config_name: target_relay },
-        { $set: { "value.isUsed": true, uby: editorDetails._id } }
-      );
-      // update relay to use
-    } else if (mode === -1) {
-      const del = await configs.deleteOne({ config_name });
-
-      // update relay to unused
-      const updateRelay = await configs.updateOne(
-        { config_name: target_relay },
-        {
-          $set: {
-            "value.isUsed": false,
-            uby: editorDetails._id,
-          },
-        }
-      );
-    } else if (mode === 2) {
       // gettingAllDbActions
       const actions = await configs.find({ category: "actions" });
       return res.status(200).json({ actions });
@@ -88,34 +39,45 @@ const handler = async (req, res) => {
           .status(409)
           .json({ message: "Relay is already used by other actions" });
 
-      const insert = await configs.updateOne(
-        { config_name: old_config_name },
+      const insert = await configs.create({
+        category: "actions",
+        config_name,
+        description,
+        value,
+        uby: editorDetails._id,
+      });
+      // insert
+
+    } else if (mode === 2) {
+        const isExist = await configs.findOne({ config_name });
+
+        if(isExist){
+            if(isExist._id.toString() !== _id)
+                return res.status(409).json({ message: "Action name already exist" });
+        }
+        
+        const updateRelay = await configs.updateOne({ _id }, {
+            $set : {
+                config_name,
+                description,
+                value,
+                uby: editorDetails._id
+            }
+        })
+
+    } else if (mode === -1) {
+      const del = await configs.deleteOne({ config_name });
+
+      // update relay to unused
+      const updateRelay = await configs.updateOne(
+        { config_name: target_relay },
         {
           $set: {
-            category: "actions",
-            config_name,
-            description,
-            value: { target_relay, duration, caller, eventLocation : eventLocation? eventLocation : -1 },
+            "value.isUsed": false,
             uby: editorDetails._id,
           },
         }
       );
-
-      console.log( config_name, old_config_name ,insert, eventLocation)
-
-      // insert
-      const upconf = await configs.updateOne(
-        { config_name: target_relay },
-        { $set: { "value.isUsed": true, uby: editorDetails._id } }
-      );
-
-      if (old_target_relay !== target_relay) {
-        const upconf2 = await configs.updateOne(
-            { config_name: old_target_relay },
-            { $set: { "value.isUsed": false, uby: editorDetails._id } }
-          );
-      }
-      // update relay to use
     }
 
     // set app config to forceUpdate all info in phs machine

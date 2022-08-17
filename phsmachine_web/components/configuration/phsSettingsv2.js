@@ -15,7 +15,7 @@ import { BiNetworkChart } from "react-icons/bi";
 import { BsGear, BsLayoutThreeColumns } from "react-icons/bs";
 import { TiWarningOutline } from "react-icons/ti";
 
-import { bytesToMegaBytes, mbToGB, getPercentUsage } from "../../helpers";
+import { bytesToMegaBytes, mbToGB, getPercentUsage, PI_IP } from "../../helpers";
 
 import axios from "axios";
 
@@ -31,6 +31,7 @@ const phsSettings = ({
   const [tempThresh, setTempThresh] = useState(
     detectionMode.value.temperatureThreshold
   );
+
   const [saving, setSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -41,12 +42,14 @@ const phsSettings = ({
   const [size, setSize] = useState(0);
   const [perc, setPerc] = useState(0);
 
-  const [divisionCnt, setDivisionCnt] = useState(divisionCount)
-  
-  useEffect(()=>{
-    if(hasChanges) return;
-    setDivisionCnt(divisionCount)
-  }, [divisionCount])
+  const [divCol, setDivCol] = useState(1);
+  const [divRow, setDivRow] = useState(1);
+
+  useEffect(() => {
+    if (hasChanges) return;
+    setDivCol(divisionCount.col);
+    setDivRow(divisionCount.row);
+  }, [divisionCount]);
 
   useEffect(() => {
     let Size = mbToGB(bytesToMegaBytes(storageInfo.size)),
@@ -59,7 +62,7 @@ const phsSettings = ({
   }, [storageInfo]);
 
   const updateAutoDelete = async () => {
-    setUpdating("storage");
+    setUpdating("autodelete");
     let updateAutoDelete = await axios.post(
       "/api/phs/config/storageAutoDelete",
       { mode: 1, value: !autoDelete.value }
@@ -67,15 +70,22 @@ const phsSettings = ({
   };
 
   const updateDivision = async () => {
-    try{
-        setUpdating("division")
-        const ph_division = await axios.post("/api/phs/config/divisions", { mode : 1, value : divisionCnt })
-    }catch(e){}
-  }
+    try {
+      setUpdating("division");
+      const ph_division = await axios.post("/api/phs/config/divisions", {
+        mode: 1,
+        value: {
+            col : divCol,
+            row : divRow
+        },
+      });
+      setHasChanges(false)
+    } catch (e) {}
+  };
 
   useEffect(() => {
     setUpdating("");
-  }, [autoDelete, storageInfo]);
+  }, [autoDelete, storageInfo, detectionMode, divisionCount]);
 
   const saveChange = async (val) => {
     try {
@@ -108,7 +118,7 @@ const phsSettings = ({
 
       setHasChanges(false);
       setSaving(false);
-    } catch (e) {}
+    } catch (e) { console.log(e)}
   };
 
   useEffect(() => {
@@ -397,7 +407,7 @@ const phsSettings = ({
       </div>
 
       <div className="mx-1 md:mx-2 overflow-visible rounded-md p-4 md:p-4 outline mt-4 bg-base-100 shadow-sm outline-1 outline-base-300">
-        {updating === "storage" || updating === "division" && <Loading />}
+        {updating === "storage" || (updating === "division" && <Loading />)}
         <p className="font-inter font-medium mb-2 text-lg md:text-xl">PHS</p>
 
         <div className="mt-4">
@@ -405,44 +415,107 @@ const phsSettings = ({
             <div className="p-2 rounded-xl bg-base-300 mr-2">
               <BsLayoutThreeColumns className="w-6 h-6" />
             </div>
-            <p className="text-lg">PHS POV division</p>
+            <p className="text-lg">PHS FOV event area division</p>
           </div>
-          <div>
-            <div className="form-control drop-shadow-lg mr-3">
-              <label className="input-group input-group-sm">
+
+          <p className="text-sm">
+            Specify subdivision of PHS FOV on which different action must take
+            place in specific event(s).
+          </p>
+
+          <div className="md:flex items-center">
+            <div>
+              <div className="form-control drop-shadow-lg mt-2 mr-2">
+                <label className="text-sm my-1">Column : Choose 1 - 12</label>
                 <input
                   type="number"
                   onChange={(e) => {
-                    setDivisionCnt(e.target.value);
+                    var val = e.target.value;
+
+                    if (`${val}`.length === 0) {
+                      setDivCol("");
+                      return;
+                    }
+
+                    if (val > 12) return;
+                    if (val <= 0) return;
+                    if (divCol !== val) setHasChanges(true);
+
+                    setDivCol(Number.parseInt(val));
                   }}
-                  placeholder="# Of Division"
-                  value={divisionCnt}
+                  placeholder="# of col"
+                  value={divCol}
                   className="input w-full text-lg font-mono max-w-xs text-neutral-content bg-neutral "
                 />
-                <span onClick={()=>{
-                    updateDivision()
-                }} className={`btn ${divisionCnt !== divisionCount? '' : 'hidden'}`}>Save</span>
-              </label>
+              </div>
+            </div>
+
+            <div>
+              <div className="form-control drop-shadow-lg mt-2">
+                <label className="text-sm my-1">Row : Choose 1 - 5</label>
+                <input
+                  type="number"
+                  onChange={(e) => {
+                    var val = e.target.value;
+
+                    if (`${val}`.length === 0) {
+                      setDivRow("");
+                      return;
+                    }
+
+                    if (val > 5) return;
+                    if (val <= 0) return;
+                    if (divRow !== val) setHasChanges(true);
+
+                    setDivRow(Number.parseInt(val));
+                  }}
+                  placeholder="# of row"
+                  value={divRow}
+                  className="input w-full text-lg font-mono max-w-xs text-neutral-content bg-neutral "
+                />
+              </div>
             </div>
           </div>
+
+          <p className="text-sm mt-4">
+            Bellow shows the visualization where the phs actions will take place
+          </p>
+
           <div className="relative mt-4">
-            <div className="w-full h-64 bg-base-100"></div>
-            <div className="w-full h-full py-2 flex overflow-hidden overflow-x-scroll absolute bottom-0 left-0">
+            <div
+              className="w-full coverStretch bg-no-repeat h-80 bg-base-100"
+              style={{
+                backgroundImage:
+                  `url("https://image.shutterstock.com/shutterstock/photos/1506244592/display_1500/stock-photo-top-view-of-three-little-black-and-white-pigs-standing-on-hay-in-a-cage-1506244592.jpg")`,
+              }}
+            ></div>
+            <div
+              className={`w-full h-full grid grid-cols-${divCol} grid-rows-${divRow} overflow-hidden overflow-x-scroll absolute top-0 left-0`}
+            >
               {
                 // filter((e) => e !== data.value.eventLocation )
-                Array.from({ length: divisionCount }, (_, i) => i + 1).map(
+                Array.from({ length: divCol * divRow }, (_, i) => i + 1).map(
                   (e, idx) => (
                     <div
                       key={idx}
-                      className="w-full mx-2 p-4 outline outline-1 bg-base-100 outline-base-300 rounded-sm"
+                      className="w-full p-4 outline outline-1 bg-base-100/70 hover:bg-base-100/95  outline-base-300 rounded-sm"
                     >
-                      <p className="text-center text-sm">Division {e}</p>
+                      <p className="text-center text-sm">{e}</p>
                     </div>
                   )
                 )
               }
             </div>
           </div>
+
+          <span
+            onClick={() => {
+              updateDivision();
+            }}
+            className={`btn mt-4 btn-block ${ ((divCol !== '' && divCol !== divisionCount.col) || (divRow !== '' && divRow !== divisionCount.row)) ? "" : "hidden"}`}
+          >
+            Save
+          </span>
         </div>
 
         <div className="divider"></div>
@@ -473,6 +546,8 @@ const phsSettings = ({
           must delete some detection records to free up storage space
         </p>
         <div className="divider"></div>
+        {updating === "autodelete" && <Loading />}
+
         <div className="mt-2 card ">
           <div className="card-body p-2">
             <div className="md:flex items-center justify-between">
