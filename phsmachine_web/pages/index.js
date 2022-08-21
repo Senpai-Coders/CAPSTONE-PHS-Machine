@@ -27,7 +27,7 @@ import {
   PhsStorageBlock,
   PastDetectionBlock,
 } from "../components/Blocks";
-import Loader from "../components/loading"
+import Loader from "../components/loading";
 
 export default function Home() {
   const router = useRouter();
@@ -194,37 +194,39 @@ export default function Home() {
       {/** MAIN CONTAINER */}
       <div className=" relative min-h-screen">
         {/** MONITORING STREAM STATUS */}
+        {SYSSTATE.status === 3 && <Loader />}
+
         {SYSSTATE.status === -2 && (
           <div className="h-24 items-center justify-center flex">
             <CgUnavailable className="h-5 w-5 mr-2" />
-            <p className="">Stream Unavailable</p>
+            <p className="">Sorry, Stream Unavailable</p>
           </div>
         )}
 
         {/** MONITORING LAYOUT */}
-        {SYSSTATE.status !== -2 && SYSSTATE.status !== 3 && (
+        {SYSSTATE.status !== 3 && (
           <div className="relative pb-4">
             {/* layout 0 - tripple */}
             {viewMode === 0 && (
               <div className="grid grid-cols-1 md:grid-cols-3 w-full">
                 {/* normal */}
-                <div className="">
+                <div className="min-h-12">
                   <img
-                    className="w-full"
+                    className="w-full outline outline-1 outline-base-100 rounded-sm"
                     src={`http://${PI_IP}:8000/normal_feed`}
                   />
                 </div>
                 {/* thermal */}
-                <div>
+                <div className="min-h-12">
                   <img
-                    className="w-full"
+                    className="w-full outline outline-1 outline-base-100 rounded-sm"
                     src={`http://${PI_IP}:8000/thermal_feed`}
                   />
                 </div>
                 {/* annotation */}
-                <div>
+                <div className="min-h-12">
                   <img
-                    className="w-full"
+                    className="w-full outline outline-1 outline-base-100 rounded-sm"
                     src={`http://${PI_IP}:8000/annotate_feed`}
                   />
                 </div>
@@ -235,16 +237,16 @@ export default function Home() {
             {viewMode === 1 && (
               <div className="md:grid md:grid-cols-2 w-full">
                 {/* normal */}
-                <div>
+                <div className="min-h-12">
                   <img
-                    className="w-full"
+                    className="w-full outline outline-1 outline-base-100 rounded-sm"
                     src={`http://${PI_IP}:8000/normal_feed`}
                   />
                 </div>
                 {/* thermal */}
-                <div>
+                <div className="min-h-12">
                   <img
-                    className="w-full"
+                    className="w-full outline outline-1 outline-base-100 rounded-sm"
                     src={`http://${PI_IP}:8000/thermal_feed`}
                   />
                 </div>
@@ -259,7 +261,7 @@ export default function Home() {
               >
                 <img
                   style={{ height: "calc(100vh * 0.70)" }}
-                  className="w-full object-fill absolute left-0 top-0"
+                  className="w-full object-fill absolute outline outline-1 outline-base-200 rounded-sm left-0 top-0"
                   src={`http://${PI_IP}:8000/normal_feed`}
                 />
                 <img
@@ -271,8 +273,6 @@ export default function Home() {
             )}
           </div>
         )}
-
-        {SYSSTATE.status === 3 && <Loader />}
 
         {/** STATUS LAYOUT */}
         <div className="mt-4">

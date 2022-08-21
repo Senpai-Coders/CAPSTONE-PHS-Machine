@@ -13,13 +13,11 @@ import ThemeChooser from "./configuration/themeChooser";
 
 import Time_Strip from "./Time_Strp";
 
-const navbar = () => {
+const navbar = ({toggled, setToggled}) => {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState();
-
-  const [toggled, setToggled] = useState(false);
 
   const signout = async () => {
     try {
@@ -109,7 +107,7 @@ const navbar = () => {
       </div> */}
 
       {/* NAV MOBILE */}
-      <nav className="lg:hidden fixed z-30 flex-shrink-0 href w-screen bg-base-200 shadow-lg block">
+      <nav className=" fixed z-30 flex-shrink-0 href w-screen bg-base-200 shadow-lg block">
         {/* <div className="overflow-y-auto overflow-x-hidden flex justify-between px-8"> */}
         {/* SideBar Show/Hide */}
         <div
@@ -215,7 +213,7 @@ const navbar = () => {
       </nav>
 
       {/* NAV Tablet + Md + Lg + Full */}
-      <nav className="hidden left-0 fixed z-30 w-full flex-shrink-0 px-5 href dark:bg-gray-800 bg-base-200 shadow-lg lg:block">
+      <nav className="hidden left-0 fixed z-30 w-full flex-shrink-0 px-5 href dark:bg-gray-800 bg-base-200 shadow-lg ">
         {/* <div className="overflow-y-auto overflow-x-hidden flex justify-between px-8"> */}
         <div className=" grid text-sm grid-cols-3 mx-4">
           <div className="flex justify-evenly items-center space-x-20 my-1">
