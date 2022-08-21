@@ -188,12 +188,12 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
                 {targets.map((i, idx) => (
                   <>
                     <div className="dropdown w-full">
-                      <label tabindex="0" className="btn text-lg w-full">
+                      <label tabindex="0" className="btn  w-full">
                         Relay : {i.target_relay}
                       </label>
                       <ul
                         tabindex="0"
-                        className="dropdown-content menu max-h-56 overflow-y-scroll px-3 py-4 shadow backdrop-blur-sm bg-base-100/60 rounded-sm"
+                        className="dropdown-content menu max-h-56 overflow-y-scroll px-3 py-4 shadow backdrop-blur-sm bg-base-100/60 border-b border-l border-r border-base-300 rounded-sm"
                       >
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rel, id) => (
                           <li
@@ -332,7 +332,7 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
                     </div>
                     <div className="relative mt-4">
                       <div
-                        className="w-full coverStretch bg-no-repeat h-64 bg-base-100"
+                        className="w-full coverStretch bg-no-repeat h-80 bg-base-100"
                         style={{
                           //https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Road_in_Norway.jpg/1200px-Road_in_Norway.jpg
                           //http://${PI_IP}:8000/normal_feed
@@ -370,7 +370,7 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
               </>
             )}
             {!data.deletable && (
-              <div class="alert shadow-lg my-4">
+              <div className="alert shadow-lg my-4">
                 <p className="text-center">
                   This Action is built in and cannot be deleted
                 </p>

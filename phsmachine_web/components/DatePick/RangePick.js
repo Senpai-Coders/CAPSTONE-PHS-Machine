@@ -24,9 +24,9 @@ const SinglePick = ({
         className="dropdown-content w-64 bg-base-100/90 backdrop-blur-sm card card-compact p-1 shadow "
       >
         <div className="card-body">
-          <div class="form-control w-full max-w-xs">
-            <label class="label">
-              <span class="label-text">Select Start Date</span>
+          <div className="form-control w-full max-w-xs">
+            <label className="label">
+              <span className="label-text">Select Start Date</span>
             </label>
             <input
               value={dateYYYYMMDD(date1, "-")}
@@ -35,12 +35,12 @@ const SinglePick = ({
                 setDate1(new Date(e.target.value));
               }}
               placeholder=""
-              class="input input-bordered"
+              className="input input-bordered"
             />
           </div>
-          <div class="form-control w-full max-w-xs">
-            <label class="label">
-              <span class="label-text">Select End Date</span>
+          <div className="form-control w-full max-w-xs">
+            <label className="label">
+              <span className="label-text">Select End Date</span>
             </label>
             <input
               value={dateYYYYMMDD(date2, "-")}
@@ -49,13 +49,13 @@ const SinglePick = ({
                 setDate2(new Date(e.target.value));
               }}
               placeholder=""
-              class="input input-bordered"
+              className="input input-bordered"
             />
           </div>
           {feature1 && <Calendar onChange={setDate1} value={date1} />}
           {dateChanged && (
-            <div class="card-actions justify-end">
-              <button onClick={() => onApply()} class="btn btn-sm">
+            <div className="card-actions justify-end">
+              <button onClick={() => onApply()} className="btn btn-sm">
                 apply
               </button>
             </div>

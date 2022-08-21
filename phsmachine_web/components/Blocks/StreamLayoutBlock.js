@@ -3,11 +3,11 @@ import { RiLayout4Fill } from "react-icons/ri";
 
 const StreamLayoutBlock = ({ layout, set }) => {
   return (
-    <div class="mb-4 mx-0 sm:ml-4 xl:mr-4">
-      <div class="shadow-lg rounded-2xl card bg-base-100 w-full">
+    <div className="mb-4 mx-0 sm:ml-4 xl:mr-4">
+      <div className="shadow-lg rounded-2xl card bg-base-100 w-full">
         <div className="p-4 flex items-center justify-start">
           <RiLayout4Fill className="w-7 h-7 text-secondary" />
-          <p class="ml-1 font-bold text-md">Stream Layout Mode</p>
+          <p className="ml-1 font-bold text-md">Stream Layout Mode</p>
         </div>
         <div className="form-control mx-4 mb-4">
           <label className="label cursor-pointer">

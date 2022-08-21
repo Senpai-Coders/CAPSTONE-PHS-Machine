@@ -275,7 +275,7 @@ const phsSettings = ({
 
           {!detectionMode.value.mode && (
             <>
-              <div class="divider"></div>
+              <div className="divider"></div>
               <div className="">
                 <div className="mr-4">
                   <div className="flex items-center justify-start mb-2">

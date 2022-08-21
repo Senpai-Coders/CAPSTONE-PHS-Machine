@@ -67,7 +67,7 @@ const ActionBlock = ({ db_actions, phsActions, state }) => {
                   {action.state ? "Active" : "Stndby"}
                 </span>
                 {action.state && (
-                  <span class="countdown text-xs text-accent mr-1">
+                  <span className="countdown text-xs text-accent mr-1">
                     <span style={{ "--value": action.elapsed }}></span>s
                   </span>
                 )}

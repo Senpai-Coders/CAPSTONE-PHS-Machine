@@ -51,12 +51,12 @@ const handler = async (req, res) => {
       config_name: "Mist Div 1",
       description: "This will be utilized by the AI",
       value: {
-        targets : [{ target_relay : "18", duration : 1 }],
+        targets: [{ target_relay: "18", duration: 1 }],
         caller: "Pig Detector",
-        forceActivate : true, // Regardless event location it will activate on caller
-        eventLocation : 1
+        forceActivate: true, // Regardless event location it will activate on caller
+        eventLocation: 1,
       },
-      deletable : false,
+      deletable: false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
     },
     // RELAYS
@@ -67,7 +67,7 @@ const handler = async (req, res) => {
       value: { GPIO_PIN: 18 },
       disabled: false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
-      deletable : false
+      deletable: false,
     },
     {
       category: "relays",
@@ -75,9 +75,9 @@ const handler = async (req, res) => {
       description: "Lights is connected on Relay 2",
       value: { GPIO_PIN: 14, isUsed: true },
       disabled: false,
-      deletable : false,
+      deletable: false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
-    }, 
+    },
     // CONFIG
     {
       category: "update",
@@ -86,7 +86,7 @@ const handler = async (req, res) => {
       value: "1659839703437",
       disabled: false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
-      deletable : true
+      deletable: true,
     },
     {
       category: "config",
@@ -98,29 +98,39 @@ const handler = async (req, res) => {
       },
       disabled: false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
-      deletable : true
+      deletable: true,
     },
     {
-        category: "config",
-        config_name: "storageAutoDelete",
-        description: "Specify if PHS will auto delete old records",
-        value: false,
-        disabled: false,
-        uby: new ObjectId("6277e36f94637471bdabb80d"),
-        deletable : false
+      category: "config",
+      config_name: "storageAutoDelete",
+      description: "Specify if PHS will auto delete old records",
+      value: false,
+      disabled: false,
+      uby: new ObjectId("6277e36f94637471bdabb80d"),
+      deletable: false,
     },
     {
-        category: "config",
-        config_name: "divisions",
-        description: "Specifies how many parts the visible area of piggery can be divided",
-        value: {
-            col : 4,
-            row : 2
-        },
-        disabled: false,
-        uby: new ObjectId("6277e36f94637471bdabb80d"),
-        deletable : false
-      }
+      category: "config",
+      config_name: "divisions",
+      description:
+        "Specifies how many parts the visible area of piggery can be divided",
+      value: {
+        col: 4,
+        row: 2,
+      },
+      disabled: false,
+      uby: new ObjectId("6277e36f94637471bdabb80d"),
+      deletable: false,
+    },
+    {
+      category: "config",
+      config_name: "identity",
+      description: "Unique Identity Of phs",
+      value: { server_name: "PHS A1", type: "Standalone" },
+      disabled: false,
+      uby: new ObjectId("6277e36f94637471bdabb80d"),
+      deletable: false,
+    },
   ];
 
   const DEFAULT_DETECTS = [
