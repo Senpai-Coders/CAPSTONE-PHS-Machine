@@ -90,7 +90,6 @@ const navbar = () => {
         </div>
       </div>
 
-      {/* NAV MOBILE */}
       {/* <div className="md:hidden flex w-full justify-evenly my-4 items-center">
         {PHS_ROUTES.map((routes, idx) => (
           <routes.icon
@@ -109,15 +108,15 @@ const navbar = () => {
         </label>
       </div> */}
 
-      <nav className="md:hidden fixed z-30 flex-shrink-0 href w-screen bg-base-200 shadow-lg block">
+      {/* NAV MOBILE */}
+      <nav className="lg:hidden fixed z-30 flex-shrink-0 href w-screen bg-base-200 shadow-lg block">
         {/* <div className="overflow-y-auto overflow-x-hidden flex justify-between px-8"> */}
         {/* SideBar Show/Hide */}
         <div
-          className={`z-40 w-64 px-6 py-2 h-screen bg-base-300 absolute duration-300 ease-in top-0 ${
+          className={`z-40 overflow-y-scroll w-64 px-6 py-2 h-screen bg-base-300 absolute duration-300 ease-in-out top-0 ${
             toggled ? "left-0" : "-left-96 "
           }`}
         >
-          {" "}
           <div className="mt-2 flex justify-between items-center">
             <p>PHS A1</p>
             <button
@@ -180,6 +179,7 @@ const navbar = () => {
               Sign Out
             </label>
           </div>
+          
         </div>
 
         <div className="grid text-sm grid-cols-3 mx-4">
@@ -202,7 +202,7 @@ const navbar = () => {
               href="/"
             >
               <span className="text-xl tracking-widest cursor-pointer">
-                PHS nav
+                PHS
               </span>
             </Link>
           </div>
@@ -215,9 +215,9 @@ const navbar = () => {
       </nav>
 
       {/* NAV Tablet + Md + Lg + Full */}
-      <nav className="hidden fixed z-30 flex-shrink-0 px-5 href dark:bg-gray-800 bg-base-200 shadow-lg md:block">
+      <nav className="hidden left-0 fixed z-30 w-full flex-shrink-0 px-5 href dark:bg-gray-800 bg-base-200 shadow-lg lg:block">
         {/* <div className="overflow-y-auto overflow-x-hidden flex justify-between px-8"> */}
-        <div className="grid text-sm grid-cols-3 mx-4">
+        <div className=" grid text-sm grid-cols-3 mx-4">
           <div className="flex justify-evenly items-center space-x-20 my-1">
             {PHS_ROUTES.map((routes, idx) => (
               <p
@@ -251,7 +251,7 @@ const navbar = () => {
 
           {/* USER INFO & SIGNOUT */}
           <div className="flex justify-end items-center space-x-8">
-            <Time_Strip />
+          <div className="md:hidden lg:block"><Time_Strip /></div>
             <ThemeChooser />
             {!userData ? (
               <div className="w-5/12 flex items-center space-x-4">
@@ -278,7 +278,7 @@ const navbar = () => {
               htmlFor="my-modal-6"
               className="font-medium modal-button cursor-pointer duration-300 text-primary"
             >
-              Quit
+              Signout
             </label>
           </div>
         </div>

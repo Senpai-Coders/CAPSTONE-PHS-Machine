@@ -10,6 +10,7 @@ import {
   RebootConfirm,
   ShutdownConfirm,
 } from "../components/modals/";
+
 import { PI_IP, getCamMode, setCamMode } from "../helpers";
 
 import { GiPig } from "react-icons/gi";
@@ -26,6 +27,7 @@ import {
   PhsStorageBlock,
   PastDetectionBlock,
 } from "../components/Blocks";
+import Loader from "../components/loading"
 
 export default function Home() {
   const router = useRouter();
@@ -190,17 +192,18 @@ export default function Home() {
       />
 
       {/** MAIN CONTAINER */}
-      <div className="space-y-2 relative min-h-screen">
-        {/** MONITORING LAYOUT */}
-        {SYSSTATE.status === -2 ? (
+      <div className=" relative min-h-screen">
+        {/** MONITORING STREAM STATUS */}
+        {SYSSTATE.status === -2 && (
           <div className="h-24 items-center justify-center flex">
             <CgUnavailable className="h-5 w-5 mr-2" />
-            <p className="">              
-              Stream Unavailable
-            </p>
+            <p className="">Stream Unavailable</p>
           </div>
-        ) : (
-          <div className="">
+        )}
+
+        {/** MONITORING LAYOUT */}
+        {SYSSTATE.status !== -2 && SYSSTATE.status !== 3 && (
+          <div className="relative pb-4">
             {/* layout 0 - tripple */}
             {viewMode === 0 && (
               <div className="grid grid-cols-1 md:grid-cols-3 w-full">
@@ -268,6 +271,8 @@ export default function Home() {
             )}
           </div>
         )}
+
+        {SYSSTATE.status === 3 && <Loader />}
 
         {/** STATUS LAYOUT */}
         <div className="mt-4">

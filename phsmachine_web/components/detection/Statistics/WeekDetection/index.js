@@ -160,7 +160,7 @@ const index = ({ refresh, data, loading }) => {
         close={setShowModal}
       />
       <p className="text-lg mb-6">Week Detection</p>
-      <div className="flex items-center justify-start">
+      <div className="flex items-center justify-between">
         <p className="btn btn-sm mr-2 md:mr-2" onClick={() => refresh()}>
           <IoReloadCircleSharp
             className={`mr-2 ${loading ? "animate-spin" : ""}`}

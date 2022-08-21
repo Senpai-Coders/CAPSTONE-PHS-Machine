@@ -29,14 +29,14 @@ const index = ({ refresh, data, loading }) => {
   return (
     <div className="mt-4">
       <p className="text-lg mb-6">Calendar Detection</p>
-      <div className="flex items-center justify-start">
+      <div className="flex items-center justify-between">
         <p className="btn btn-sm mr-2 md:mr-2" onClick={() => refresh()}>
           <IoReloadCircleSharp
             className={`mr-2 ${loading ? "animate-spin" : ""}`}
           />
           Refresh{" "}
         </p>
-        <div className="md:hidden dropdown">
+        <div className="md:hidden dropdown dropdown-left">
           <label tabIndex="0" className="ml-2 btn btn-outline btn-sm">
             {selectedYear}
           </label>
