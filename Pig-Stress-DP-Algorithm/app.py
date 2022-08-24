@@ -7,6 +7,7 @@ import threading
 import time, socket
 import cv2
 import logging
+import math
 
 if isPi:
     from cameras.cam_normal import Cam_Norm
@@ -35,6 +36,7 @@ warnings.filterwarnings("ignore") # Warning will make operation confuse!!!
 tf.get_logger().setLevel(logging.ERROR)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
+font = cv2.FONT_HERSHEY_SIMPLEX
 
 YOLO_DIR = os.path.join('models','Yolov5')
 WEIGHTS_DIR = os.path.join('best.pt')
@@ -53,6 +55,9 @@ UPDATE_STAMP=None
 ACTION_STATE=None
 R_CONTROLLER=None
 EMERGENCY_STOP=False
+
+DETECTION_MODE=False
+TEMPERATURE_THRESHOLD=38.5
 
 Yolov5_PHD=None
 PHS_CNN=None
@@ -188,8 +193,11 @@ def hasNoPendingHeatStressJob():
             return False
     return res
 
+def drawText(img, x, y, text, color, font, font_size):
+    return cv2.putText(img, text, (x, y), font, font_size, color, 2, cv2.LINE_AA)
+
 def detectHeatStress():
-    global IMG_NORMAL_ANNOTATED, PHS_CNN, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
+    global font, DETECTION_MODE, TEMPERATURE_THRESHOLD, IMG_NORMAL_ANNOTATED, PHS_CNN, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
     while True and isPi:
         loadDbConfig()
         if IMG_NORMAL is not None and IMG_THERMAL is not None:
@@ -206,6 +214,7 @@ def detectHeatStress():
 
             # DETECT IF SCENE IS DARK
             # CALL ALL ACTION THAT IS BIND TO DARK SCENE EVENT
+            # TODO
             Dark_Scene_Detector = isDarkScene(to_read) 
             if Dark_Scene_Detector:
                 curACTIONS = activateCategory(curACTIONS, "Dark Scene Detector")
@@ -244,20 +253,56 @@ def detectHeatStress():
                     y1 = int(result['ymin'])
                     x2 = int(result['xmax'])
                     y2 = int(result['ymax'])
+
+
+                    #cv2.putText(detect_annotation, f'{x1} {y1}', (x1,y1), font, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
+                    #cv2.putText(detect_annotation, f'{x2} {y2}', (x2,y2), font, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
+
+                    H, W, C = c_IMG_NORMAL.shape
+                    print('h:',H, 'w:', W)
+                    print(x1, y1, x2, y2, x1 + x2, y1 + y2)
+
+                    # GET LOCATION OF PIG
+                    center_x = math.floor(x1 + ((x2 - x1) / 2))
+                    center_y = math.floor(y1 + ((y2 - y1)/ 2))
+
+                    detect_annotation = cv2.circle(detect_annotation, (center_x, center_y ), 4 , (255, 220, 80), 2)
+                    #cv2.putText(detect_annotation, f'{center_x} {center_y}', (center_x,center_y), font, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
+
                     print('🐷 pig at coord :',x1,y1,x2,y2, end='')
                     cpy_thrm_crop_raw = c_Raw_Reshaped[y1:y2, x1:x2]
 
                     # detection = CNN ( RAW THERMAL )
                     converted_img = conv_img(cpy_thrm_crop_raw)
-                    identify_pig_stress = PHS_CNN.predict(converted_img)
+
+                    # DETECTION_MODE=False
+                    # TEMPERATURE_THRESHOLD=0
+                    #
+
                     classes =  ['Heat Stressed', 'Normal']
-                    classification = classes[np.argmax(identify_pig_stress)]
-                    print(' - Classified as ', classification)
+
+                    # constructing subinfo of the subcropped coords
+                    cpy_thrm_crop = c_IMG_THERMAL[y1 : y2, x1 : x2]
+                    min_temp = np.min(cpy_thrm_crop_raw)
+                    avg_temp = np.mean(cpy_thrm_crop_raw)
+                    max_temp = np.max(cpy_thrm_crop_raw)
+
+                    detect_annotation = drawText(detect_annotation, x1, y2 - 20,  "%.2f %sC" % (max_temp, u'\u2103'), (255, 98, 0), font, 0.5)
+                    if(DETECTION_MODE):
+                        identify_pig_stress = PHS_CNN.predict(converted_img)
+                        classification = classes[np.argmax(identify_pig_stress)]
+                        print(' - Classified as ', classification)
+                        # TODO # NOTE Remove 'np.max <=39.0' On Final Training of PHS Detector
+                        if classification == classes[1]:
+                            #img, x, y, text, color, font, font_size
+                            detect_annotation = drawText(detect_annotation, x1, y1 + 20, 'Normal', (90, 245, 34), font, 0.6)
+                            continue
+                    else:
+                        if np.max(cpy_thrm_crop_raw) < TEMPERATURE_THRESHOLD:
+                            detect_annotation = drawText(detect_annotation, x1, y1 + 20, 'Normal', (90, 245, 34), font, 0.6)
+                            continue
                     
-                    # TODO # NOTE Remove 'np.max <=39.0' On Final Training of PHS Detector
-                    if classification == classes[1] and np.max(cpy_thrm_crop_raw) <= 39.0:
-                        continue
-                        
+                    detect_annotation = drawText(detect_annotation, x1, y1 + 20, 'HeatStress', (255, 123, 0), font, 0.6)
                     detected = True
                     # If it does classified stressed then set as detected to true
                     # also call the action bind to HEAT STRESS DETECTOR  
@@ -265,16 +310,10 @@ def detectHeatStress():
                     print("Detected 🔥 Heat Stress on pig")
 
                     cpy_crop_normal = c_IMG_NORMAL[y1 : y2, x1 : x2]
-                    cpy_thrm_crop = c_IMG_THERMAL[y1 : y2, x1 : x2]
 
                     img_thermal_cropped_raw.append(cpy_thrm_crop_raw)
                     img_normal_cropped.append(cpy_crop_normal)
                     img_thermal_cropped.append(cpy_thrm_crop)
-
-                    # constructing subinfo of the subcropped coords
-                    min_temp = np.min(cpy_thrm_crop_raw)
-                    avg_temp = np.mean(cpy_thrm_crop_raw)
-                    max_temp = np.max(cpy_thrm_crop_raw)
 
                     infoObj = { 'min_temp' : min_temp, 'avg_temp' : avg_temp, 'max_temp' : max_temp }
                     img_thermal_cropped_info.append(infoObj)
@@ -284,7 +323,7 @@ def detectHeatStress():
 
                 curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
 
-                if detected:
+                if detected and True:
                     overal_min_temp = sum(mins) / len(mins)
                     overal_avg_temp = sum(avgs) / len(avgs)
                     overal_max_temp = sum(maxs) / len(maxs)
@@ -324,12 +363,15 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
                 "stressed_pig": len(croped_normal),
                 "breakdown": [],
             },
-            "actions": Actions_did
+            "actions": Actions_did,
+            "cat" : datetime.today(),
+            "uat" : datetime.today(),
+            "dat" : None
         }
 
         x = 1
 
-        print(f"💾 Writing {len(croped_norlmal)} Sub Detect Pig Data : ", end='')
+        print(f"💾 Writing {len(croped_normal)} Sub Detect Pig Data : ", end='')
         for i in range(len(croped_normal)):
             print(".", end='')
             cv2.imwrite(f"{path2}/pig-{x}.png", croped_normal[i])
@@ -449,6 +491,7 @@ def updateJobs():
             SYSTEM_STATE['status'] = 0
 
 def isDarkScene(image):
+    return False
     dim=20
     thresh=0.3
 
