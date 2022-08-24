@@ -13,7 +13,6 @@ class r_controller:
                     NAME=r['config_name'],
                     DESCRIPTION=r['description'],
                     GPIO_PIN=(r['value']['GPIO_PIN']),
-                    USED=(r['value']['isUsed']),
                     isActiveLow=isActiveLow
                 )
                 self.RELAYS.append(R)
@@ -45,7 +44,6 @@ class r_controller:
                 NAME=r['config_name'],
                 DESCRIPTION=r['description'],
                 GPIO_PIN=(r['value']['GPIO_PIN']),
-                USED=(r['value']['isUsed']),
                 isActiveLow=self.isActiveLow
             )
             self.RELAYS.append(R)

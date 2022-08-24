@@ -3,13 +3,12 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 class relay:
-    def __init__(self, GPIO_PIN, NAME, DESCRIPTION, USED, isActiveLow, STATE=False):
+    def __init__(self, GPIO_PIN, NAME, DESCRIPTION, isActiveLow, STATE=False):
         self.GPIO_PIN = GPIO_PIN
         self.NAME = NAME
         self.DESCRIPTION = DESCRIPTION
         self.STATE = True if isActiveLow else False
         self.isActiveLow = isActiveLow
-        self.USED = USED
         GPIO.setup(GPIO_PIN, GPIO.OUT)
         GPIO.output(self.GPIO_PIN, self.STATE)
         print(f'🔹 Relay Initialized : {NAME} -> {GPIO_PIN} -> {STATE}')
@@ -20,8 +19,7 @@ class relay:
             "config_name" : self.NAME,
             "description" : self.DESCRIPTION,
             "GPIO_PIN" : self.GPIO_PIN,
-            "state" : self.STATE if not self.isActiveLow else not self.STATE,
-            "used" : self.USED
+            "state" : self.STATE if not self.isActiveLow else not self.STATE
         }
         return DICT
 
