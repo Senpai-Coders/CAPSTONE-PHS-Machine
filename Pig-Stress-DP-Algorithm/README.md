@@ -31,3 +31,31 @@ Optional in environemnts
   > conda deactivate
 - Deleting the environment. Make sure to deactivate the env first.
   > conda env remove --name pig-stress-env
+
+
+## For RPI
+https://github.com/PINTO0309/Tensorflow-bin/#usage:
+https://github.com/PINTO0309/Tensorflow-bin
+https://github.com/PINTO0309/Tensorflow-bin/tree/main/previous_versions
+
+1. Install Python Version 3.8
+
+2. Create Environment 
+```
+py python3 -m venv .pig-stress-env 
+```
+
+3. Activate Environment
+```
+source .pig-stress-env/bin/activate
+```
+
+4. Install Dependencies
+```
+pip3 install -r Pig-Stress-DP-Algorithm/requirements.txt
+```
+
+5. Test if everything is working
+```
+python3 test-env.py
+```

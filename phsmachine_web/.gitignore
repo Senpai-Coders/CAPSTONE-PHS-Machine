@@ -31,6 +31,10 @@ yarn-error.log*
 # vercel
 .vercel
 
-# ignore pig datas
+# Pub Folder
+/public/normal
+/public/thermal
+/public/thermal_raw
 /public/detection
 /public/images
+/public/detection/*

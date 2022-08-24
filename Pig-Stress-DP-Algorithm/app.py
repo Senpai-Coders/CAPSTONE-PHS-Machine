@@ -1,33 +1,44 @@
-from urllib import response
+isPi = True
+
+from datetime import datetime, timedelta 
 from flask import Response, request
 from flask import Flask
-import flask
-from flask import render_template
 import threading
-import time, socket, logging, traceback
+import time, socket
 import cv2
+import logging
+import math
+
+if isPi:
+    from cameras.cam_normal import Cam_Norm
+    from cameras.cam_thermal import cam_therm
+
+
 from cameras.cam_normal import Cam_Norm
-from cameras.cam_thermal import cam_therm
-import numpy as np
-from bson import json_util
-import pymongo
-from cust_utils.utils import mongoResToJson
+
 from component.r_controller import r_controller
 from action.a_controller import a_controller
+from cust_utils.utils import mongoResToJson
+import numpy as np
+import pymongo
 import atexit
 from flask_cors import CORS
 import os
 from datetime import datetime
 import cv2
 import torch
-from matplotlib import pyplot as plt
-from PIL import Image
 import numpy as np
 import warnings
+import pickle
+import tensorflow as tf
 
 warnings.filterwarnings("ignore") # Warning will make operation confuse!!!
+tf.get_logger().setLevel(logging.ERROR)
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-YOLO_DIR = os.path.join('models','yolov5')
+font = cv2.FONT_HERSHEY_SIMPLEX
+
+YOLO_DIR = os.path.join('models','Yolov5')
 WEIGHTS_DIR = os.path.join('best.pt')
 
 
@@ -40,14 +51,27 @@ CAM_THERMAL=None
 CAM_NORMAL=None
 
 SYSTEM_STATE=None
+UPDATE_STAMP=None
 ACTION_STATE=None
 R_CONTROLLER=None
+EMERGENCY_STOP=False
+
+DETECTION_MODE=False
+TEMPERATURE_THRESHOLD=38.5
 
 Yolov5_PHD=None
+PHS_CNN=None
 
-MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
+MONGO_CONNECTION=None
+
+if isPi:
+   MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
+else:
+   MONGO_CONNECTION=pymongo.MongoClient("mongodb+srv://Jervx:helloworld@capstone.nv1cu.mongodb.net/?retryWrites=true&w=majority") 
+
 DB = MONGO_CONNECTION["PHS_MACHINE"]
 DB_CONFIGS = DB['configs']
+DB_DETECTIONS = DB['thermal_detections']
 
 lock = threading.Lock()
 
@@ -64,15 +88,26 @@ def index():
 #     configs = list(DB_CONFIGS.find({'config_name' : 'system_state'}))
 #     return Response(mongoResToJson(configs), content_type='application/json'), 200
 
+
 @app.route("/getSystemState")
 def getSyState():
     global SYSTEM_STATE
     response = Response(mongoResToJson({ "state" : SYSTEM_STATE }), content_type='application/json' )
     return response, 200
 
+@app.route("/emergencyStop")
+def setEmergencyStop():
+    global EMERGENCY_STOP, SYSTEM_STATE
+    with lock:
+        EMERGENCY_STOP = True
+        SYSTEM_STATE['status'] = -1
+    response = Response(mongoResToJson({ "message" : "ok" }), content_type='application/json')
+    return response, 200
+
 @app.route("/getActionState")
-def getActionState():
+def getActiGonState():
     global SYSTEM_STATE
+
     response = Response(mongoResToJson({ "actions" : ACTION_STATE.toDict() }), content_type='application/json' )
     return response, 200
 
@@ -87,8 +122,20 @@ def setActionState():
 
 @app.route("/updateState")
 def setState():
-    global SYSTEM_STATE
+    global SYSTEM_STATE,R_CONTROLLER, ACTION_STATE
+    # -2 Off
+    # -1 Disabled
+    # 0 Detecting
+    # 1 Resolving
+    # 2 Debugging
+    # 3 Connecting
     status = request.args.get('status')
+    if(int(status) == 2):
+        SYSTEM_STATE['jobs'] = []
+        R_CONTROLLER.offAll()
+        ACTION_STATE.offAll()
+    elif int(status) == 0:
+        R_CONTROLLER.offAll()
     SYSTEM_STATE['status']=int(status)
     response = Response( mongoResToJson({"status":200, "message":"Ok "}) , content_type="application/json")
     return response, 200
@@ -131,35 +178,347 @@ def get_ip_address():
 	s.close()
 	return ip_address
 
+def conv_img(img):
+    # rescale to big to ensure enough pixel data
+    height, width = img.shape[:2]
+    img = cv2.resize(img, (640, 480), interpolation = cv2.INTER_CUBIC)
+    img = cv2.resize(img, (120, 120)) /255.
+    return np.array(img).reshape(-1, 120, 120, 1)
+
+def hasNoPendingHeatStressJob():
+    global SYSTEM_STATE
+    res = True
+    for idx, job in enumerate(SYSTEM_STATE['jobs']):
+        if job['caller'] == 'Heat Stress Detector':
+            return False
+    return res
+
+def drawText(img, x, y, text, color, font, font_size):
+    return cv2.putText(img, text, (x, y), font, font_size, color, 2, cv2.LINE_AA)
+
 def detectHeatStress():
-    loadDbConfig()
-    global IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
-    while True:
+    global font, DETECTION_MODE, TEMPERATURE_THRESHOLD, IMG_NORMAL_ANNOTATED, PHS_CNN, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
+    while True and isPi:
+        loadDbConfig()
         if IMG_NORMAL is not None and IMG_THERMAL is not None:
             c_IMG_NORMAL = IMG_NORMAL
             c_IMG_THERMAL = IMG_THERMAL
             c_RAW_THERMAL = RAW_THERMAL
+            c_Raw_Reshaped = np.reshape(c_RAW_THERMAL.copy(), (24,32))
+            c_Raw_Reshaped = cv2.resize(c_Raw_Reshaped, (640, 480))
+            c_Raw_Reshaped = cv2.flip(c_Raw_Reshaped, 1)
+
+            curACTIONS = []
 
             to_read = c_IMG_NORMAL.copy()
-            
-            print("Detecting Pig")
-            detect_pig_head = Yolov5_PHD(to_read) 
-            print("Done Detect")
-            print("Returned Bbox", detect_pig_head)
-            detect_pig_head.pred
-            detect_annotation = np.squeeze(detect_pig_head.render())
 
-            with lock:
-                if len(detect_pig_head.pred) >= 1:
-                    print("Saving Detection")
+            # DETECT IF SCENE IS DARK
+            # CALL ALL ACTION THAT IS BIND TO DARK SCENE EVENT
+            # TODO
+            Dark_Scene_Detector = isDarkScene(to_read) 
+            if Dark_Scene_Detector:
+                curACTIONS = activateCategory(curACTIONS, "Dark Scene Detector")
+            
+            # FEEDING IMAGE FOR FINDING THE PIG LOCATION ON PICTURE USING YOLOV5s 
+            print("🟠 YoloV5 Detecting Pig 🐷")
+            detect_pig_head = Yolov5_PHD(to_read) 
+            print("🟢 YoloV5 Detection Complete")
+            print("🗃  Returned Bbox", detect_pig_head)
+
+            coords = detect_pig_head.pandas().xyxy[0].to_dict(orient="records")
+        
+            if len(coords) > 0:
+                # CALL ALL ACTIONS FOR PIG DETECTOR
+                curACTIONS = activateCategory(curACTIONS, "Pig Detector")
+                print(f"🐖 PHS Detect detected {len(coords)} pigs")
+
+                detect_annotation = np.squeeze(detect_pig_head.render())
+                
+                img_normal_cropped = []
+                img_thermal_cropped = []
+                img_thermal_cropped_raw = []
+                img_thermal_cropped_info = []
+
+                mins = []
+                avgs = []
+                maxs = []
+
+                detected = False
+                
+                for result in coords:
+                    if not hasNoPendingHeatStressJob():
+                        break
+
+                    x1 = int(result['xmin'])
+                    y1 = int(result['ymin'])
+                    x2 = int(result['xmax'])
+                    y2 = int(result['ymax'])
+
+
+                    #cv2.putText(detect_annotation, f'{x1} {y1}', (x1,y1), font, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
+                    #cv2.putText(detect_annotation, f'{x2} {y2}', (x2,y2), font, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
+
+                    H, W, C = c_IMG_NORMAL.shape
+                    print('h:',H, 'w:', W)
+                    print(x1, y1, x2, y2, x1 + x2, y1 + y2)
+
+                    # GET LOCATION OF PIG
+                    center_x = math.floor(x1 + ((x2 - x1) / 2))
+                    center_y = math.floor(y1 + ((y2 - y1)/ 2))
+
+                    detect_annotation = cv2.circle(detect_annotation, (center_x, center_y ), 4 , (255, 220, 80), 2)
+                    #cv2.putText(detect_annotation, f'{center_x} {center_y}', (center_x,center_y), font, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
+
+                    print('🐷 pig at coord :',x1,y1,x2,y2, end='')
+                    cpy_thrm_crop_raw = c_Raw_Reshaped[y1:y2, x1:x2]
+
+                    # detection = CNN ( RAW THERMAL )
+                    converted_img = conv_img(cpy_thrm_crop_raw)
+
+                    # DETECTION_MODE=False
+                    # TEMPERATURE_THRESHOLD=0
+                    #
+
+                    classes =  ['Heat Stressed', 'Normal']
+
+                    # constructing subinfo of the subcropped coords
+                    cpy_thrm_crop = c_IMG_THERMAL[y1 : y2, x1 : x2]
+                    min_temp = np.min(cpy_thrm_crop_raw)
+                    avg_temp = np.mean(cpy_thrm_crop_raw)
+                    max_temp = np.max(cpy_thrm_crop_raw)
+
+                    detect_annotation = drawText(detect_annotation, x1, y2 - 20,  "%.2f %sC" % (max_temp, u'\u2103'), (255, 98, 0), font, 0.5)
+                    if(DETECTION_MODE):
+                        identify_pig_stress = PHS_CNN.predict(converted_img)
+                        classification = classes[np.argmax(identify_pig_stress)]
+                        print(' - Classified as ', classification)
+                        # TODO # NOTE Remove 'np.max <=39.0' On Final Training of PHS Detector
+                        if classification == classes[1]:
+                            #img, x, y, text, color, font, font_size
+                            detect_annotation = drawText(detect_annotation, x1, y1 + 20, 'Normal', (90, 245, 34), font, 0.6)
+                            continue
+                    else:
+                        if np.max(cpy_thrm_crop_raw) < TEMPERATURE_THRESHOLD:
+                            detect_annotation = drawText(detect_annotation, x1, y1 + 20, 'Normal', (90, 245, 34), font, 0.6)
+                            continue
+                    
+                    detect_annotation = drawText(detect_annotation, x1, y1 + 20, 'HeatStress', (255, 123, 0), font, 0.6)
+                    detected = True
+                    # If it does classified stressed then set as detected to true
+                    # also call the action bind to HEAT STRESS DETECTOR  
+                    curACTIONS = activateCategory(curACTIONS, "Heat Stress Detector")
+                    print("Detected 🔥 Heat Stress on pig")
+
+                    cpy_crop_normal = c_IMG_NORMAL[y1 : y2, x1 : x2]
+
+                    img_thermal_cropped_raw.append(cpy_thrm_crop_raw)
+                    img_normal_cropped.append(cpy_crop_normal)
+                    img_thermal_cropped.append(cpy_thrm_crop)
+
+                    infoObj = { 'min_temp' : min_temp, 'avg_temp' : avg_temp, 'max_temp' : max_temp }
+                    img_thermal_cropped_info.append(infoObj)
+                    mins.append(min_temp)
+                    avgs.append(avg_temp)
+                    maxs.append(max_temp)
+
+                curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
+
+                if detected and True:
+                    overal_min_temp = sum(mins) / len(mins)
+                    overal_avg_temp = sum(avgs) / len(avgs)
+                    overal_max_temp = sum(maxs) / len(maxs)
+                    
+                    #call save function XD to save the heat stress event
+                    saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt, img_normal_cropped, img_thermal_cropped, img_thermal_cropped_raw, len(coords), img_thermal_cropped_info, overal_min_temp, overal_avg_temp, overal_max_temp, curACTIONS)
+                    with lock:
+                        SYSTEM_STATE['status'] = 1
+                with lock:
                     IMG_NORMAL_ANNOTATED = detect_annotation
-                    curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
-                    saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt)
-                else:
-                    print("No Detection")
+                    SYSTEM_STATE['pig_count'] = len(coords)
+            else:
+                with lock:
+                    SYSTEM_STATE['pig_count'] = 0
+        else:
+            time.sleep(4.5)
+
+def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_normal, croped_thermal, croped_thermal_raw, total_pig, sub_info, o_min_temp, o_avg_temp, o_max_temp, Actions_did):
+    try:
+        path1 = f"../phsmachine_web/public/detection/Detection-{stmp}"
+        path2 = f"../phsmachine_web/public/detection/Detection-{stmp}/Target"
+
+        server_path = f"/detection/Detection-{stmp}"
+
+        os.makedirs(path1)
+        os.makedirs(path2)
+
+        DATA_DICT =  {
+            "img_normal": f"{server_path}/img_normal.png",
+            "img_annotated": f"{server_path}/img_annotated.png",
+            "img_thermal": f"{server_path}/img_thermal.png",
+            "data": {
+                "min_temp" : o_min_temp,
+                "avg_temp" : o_avg_temp,
+                "max_temp" : o_max_temp,
+                "pig_count": total_pig,
+                "stressed_pig": len(croped_normal),
+                "breakdown": [],
+            },
+            "actions": Actions_did,
+            "cat" : datetime.today(),
+            "uat" : datetime.today(),
+            "dat" : None
+        }
+
+        x = 1
+
+        print(f"💾 Writing {len(croped_normal)} Sub Detect Pig Data : ", end='')
+        for i in range(len(croped_normal)):
+            print(".", end='')
+            cv2.imwrite(f"{path2}/pig-{x}.png", croped_normal[i])
+            cv2.imwrite(f"{path2}/pig-thermal-processed{x}.png", croped_thermal[i])
+            cv2.imwrite(f"{path2}/pig-thermal-unprocessed{x}.png", croped_thermal_raw[i])
+            
+            rdata = croped_thermal_raw[i]
+            rdata = cv2.resize(rdata, (24,32))
+
+            DATA_DICT['data']['breakdown'].append(
+                {
+                    "normal_thumb": f"{server_path}/Target/pig-{x}.png",
+                    "thermal_thumb": f"{server_path}/Target/pig-thermal-processed{x}.png",
+                    "thermal_raw_thumb": f"{server_path}/Target/pig-thermal-unprocessed{x}.png",
+                    "info" : sub_info[i],
+                    "raw" : rdata.tolist()
+                }
+            )
+
+            x+=1
+
+        print("💾 Writing Master Images")
+        cv2.imwrite(f"{path1}/img_normal.png", normal)
+        cv2.imwrite(f"{path1}/img_annotated.png", normal_annotated)
+        cv2.imwrite(f"{path1}/img_thermal.png", thermal)
+
+        DB_DETECTIONS.insert_one( DATA_DICT )
+
+        p = pickle.dump( raw_thermal, open(f'../phsmachine_web/public/detection/Detection-{stmp}/raw_thermal.pkl', 'wb'))
+        print("✅ Done Saving Event Data 👌")
+    except Exception as e: print("🚩 Can't Save cuz of this err 👉 ",e)
+
+
+# This is for testing only to test if activate action is working
+@app.route("/DummyActivateCategory", methods=['POST'])
+def fakeActivate():
+    global ACTION_STATE
+    ReqBod = request.get_json(force=True)
+    callerName = ReqBod['caller']
+    activateCategory([ ], callerName)
+
+    return "ok",200
+
+
+def activateCategory(old_activate, caller):
+    global ACTION_STATE, SYSTEM_STATE
+
+    if SYSTEM_STATE['status'] == 2:
+        return
+
+    actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
+    
+    new_activated = []
+    
+    for action in actions:
+        act_caller = action['value']['caller']
+        target_relay = action['value']['target_relay']
+        duration = int(action['value']['duration'])
+        action_name = action['config_name']
+
+        if act_caller == caller:
+            activated = activateJob(target_relay, duration, action_name, caller)
+            ACTION_STATE.toggle(action_name, True)
+            new_activated.append(activated)
+
+    return old_activate + new_activated
+
+def activateJob(name, duration, action_name, caller):
+    global SYSTEM_STATE
+    
+    endTime = datetime.now() + timedelta(seconds=duration)
+
+    newJob = {
+            "action_name" : action_name,
+            "relay_name" : name,
+            "caller" : caller,
+            "duration" : duration,
+            "end" : endTime
+            }
+    
+    if SYSTEM_STATE['status'] == 2: return newJob
+
+    SYSTEM_STATE['jobs'].append(newJob)
+    return newJob
+
+def updateJobs():
+    global SYSTEM_STATE, R_CONTROLLER, ACTION_STATE
+     
+    if EMERGENCY_STOP:
+        SYSTEM_STATE['jobs'] = []
+        R_CONTROLLER.offAll()
+        ACTION_STATE.offAll()
+    
+    print(f"*********** 🔼 PHS ACTIONS HAS {len(SYSTEM_STATE['jobs'])} JOBS 🔼 *****************\n")
+
+    heatStressResolveJobs = 0
+
+    for idx, job in enumerate(SYSTEM_STATE['jobs']):
+        endTime = job['end']
+        curTime = datetime.now()
+        
+        if job['caller'] == 'Heat Stress Detector':
+            heatStressResolveJobs += 1
+
+        if curTime >= endTime:
+            print('PHS JOB 🔶 : ✅ ACTION ENDED :', end='')
+            R_CONTROLLER.toggleRelay(job['relay_name'],False)
+            SYSTEM_STATE['jobs'].pop(idx)
+            ACTION_STATE.toggle(job['action_name'], False)
+        else:
+            print('PHS JOB 🔶 : ⚡ ACTIVE ACTION/JOB ', end='')
+            R_CONTROLLER.toggleRelay(job['relay_name'],True)
+            ACTION_STATE.toggle(job['action_name'], True)
+    if heatStressResolveJobs <= 0:
+        curSysStatus = SYSTEM_STATE['status']
+        if curSysStatus not in [ -1, -2, 2 ]:
+            SYSTEM_STATE['status'] = 0
+
+def isDarkScene(image):
+    return False
+    dim=20
+    thresh=0.3
+
+    image = cv2.resize(image, (dim, dim))
+    L, A, B = cv2.split(cv2.cvtColor(image, cv2.COLOR_BGR2LAB))
+    L = L/np.max(L)
+    res = np.mean(L) < thresh
+    if res:
+        print(f"📹 Camera Seems seing very 🌃 dark scene.{np.mean(L)} gastug di ako makakita 😣")
+    else:
+        print(f"📹 Camera seems seing👀 fine.{np.mean(L)}")
+    return res
 
 def readCams():
-    global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, SYSTEM_STATE
+    global IMG_NORMAL, CAM_THERMAL, CAM_NORMAL, IMG_THERMAL, RAW_THERMAL, SYSTEM_STATE, isPi
+    if not isPi:
+        while CAM_NORMAL is not None:
+            current_frame = None
+            try:
+                current_frame, byts = CAM_NORMAL.get_frame()
+            except Exception as e:
+                print("err ", e)
+            if current_frame is not None:
+                with lock:
+                    IMG_NORMAL = current_frame
+        return
+
     while CAM_THERMAL is not None:
         current_frame=None
         thermal_frame=None
@@ -192,6 +551,7 @@ def gen_annotate():
 				continue
 		yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
+
 def gen_normal():
 	global IMG_NORMAL, lock
 	while True:
@@ -215,21 +575,42 @@ def gen_thermal():
 		yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
 def loadDbConfig():
-    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE
+    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP
     relays = list(DB_CONFIGS.find({ "category" : "relays" }))
     actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
-
+    updateStamp = DB_CONFIGS.find_one({"category" : "update", "config_name" : "update_stamp"})
+    
+    newUpdateStamp = updateStamp['value'] 
+    hasNewUpdateStamp = False
+    
+    if UPDATE_STAMP is None or UPDATE_STAMP != newUpdateStamp:
+        hasNewUpdateStamp = True
+        with lock:
+            UPDATE_STAMP = newUpdateStamp
+   
     if R_CONTROLLER is not None:
-        if len(R_CONTROLLER.getAllRelays()) != len(relays):
+        if (len(R_CONTROLLER.getAllRelays()) != len(relays) or hasNewUpdateStamp)  and isPi:
             R_CONTROLLER.delRelays(relays)      
     else:
-        R_CONTROLLER = r_controller(relays, True)
+        R_CONTROLLER = r_controller(relays, True, isPi)
 
-    if len(ACTION_STATE.actions) != len(actions):
+    if len(ACTION_STATE.actions) != len(actions) and isPi:
         ACTION_STATE = a_controller(actions, ACTION_STATE.actions)
+
+    updateJobs()
+
+def process(raw):
+    try:
+        raw.shape = (24,32)
+        raw = cv2.flip(raw,1)
+        return raw
+    except Exception as e: print("🚩 Can't Processs this raw thermal",e)
         
 def start_server():
-    global Yolov5_PHD, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED
+    global Yolov5_PHD, PHS_CNN, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL
+    print("⏳ Starting PHS ")
+
+    IMG_NORMAL_ANNOTATED = cv2.imread('misc/annotation_init.jpg')
 
     SYSTEM_STATE = {
         "status" : 0,
@@ -239,67 +620,72 @@ def start_server():
         "stressed_pigcount" : 0,
         "max_temp" : 0,
         "average_temp" : 0,
-        "min_temp" : 0
+        "min_temp" : 0,
+        "jobs" : []
     }
+    
+    CAM_NORMAL = Cam_Norm()
+
+    if isPi:
+        CAM_THERMAL = cam_therm()
+        time.sleep(0.1)
+    else:
+        RAW_THERMAL = pickle.load(open('dummy_data/raw_thermal.pkl','rb'))
+        IMG_THERMAL = process(RAW_THERMAL) 
+        IMG_NORMAL = cv2.imread('dummy_data/img_normal.png')
+
     ACTION_STATE = a_controller((),())
+    
+    print("⏳ Pulling Configs From DB")
     loadDbConfig()
 
-    RAW_THERMAL = np.zeros((24*32,))
-    CAM_THERMAL = cam_therm()
-    CAM_NORMAL = Cam_Norm()
-    time.sleep(0.1)
+    RAW_THERMAL = np.zeros((24*32,))        
+    try:
+        print("⏳ Loading Yolo V5 ")
+        Yolov5_PHD = torch.hub.load(
+                YOLO_DIR,
+                'custom',
+                path=WEIGHTS_DIR, 
+                source='local',
+                device = 'cpu',
+                force_reload=True
+            )
+        print("✅ Done loading yolo")
+    except Exception as e:
+        print("ERROR PHS YOLO V5",e)
+    print("⏳ Loading PHS Heat Stress CNN")
 
-    Yolov5_PHD = torch.hub.load(
-        YOLO_DIR,
-        'custom',
-        path=WEIGHTS_DIR, 
-        source='local',
-        device = 'cpu',
-        force_reload=True
-    )
+    PHS_CNN = tf.keras.models.load_model(os.path.join('models','mai_Net.h5'))
+    
+    print("✅ Loaded PHS Heat Stress CNN!")
 
     camThread = threading.Thread(target=readCams)
     camThread.daemon = True
     camThread.start()
+    print("🧵 Init Thread Read Cameras")
 
     detectThread = threading.Thread(target=detectHeatStress)
     detectThread.daemon = True
     detectThread.start()
+    print("🧵 Init Thread Heat Stress Detection")
 
     ip=get_ip_address()
     port=8000
-    print(f'Server can be found at {ip}:{port}')
-    app.run(host=ip, port=port, debug=True, threaded=True, use_reloader=False)
+    print(f'📍 Server can be found at http://{ip}:{port} or http://localhost:{port}')
+    
+    log = logging.getLogger('werkzeug')
+    log.disabled = True
 
-def saveDetection(normal, thermal, raw_thermal, normal_annotated,stmp):
-    try:
-        if not os.path.exists("../phsmachine_web/public/normal/"):
-            os.makedirs("../phsmachine_web/public/normal/")
-        if not os.path.exists("../phsmachine_web/public/annotated/"):
-            os.makedirs("../phsmachine_web/public/annotated/")
-        if not os.path.exists("../phsmachine_web/public/thermal/"):
-            os.makedirs("../phsmachine_web/public/thermal/")
-        if not os.path.exists("../phsmachine_web/public/thermal_raw/"):
-            os.makedirs("../phsmachine_web/public/thermal_raw/")
-            
-
-        cv2.imwrite(f"../phsmachine_web/public/normal/nrml{stmp}.png", normal)
-        cv2.imwrite(f"../phsmachine_web/public/thermal/thermal{stmp}.png", thermal)
-        cv2.imwrite(f"../phsmachine_web/public/annotated/annotated{stmp}.png", normal_annotated)
-        p_rt = np.around(raw_thermal, decimals=1)
-        np.savetxt(f'../phsmachine_web/public/thermal_raw/r_thermal{stmp}.csv', p_rt , delimiter=",")
-        print("SAVED")
-    except Exception as e:
-        print(e)
+    app.run(host=ip, port=port, debug=False, threaded=True, use_reloader=False)
 
 @atexit.register
 def goodbye():
     global R_CONTROLLER
     print("\n")
-    print("---PHS STATE OFF---")
-    print("Setting state as Off")
-    print("Closing Relays")
-    R_CONTROLLER.offAll()
+    print("⏾ PHS Turning OFF")
+    if isPi:
+        R_CONTROLLER.offAll()
+    print("💤 Good Bye ....")
 
 if __name__ == '__main__':
 	start_server()
