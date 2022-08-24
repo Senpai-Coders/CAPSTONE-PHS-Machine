@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
+import { GET_SERVER_IP } from "./helpers/api/index"
+
 const PI_IP = 11;
 const IS_PI = true;
+const IP = GET_SERVER_IP()
 module.exports = {
   reactStrictMode: false,
   eslint: {
@@ -17,7 +20,7 @@ module.exports = {
   },
   env: {
     MONGODB_URI: IS_PI
-      ? `mongodb://192.168.1.${PI_IP}:27017/PHS_MACHINE`
+      ? `mongodb://${IP}:27017/PHS_MACHINE`
       : "mongodb+srv://Jervx:helloworld@capstone.nv1cu.mongodb.net/?retryWrites=true&w=majority",
     JWT_SCRT: "ErenJaeger",
     PI_IP: `192.168.1.${PI_IP}`,
