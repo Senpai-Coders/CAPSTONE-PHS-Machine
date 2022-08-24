@@ -14,7 +14,7 @@ import Relays from "../components/configuration/relays"
 // import { Listbox, Transition } from "@headlessui/react";
 
 const configuration = () => {
-  const [tab, setTab] = useState(1);
+  const [tab, setTab] = useState(0);
   const [exited, setExited] = useState(false);
 
   const [loadA, setLoadA] = useState(false)

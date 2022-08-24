@@ -45,6 +45,8 @@ export default function Home() {
     actions: [],
   });
 
+  const [timeOutCount, setTimeOutCount] = useState(0)
+
   const [exited, setExited] = useState(false);
   const [stamp, setStamp] = useState(0);
 
@@ -97,12 +99,15 @@ export default function Home() {
         `http://${PI_IP}:8000/getActionState`,
         {}
       );
+
       if (exited) return;
-      setACTIONSTATE(phs_actions.data.actions);
+      //setACTIONSTATE(phs_actions.data.actions);
       SETSYSSTATE(phs_response.data.state);
       setIsDown(false);
+      setTimeOutCount(0)
     } catch (e) {
       setIsDown(true);
+      setTimeOutCount(timeOutCount + 1)
       SETSYSSTATE({ ...SYSSTATE, status: -2 });
     }
   };
@@ -162,7 +167,7 @@ export default function Home() {
 
       {/** MODALS */}
       <OffAlert
-        shown={isDown && !seenModal}
+        shown={isDown && timeOutCount >= 3 && !seenModal}
         close={() => {
           setSelectedModal(-1);
           setSeenModal(true);
@@ -204,7 +209,7 @@ export default function Home() {
         )}
 
         {/** MONITORING LAYOUT */}
-        {SYSSTATE.status !== 3 && (
+        { SYSSTATE.status > -1 && timeOutCount < 3 && SYSSTATE.status !== 3 && (
           <div className="relative pb-4">
             {/* layout 0 - tripple */}
             {viewMode === 0 && (
@@ -296,11 +301,11 @@ export default function Home() {
                 <div className="shadow-lg rounded-2xl card bg-base-100 w-full">
                   <div className="p-4 flex items-center justify-start">
                     <GiPig className="w-7 h-7 text-pink-200" />
-                    <p className="ml-2 font-bold text-md">{0} Pig On Frame</p>
+                    <p className="ml-2 font-bold text-md">{SYSSTATE.pig_count} Pig On Frame</p>
                   </div>
                   <div className="mx-4 mb-4 flex justify-between itms-center">
-                    <p className="text-success">{0} Normal</p>
-                    <p className="text-error"> {1} Heat Stress </p>
+                    <p className="text-success">{SYSSTATE.pig_count - SYSSTATE.stressed_pigcount} Normal</p>
+                    <p className="text-error"> {SYSSTATE.stressed_pigcount} Heat Stress </p>
                   </div>
                 </div>
               </div>

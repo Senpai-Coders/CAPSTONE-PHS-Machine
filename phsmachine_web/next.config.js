@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
-const PI_IP = 6;
-const IS_PI = false;
+const PI_IP = 11;
+const IS_PI = true;
 module.exports = {
   reactStrictMode: false,
   eslint: {
