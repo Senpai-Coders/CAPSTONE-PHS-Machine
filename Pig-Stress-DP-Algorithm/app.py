@@ -425,7 +425,7 @@ def activateCategory(old_activate, caller):
     actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
     
     #TODO
-    return new_activated = []
+    return []
     
     for action in actions:
         act_caller = action['value']['caller']
