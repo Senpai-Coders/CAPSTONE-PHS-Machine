@@ -194,7 +194,8 @@ def hasNoPendingHeatStressJob():
     return res
 
 def drawText(img, x, y, text, color, font, font_size):
-    return cv2.putText(img, text, (x, y), font, font_size, color, 2, cv2.LINE_AA)
+    edited = cv2.putText(img, text, (x + 2, y + 2), font, font_size, (41, 30, 31), 2, cv2.LINE_AA)
+    return cv2.putText(edited, text, (x, y), font, font_size, color, 2, cv2.LINE_AA)
 
 def detectHeatStress():
     global font, DETECTION_MODE, TEMPERATURE_THRESHOLD, IMG_NORMAL_ANNOTATED, PHS_CNN, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD
@@ -249,11 +250,11 @@ def detectHeatStress():
                     if not hasNoPendingHeatStressJob():
                         break
 
+                    print(result)
                     x1 = int(result['xmin'])
                     y1 = int(result['ymin'])
                     x2 = int(result['xmax'])
                     y2 = int(result['ymax'])
-
 
                     #cv2.putText(detect_annotation, f'{x1} {y1}', (x1,y1), font, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
                     #cv2.putText(detect_annotation, f'{x2} {y2}', (x2,y2), font, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
@@ -287,7 +288,9 @@ def detectHeatStress():
                     avg_temp = np.mean(cpy_thrm_crop_raw)
                     max_temp = np.max(cpy_thrm_crop_raw)
 
-                    detect_annotation = drawText(detect_annotation, x1, y2 - 20,  "%.2f %sC" % (max_temp, u'\u2103'), (255, 98, 0), font, 0.5)
+                    chosenColor = (59, 235, 255)
+
+                    detect_annotation = drawText(detect_annotation, x1, y2 - 10,  "%.2f C" % (max_temp), chosenColor, font, 0.5)
                     if(DETECTION_MODE):
                         identify_pig_stress = PHS_CNN.predict(converted_img)
                         classification = classes[np.argmax(identify_pig_stress)]
@@ -295,14 +298,15 @@ def detectHeatStress():
                         # TODO # NOTE Remove 'np.max <=39.0' On Final Training of PHS Detector
                         if classification == classes[1]:
                             #img, x, y, text, color, font, font_size
-                            detect_annotation = drawText(detect_annotation, x1, y1 + 20, 'Normal', (90, 245, 34), font, 0.6)
+                            detect_annotation = drawText(detect_annotation, x1, y1 + 20, 'Normal', chosenColor, font, 0.6)
                             continue
                     else:
                         if np.max(cpy_thrm_crop_raw) < TEMPERATURE_THRESHOLD:
-                            detect_annotation = drawText(detect_annotation, x1, y1 + 20, 'Normal', (90, 245, 34), font, 0.6)
+                            detect_annotation = drawText(detect_annotation, x1, y1 + 20, 'Normal', chosenColor, font, 0.6)
                             continue
-                    
-                    detect_annotation = drawText(detect_annotation, x1, y1 + 20, 'HeatStress', (255, 123, 0), font, 0.6)
+
+                    chosenColor = (140, 94, 255)
+                    detect_annotation = drawText(detect_annotation, x1, y1 + 20, 'HeatStress', chosenColor, font, 0.6)
                     detected = True
                     # If it does classified stressed then set as detected to true
                     # also call the action bind to HEAT STRESS DETECTOR  
@@ -576,10 +580,12 @@ def gen_thermal():
 		yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
 def loadDbConfig():
-    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP
+    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP, DETECTION_MODE, TEMPERATURE_THRESHOLD
     relays = list(DB_CONFIGS.find({ "category" : "relays" }))
     actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
     updateStamp = DB_CONFIGS.find_one({"category" : "update", "config_name" : "update_stamp"})
+
+    detectionMode = DB_CONFIGS.find_one({"category" : "config", "config_name" : "DetectionMode"})
     
     newUpdateStamp = updateStamp['value'] 
     hasNewUpdateStamp = False
@@ -588,6 +594,11 @@ def loadDbConfig():
         hasNewUpdateStamp = True
         with lock:
             UPDATE_STAMP = newUpdateStamp
+
+    if hasNewUpdateStamp :
+        with lock:
+            DETECTION_MODE = detectionMode['value']['mode']
+            TEMPERATURE_THRESHOLD = detectionMode['value']['temperatureThreshold']
    
     if R_CONTROLLER is not None:
         if (len(R_CONTROLLER.getAllRelays()) != len(relays) or hasNewUpdateStamp)  and isPi:

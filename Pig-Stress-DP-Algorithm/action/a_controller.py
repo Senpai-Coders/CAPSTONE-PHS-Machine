@@ -50,8 +50,7 @@ class a_controller:
             Action = action(
                 config_name=A['config_name'],
                 description=A['description'],
-                duration=A['value']['duration'],
-                target_relay=A['value']['target_relay'],
+                # todo
                 state=state
             )
 
