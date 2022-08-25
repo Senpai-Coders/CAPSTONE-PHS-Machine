@@ -4,6 +4,23 @@ import { VERIFY_AUTHORIZATION } from "../../../../helpers/api/index";
 const configs = require("../../../../models/configs");
 dbConnect();
 
+const hasUpdate = async(editorDetails) => {
+    // set app config to forceUpdate all info in phs machine
+    const updateStamp = `${new Date().valueOf()}`;
+    const updatePHSSys = await configs.updateOne(
+      { category: "update", config_name: "update_stamp" },
+      {
+        $set: {
+          category: "update",
+          config_name: "update_stamp",
+          description: "This will update phs system infos forced",
+          value: updateStamp,
+          uby: editorDetails._id,
+        },
+      }
+    );
+}
+
 const handler = async (req, res) => {
   try {
     const auth = req.cookies.authorization;
@@ -30,23 +47,9 @@ const handler = async (req, res) => {
         }
       });
       dataReturn = { message: "ok" };
+      hasUpdate(editorDetails)
+      
     }
-
-    // set app config to forceUpdate(broadcast) all info in phs machine
-    const updateStamp = `${new Date().valueOf()}`;
-    const updatePHSSys = await configs.updateOne(
-      { category: "update", config_name: "update_stamp" },
-      {
-        $set: {
-          category: "update",
-          config_name: "update_stamp",
-          description: "This will update phs system infos forced",
-          value: updateStamp,
-          uby: editorDetails._id,
-        },
-      },
-      { upsert: true }
-    );
 
     res.status(200).json(dataReturn);
   } catch (e) {

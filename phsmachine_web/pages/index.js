@@ -101,7 +101,7 @@ export default function Home() {
       );
 
       if (exited) return;
-      //setACTIONSTATE(phs_actions.data.actions);
+      setPhsActions(phs_actions.data.actions);
       SETSYSSTATE(phs_response.data.state);
       setIsDown(false);
       setTimeOutCount(0)

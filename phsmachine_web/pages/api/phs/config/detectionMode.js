@@ -6,6 +6,23 @@ import {
 const configs = require("../../../../models/configs");
 dbConnect();
 
+const hasUpdate = async(editorDetails) => {
+    // set app config to forceUpdate all info in phs machine
+    const updateStamp = `${new Date().valueOf()}`;
+    const updatePHSSys = await configs.updateOne(
+      { category: "update", config_name: "update_stamp" },
+      {
+        $set: {
+          category: "update",
+          config_name: "update_stamp",
+          description: "This will update phs system infos forced",
+          value: updateStamp,
+          uby: editorDetails._id,
+        },
+      }
+    );
+}
+
 const handler = async (req, res) => {
   try {
     const auth = req.cookies.authorization;
@@ -22,25 +39,9 @@ const handler = async (req, res) => {
     if(mode === 1){
         let configUpdate = await configs.updateOne({ category : "config", config_name : "DetectionMode"}, {
             $set : { value } })
-        
+        hasUpdate(editorDetails)
         dataReturn = { message : 'ok'}
     }
-
-    // set app config to forceUpdate all info in phs machine
-    const updateStamp = `${new Date().valueOf()}`;
-    const updatePHSSys = await configs.updateOne(
-      { category: "update", config_name: "update_stamp" },
-      {
-        $set: {
-          category: "update",
-          config_name: "update_stamp",
-          description: "This will update phs system infos forced",
-          value: updateStamp,
-          uby: editorDetails._id,
-        },
-      },
-      { upsert: true }
-    );
 
     res.status(200).json(dataReturn);
   } catch (e) {

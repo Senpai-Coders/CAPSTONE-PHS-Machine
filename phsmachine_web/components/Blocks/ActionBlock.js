@@ -60,16 +60,14 @@ const ActionBlock = ({ db_actions, phsActions, state }) => {
                   <RiTimerFill className={getIconActiveStyle(action.state)} />
                   {action.config_name}
                 </p>
-                <p className="text-xs">{action.value.target_relay}</p>
+                <p className="text-xs">{action.value.targets.length} component{action.value.targets.length > 1 ? 's' : ''}</p>
               </div>
               <div className="flex items-center">
-                <span className="text-xs text-gray-400 mr-2 ml-2 md:ml-4">
+                <span className="text-xs font-inter font-bold mr-2 ml-2 md:ml-4">
                   {action.state ? "Active" : "Stndby"}
                 </span>
                 {action.state && (
-                  <span className="countdown text-xs text-accent mr-1">
-                    <span style={{ "--value": action.elapsed }}></span>s
-                  </span>
+                  <p className='text-xs font-inter font-bold mr-1'>{action.elapsed}s</p>
                 )}
                 <AiFillThunderbolt
                   className={getIconActiveStyle(action.state)}

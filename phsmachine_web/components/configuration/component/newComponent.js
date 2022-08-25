@@ -28,7 +28,7 @@ const actionComponent = ({ relayOptions, close, onSave, divisionCount }) => {
     try {
       setLoading(true);
       onSave(true);
-      console.log('saving')
+      console.log("saving");
       const add = await axios.post("/api/phs/config/actions", {
         mode: md,
         config_name,
@@ -41,7 +41,7 @@ const actionComponent = ({ relayOptions, close, onSave, divisionCount }) => {
         },
       });
 
-      console.log(add.data)
+      console.log(add.data);
       setLoading(false);
       close();
     } catch (e) {
@@ -133,7 +133,10 @@ const actionComponent = ({ relayOptions, close, onSave, divisionCount }) => {
                     tabindex="0"
                     className="dropdown-content menu max-h-56 overflow-y-scroll px-3 py-4 shadow backdrop-blur-sm bg-base-100/60 border-b border-l border-r border-base-300 rounded-sm"
                   >
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rel, id) => (
+                    {[
+                      4, 14, 15, 17, 18, 27, 22, 23, 24, 10, 9, 25, 11, 8, 7, 0,
+                      1, 5, 6, 12, 13, 19, 16, 26, 20, 21,
+                    ].map((rel, id) => (
                       <li
                         tabIndex={i + 1}
                         key={id}
