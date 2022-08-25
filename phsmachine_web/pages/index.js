@@ -209,7 +209,7 @@ export default function Home() {
         )}
 
         {/** MONITORING LAYOUT */}
-        { SYSSTATE.status > -1 && timeOutCount < 3 && SYSSTATE.status !== 3 && (
+        { SYSSTATE.status !== 3 && (
           <div className="relative pb-4">
             {/* layout 0 - tripple */}
             {viewMode === 0 && (

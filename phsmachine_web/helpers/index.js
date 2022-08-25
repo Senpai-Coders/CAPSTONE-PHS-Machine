@@ -7,17 +7,25 @@ import { FiZapOff, FiSlash } from "react-icons/fi";
 import { BsFillBugFill } from "react-icons/bs";
 import { GiCyberEye } from "react-icons/gi";
 
-export const bytesToMegaBytes = bytes => bytes / 1000000 //bytes / (1024 ** 2)
-export const mbToGB = mb => mb / 1000
+export const bytesToMegaBytes = (bytes) => bytes / 1000000; //bytes / (1024 ** 2)
+export const mbToGB = (mb) => mb / 1000;
 
 export const getPercentUsage = (total, taken) => {
-    var tk = taken / total * 100
-    return isNaN(tk)? 0 : tk
-}
+  var tk = (taken / total) * 100;
+  return isNaN(tk) ? 0 : tk;
+};
 
 export const PI_IP = process.env.PI_IP;
 
-export const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+export const dayNames = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 export const getMyData = async () => {
   try {
@@ -62,25 +70,26 @@ export const setTheme = (t) => {
 };
 
 export const setCamMode = (mode) => {
-    window.localStorage.setItem("phs-CamMode", mode);
-}
+  window.localStorage.setItem("phs-CamMode", mode);
+};
 
 export const getCamMode = () => {
-    let found = localStorage.getItem("phs-CamMode");
-    console.log(found)
-    return found ? found : 0
-}
+  let found = localStorage.getItem("phs-CamMode");
+  console.log(found);
+  return found ? found : 0;
+};
 
 export const loadTheme = () => {
   let savedTheme = localStorage.getItem("phs-theme");
   document
     .getElementsByTagName("html")[0]
     .setAttribute("data-theme", savedTheme);
-  return savedTheme
+  return savedTheme;
 };
 
-export const tempParser = (C) => {
-  return C.toFixed(2);
+export const tempParser = (C, decimal_place) => {
+  if (isNaN(Number.parseFloat(C))) return "-";
+  return C.toFixed(decimal_place);
 };
 
 export const CtoF = (C) => {
@@ -125,44 +134,55 @@ export const dateToWord = (date) => {
   return wordDate;
 };
 
-export const dateMMDDYYYY=(date, sep) => {
-        if(isNaN(date)) return `-${sep}-${sep}`
-        let year = date.getFullYear();
-        let month = (1 + date.getMonth()).toString().padStart(2, '0');
-        let day = date.getDate().toString().padStart(2, '0');
-        return `${month}${sep}${day}${sep}${year}`
-}
+export const dateMMDDYYYY = (date, sep) => {
+  if (isNaN(date)) return `-${sep}-${sep}`;
+  let year = date.getFullYear();
+  let month = (1 + date.getMonth()).toString().padStart(2, "0");
+  let day = date.getDate().toString().padStart(2, "0");
+  return `${month}${sep}${day}${sep}${year}`;
+};
 
-export const dateYYYYMMDD=(date,sep) => {
-    let year = date.getFullYear();
-    let month = (1 + date.getMonth()).toString().padStart(2, '0');
-    let day = date.getDate().toString().padStart(2, '0');
-    let str = `${year}${sep}${month}${sep}${day}`
-    return str;
-}
+export const dateYYYYMMDD = (date, sep) => {
+  let year = date.getFullYear();
+  let month = (1 + date.getMonth()).toString().padStart(2, "0");
+  let day = date.getDate().toString().padStart(2, "0");
+  let str = `${year}${sep}${month}${sep}${day}`;
+  return str;
+};
 
 export const dateToBeutify = (date) => {
-    let thisDate = new Date(date);
-    let wordDate = `${thisDate.toLocaleString("en-us", {
-      month: "short",
-    })} ${thisDate.getDate()}, ${thisDate.getFullYear()} at ${thisDate.toLocaleTimeString(
-      "en-US",
-      {
-        hour: "2-digit",
-        minute: "2-digit",
-      }
-    )}`;
-    return wordDate;
-  };
+  let thisDate = new Date(date);
+  let wordDate = `${thisDate.toLocaleString("en-us", {
+    month: "short",
+  })} ${thisDate.getDate()}, ${thisDate.getFullYear()} at ${thisDate.toLocaleTimeString(
+    "en-US",
+    {
+      hour: "2-digit",
+      minute: "2-digit",
+    }
+  )}`;
+  return wordDate;
+};
 
 export const getMonthName = (date) => {
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-    ];
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
-    return monthNames[date.getMonth()];
-}
+  return monthNames[date.getMonth()];
+};
 
 export const dateMwDDYYYY = (date) => {
-    return `${getMonthName(date)} ${date.getDate()}, ${date.getFullYear()}`
-}
+  return `${getMonthName(date)} ${date.getDate()}, ${date.getFullYear()}`;
+};

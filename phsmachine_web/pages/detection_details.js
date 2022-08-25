@@ -243,7 +243,7 @@ export default function _detection_details() {
                 </div>
                 <div className="stat-title">Minimum Temp</div>
                 <div className="stat-value ">
-                  {tempParser(detection.data.min_temp)} C
+                  {tempParser(detection.data.min_temp, 1)} C
                 </div>
                 <div className="stat-desc"></div>
               </div>
@@ -254,7 +254,7 @@ export default function _detection_details() {
                 </div>
                 <div className="stat-title">Average Temp</div>
                 <div className="stat-value ">
-                  {tempParser(detection.data.avg_temp)} C
+                  {tempParser(detection.data.avg_temp, 1)} C
                 </div>
                 <div className="stat-desc"></div>
               </div>
@@ -265,7 +265,7 @@ export default function _detection_details() {
                 </div>
                 <div className="stat-title">Maximum Temp</div>
                 <div className="stat-value ">
-                  {tempParser(detection.data.max_temp)} C
+                  {tempParser(detection.data.max_temp, 1)} C
                 </div>
                 <div className="stat-desc"></div>
               </div>
@@ -354,20 +354,20 @@ export default function _detection_details() {
                       <p className="text-lg">
                         Min Temp:{" "}
                         <span className="font-medium text-primary">
-                          {tempParser(data.info.min_temp)} °C
+                          {tempParser(data.info.min_temp ,1)} °C
                         </span>{" "}
                       </p>
                       <p className="text-lg">
                         Average Temp:{" "}
                         <span className="font-medium text-primary">
-                          {tempParser(data.info.avg_temp)} °C
+                          {tempParser(data.info.avg_temp, 1)} °C
                         </span>{" "}
                         {"   "}{" "}
                       </p>
                       <p className="text-lg">
                         Max Temp: {"   "}{" "}
                         <span className="font-medium text-error">
-                          {tempParser(data.info.max_temp)} °C
+                          {tempParser(data.info.max_temp, 1)} °C
                         </span>
                       </p>
                     </>
