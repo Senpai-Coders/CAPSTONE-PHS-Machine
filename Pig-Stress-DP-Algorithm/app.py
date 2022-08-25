@@ -456,11 +456,17 @@ def activateCategory(old_activate, caller):
 def activateJob(targets, action_name, caller):
     global SYSTEM_STATE
     newJobs = []
-    for targs in targets : 
+    print("UNSORTED", targets)
+
+    sortedTarg = sorted(targets, key=lambda d: d['duration']) 
+
+    print("NEW", sortedTarg)
+    for targs in sortedTarg : 
             
             duration = targs['duration']
             endTime = datetime.now() + timedelta(seconds=int(duration))
 
+            
             targRelay = targs['target_relay']
 
             newJob = { 
