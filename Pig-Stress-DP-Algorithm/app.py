@@ -1,6 +1,7 @@
 isPi = True
 
 from datetime import datetime, timedelta 
+import time
 from flask import Response, request
 from flask import Flask
 import threading
@@ -419,6 +420,13 @@ def fakeActivate():
 
     return "ok",200
 
+def doesActionNameAlreadyActive(action_name) : 
+    global SYSTEM_STATE, R_CONTROLLER, ACTION_STATE
+    for idx, job in enumerate(SYSTEM_STATE['jobs']):
+        f_action_name = job['action_name']
+        if f_action_name == action_name:
+            return True
+    return False
 
 def activateCategory(old_activate, caller):
     global ACTION_STATE, SYSTEM_STATE
@@ -428,75 +436,88 @@ def activateCategory(old_activate, caller):
 
     actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
     
-    #TODO
-    return []
+    new_activated = []
     
     for action in actions:
         act_caller = action['value']['caller']
-        target_relay = action['value']['target_relay']
-        duration = int(action['value']['duration'])
+        # target_relay = action['value']['target_relay']
+        # duration = int(action['value']['duration'])
+        targets = action['value']['targets']
         action_name = action['config_name']
 
         if act_caller == caller:
-            activated = activateJob(target_relay, duration, action_name, caller)
-            ACTION_STATE.toggle(action_name, True)
-            new_activated.append(activated)
+            if not doesActionNameAlreadyActive(action_name):
+                activated = activateJob(targets, action_name, caller)
+                ACTION_STATE.toggle(action_name, True)
+                new_activated.append(activated)
 
     return old_activate + new_activated
 
-def activateJob(name, duration, action_name, caller):
+def activateJob(targets, action_name, caller):
     global SYSTEM_STATE
-    
-    endTime = datetime.now() + timedelta(seconds=duration)
+    newJobs = []
+    for targs in targets : 
+            
+            duration = targs['duration']
+            endTime = datetime.now() + timedelta(seconds=int(duration))
 
-    newJob = {
-            "action_name" : action_name,
-            "relay_name" : name,
-            "caller" : caller,
-            "duration" : duration,
-            "end" : endTime
-            }
-    
-    if SYSTEM_STATE['status'] == 2: return newJob
+            targRelay = targs['target_relay']
 
-    SYSTEM_STATE['jobs'].append(newJob)
-    return newJob
+            newJob = { 
+                "action_name" : action_name, 
+                "relay_name" : f'{targRelay}', 
+                "caller" : caller, 
+                "duration" : duration, 
+                "end" : endTime }
+            
+            if SYSTEM_STATE['status'] == 2: return newJob
+
+            SYSTEM_STATE['jobs'].append(newJob)
+            newJobs.append(newJob)
+    
+    return newJobs  
+
 
 def updateJobs():
     global SYSTEM_STATE, R_CONTROLLER, ACTION_STATE
      
-    if EMERGENCY_STOP:
-        SYSTEM_STATE['jobs'] = []
-        R_CONTROLLER.offAll()
-        ACTION_STATE.offAll()
-    
-    print(f"*********** 🔼 PHS ACTIONS HAS {len(SYSTEM_STATE['jobs'])} JOBS 🔼 *****************\n")
-
-    heatStressResolveJobs = 0
-
-    for idx, job in enumerate(SYSTEM_STATE['jobs']):
-        endTime = job['end']
-        curTime = datetime.now()
+    while True:
+        time.sleep(0.2)
+        if EMERGENCY_STOP:
+            SYSTEM_STATE['jobs'] = []
+            R_CONTROLLER.offAll()
+            ACTION_STATE.offAll()
         
-        if job['caller'] == 'Heat Stress Detector':
-            heatStressResolveJobs += 1
+        print(f"*********** 🔼 PHS ACTIONS HAS {len(SYSTEM_STATE['jobs'])} JOBS 🔼 *****************\n")
 
-        if curTime >= endTime:
-            print('PHS JOB 🔶 : ✅ ACTION ENDED :', end='')
-            R_CONTROLLER.toggleRelay(job['relay_name'],False)
-            SYSTEM_STATE['jobs'].pop(idx)
-            ACTION_STATE.toggle(job['action_name'], False)
-        else:
-            print('PHS JOB 🔶 : ⚡ ACTIVE ACTION/JOB ', end='')
-            R_CONTROLLER.toggleRelay(job['relay_name'],True)
-            ACTION_STATE.toggle(job['action_name'], True)
-    if heatStressResolveJobs <= 0:
-        curSysStatus = SYSTEM_STATE['status']
-        if curSysStatus not in [ -1, -2, 2 ]:
-            SYSTEM_STATE['status'] = 0
+        heatStressResolveJobs = 0
+
+        for idx, job in enumerate(SYSTEM_STATE['jobs']):
+            endTime = job['end']
+            curTime = datetime.now()
+
+            elapsed = int((endTime - curTime).total_seconds())
+            
+            if job['caller'] == 'Heat Stress Detector':
+                heatStressResolveJobs += 1
+
+            if curTime >= endTime:
+                print('PHS JOB 🔶 : ✅ ACTION ENDED :', end='')
+                R_CONTROLLER.toggleRelay(job['relay_name'],False)
+                SYSTEM_STATE['jobs'].pop(idx)
+                ACTION_STATE.toggle(job['action_name'], False)
+                ACTION_STATE.setElapsed(job['action_name'], elapsed)
+            else:
+                print('PHS JOB 🔶 : ⚡ ACTIVE ACTION/JOB ', end='')
+                R_CONTROLLER.toggleRelay(job['relay_name'],True)
+                ACTION_STATE.toggle(job['action_name'], True)
+                ACTION_STATE.setElapsed(job['action_name'], elapsed)
+        if heatStressResolveJobs <= 0:
+            curSysStatus = SYSTEM_STATE['status']
+            if curSysStatus not in [ -1, -2, 2 ]:
+                SYSTEM_STATE['status'] = 0
 
 def isDarkScene(image):
-    return False
     dim=20
     thresh=0.3
 
@@ -589,7 +610,7 @@ def loadDbConfig():
     
     newUpdateStamp = updateStamp['value'] 
     hasNewUpdateStamp = False
-    
+
     if UPDATE_STAMP is None or UPDATE_STAMP != newUpdateStamp:
         hasNewUpdateStamp = True
         with lock:
@@ -601,15 +622,13 @@ def loadDbConfig():
             TEMPERATURE_THRESHOLD = detectionMode['value']['temperatureThreshold']
    
     if R_CONTROLLER is not None:
-        if (len(R_CONTROLLER.getAllRelays()) != len(relays) or hasNewUpdateStamp)  and isPi:
+        if (len(R_CONTROLLER.getAllRelays()) != len(relays) or hasNewUpdateStamp):
             R_CONTROLLER.delRelays(relays)      
     else:
-        R_CONTROLLER = r_controller(relays, True, isPi)
+        R_CONTROLLER = r_controller(relays, True, True)
 
     if len(ACTION_STATE.actions) != len(actions) and isPi:
         ACTION_STATE = a_controller(actions, ACTION_STATE.actions)
-
-    updateJobs()
 
 def process(raw):
     try:
@@ -680,6 +699,11 @@ def start_server():
     detectThread.daemon = True
     detectThread.start()
     print("🧵 Init Thread Heat Stress Detection")
+
+    jobsThread = threading.Thread(target=updateJobs)
+    jobsThread.daemon = True
+    jobsThread.start()
+    print("🧵 Init Jobs Thread")
 
     ip=get_ip_address()
     port=8000
