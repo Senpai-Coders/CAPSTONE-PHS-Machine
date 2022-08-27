@@ -54,8 +54,13 @@ ACTION_STATE=None
 R_CONTROLLER=None
 EMERGENCY_STOP=False
 
+#Identifies if PHS should use AI else use temperature threshold instead
 DETECTION_MODE=False
 TEMPERATURE_THRESHOLD=38.5
+
+# For PHS Area Tracking & Action Location
+GRID_COL=1
+GRID_ROW=1
 
 Yolov5_PHD=None
 PHS_CNN=None
@@ -67,7 +72,6 @@ MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
 DB = MONGO_CONNECTION["PHS_MACHINE"]
 DB_CONFIGS = DB['configs']
 DB_DETECTIONS = DB['thermal_detections']
-
 
 STREAM_REQ_THERM = False
 STREAM_REQ_NORM = False
@@ -197,6 +201,16 @@ def feed_annotate():
         STREAM_REQ_ANNOT = True
     return Response(gen_annotate(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
+# This is for testing only to test if activate action is working
+@app.route("/DummyActivateCategory", methods=['POST'])
+def fakeActivate():
+    global ACTION_STATE
+    ReqBod = request.get_json(force=True)
+    callerName = ReqBod['caller']
+    activateCategory([ ], callerName)
+
+    return "ok",200
+
 def get_ip_address():
 	"""Find the current IP address of the device"""
 	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -224,6 +238,55 @@ def drawText(img, x, y, text, color, font, font_size):
     edited = cv2.putText(img, text, (x + 2, y + 2), font, font_size, (41, 30, 31), 2, cv2.LINE_AA)
     return cv2.putText(edited, text, (x, y), font, font_size, color, 2, cv2.LINE_AA)
 
+def drawRect(img, start_point, end_point, color, thck):
+    return cv2.rectangle(img, start_point, end_point, color, thck)
+
+def getCenterPoint(x1,y1,x2,y2):
+    center_x = math.floor(x1 + ((x2 - x1) / 2))
+    center_y = math.floor(y1 + ((y2 - y1)/ 2))
+    return center_x, center_y
+
+def insideBound( bound, x, y ):
+    insideXCoord = x >= bound['left_bound'] and x <= bound['right_bound']
+    insideYCoord = y >= bound['top_bound'] and y <= bound['bottom_bound']
+    return insideXCoord and insideYCoord
+
+def getCellLocation(img_h, img_w, center_x, center_y):
+    global GRID_COL, GRID_ROW, font
+    bounds = []
+    cell_w_size = int(img_w / GRID_COL)
+    cell_h_size = int(img_h / GRID_ROW)
+    computed_y_bound = cell_h_size
+    cellCount = 1
+    for i in range(GRID_ROW):
+        top_bound = computed_y_bound - cell_h_size
+        bot_bound = computed_y_bound
+
+        computed_x_bound = cell_w_size
+        for c in range(GRID_COL):
+            left_bound = computed_x_bound - cell_w_size
+            right_bound = computed_x_bound
+            bounds.append({
+                'left_bound' : left_bound,
+                'top_bound' : top_bound,
+                'right_bound' : right_bound,
+                'bottom_bound' : bot_bound
+            })
+            # cent_x, cent_y = getCenterPoint(left_bound, top_bound, right_bound, bot_bound)
+            # drawn = drawRect(img, (left_bound, top_bound), (right_bound, bot_bound), (cellCount * 20, 200, cellCount * 15), 2)
+            # drawn = cv2.circle(drawn, (cent_x, cent_y), 4 , (255, 220, 80), 2)
+            # drawn = drawText(drawn, left_bound, top_bound + 20, f'cell {cellCount} topl', (0, 255, 200), font, 0.6)
+            # drawn = drawText(drawn, right_bound, bot_bound + 20, f'cell {cellCount} botr', (200, 255, 0), font, 0.6)
+            computed_x_bound += cell_w_size
+            cellCount += 1
+        computed_y_bound += cell_h_size
+
+    for idx, cell_bound in enumerate(bounds) :
+        isInside = insideBound(cell_bound, center_x, center_y)
+        if isInside: return idx + 1
+
+    return -1
+
 def detectHeatStress():
     global font, ANNOT_STREAM_CHECK, DETECTION_MODE, TEMPERATURE_THRESHOLD, IMG_NORMAL_ANNOTATED, PHS_CNN, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD, EXITING
     while not EXITING:
@@ -235,6 +298,8 @@ def detectHeatStress():
             c_Raw_Reshaped = np.reshape(c_RAW_THERMAL.copy(), (24,32))
             c_Raw_Reshaped = cv2.resize(c_Raw_Reshaped, (640, 480))
             c_Raw_Reshaped = cv2.flip(c_Raw_Reshaped, 1)
+            
+            H, W, C = c_IMG_NORMAL.shape
 
             curACTIONS = []
 
@@ -245,7 +310,7 @@ def detectHeatStress():
             # TODO
             Dark_Scene_Detector = isDarkScene(to_read) 
             if Dark_Scene_Detector:
-                curACTIONS = activateCategory(curACTIONS, "Dark Scene Detector")
+                curACTIONS = activateCategory(curACTIONS, "Dark Scene Detector", True, 0)
             
             # FEEDING IMAGE FOR FINDING THE PIG LOCATION ON PICTURE USING YOLOV5s 
             #print("🟠 YoloV5 Detecting Pig 🐷")
@@ -256,10 +321,6 @@ def detectHeatStress():
             coords = detect_pig_head.pandas().xyxy[0].to_dict(orient="records")
         
             if len(coords) > 0:
-                # CALL ALL ACTIONS FOR PIG DETECTOR
-                curACTIONS = activateCategory(curACTIONS, "Pig Detector")
-                #print(f"🐖 PHS Detect detected {len(coords)} pigs")
-
                 detect_annotation = np.squeeze(detect_pig_head.render())
                 
                 img_normal_cropped = []
@@ -273,31 +334,43 @@ def detectHeatStress():
 
                 detected = False
                 
+                pigC = 1
                 for result in coords:
                     if not hasNoPendingHeatStressJob():
                         break
 
-                    # print(result)
+                    #print(result)
+                    #confidence = float(result['confidence'])
+                    #if confidence < 75.0: break
                     x1 = int(result['xmin'])
                     y1 = int(result['ymin'])
                     x2 = int(result['xmax'])
                     y2 = int(result['ymax'])
-
-                    #cv2.putText(detect_annotation, f'{x1} {y1}', (x1,y1), font, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
+                    print(f'🐷 PIG {pigC}')
+                    detect_annotation = cv2.putText(detect_annotation, f'pig {pigC}', (x1,y1 + 20), font, 0.5, (100, 255, 50), 2, cv2.LINE_AA)
+                    pigC += 1
                     #cv2.putText(detect_annotation, f'{x2} {y2}', (x2,y2), font, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
 
-                    H, W, C = c_IMG_NORMAL.shape
                     #print('h:',H, 'w:', W)
                     #print(x1, y1, x2, y2, x1 + x2, y1 + y2)
 
-                    # GET LOCATION OF PIG
-                    center_x = math.floor(x1 + ((x2 - x1) / 2))
-                    center_y = math.floor(y1 + ((y2 - y1)/ 2))
+                    # FOCUSED PIG LOCATION
+                    center_x, center_y = getCenterPoint(x1,y1,x2,y2)
+                    division_location = getCellLocation(H, W, center_x, center_y)
+
+                    print('Pig Location',division_location)
+
+                    # CALL ALL ACTIONS FOR PIG DETECTOR 
+                    # activate action regardless of pig location
+                    curACTIONS = activateCategory(curACTIONS, "Pig Detector", True, division_location)
+                    # activate action if matched pig location
+                    curACTIONS = activateCategory(curACTIONS, "Pig Detector", False, division_location)
+                    #print(f"🐖 PHS Detect detected {len(coords)} pigs")
 
                     detect_annotation = cv2.circle(detect_annotation, (center_x, center_y ), 4 , (255, 220, 80), 2)
                     #cv2.putText(detect_annotation, f'{center_x} {center_y}', (center_x,center_y), font, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
 
-                    print('🐷 pig at coord :',x1,y1,x2,y2, end='')
+                    #print('🐷 pig at coord :',x1,y1,x2,y2 )
                     cpy_thrm_crop_raw = c_Raw_Reshaped[y1:y2, x1:x2]
 
                     # detection = CNN ( RAW THERMAL )
@@ -335,11 +408,17 @@ def detectHeatStress():
                     chosenColor = (140, 94, 255)
                     detect_annotation = drawText(detect_annotation, x1, y1 + 20, 'HeatStress', chosenColor, font, 0.6)
                     detected = True
+
                     # If it does classified stressed then set as detected to true
                     # also call the action bind to HEAT STRESS DETECTOR  
-                    curACTIONS = activateCategory(curACTIONS, "Heat Stress Detector")
-                    print("Detected 🔥 Heat Stress on pig")
 
+                    # Call all action that require location match
+                    curACTIONS = activateCategory(curACTIONS, "Heat Stress Detector", False, division_location)
+
+                    # Call all action that doesn't require location match
+                    curACTIONS = activateCategory(curACTIONS, "Heat Stress Detector", True, division_location)
+
+                    print("Detected 🔥 Heat Stress on pig")
                     cpy_crop_normal = c_IMG_NORMAL[y1 : y2, x1 : x2]
 
                     img_thermal_cropped_raw.append(cpy_thrm_crop_raw)
@@ -436,16 +515,6 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
         print("✅ Done Saving Event Data 👌")
     except Exception as e: print("🚩 Can't Save cuz of this err 👉 ",e)
 
-# This is for testing only to test if activate action is working
-@app.route("/DummyActivateCategory", methods=['POST'])
-def fakeActivate():
-    global ACTION_STATE
-    ReqBod = request.get_json(force=True)
-    callerName = ReqBod['caller']
-    activateCategory([ ], callerName)
-
-    return "ok",200
-
 def doesActionNameAlreadyActive(action_name) : 
     global SYSTEM_STATE, R_CONTROLLER, ACTION_STATE
     for idx, job in enumerate(SYSTEM_STATE['jobs']):
@@ -454,39 +523,49 @@ def doesActionNameAlreadyActive(action_name) :
             return True
     return False
 
-def activateCategory(old_activate, caller):
+def activateCategory(old_activate, caller, ForceActivate, Location):
     global ACTION_STATE, SYSTEM_STATE
 
     if SYSTEM_STATE['status'] == 2:
         return
 
     actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
-    
     new_activated = []
     
     for action in actions:
+        eventLocation = action['value']['eventLocation']
+        forceActivate = action['value']['forceActivate']
         act_caller = action['value']['caller']
-        # target_relay = action['value']['target_relay']
-        # duration = int(action['value']['duration'])
         targets = action['value']['targets']
         action_name = action['config_name']
 
-        if act_caller == caller:
+
+        if ForceActivate and forceActivate:
+            if act_caller == caller:
+                if not doesActionNameAlreadyActive(action_name):
+                    activated = activateJob(targets, action_name, caller)
+                    ACTION_STATE.toggle(action_name, True)
+                    new_activated.append(activated)
+                    print(f'Activated {action_name} - Force Activate')
+            continue
+
+        if act_caller == caller and eventLocation == Location:
             if not doesActionNameAlreadyActive(action_name):
                 activated = activateJob(targets, action_name, caller)
                 ACTION_STATE.toggle(action_name, True)
                 new_activated.append(activated)
+                print(f'Activated {action_name} - Location Based {Location}')
+
+
 
     return old_activate + new_activated
 
 def activateJob(targets, action_name, caller):
     global SYSTEM_STATE
     newJobs = []
-    print("UNSORTED", targets)
 
     sortedTarg = sorted(targets, key=lambda d: d['duration']) 
 
-    print("NEW", sortedTarg)
     for targs in sortedTarg : 
             
             duration = targs['duration']
@@ -615,7 +694,6 @@ def gen_normal():
             time.sleep(0.1)
             yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
             NORM_STREAM_UP = NORM_STREAM_CHECK
-            print('streamed normal', NORM_STREAM_UP)
 
 def gen_thermal():
     global IMG_THERMAL, THERM_STREAM_UP, THERM_STREAM_CHECK, STREAM_REQ_THERM, lock
@@ -629,15 +707,16 @@ def gen_thermal():
             time.sleep(0.1)
             yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
             THERM_STREAM_UP = THERM_STREAM_CHECK
-            print('streamed thermal', THERM_STREAM_UP)
 
 def loadDbConfig():
-    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP, DETECTION_MODE, TEMPERATURE_THRESHOLD
+    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP, DETECTION_MODE, TEMPERATURE_THRESHOLD, GRID_COL, GRID_ROW
     relays = list(DB_CONFIGS.find({ "category" : "relays" }))
     actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
     updateStamp = DB_CONFIGS.find_one({"category" : "update", "config_name" : "update_stamp"})
 
     detectionMode = DB_CONFIGS.find_one({"category" : "config", "config_name" : "DetectionMode"})
+
+    phs_grid_divisions = DB_CONFIGS.find_one({"category" : "config", "config_name" : "divisions"})
     
     newUpdateStamp = updateStamp['value'] 
     hasNewUpdateStamp = False
@@ -646,6 +725,11 @@ def loadDbConfig():
         hasNewUpdateStamp = True
         with lock:
             UPDATE_STAMP = newUpdateStamp
+        
+    if hasNewUpdateStamp :
+        with lock:
+            GRID_COL = phs_grid_divisions['value']['col']
+            GRID_ROW = phs_grid_divisions['value']['row']
 
     if hasNewUpdateStamp :
         with lock:
