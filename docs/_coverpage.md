@@ -7,4 +7,4 @@
 > PHS Documentation
 
 [GitHub](https://github.com/Senpai-Coders/CAPSTONE-PHS-Machine.git)
-[Get Started](#phs)
+[Get Started](./README.md)
