@@ -1,7 +1,10 @@
-# PHS MACHINE
+# PHS
 
-PHS Machine : Detection and Resolving Heat Stress from Pig that utilize Thermographic Imaging, Image processing, & Deep Learning
+Wellcome to PHS System Documentation
 
-## Introduction
 
-To guide user & future developers, this documentation will help them to fully understand how the system works.
+## Guides
+
+### User Guides
+This is guide for user on how to **navigate** and **operate** the system.
+[Go to User Guide](/User/README.md)
