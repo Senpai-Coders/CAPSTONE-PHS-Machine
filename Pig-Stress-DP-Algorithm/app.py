@@ -135,7 +135,7 @@ def setActionState():
 
 @app.route("/updateState")
 def setState():
-    global SYSTEM_STATE,R_CONTROLLER, ACTION_STATE
+    global SYSTEM_STATE, R_CONTROLLER, ACTION_STATE, EMERGENCY_STOP, lock
     # -2 Off
     # -1 Disabled
     # 0 Detecting
@@ -143,13 +143,15 @@ def setState():
     # 2 Debugging
     # 3 Connecting
     status = request.args.get('status')
-    if(int(status) == 2):
-        SYSTEM_STATE['jobs'] = []
-        R_CONTROLLER.offAll()
-        ACTION_STATE.offAll()
-    elif int(status) == 0:
-        R_CONTROLLER.offAll()
-    SYSTEM_STATE['status']=int(status)
+    with lock:
+            if(int(status) == 2 or int(status == -1)):
+                SYSTEM_STATE['jobs'] = []
+                R_CONTROLLER.offAll()
+                ACTION_STATE.offAll()
+            elif int(status) == 0:
+                R_CONTROLLER.offAll()
+                EMERGENCY_STOP = False
+            SYSTEM_STATE['status']=int(status)
     response = Response( mongoResToJson({"status":200, "message":"Ok "}) , content_type="application/json")
     return response, 200
 
@@ -272,11 +274,6 @@ def getCellLocation(img_h, img_w, center_x, center_y):
                 'right_bound' : right_bound,
                 'bottom_bound' : bot_bound
             })
-            # cent_x, cent_y = getCenterPoint(left_bound, top_bound, right_bound, bot_bound)
-            # drawn = drawRect(img, (left_bound, top_bound), (right_bound, bot_bound), (cellCount * 20, 200, cellCount * 15), 2)
-            # drawn = cv2.circle(drawn, (cent_x, cent_y), 4 , (255, 220, 80), 2)
-            # drawn = drawText(drawn, left_bound, top_bound + 20, f'cell {cellCount} topl', (0, 255, 200), font, 0.6)
-            # drawn = drawText(drawn, right_bound, bot_bound + 20, f'cell {cellCount} botr', (200, 255, 0), font, 0.6)
             computed_x_bound += cell_w_size
             cellCount += 1
         computed_y_bound += cell_h_size
@@ -593,7 +590,8 @@ def updateJobs():
      
     while not EXITING:
         time.sleep(0.2)
-        if EMERGENCY_STOP:
+        S_STATE = SYSTEM_STATE['status']
+        if EMERGENCY_STOP or S_STATE == 2 or S_STATE == -1:
             SYSTEM_STATE['jobs'] = []
             R_CONTROLLER.offAll()
             ACTION_STATE.offAll()
