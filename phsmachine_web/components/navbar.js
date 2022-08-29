@@ -13,7 +13,7 @@ import ThemeChooser from "./configuration/themeChooser";
 
 import Time_Strip from "./Time_Strp";
 
-const navbar = ({toggled, setToggled}) => {
+const navbar = ({ toggled, setToggled }) => {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
@@ -106,12 +106,12 @@ const navbar = ({toggled, setToggled}) => {
         </label>
       </div> */}
 
-      {/* NAV MOBILE */}
+      {/* NAV ALL */}
       <nav className=" fixed z-30 flex-shrink-0 href w-screen bg-base-200 shadow-lg block">
         {/* <div className="overflow-y-auto overflow-x-hidden flex justify-between px-8"> */}
         {/* SideBar Show/Hide */}
         <div
-          className={`z-40 overflow-y-scroll w-64 px-6 py-2 h-screen bg-base-300 absolute duration-300 ease-in-out top-0 ${
+          className={`z-40 overflow-y-scroll w-64 px-4 py-2 h-screen bg-base-100 shadow-lg absolute duration-300 ease-in-out top-0 ${
             toggled ? "left-0" : "-left-96 "
           }`}
         >
@@ -127,26 +127,35 @@ const navbar = ({toggled, setToggled}) => {
             </button>
           </div>
           <div className="divider" />
-          <div className="mt-4">
-            <div className="flex items-center justify-start mb-2">
-              <div className="py-2 pr-2 rounded-xl bg-base-300">
+          <div className="mt-2">
+            {/* <div className="flex items-center justify-start mb-2">
+              <div className="py-2 px-2 rounded-xl mr-2 bg-base-300">
                 <RiPagesFill className="w-5 h-5" />
               </div>
               <p className="text-lg">Pages</p>
+            </div> */}
+            <div className="w-full flex justify-evenly">
+              <ul className="menu w-full overflow-y-auto bg-transparent py-2 text-base-content">
+                {PHS_ROUTES.map((routes, idx) => (
+                  <li className="">
+                    <a
+                      key={idx}
+                      onClick={() => router.push(routes.path)}
+                      className={`${
+                        router.pathname === routes.path
+                          ? "pl-3 pr-4 py-2 border-l-4 border-primary bg-base-200 text-base font-medium transition duration-200 ease-in-out"
+                          : "pl-3 pr-4 py-2 border-l-4 border-transparent text-base hover:border-primary font-medium transition duration-200 ease-in-out"
+                      } cursor-pointer rounded-md duration-300 w-full`}
+                    >
+                      {routes.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              {/*<GiStopSign
+                className={`opacity-90 h-7 w-7 text-error cursor-pointer duration-300`}
+              />*/}
             </div>
-            {PHS_ROUTES.map((routes, idx) => (
-              <p
-                key={idx}
-                onClick={() => router.push(routes.path)}
-                className={`${
-                  router.pathname === routes.path
-                    ? "text-lg text-primary"
-                    : "opacity-50 text-sm "
-                } cursor-pointer duration-300 my-2`}
-              >
-                {routes.name}
-              </p>
-            ))}
           </div>
           <div className="divider" />
           <div className="mt-4 grid grid-cols-1">
@@ -167,17 +176,20 @@ const navbar = ({toggled, setToggled}) => {
                   </div>
                 </div>
               )}
-              {userData ? <p className="ml-2 text-sm">{userData.user_name}</p> : <p>...</p>}
+              {userData ? (
+                <p className="ml-2 text-sm">{userData.user_name}</p>
+              ) : (
+                <p>...</p>
+              )}
             </div>
             <ThemeChooser />
             <label
               htmlFor="my-modal-6"
-              className="font-medium btn mt-4 btn-sm modal-button cursor-pointer duration-300 text-primary"
+              className="font-medium btn btn-outline btn-sm mt-2 btn-ghost cursor-pointer duration-300"
             >
               Sign Out
             </label>
           </div>
-          
         </div>
 
         <div className="grid text-sm grid-cols-3 mx-4">
@@ -249,7 +261,9 @@ const navbar = ({toggled, setToggled}) => {
 
           {/* USER INFO & SIGNOUT */}
           <div className="flex justify-end items-center space-x-8">
-          <div className="md:hidden lg:block"><Time_Strip /></div>
+            <div className="md:hidden lg:block">
+              <Time_Strip />
+            </div>
             <ThemeChooser />
             {!userData ? (
               <div className="w-5/12 flex items-center space-x-4">

@@ -5,10 +5,16 @@ import { FiZapOff } from "react-icons/fi";
 import { FaStopCircle } from "react-icons/fa";
 import { BsBootstrapReboot } from "react-icons/bs"
 
+import { PI_IP } from "../../helpers";
+
+import axios from "axios";
+
 const QuickControlsBlock = ({ state, setSelectedModal }) => {
-  const chooseState = (state) => {
-    // do something
-  };
+  const chooseState = async(state) => { 
+    try{
+        const updateState = await axios.get(`http://${PI_IP}:8000/updateState?status=${state}`)
+    }catch(e){}
+   };
 
   /**
    * 
@@ -33,21 +39,21 @@ const QuickControlsBlock = ({ state, setSelectedModal }) => {
             <span className="label-text">Debug Mode</span>
             <input
               onChange={(e) => {
-                chooseState(2);
+                chooseState(state == 2 ? 0 : 2);
               }}
-              disabled={state < 0 || state === 3}
+              disabled={state === -2 || state === 3}
               checked={ state === 2 }
               type="checkbox"
               className="toggle toggle-accent"
             />
           </label>
           <label className="label cursor-pointer">
-            <span className="label-text">{ state === -1 ? "Enable PHS" : "Disable PHS" }</span>
+            <span className="label-text">Disable PHS</span>
             <input
               onChange={(e) => {
                 chooseState(state === -1 ? 0 : -1);
               }}
-              disabled={state < 0 || state === 3}
+              disabled={state === -2 || state === 3}
               checked={ state === -1 }
               type="checkbox"
               className="toggle toggle-accent"
@@ -60,9 +66,16 @@ const QuickControlsBlock = ({ state, setSelectedModal }) => {
                 chooseState(2);
               }} type="checkbox" className="toggle toggle-accent" />
           </label> */}
-          <button disabled={state < 0 || state === 3} className="btn glass bg-orange-500 text-white btn-xs my-1">
+          <button onClick={async()=>{
+            if(state == -1) return
+            try{
+                const updateState = await axios.get(`http://${PI_IP}:8000/emergencyStop`)
+            }catch(e){
+                console.log('err ', e)
+            }
+          }} disabled={state < 0 || state === 3} className="btn glass bg-orange-500 text-white btn-xs my-1">
             <FaStopCircle className="w-4 h-4 text-error mr-2" />
-            Stop All Actions
+            Emergency Stop
           </button>
           <button onClick={()=>setSelectedModal(-2)} className="btn glass btn-xs my-1 text-gray-400 bg-red-600">
             <FiZapOff className="w-4 h-4 text-error-content mr-2" />

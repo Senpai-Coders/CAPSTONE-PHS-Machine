@@ -1,8 +1,21 @@
 import Layout from "../components/layout";
 import { useRouter } from "next/router";
+import dynamic from 'next/dynamic'
+import { useEffect, useState, Suspense } from "react";
+
+
+const Stream_Triple = dynamic(() => import('../components/Stream/triple'), {
+    suspense: true,
+})
+const Stream_Dual = dynamic(() => import('../components/Stream/dual'), {
+    suspense: true,
+})
+const Stream_Merge = dynamic(() => import('../components/Stream/merge'), {
+    suspense: true,
+})
+
 
 import Head from "next/head";
-import { useEffect, useState } from "react";
 import axios from "axios";
 
 import {
@@ -209,72 +222,27 @@ export default function Home() {
         )}
 
         {/** MONITORING LAYOUT */}
-        { SYSSTATE.status !== 3 && (
+        { !isDown && SYSSTATE.status !== 3 && (
           <div className="relative pb-4">
             {/* layout 0 - tripple */}
             {viewMode === 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 w-full">
-                {/* normal */}
-                <div className="min-h-12">
-                  <img
-                    className="w-full outline outline-1 outline-base-100 rounded-sm"
-                    src={`http://${PI_IP}:8000/normal_feed`}
-                  />
-                </div>
-                {/* thermal */}
-                <div className="min-h-12">
-                  <img
-                    className="w-full outline outline-1 outline-base-100 rounded-sm"
-                    src={`http://${PI_IP}:8000/thermal_feed`}
-                  />
-                </div>
-                {/* annotation */}
-                <div className="min-h-12">
-                  <img
-                    className="w-full outline outline-1 outline-base-100 rounded-sm"
-                    src={`http://${PI_IP}:8000/annotate_feed`}
-                  />
-                </div>
-              </div>
+              <Suspense fallback={`Loading...`}>
+                <Stream_Triple />
+              </Suspense>
             )}
 
             {/* layout 1 - dual */}
             {viewMode === 1 && (
-              <div className="md:grid md:grid-cols-2 w-full">
-                {/* normal */}
-                <div className="min-h-12">
-                  <img
-                    className="w-full outline outline-1 outline-base-100 rounded-sm"
-                    src={`http://${PI_IP}:8000/normal_feed`}
-                  />
-                </div>
-                {/* thermal */}
-                <div className="min-h-12">
-                  <img
-                    className="w-full outline outline-1 outline-base-100 rounded-sm"
-                    src={`http://${PI_IP}:8000/thermal_feed`}
-                  />
-                </div>
-              </div>
+              <Suspense fallback={`Loading...`}>
+                <Stream_Dual />
+              </Suspense>
             )}
 
             {/* layout 2 - merged */}
             {viewMode === 2 && (
-              <div
-                className="relative"
-                style={{ height: "calc(100vh * 0.70)" }}
-              >
-                <img
-                  style={{ height: "calc(100vh * 0.70)" }}
-                  className="w-full object-fill absolute outline outline-1 outline-base-200 rounded-sm left-0 top-0"
-                  src={`http://${PI_IP}:8000/normal_feed`}
-                />
-                <img
-                  style={{ height: "calc(100vh * 0.70)" }}
-                  className="w-full object-fill saturate-100 absolute left-0 top-0 opacity-60"
-                  src={`http://${PI_IP}:8000/thermal_feed`}
-                />
-              </div>
+              <Suspense fallback={`Loading...`}>
+                <Stream_Merge />
+              </Suspense>
             )}
           </div>
         )}

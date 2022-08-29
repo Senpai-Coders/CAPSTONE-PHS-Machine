@@ -485,8 +485,7 @@ const phsSettings = ({
             <div
               className="w-full coverStretch bg-no-repeat h-80 bg-base-100"
               style={{
-                backgroundImage:
-                  `url("https://image.shutterstock.com/shutterstock/photos/1506244592/display_1500/stock-photo-top-view-of-three-little-black-and-white-pigs-standing-on-hay-in-a-cage-1506244592.jpg")`,
+                backgroundImage: `url("http://${PI_IP}:8000/normal_feed")`,
               }}
             ></div>
             <div

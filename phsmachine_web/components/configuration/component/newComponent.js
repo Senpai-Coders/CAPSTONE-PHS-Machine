@@ -325,7 +325,7 @@ const actionComponent = ({ relayOptions, close, onSave, divisionCount }) => {
                     style={{
                       //https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Road_in_Norway.jpg/1200px-Road_in_Norway.jpg
                       //http://${PI_IP}:8000/normal_feed
-                      backgroundImage: `url("https://image.shutterstock.com/shutterstock/photos/1506244592/display_1500/stock-photo-top-view-of-three-little-black-and-white-pigs-standing-on-hay-in-a-cage-1506244592.jpg")`,
+                      backgroundImage: `url("http://${PI_IP}:8000/normal_feed")`,
                     }}
                   ></div>
                   <div

@@ -48,23 +48,114 @@ const handler = async (req, res) => {
     //Actions
     {
       category: "actions",
-      config_name: "Mist Div 1",
+      config_name: "Cell 1",
       description: "This will be utilized by the AI",
       value: {
-        targets: [{ target_relay: "18", duration: 1 }],
-        caller: "Pig Detector",
-        forceActivate: true, // Regardless event location it will activate on caller
+        targets: [{ target_relay: "18", duration: 50 }],
+        caller: "Heat Stress Detector",
+        forceActivate: false, // Regardless event location it will activate on caller
         eventLocation: 1,
       },
       deletable: false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
     },
     {
+        category: "actions",
+        config_name: "Cell 2",
+        description: "This will be utilized by the AI",
+        value: {
+          targets: [{ target_relay: "18", duration: 50 }],
+          caller: "Heat Stress Detector",
+          forceActivate: false, // Regardless event location it will activate on caller
+          eventLocation: 2,
+        },
+        deletable: false,
+        uby: new ObjectId("6277e36f94637471bdabb80d"),
+    },
+    {
+        category: "actions",
+        config_name: "Cell 3",
+        description: "This will be utilized by the AI",
+        value: {
+          targets: [{ target_relay: "18", duration: 50 }],
+          caller: "Heat Stress Detector",
+          forceActivate: false, // Regardless event location it will activate on caller
+          eventLocation: 3,
+        },
+        deletable: false,
+        uby: new ObjectId("6277e36f94637471bdabb80d"),
+    },
+    {
+        category: "actions",
+        config_name: "Cell 4",
+        description: "This will be utilized by the AI",
+        value: {
+          targets: [{ target_relay: "18", duration: 50 }],
+          caller: "Heat Stress Detector",
+          forceActivate: false, // Regardless event location it will activate on caller
+          eventLocation: 4,
+        },
+        deletable: false,
+        uby: new ObjectId("6277e36f94637471bdabb80d"),
+    },
+    {
+        category: "actions",
+        config_name: "Cell 5",
+        description: "This will be utilized by the AI",
+        value: {
+          targets: [{ target_relay: "18", duration: 50 }],
+          caller: "Heat Stress Detector",
+          forceActivate: false, // Regardless event location it will activate on caller
+          eventLocation: 5,
+        },
+        deletable: false,
+        uby: new ObjectId("6277e36f94637471bdabb80d"),
+    },
+    {
+        category: "actions",
+        config_name: "Cell 6",
+        description: "This will be utilized by the AI",
+        value: {
+          targets: [{ target_relay: "18", duration: 50 }],
+          caller: "Heat Stress Detector",
+          forceActivate: false, // Regardless event location it will activate on caller
+          eventLocation: 6,
+        },
+        deletable: false,
+        uby: new ObjectId("6277e36f94637471bdabb80d"),
+    },
+    {
+        category: "actions",
+        config_name: "Cell 7",
+        description: "This will be utilized by the AI",
+        value: {
+          targets: [{ target_relay: "18", duration: 50 }],
+          caller: "Heat Stress Detector",
+          forceActivate: false, // Regardless event location it will activate on caller
+          eventLocation: 7,
+        },
+        deletable: false,
+        uby: new ObjectId("6277e36f94637471bdabb80d"),
+    },
+    {
+        category: "actions",
+        config_name: "Cell 8",
+        description: "This will be utilized by the AI",
+        value: {
+          targets: [{ target_relay: "18", duration: 50 }],
+          caller: "Heat Stress Detector",
+          forceActivate: false, // Regardless event location it will activate on caller
+          eventLocation: 8,
+        },
+        deletable: false,
+        uby: new ObjectId("6277e36f94637471bdabb80d"),
+    },
+    {
       category: "actions",
       config_name: "Piggery Lights",
       description: "This will be utilized by the Dark Scene Detector",
       value: {
-        targets: [{ target_relay: "18", duration: 1 }],
+        targets: [{ target_relay: "18", duration: 50 }],
         caller: "Dark Scene Detector",
         forceActivate: true, // Regardless event location it will activate on caller
         eventLocation: 1,
@@ -322,8 +413,8 @@ const handler = async (req, res) => {
       config_name: "DetectionMode",
       description: "Specify How PHS will identify heat stress",
       value: {
-        mode: true,
-        temperatureThreshold: "47.2",
+        mode: false,
+        temperatureThreshold: "38.6",
       },
       disabled: false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),

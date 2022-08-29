@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
 
-const PI_IP = 11;
+const PI_IP = 9;
 const IS_PI = false;
 
 const GET_SERVER_IP = () => {
+    if(!IS_PI) return `192.168.1.${PI_IP}`
     var interfaces = require("os").networkInterfaces();
     for (var devName in interfaces) {
       var iface = interfaces[devName];
@@ -22,6 +23,7 @@ const GET_SERVER_IP = () => {
   };
 
 const IP = GET_SERVER_IP()
+
 module.exports = {
   reactStrictMode: false,
   eslint: {
