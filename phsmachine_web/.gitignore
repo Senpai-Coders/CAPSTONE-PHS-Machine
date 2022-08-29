@@ -30,3 +30,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+# ignore pig datas
+/public/detection
+/public/images
