@@ -8,12 +8,17 @@ import PhsSettingsV2 from "../components/configuration/phsSettingsv2";
 import Actions from "../components/configuration/actions"
 import Relays from "../components/configuration/relays"
 
+import { PI_IP } from "../helpers";
+
 // import ThemeChooser from "../components/configuration/themeChooser";
 // import { FcCheckmark } from "react-icons/fc";
 // import { HiOutlineSelector } from "react-icons/hi";
 // import { Listbox, Transition } from "@headlessui/react";
 
 const configuration = () => {
+  axios.defaults.timeout = 4 * 1000;
+
+
   const [tab, setTab] = useState(0);
   const [exited, setExited] = useState(false);
 
@@ -30,6 +35,7 @@ const configuration = () => {
     min_temp: "-",
     actions: [],
   });
+
   const [phsStorage, setPhsStorage] = useState({
     diskPath: "/",
     free: 0,
@@ -47,12 +53,14 @@ const configuration = () => {
   const [dbRelays, setDbRelays] = useState([])
 
   const phs_init = async () => {
+    console.log('ReQ');
     try {
       if (exited) return;
       const phs_response = await axios.get(
         `http://${PI_IP}:8000/getSystemState`,
         {}
       );
+      console.log(phs_response)
       const phs_actions = await axios.get(
         `http://${PI_IP}:8000/getActionState`,
         {}

@@ -5,6 +5,8 @@ import ThemeChoser from "./themeChooser";
 import CamLayoutChoser from "./streamLayoutChoser";
 import { RebootConfirm, ShutdownConfirm } from "../modals";
 
+import axios from "axios";
+
 import { VscDebugConsole } from "react-icons/vsc";
 import { FaPaintRoller, FaPlay, FaStop } from "react-icons/fa";
 import { RiLayout4Fill } from "react-icons/ri";
@@ -15,9 +17,12 @@ import { BiNetworkChart } from "react-icons/bi";
 import { BsGear, BsLayoutThreeColumns } from "react-icons/bs";
 import { TiWarningOutline } from "react-icons/ti";
 
-import { bytesToMegaBytes, mbToGB, getPercentUsage, PI_IP } from "../../helpers";
-
-import axios from "axios";
+import {
+  bytesToMegaBytes,
+  mbToGB,
+  getPercentUsage,
+  PI_IP,
+} from "../../helpers";
 
 const phsSettings = ({
   autoDelete,
@@ -75,11 +80,11 @@ const phsSettings = ({
       const ph_division = await axios.post("/api/phs/config/divisions", {
         mode: 1,
         value: {
-            col : divCol,
-            row : divRow
+          col: divCol,
+          row: divRow,
         },
       });
-      setHasChanges(false)
+      setHasChanges(false);
     } catch (e) {}
   };
 
@@ -118,13 +123,23 @@ const phsSettings = ({
 
       setHasChanges(false);
       setSaving(false);
-    } catch (e) { console.log(e)}
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   useEffect(() => {
     if (hasChanges) return;
     setTempThresh(detectionMode.value.temperatureThreshold);
   }, [detectionMode]);
+
+  const chooseState = async (state) => {
+    try {
+      const updateState = await axios.get(
+        `http://${PI_IP}:8000/updateState?status=${state}`
+      );
+    } catch (e) {}
+  };
 
   return (
     <div className="">
@@ -149,6 +164,7 @@ const phsSettings = ({
           setSelectedModal(-1);
         }}
       />
+
       {state === -2 && (
         <div className="alert alert-warning shadow-lg my-4 animate-pulse">
           <div className="">
@@ -161,7 +177,7 @@ const phsSettings = ({
         </div>
       )}
 
-      <div className="mx-1 md:mx-2 rounded-md p-4 md:p-4 outline  bg-base-100 shadow-sm outline-1 outline-base-300">
+      <div className="mt-4 mx-1 md:mx-2 rounded-md p-4 md:p-4 outline  bg-base-100 shadow-sm outline-1 outline-base-300">
         {/** Simple Control & Status */}
 
         <p className="font-inter font-medium mb-2 text-lg md:text-xl">
@@ -183,12 +199,23 @@ const phsSettings = ({
                     <p className="text-lg"> Debug Mode</p>
                   </div>
                   <p className="text-xs md:text-sm">
-                    This will disable detection & actions
+                    This will disable detection & actions. You can also be able
+                    to test the relays via{" "}
+                    <div class="text-sm text-secondary breadcrumbs">
+                      <ul>
+                        <li>Settings</li>
+                        <li>Relays</li>
+                      </ul>
+                    </div>
                   </p>
                 </div>
                 <input
                   type="checkbox"
-                  disabled={state === -2}
+                  onChange={(e) => {
+                    chooseState(state == 2 ? 0 : 2);
+                  }}
+                  checked={state === 2}
+                  disabled={state === -2 || state === 3}
                   className="toggle mt-4 md:mt-0"
                 />
               </div>
@@ -212,6 +239,10 @@ const phsSettings = ({
                 </div>
                 <input
                   type="checkbox"
+                  onChange={(e) => {
+                    chooseState(state === -1 ? 0 : -1);
+                  }}
+                  checked={state === -1}
                   disabled={state === -2}
                   className="toggle mt-4 md:mt-0"
                 />
@@ -227,17 +258,58 @@ const phsSettings = ({
                     <div className="p-2 rounded-xl bg-base-300 mr-2">
                       {/* <AiFillStop className="w-6 h-6" /> */}
                     </div>
-                    <p className="text-lg">Stop All Actions</p>
+                    <p className="text-lg">Emergency Stop</p>
                   </div>
                   <p className="text-xs md:text-sm">
-                    This will stop all ongoing actions
+                    This will stop all ongoing actions and disable the system
                   </p>
                 </div>
                 <button
-                  disabled={state === -2}
+                  disabled={state === -1 || state === -2}
+                  onClick={async () => {
+                    if (state == -1) return;
+                    try {
+                      const updateState = await axios.get(
+                        `http://${PI_IP}:8000/emergencyStop`
+                      );
+                    } catch (e) {
+                      console.log("err ", e);
+                    }
+                  }}
                   className="btn btn-error btn-sm mt-4 md:mt-0"
                 >
-                  stop
+                  Stop
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-2 card">
+            <div className="card-body p-2">
+              <div className="md:flex items-center justify-between">
+                <div className="mr-4">
+                  <div className="flex items-center justify-start mb-2">
+                    <div className="p-2 rounded-xl bg-base-300 mr-2">
+                      {/* <AiFillStop className="w-6 h-6" /> */}
+                    </div>
+                    <p className="text-lg">Start System</p>
+                  </div>
+                  {state >= 0 ? (
+                    <p className="text-xs md:text-sm">PHS running</p>
+                  ) : (
+                    <p className="text-xs md:text-sm">
+                      Turn back PHS core to detecting state
+                    </p>
+                  )}
+                </div>
+                <button
+                  disabled={state >= 0 || state === -2}
+                  onClick={() => {
+                    chooseState(3);
+                  }}
+                  className="btn btn-success btn-sm mt-4 md:mt-0"
+                >
+                  {state >= 0 ? "running" : "Start PHS"}
                 </button>
               </div>
             </div>
@@ -511,7 +583,12 @@ const phsSettings = ({
             onClick={() => {
               updateDivision();
             }}
-            className={`btn mt-4 btn-block ${ ((divCol !== '' && divCol !== divisionCount.col) || (divRow !== '' && divRow !== divisionCount.row)) ? "" : "hidden"}`}
+            className={`btn mt-4 btn-block ${
+              (divCol !== "" && divCol !== divisionCount.col) ||
+              (divRow !== "" && divRow !== divisionCount.row)
+                ? ""
+                : "hidden"
+            }`}
           >
             Save
           </span>
