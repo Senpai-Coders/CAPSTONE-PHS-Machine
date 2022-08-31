@@ -49,7 +49,7 @@ This project is build using the following technology.
 * Tailwind
 * daisyUI
 * Flowbite
-
+* anaconda
 ## Repository
 To run PHS localy, we need to install required dependencies. Then we need to run PHS backend & Front end.
 
@@ -62,7 +62,7 @@ The PHS database is using MongoDB and it is deployed via MongoDb Atlas
 The string bellow is the connection for the database. Ask the password from the PHS Admin or PHS IT Personel
 
 ```nvm
- mong db path goes here
+ mongo db path goes here
 ```
 ## Requirements
 Make sure you have NPM, Node installed in your system, MongoDb Community Edition (Optional) for local development.
