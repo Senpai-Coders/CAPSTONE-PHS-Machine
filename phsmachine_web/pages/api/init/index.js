@@ -3075,23 +3075,21 @@ const handler = async (req, res) => {
   console.log("Defined Defaults");
 
   try {
-    const { us, conf, det } = req.body;
+    const { default_users, settings, detections } = req.body;
 
-    if (us) {
+    if (default_users) {
       console.log("init us");
-      const del = await users.deleteMany({});
+      const del = await users.remove()
       const resp = await users.insertMany(DEFAULT_USERs);
-      console.log(del, resp);
     }
 
-    if (conf) {
+    if (settings) {
       console.log("init conf");
       const del2 = await configs.deleteMany({});
       const resp2 = await configs.insertMany(DEFAULT_CONFIGS);
     }
-    if (det) {
+    if (detections) {
       console.log("init det");
-
       const del3 = await detections.deleteMany({});
       const resp3 = await detections.insertMany(DEFAULT_DETECTS);
     }

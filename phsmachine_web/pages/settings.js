@@ -5,6 +5,7 @@ import axios from "axios";
 import Loader from "../components/loading"
 
 import PhsSettingsV2 from "../components/configuration/phsSettingsv2";
+import Ui from "../components/configuration/ui";
 import Actions from "../components/configuration/actions"
 import Relays from "../components/configuration/relays"
 
@@ -132,7 +133,7 @@ const configuration = () => {
   return (
     <>
       <Head>
-        <title>Configuration</title>
+        <title>Settings</title>
       </Head>
       <input type="checkbox" id="sys_off_modal" className="modal-toggle" />
       <div className="flex justify-center">
@@ -149,6 +150,14 @@ const configuration = () => {
                 } tab tab-lifted`}
               >
                 Settings
+              </a>
+              <a
+                onClick={() => setTab(3)}
+                className={`${
+                  tab === 3 ? "tab-active" : ""
+                } tab tab-lifted`}
+              >
+                UI
               </a>
               <a
                 onClick={() => setTab(1)}
@@ -191,8 +200,9 @@ const configuration = () => {
                     <Relays/>
                 )
             }
-            {/* <Debug /> */}
-            {/* <ThemeChooser /> */}
+            {
+                tab === 3 &&  loadA && loadB && (<Ui/>)
+            }
           </div>
         </div>
       </div>

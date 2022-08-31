@@ -3,13 +3,14 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import { BsClipboardData } from "react-icons/bs";
-import { FaThermometerHalf, FaSignOutAlt } from "react-icons/fa";
+import { FaThermometerHalf } from "react-icons/fa";
 import { IoPeopleSharp, IoRemoveOutline } from "react-icons/io5";
 import { GoGear } from "react-icons/go";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { RiPagesFill } from "react-icons/ri";
 import { API, amISignedIn, getMyData, getRole } from "../helpers";
+
 import ThemeChooser from "./configuration/themeChooser";
+import Notification from "./Notification/Notification";
 
 import Time_Strip from "./Time_Strp";
 
@@ -46,8 +47,8 @@ const navbar = ({ toggled, setToggled }) => {
       icon: IoPeopleSharp,
     },
     {
-      name: "Config ",
-      path: "/configuration",
+      name: "Settings",
+      path: "/settings",
       icon: GoGear,
     },
   ];
@@ -87,29 +88,10 @@ const navbar = ({ toggled, setToggled }) => {
           </div>
         </div>
       </div>
-
-      {/* <div className="md:hidden flex w-full justify-evenly my-4 items-center">
-        {PHS_ROUTES.map((routes, idx) => (
-          <routes.icon
-            key={idx}
-            onClick={() => router.push(routes.path)}
-            className={`${
-              router.pathname === routes.path ? "scale-110" : "opacity-50"
-            } h-5 w-5 text-primary cursor-pointer duration-300`}
-          />
-        ))}
-
-        <label htmlFor="my-modal-6" className="modal-button">
-          <FaSignOutAlt
-            className={`hover:scale-110 hover:opacity-100 opacity-50 h-5 w-5 text-primary cursor-pointer duration-300`}
-          />
-        </label>
-      </div> */}
+      
 
       {/* NAV ALL */}
       <nav className=" fixed z-30 flex-shrink-0 href w-screen bg-base-200 shadow-lg block">
-        {/* <div className="overflow-y-auto overflow-x-hidden flex justify-between px-8"> */}
-        {/* SideBar Show/Hide */}
         <div
           className={`z-40 overflow-y-scroll w-64 px-4 py-2 h-screen bg-base-100 shadow-lg absolute duration-300 ease-in-out top-0 ${
             toggled ? "left-0" : "-left-96 "
@@ -128,12 +110,6 @@ const navbar = ({ toggled, setToggled }) => {
           </div>
           <div className="divider" />
           <div className="mt-2">
-            {/* <div className="flex items-center justify-start mb-2">
-              <div className="py-2 px-2 rounded-xl mr-2 bg-base-300">
-                <RiPagesFill className="w-5 h-5" />
-              </div>
-              <p className="text-lg">Pages</p>
-            </div> */}
             <div className="w-full flex justify-evenly">
               <ul className="menu w-full overflow-y-auto bg-transparent py-2 text-base-content">
                 {PHS_ROUTES.map((routes, idx) => (
@@ -152,9 +128,6 @@ const navbar = ({ toggled, setToggled }) => {
                   </li>
                 ))}
               </ul>
-              {/*<GiStopSign
-                className={`opacity-90 h-7 w-7 text-error cursor-pointer duration-300`}
-              />*/}
             </div>
           </div>
           <div className="divider" />
@@ -191,7 +164,6 @@ const navbar = ({ toggled, setToggled }) => {
             </label>
           </div>
         </div>
-
         <div className="grid text-sm grid-cols-3 mx-4">
           <div className="flex justify-start items-center space-x-20 my-1">
             <GiHamburgerMenu
@@ -200,9 +172,6 @@ const navbar = ({ toggled, setToggled }) => {
                 setToggled(true);
               }}
             />
-            {/*<GiStopSign
-                className={`opacity-90 h-7 w-7 text-error cursor-pointer duration-300`}
-              />*/}
           </div>
 
           {/* PHS TITLE */}
@@ -219,79 +188,8 @@ const navbar = ({ toggled, setToggled }) => {
 
           {/*  */}
           <div className="flex justify-end items-center space-x-8">
-            <Time_Strip />
-          </div>
-        </div>
-      </nav>
-
-      {/* NAV Tablet + Md + Lg + Full */}
-      <nav className="hidden left-0 fixed z-30 w-full flex-shrink-0 px-5 href dark:bg-gray-800 bg-base-200 shadow-lg ">
-        {/* <div className="overflow-y-auto overflow-x-hidden flex justify-between px-8"> */}
-        <div className=" grid text-sm grid-cols-3 mx-4">
-          <div className="flex justify-evenly items-center space-x-20 my-1">
-            {PHS_ROUTES.map((routes, idx) => (
-              <p
-                key={idx}
-                onClick={() => router.push(routes.path)}
-                className={`${
-                  router.pathname === routes.path
-                    ? "scale-110 text-primary"
-                    : "opacity-50"
-                } cursor-pointer duration-300`}
-              >
-                {routes.name}
-              </p>
-            ))}
-            {/*<GiStopSign
-                className={`opacity-90 h-7 w-7 text-error cursor-pointer duration-300`}
-              />*/}
-          </div>
-
-          {/* PHS TITLE */}
-          <div className="flex justify-center items-center my-4">
-            <Link
-              className="lg:block font-inter text-2xl font-bold text-gray-800 dark:text-gray-200"
-              href="/"
-            >
-              <span className="text-xl tracking-widest cursor-pointer">
-                PHS
-              </span>
-            </Link>
-          </div>
-
-          {/* USER INFO & SIGNOUT */}
-          <div className="flex justify-end items-center space-x-8">
-            <div className="md:hidden lg:block">
-              <Time_Strip />
-            </div>
-            <ThemeChooser />
-            {!userData ? (
-              <div className="w-5/12 flex items-center space-x-4">
-                <progress className="progress progress-primary"></progress>
-              </div>
-            ) : (
-              <>
-                <div
-                  className="tooltip tooltip-bottom"
-                  data-tip={`Your Role : ${getRole(userData.role)}`}
-                >
-                  <div className="avatar">
-                    <div className="w-10 mask mask-hexagon-2">
-                      <img src={userData.photo} />
-                    </div>
-                  </div>
-                </div>
-
-                <p>{userData.user_name}</p>
-                <p></p>
-              </>
-            )}
-            <label
-              htmlFor="my-modal-6"
-              className="font-medium modal-button cursor-pointer duration-300 text-primary"
-            >
-              Signout
-            </label>
+            {/* <Time_Strip /> */}
+            <Notification userData={userData} />
           </div>
         </div>
       </nav>
@@ -300,3 +198,4 @@ const navbar = ({ toggled, setToggled }) => {
 };
 
 export default navbar;
+

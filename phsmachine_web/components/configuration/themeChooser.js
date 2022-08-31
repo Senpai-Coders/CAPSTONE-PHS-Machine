@@ -94,40 +94,6 @@ const themeChooser = ( { textMode } ) => {
         ))}
       </ul>
     </div>
-
-    //   <div>
-    //     <div className="flex overflow-x-scroll snap-x overflow-y-hidden h-24 py-2">
-    //       {themes.map((th, i) => (
-    //           <div
-    //             key={th.name}
-    //             onClick={() => setSelected(th)}
-    //             className="cursor-pointer btn btn-outline duration-500 m-1 snap-center"
-    //           >
-    //             <div className="p-4 w-44">
-    //               <p>{th.name}</p>
-    //               <div className="flex justify-center space-x-2 mt-2">
-    //                 <div
-    //                   data-theme={th.name}
-    //                   className="card drop-shadow-xl border h-6 w-6 bg-base"
-    //                 />
-    //                 <div
-    //                   data-theme={th.name}
-    //                   className="card  drop-shadow-xl border h-6 w-6 bg-primary"
-    //                 />
-    //                 <div
-    //                   data-theme={th.name}
-    //                   className="card drop-shadow-xl border h-6 w-6 bg-secondar"
-    //                 />
-    //                 <div
-    //                   data-theme={th.name}
-    //                   className="card drop-shadow-xl border h-6 w-6 bg-accent"
-    //                 />
-    //               </div>
-    //             </div>
-    //           </div>
-    //         ))}
-    //     </div>
-    //   </div>
   );
 };
 

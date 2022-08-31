@@ -67,7 +67,7 @@ const ActionBlock = ({ db_actions, phsActions, state }) => {
               </div>
               <div className="flex items-center">
                 <span className="text-xs font-inter font-bold mr-2 ml-2 md:ml-4">
-                  {action.state ? "Active" : "Stndby"}
+                  {action.state ? "Active" : (state === -2 ? '-' : "Stndby")}
                 </span>
                 {action.state && (
                   <p className='text-xs font-inter font-bold mr-1'>{action.elapsed}s</p>
