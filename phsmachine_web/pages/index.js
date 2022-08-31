@@ -150,7 +150,6 @@ export default function Home() {
     var loader = setInterval(async () => {
       if (exited) return;
       setStamp(stmp);
-      console.log("Render", stmp);
       phs_init();
       init();
     }, 2000);

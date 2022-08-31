@@ -7,92 +7,57 @@ import { HiLink } from "react-icons/hi";
 
 import { dateToWord, PI_IP } from "../../helpers/index";
 
+import axios from "axios";
+
 const NotificationContent = ({ userData, setUnreadCount }) => {
-  const [notifications, setNotifications] = useState([
-    {
-      notification_type: "notify",
-      title: "Heat Stress Action",
-      message: "Heat stress action complete",
-      priority: 0,
-      link: "http://192.168.1.5:3000/detection_details?_id=62d381c1c1407264c718de27",
-      link_short : "/detection_details?_id=62d381c1c1407264c718de27",
-      link_mode : true,
-      seenBy: ["630eae4bbb909833559a7996"],
-      date: new Date(),
-    },
-    {
-      notification_type: "notify",
-      title: "New user ",
-      message: "A new user has been added.",
-      priority: 0,
-      link: "",
-      seenBy: ["630eae4bbb909833559a7991"],
-      date: new Date(),
-    },
-    {
-      notification_type: "detection",
-      title: "Heat Stress Detected",
-      message: "Heat stress at cell 2",
-      priority: 0,
-      link: "https://www.youtube.com/watch?v=fFPgZiS7uAM&list=RDfFPgZiS7uAM&start_radio=1&ab_channel=PAINHUB",
-      seenBy: ["630eae4bbb909833559a7991"],
-      date: new Date(),
-    },
-    {
-      notification_type: "error",
-      title: "PHS Error",
-      message: "PHS core encountered an error, refer error code in manual",
-      additional: {
-        error_code: 0,
-        severity: "low",
-        error_log: "Traceback (most recent call last): \n File \"<stdin>\", line 1, in <module> \n NameError: name 'asf' is not defined"
-      },
-      priority: 0,
-      link: "https://www.youtube.com/watch?v=fFPgZiS7uAM&list=RDfFPgZiS7uAM&start_radio=1&ab_channel=PAINHUB",
-      seenBy: ["630eae4bbb909833559a7991"],
-      date: new Date(),
-    },
-    {
-      notification_type: "reminder",
-      title: "Periodic Checking/Maintinance",
-      message:
-        "PHS software & hardware needs to be check to ensure the system functions well.",
-      additional: {
-        error_code: 0,
-        severity: "low"
-      },
-      priority: 0,
-      link: "https://www.youtube.com/watch?v=fFPgZiS7uAM&list=RDfFPgZiS7uAM&start_radio=1&ab_channel=PAINHUB",
-      seenBy: ["630eae4bbb909833559a7996"],
-      date: new Date(),
-    },
-  ]);
+  axios.defaults.timeout = 4 * 1000;
 
-  const markAll = () => {};
+  const [notifications, setNotifications] = useState([]);
 
-  const deleteAll = () => {};
+  const markAll = async (notifs) => {
+    let ids = [];
+    if (notifs.length <= 0) return;
 
-  useEffect(() => {
-    let markNotification = [];
-    let unreads = 0;
-
-    notifications.forEach((notification, idx) => {
-      let toCheck = { ...notification };
-      let myIdPresent = false;
-
-      if (userData) {
-        toCheck.seenBy.forEach((seenconfirm) => {
-          if (userData._id === seenconfirm) myIdPresent = true;
-          else unreads += 1;
-        });
-      }
-
-      markNotification.push({ ...toCheck, isMarkedSeen: myIdPresent });
+    notifs.forEach((notif, id) => {
+      ids.push(notif._id);
     });
 
-    setUnreadCount(unreads);
-    setNotifications(markNotification);
-  }, [userData]);
+    try {
+      const request = await axios.post("/api/phs/notifications", {
+        mode: 1,
+        ids,
+      });
+      load()
+    } catch (e) {}
+  };
+
+  const deleteAll = async () => {
+    try {
+      const request = await axios.post("/api/phs/notifications", { mode: -2 });
+      load()
+    } catch (e) {}
+  };
+
+  const load = async () => {
+    try {
+      const request = await axios.post("/api/phs/notifications", { mode: 0 });
+      console.log(request.data.notifications)
+      setNotifications(request.data.notifications);
+      setUnreadCount(request.data.unreads);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    var loader = setInterval(async () => {
+      load();
+    }, 2000);
+
+    return () => {
+      clearInterval(loader);
+    };
+  }, []);
 
   const getColorCode = (type) => {
     if (type == "detection") return "text-accent";
@@ -103,9 +68,9 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
   };
 
   const getLink = (originalUrl, shortUrl, mode) => {
-    if(mode) return `http://${PI_IP}:3000${shortUrl}`
-    return originalUrl
-  }
+    if (mode) return `http://${PI_IP}:3000${shortUrl}`;
+    return originalUrl;
+  };
 
   return (
     <div>
@@ -113,16 +78,14 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
         <p className="text-lg font-medium">Notifications</p>
         <p
           className="text-right underline cursor-pointer"
-          onClick={() => markAll()}
+          onClick={() => markAll(notifications)}
         >
           Mark all as read
         </p>
       </div>
       <div className="mt-3 max-h-96 shadow-inner overflow-y-scroll">
         {notifications.length <= 0 ? (
-          <p className="my-4 text-center text-sm opacity-70">
-            No Notifications Yet
-          </p>
+          <p className="my-4 text-center text-sm opacity-70">No Notification</p>
         ) : (
           <>
             {notifications.map((notif, idx) => (
@@ -173,18 +136,30 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
                     </div>
                   </div>
                 )}
-                {notif.link.length > 0 && (
-                  <div className="mt-3 flex items-center">
-                    <HiLink className="text-4xl mr-2" />
-                    <a
-                      className="link truncate"
-                      target="blank"
-                      href={getLink(notif.link, notif.link_short, notif.link_mode)}
-                    >
-                      {getLink(notif.link, notif.link_short, notif.link_mode)}
-                    </a>
-                  </div>
-                )}
+                <div className="mt-3">
+                  {notif.links.map((link, id) =>
+                    link.link.length > 0 ? (
+                      <a
+                        className="link mt-2 truncate flex items-center"
+                        target="blank"
+                        href={getLink(
+                          link.link,
+                          link.link_short,
+                          link.link_mode
+                        )}
+                      >
+                        <span>
+                          <HiLink className="text-xl mr-2" />
+                        </span>
+                        {getLink(link.link, link.link_short, link.link_mode)}
+                      </a>
+                    ) : (
+                      <>
+                        <p>No link</p>
+                      </>
+                    )
+                  )}
+                </div>
                 <p className="mt-3 font-medium text-xs text-right opacity-80">
                   {dateToWord(notif.date)}
                 </p>

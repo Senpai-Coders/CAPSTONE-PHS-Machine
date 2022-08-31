@@ -3,14 +3,14 @@ import dbConnect from "../../../configs/dbConnection";
 
 const users = require("../../../models/user");
 const configs = require("../../../models/configs");
-const detections = require("../../../models/thermal_detection");
+const detection = require("../../../models/thermal_detection");
+const notification = require("../../../models/notification");
 
 let ObjectId = require("mongoose").Types.ObjectId;
 
 dbConnect();
 
 const handler = async (req, res) => {
-  console.log("Called");
   const DEFAULT_USERs = [
     {
       user_name: "PHS_SYSTEM_V1",
@@ -60,95 +60,95 @@ const handler = async (req, res) => {
       uby: new ObjectId("6277e36f94637471bdabb80d"),
     },
     {
-        category: "actions",
-        config_name: "Cell 2",
-        description: "This will be utilized by the AI",
-        value: {
-          targets: [{ target_relay: "18", duration: 50 }],
-          caller: "Heat Stress Detector",
-          forceActivate: false, // Regardless event location it will activate on caller
-          eventLocation: 2,
-        },
-        deletable: false,
-        uby: new ObjectId("6277e36f94637471bdabb80d"),
+      category: "actions",
+      config_name: "Cell 2",
+      description: "This will be utilized by the AI",
+      value: {
+        targets: [{ target_relay: "18", duration: 50 }],
+        caller: "Heat Stress Detector",
+        forceActivate: false, // Regardless event location it will activate on caller
+        eventLocation: 2,
+      },
+      deletable: false,
+      uby: new ObjectId("6277e36f94637471bdabb80d"),
     },
     {
-        category: "actions",
-        config_name: "Cell 3",
-        description: "This will be utilized by the AI",
-        value: {
-          targets: [{ target_relay: "18", duration: 50 }],
-          caller: "Heat Stress Detector",
-          forceActivate: false, // Regardless event location it will activate on caller
-          eventLocation: 3,
-        },
-        deletable: false,
-        uby: new ObjectId("6277e36f94637471bdabb80d"),
+      category: "actions",
+      config_name: "Cell 3",
+      description: "This will be utilized by the AI",
+      value: {
+        targets: [{ target_relay: "18", duration: 50 }],
+        caller: "Heat Stress Detector",
+        forceActivate: false, // Regardless event location it will activate on caller
+        eventLocation: 3,
+      },
+      deletable: false,
+      uby: new ObjectId("6277e36f94637471bdabb80d"),
     },
     {
-        category: "actions",
-        config_name: "Cell 4",
-        description: "This will be utilized by the AI",
-        value: {
-          targets: [{ target_relay: "18", duration: 50 }],
-          caller: "Heat Stress Detector",
-          forceActivate: false, // Regardless event location it will activate on caller
-          eventLocation: 4,
-        },
-        deletable: false,
-        uby: new ObjectId("6277e36f94637471bdabb80d"),
+      category: "actions",
+      config_name: "Cell 4",
+      description: "This will be utilized by the AI",
+      value: {
+        targets: [{ target_relay: "18", duration: 50 }],
+        caller: "Heat Stress Detector",
+        forceActivate: false, // Regardless event location it will activate on caller
+        eventLocation: 4,
+      },
+      deletable: false,
+      uby: new ObjectId("6277e36f94637471bdabb80d"),
     },
     {
-        category: "actions",
-        config_name: "Cell 5",
-        description: "This will be utilized by the AI",
-        value: {
-          targets: [{ target_relay: "18", duration: 50 }],
-          caller: "Heat Stress Detector",
-          forceActivate: false, // Regardless event location it will activate on caller
-          eventLocation: 5,
-        },
-        deletable: false,
-        uby: new ObjectId("6277e36f94637471bdabb80d"),
+      category: "actions",
+      config_name: "Cell 5",
+      description: "This will be utilized by the AI",
+      value: {
+        targets: [{ target_relay: "18", duration: 50 }],
+        caller: "Heat Stress Detector",
+        forceActivate: false, // Regardless event location it will activate on caller
+        eventLocation: 5,
+      },
+      deletable: false,
+      uby: new ObjectId("6277e36f94637471bdabb80d"),
     },
     {
-        category: "actions",
-        config_name: "Cell 6",
-        description: "This will be utilized by the AI",
-        value: {
-          targets: [{ target_relay: "18", duration: 50 }],
-          caller: "Heat Stress Detector",
-          forceActivate: false, // Regardless event location it will activate on caller
-          eventLocation: 6,
-        },
-        deletable: false,
-        uby: new ObjectId("6277e36f94637471bdabb80d"),
+      category: "actions",
+      config_name: "Cell 6",
+      description: "This will be utilized by the AI",
+      value: {
+        targets: [{ target_relay: "18", duration: 50 }],
+        caller: "Heat Stress Detector",
+        forceActivate: false, // Regardless event location it will activate on caller
+        eventLocation: 6,
+      },
+      deletable: false,
+      uby: new ObjectId("6277e36f94637471bdabb80d"),
     },
     {
-        category: "actions",
-        config_name: "Cell 7",
-        description: "This will be utilized by the AI",
-        value: {
-          targets: [{ target_relay: "18", duration: 50 }],
-          caller: "Heat Stress Detector",
-          forceActivate: false, // Regardless event location it will activate on caller
-          eventLocation: 7,
-        },
-        deletable: false,
-        uby: new ObjectId("6277e36f94637471bdabb80d"),
+      category: "actions",
+      config_name: "Cell 7",
+      description: "This will be utilized by the AI",
+      value: {
+        targets: [{ target_relay: "18", duration: 50 }],
+        caller: "Heat Stress Detector",
+        forceActivate: false, // Regardless event location it will activate on caller
+        eventLocation: 7,
+      },
+      deletable: false,
+      uby: new ObjectId("6277e36f94637471bdabb80d"),
     },
     {
-        category: "actions",
-        config_name: "Cell 8",
-        description: "This will be utilized by the AI",
-        value: {
-          targets: [{ target_relay: "18", duration: 50 }],
-          caller: "Heat Stress Detector",
-          forceActivate: false, // Regardless event location it will activate on caller
-          eventLocation: 8,
-        },
-        deletable: false,
-        uby: new ObjectId("6277e36f94637471bdabb80d"),
+      category: "actions",
+      config_name: "Cell 8",
+      description: "This will be utilized by the AI",
+      value: {
+        targets: [{ target_relay: "18", duration: 50 }],
+        caller: "Heat Stress Detector",
+        forceActivate: false, // Regardless event location it will activate on caller
+        eventLocation: 8,
+      },
+      deletable: false,
+      uby: new ObjectId("6277e36f94637471bdabb80d"),
     },
     {
       category: "actions",
@@ -3072,14 +3072,36 @@ const handler = async (req, res) => {
     },
   ];
 
-  console.log("Defined Defaults");
+  const DEFAULT_NOTIFICATIONS = [
+    {
+      notification_type: "notify",
+      title: "Welcome To PHS",
+      message:
+        "Welcome to phs, you can read the full manual bellow to get started.",
+      priority: 0,
+      links: [
+        {
+          link : "http://localhost:3001/",
+          link_short: "/",
+          link_mode: false,
+        },
+        {
+            link : "https://www.youtube.com/watch?v=fFPgZiS7uAM&list=RDfFPgZiS7uAM&start_radio=1",
+            link_short: "/",
+            link_mode: false
+        }
+      ],
+      seenBy: [],
+      date: new Date(),
+    },
+  ];
 
   try {
-    const { default_users, settings, detections } = req.body;
+    const { default_users, settings, detections, notifications } = req.body;
 
     if (default_users) {
       console.log("init us");
-      const del = await users.remove()
+      const del = await users.deleteMany({});
       const resp = await users.insertMany(DEFAULT_USERs);
     }
 
@@ -3090,8 +3112,14 @@ const handler = async (req, res) => {
     }
     if (detections) {
       console.log("init det");
-      const del3 = await detections.deleteMany({});
-      const resp3 = await detections.insertMany(DEFAULT_DETECTS);
+      const del3 = await detection.deleteMany({});
+      const resp3 = await detection.insertMany(DEFAULT_DETECTS);
+    }
+
+    if (notifications) {
+      console.log("init notifications");
+      const del4 = await notification.deleteMany({});
+      const resp4 = await notification.insertMany(DEFAULT_NOTIFICATIONS);
     }
   } catch (e) {
     console.log(e);
