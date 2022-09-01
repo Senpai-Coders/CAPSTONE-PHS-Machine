@@ -11,7 +11,7 @@ const Notification = ({ userData }) => {
     <div>
       <div className="dropdown dropdown-end">
         <label tabIndex="1" className="btn btn-sm btn-square btn-ghost mr-2">
-          <div className="indicator">
+          <div className="indicator text-neutral-content">
             <IoNotificationsSharp className="text-xl" />
             {unreadCount > 0 && (
               <span class="indicator-item animate-pulse badge badge-xs badge-primary"></span>

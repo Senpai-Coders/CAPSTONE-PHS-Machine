@@ -91,7 +91,7 @@ const navbar = ({ toggled, setToggled }) => {
       
 
       {/* NAV ALL */}
-      <nav className=" fixed z-30 flex-shrink-0 href w-screen bg-base-200 shadow-lg block">
+      <nav className=" fixed z-30 flex-shrink-0 href w-screen bg-neutral shadow-lg block">
         <div
           className={`z-40 overflow-y-scroll w-64 px-4 py-2 h-screen bg-base-100 shadow-lg absolute duration-300 ease-in-out top-0 ${
             toggled ? "left-0" : "-left-96 "
@@ -165,7 +165,7 @@ const navbar = ({ toggled, setToggled }) => {
           </div>
         </div>
         <div className="grid text-sm grid-cols-3 mx-4">
-          <div className="flex justify-start items-center space-x-20 my-1">
+          <div className="flex justify-start items-center space-x-20 my-1 text-neutral-content">
             <GiHamburgerMenu
               className="h-5 w-5"
               onClick={() => {
@@ -175,9 +175,9 @@ const navbar = ({ toggled, setToggled }) => {
           </div>
 
           {/* PHS TITLE */}
-          <div className="flex justify-center items-center my-4">
+          <div className="flex justify-center items-center my-4 text-neutral-content">
             <Link
-              className="lg:block font-inter text-2xl font-bold text-gray-800 dark:text-gray-200"
+              className="lg:block font-inter text-2xl font-bold"
               href="/"
             >
               <span className="text-xl tracking-widest cursor-pointer">

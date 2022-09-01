@@ -1,6 +1,9 @@
 import { GET_SERVER_IP } from "../../helpers/api"
+
 import dbConnect from "../../configs/dbConnection";
 const configs = require("../../models/configs");
+
+dbConnect();
 
 const handler = async (req, res) => {
     let IP = GET_SERVER_IP()

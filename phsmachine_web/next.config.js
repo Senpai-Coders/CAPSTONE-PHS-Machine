@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 
-const PI_IP = 9;
+const PI_IP = 8;
 const IS_PI = false;
 
 const GET_SERVER_IP = () => {
@@ -39,7 +39,7 @@ module.exports = {
     return paths; //<--this was missing previously
   },
   env: {
-    MONGODB_URI: true
+    MONGODB_URI: false
       ? `mongodb://192.168.1.${PI_IP}:27017/PHS_MACHINE`
       : "mongodb+srv://Jervx:helloworld@capstone.nv1cu.mongodb.net/?retryWrites=true&w=majority",
     JWT_SCRT: "ErenJaeger",
