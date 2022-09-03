@@ -446,7 +446,10 @@ const handler = async (req, res) => {
       category: "config",
       config_name: "identity",
       description: "Unique Identity Of phs",
-      value: { server_name: "PHS A1", type: "Standalone" },
+      value: { 
+        server_name: "PHS A1", 
+        type: "Standalone"
+     },
       disabled: false,
       uby: new ObjectId("6277e36f94637471bdabb80d"),
       deletable: false,

@@ -2,6 +2,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { networkInterfaces } = require("os");
 
+export const VERSION = 'v1.0 - c7effd8'
+
 export const HASH_PASSWORD = async (PASSWORD) => {
   const HASHED = await bcrypt.hash(PASSWORD, 10);
   return HASHED;
