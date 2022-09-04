@@ -75,7 +75,6 @@ export const setCamMode = (mode) => {
 
 export const getCamMode = () => {
   let found = localStorage.getItem("phs-CamMode");
-  console.log(found);
   return found ? found : 0;
 };
 

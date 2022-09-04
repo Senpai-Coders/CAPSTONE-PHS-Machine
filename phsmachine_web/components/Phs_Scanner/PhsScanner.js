@@ -79,7 +79,10 @@ const PhsScanner = ({ onSwitch, curIp }) => {
       <div className="alert shadow-lg">
         <div>
           <FaNetworkWired className="text-xl" />
-          <span>You scan your current local network to find other PHS and connect to them</span>
+          <span>
+            You scan your current local network to find other PHS and connect to
+            them
+          </span>
         </div>
       </div>
       <div className="md:flex mt-4 justify-start rounded-md items-center">
@@ -281,7 +284,9 @@ const PhsScanner = ({ onSwitch, curIp }) => {
                     </div>
                   </td>
                   <td>
-                  <a href={dev.url} className='link'>{dev.url}</a>
+                    <a href={dev.url} className="link">
+                      {dev.url}
+                    </a>
                     {/* <span className="badge badge-ghost badge-sm">
                       Desktop Support Technician
                     </span> */}

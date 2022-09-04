@@ -51,7 +51,7 @@ const ActionBlock = ({ db_actions, phsActions, state }) => {
             <RiListSettingsLine className="h-7 w-7 text-primary mr-2" />
             <p className="font-bold text-md ">Actions</p>
           </div>
-          <a href="/configuration" className="text-sm p-1 text-primary">
+          <a href="/settings?tb=2" className="text-sm p-1 text-primary">
             Manage Actions
           </a>
         </div>

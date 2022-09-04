@@ -63,7 +63,6 @@ const handler = async (req, res) => {
       hasUpdate(editorDetails)
     }else if(mode === 3){
         const rels = await configs.find({ category: "relays" });
-
         return res.status(200).json(rels)
     }
 

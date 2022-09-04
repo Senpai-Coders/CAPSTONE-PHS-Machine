@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Layout from "../components/layout";
 import axios from "axios";
-import Loader from "../components/loading"
+import Loader from "../components/loading";
 
 import PhsSettingsV2 from "../components/configuration/phsSettingsv2";
 import Ui from "../components/configuration/ui";
-import Actions from "../components/configuration/actions"
-import Relays from "../components/configuration/relays"
+import Actions from "../components/configuration/actions";
+import Relays from "../components/configuration/relays";
+
+import { useRouter } from "next/router";
 
 import { PI_IP } from "../helpers";
 
@@ -18,13 +20,14 @@ import { PI_IP } from "../helpers";
 
 const configuration = () => {
   axios.defaults.timeout = 4 * 1000;
-
+  const router = useRouter();
+  const { tb } = router.query;
 
   const [tab, setTab] = useState(0);
   const [exited, setExited] = useState(false);
 
-  const [loadA, setLoadA] = useState(false)
-  const [loadB, setLoadB] = useState(false)
+  const [loadA, setLoadA] = useState(false);
+  const [loadB, setLoadB] = useState(false);
 
   const [SYSSTATE, SETSYSSTATE] = useState({
     status: 3, // -2 Off, -1 Disabled, 0 - Detecting, 1 - Resolving, 2 - Debugging, 3 - Connecting
@@ -43,25 +46,25 @@ const configuration = () => {
     size: 0,
   });
 
-  const [coreActions, setCoreActions] = useState([])
-  const [phsAutoDelete, setPhsAutoDelete] = useState({ value : false })
-  const [phsDivision, setDivision] = useState({ value : { col : 1, row : 1} })
+  const [coreActions, setCoreActions] = useState([]);
+  const [coreRelays, setCoreRelays] = useState([]);
+
+  const [phsAutoDelete, setPhsAutoDelete] = useState({ value: false });
+  const [phsDivision, setDivision] = useState({ value: { col: 1, row: 1 } });
   const [detectionMode, setDetectionMode] = useState({
     value: { mode: true, temperatureThreshold: -34 },
   });
 
   const [dbActions, setDbActions] = useState([]);
-  const [dbRelays, setDbRelays] = useState([])
+  const [dbRelays, setDbRelays] = useState([]);
 
   const phs_init = async () => {
-    console.log('ReQ');
     try {
       if (exited) return;
       const phs_response = await axios.get(
         `http://${PI_IP}:8000/getSystemState`,
         {}
       );
-      console.log(phs_response)
       const phs_actions = await axios.get(
         `http://${PI_IP}:8000/getActionState`,
         {}
@@ -70,11 +73,11 @@ const configuration = () => {
       setCoreActions(phs_actions.data.actions);
       SETSYSSTATE(phs_response.data.state);
       //setIsDown(false);
-      setLoadA(true)
+      setLoadA(true);
     } catch (e) {
       //setIsDown(true);
       SETSYSSTATE({ ...SYSSTATE, status: -2 });
-      setLoadA(true)
+      setLoadA(true);
     }
   };
 
@@ -91,31 +94,44 @@ const configuration = () => {
 
       const phs_storage = await axios.post("/api/phs/phs_storage", {});
 
-      const phs_autodelete = await axios.post("/api/phs/config/storageAutoDelete", {
-        mode : 0
-      })
+      const phs_autodelete = await axios.post(
+        "/api/phs/config/storageAutoDelete",
+        {
+          mode: 0,
+        }
+      );
 
       const phs_relays = await axios.post("/api/phs/config/relays", {
-        mode : 3
-      })
+        mode: 3,
+      });
 
       const ph_division = await axios.post("/api/phs/config/divisions", {
-        mode : 0
-      })
+        mode: 0,
+      });
 
-      setDivision(ph_division.data.value)
-      setDbRelays(phs_relays.data)
+      setDivision(ph_division.data.value);
+      setDbRelays(phs_relays.data);
       setDetectionMode(db_detMode.data);
       setPhsAutoDelete(phs_autodelete.data);
       setPhsStorage(phs_storage.data.storage);
       setDbActions(db_actions.data.actions);
       // setDbActiveUsers(db_active_users.data.activeUsers);
       // setPastDetection(db_past_detections.data.detections);
-      setLoadB(true)
-    } catch (e) { 
-      setLoadA(true)
+      setLoadB(true);
+    } catch (e) {
+      setLoadA(true);
     }
   };
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    let { tb } = router.query;
+    if(!tb){
+        setTab(0)
+        return;
+    }
+    setTab(Number.parseInt(tb))
+  }, [router.isReady, router]);
 
   useEffect(() => {
     var loader = setInterval(async () => {
@@ -144,43 +160,42 @@ const configuration = () => {
           <div className="my-2 ">
             <div className="tabs">
               <a
-                onClick={() => setTab(0)}
-                className={`${
-                  tab === 0 ? "tab-active" : ""
-                } tab tab-lifted`}
+                onClick={() => {
+                  router.push("settings?tb=0");
+                }}
+                className={`${tab === 0 ? "tab-active" : ""} tab tab-lifted`}
               >
                 Settings
               </a>
               <a
-                onClick={() => setTab(3)}
-                className={`${
-                  tab === 3 ? "tab-active" : ""
-                } tab tab-lifted`}
+                onClick={() => {
+                  router.push("settings?tb=1");
+                }}
+                className={`${tab === 1 ? "tab-active" : ""} tab tab-lifted`}
               >
                 UI
               </a>
               <a
-                onClick={() => setTab(1)}
-                className={`${
-                  tab === 1 ? "tab-active" : ""
-                } tab tab-lifted`}
+                onClick={() => {
+                  router.push("settings?tb=2");
+                }}
+                className={`${tab === 2 ? "tab-active" : ""} tab tab-lifted`}
               >
                 Actions
               </a>
               <a
-                onClick={() => setTab(2)}
-                className={`${
-                  tab === 2 ? "tab-active" : ""
-                } tab tab-lifted`}
+                onClick={() => {
+                  router.push("settings?tb=3");
+                }}
+                className={`${tab === 3 ? "tab-active" : ""} tab tab-lifted`}
               >
                 Relays
               </a>
             </div>
           </div>
           <div>
+            {!loadA || (!loadB && <Loader />)}
 
-            { !loadA || !loadB && <Loader /> }
-            
             {tab === 0 && loadA && loadB && (
               <PhsSettingsV2
                 divisionCount={phsDivision}
@@ -190,19 +205,16 @@ const configuration = () => {
                 state={SYSSTATE.status}
               />
             )}
-            {
-                tab === 1 && loadA && loadB &&  (
-                    <Actions divisionCount={phsDivision} actions={dbActions} relays={dbRelays} coreActions={coreActions}/>
-                )
-            }
-            {
-                tab === 2 &&  loadA && loadB && (
-                    <Relays/>
-                )
-            }
-            {
-                tab === 3 &&  loadA && loadB && (<Ui/>)
-            }
+            {tab === 2 && loadA && loadB && (
+              <Actions
+                divisionCount={phsDivision}
+                actions={dbActions}
+                relays={dbRelays}
+                coreActions={coreActions}
+              />
+            )}
+            {tab === 3 && loadA && loadB && <Relays relays={dbRelays} />}
+            {tab === 1 && loadA && loadB && <Ui />}
           </div>
         </div>
       </div>
