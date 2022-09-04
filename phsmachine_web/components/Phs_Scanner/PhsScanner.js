@@ -3,6 +3,9 @@ import { HiArrowNarrowRight } from "react-icons/hi";
 import axios from "axios";
 import { PI_IP } from "../../helpers";
 
+import { RiComputerFill } from 'react-icons/ri'
+
+
 const PhsScanner = () => {
   const [oct1, set_oct1] = useState(192);
   const [oct2, set_oct2] = useState(168);
@@ -12,19 +15,25 @@ const PhsScanner = () => {
   const [toct1, set_toct1] = useState(192);
   const [toct2, set_toct2] = useState(168);
   const [toct3, set_toct3] = useState(1);
-  const [toct4, set_toct4] = useState(1);
+  const [toct4, set_toct4] = useState(10);
 
   const [scanning, setScanning] = useState(false);
   const [phsDevices, setPhsDevices] = useState([]);
 
-  const scan = async (a, b, c, d, aa, bb, cc, dd) => {
-    setScanning(false);
+  const [focIp, setFocIp] = useState("");
 
+  let CancelToken = axios.CancelToken;
+  let source = CancelToken.source();
+
+  const send = (email) =>
+    new Promise((resolve) => setTimeout(() => resolve(email), 1000));
+
+  const scan = async (a, b, c, d, aa, bb, cc, dd) => {
     var from = `${a}.${b}.${c}.${d}`;
     var to = `${aa}.${bb}.${cc}.${dd}`;
 
-    while (from !== to && scanning) {
-      var curIp = `${a}.${b}.${c}`;
+    while (from !== to) {
+      from = `${a}.${b}.${c}.${d}`;
 
       if (d >= 255) {
         d = 0;
@@ -42,18 +51,33 @@ const PhsScanner = () => {
       }
       if (a >= 255) break;
 
+      const CancelToken = axios.CancelToken;
+      const source = CancelToken.source();
       try {
-        const checkHost = await axios.get(
-          `http://${from}:3000/api/connectivity`
-        );
-        setPhsDevices([...phsDevices, checkhost]);
-      } catch (e) {}
+        setFocIp(from);
+
+        let response = await axios({
+            method: 'get',
+            url: `http://${from}:3000/api/connectivity`,
+            timeout: 10000, // only wait for 2s
+            withCredentials: false,
+            body : { mode : 0 },
+            data : { mode : 1 }
+        })
+        
+        console.log('SEARCHED ', response)
+        setPhsDevices([...phsDevices, response.data]);
+      } catch (e) {
+        console.log('fail ')
+      }
     }
+    console.log("done");
+    setScanning(false);
   };
 
   return (
-    <div>
-      <div className="flex justify-start p-4 rounded-md items-center">
+    <div className="p-4 ">
+      <div className="flex justify-start rounded-md items-center">
         <div className="form-control">
           <label className="label">
             <span className="label-text font-medium">Start IP</span>
@@ -65,7 +89,7 @@ const PhsScanner = () => {
               onChange={(e) => {
                 var v = e.target.value;
                 if (v.length === 0) {
-                  set_oct1('')
+                  set_oct1("");
                   return;
                 }
                 if (isNaN(v)) return;
@@ -80,7 +104,7 @@ const PhsScanner = () => {
               onChange={(e) => {
                 var v = e.target.value;
                 if (v.length === 0) {
-                  set_oct2('')
+                  set_oct2("");
                   return;
                 }
                 if (isNaN(v)) return;
@@ -95,7 +119,7 @@ const PhsScanner = () => {
               onChange={(e) => {
                 var v = e.target.value;
                 if (v.length === 0) {
-                  set_oct3('')
+                  set_oct3("");
                   return;
                 }
                 if (isNaN(v)) return;
@@ -110,7 +134,7 @@ const PhsScanner = () => {
               onChange={(e) => {
                 var v = e.target.value;
                 if (v.length === 0) {
-                  set_oct4('')
+                  set_oct4("");
                   return;
                 }
                 if (isNaN(v)) return;
@@ -133,7 +157,7 @@ const PhsScanner = () => {
               onChange={(e) => {
                 var v = e.target.value;
                 if (v.length === 0) {
-                  set_toct1('')
+                  set_toct1("");
                   return;
                 }
                 if (isNaN(v)) return;
@@ -148,7 +172,7 @@ const PhsScanner = () => {
               onChange={(e) => {
                 var v = e.target.value;
                 if (v.length === 0) {
-                  set_toct2('')
+                  set_toct2("");
                   return;
                 }
                 if (isNaN(v)) return;
@@ -163,7 +187,7 @@ const PhsScanner = () => {
               onChange={(e) => {
                 var v = e.target.value;
                 if (v.length === 0) {
-                  set_tct3('')
+                  set_tct3("");
                   return;
                 }
                 if (isNaN(v)) return;
@@ -178,7 +202,7 @@ const PhsScanner = () => {
               onChange={(e) => {
                 var v = e.target.value;
                 if (v.length === 0) {
-                  set_toct4('')
+                  set_toct4("");
                   return;
                 }
                 if (isNaN(v)) return;
@@ -187,8 +211,72 @@ const PhsScanner = () => {
               placeholder="4th "
               className="input input-bordered w-16"
             />
-            <span onClick={()=>{setScanning(true)}} className={`btn btn-active ${scanning ? 'loading' :''}`}> {scanning ? 'scanning...' : 'Start Scan'}</span>
+            <span
+              onClick={() => {
+                if (!scanning) {
+                  setScanning(true);
+                  scan(oct1, oct2, oct3, oct4, toct1, toct2, toct3, toct4);
+                } else setScanning(false);
+              }}
+              className={`btn ${
+                scanning ? "loading btn-disabled" : "btn-active"
+              }`}
+            >
+              {scanning ? "Scanning.." : "start scan"}
+            </span>
+            <span
+              onClick={() => {
+                source.cancel("Cancelled");
+              }}
+              className={`btn btn-active ${scanning ? "" : "btn-disabled"}`}
+            >
+              Stop Scan
+            </span>
           </label>
+        </div>
+      </div>
+      {scanning && <div className='flex items-center justify-start mt-4'><p className="text-sm mr-2">Checking : {focIp}</p> <progress className="progress w-8"></progress></div>}
+      <div className="mt-4">
+        <div className="overflow-x-auto w-full">
+          <table className="table w-full">
+            <thead>
+              <tr>
+                <th>PHS</th>
+                <th>URL</th>
+                <th>Favorite Color</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {phsDevices.map((dev, i) => (
+                <tr>
+                  <td>
+                    <div className="flex items-center space-x-3">
+                      <div className="avatar">
+                        <div className="">
+                            <RiComputerFill className='text-xl' />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-bold">{dev.server_name}</div>
+                        <div className="text-sm opacity-50">{dev.version}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <p className='text-sm'>{ dev.url }</p>
+                    {/* <span className="badge badge-ghost badge-sm">
+                      Desktop Support Technician
+                    </span> */}
+                  </td>
+                  <td>Purple</td>
+                  <th>
+                    <button className="btn btn-ghost btn-xs">details</button>
+                  </th>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

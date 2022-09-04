@@ -51,6 +51,11 @@ const navbar = ({ toggled, setToggled }) => {
       path: "/settings",
       icon: GoGear,
     },
+    {
+        name: "Switch PHS",
+        path: "/phsscanner",
+        icon: GoGear,
+      },
   ];
 
   const init = async () => {

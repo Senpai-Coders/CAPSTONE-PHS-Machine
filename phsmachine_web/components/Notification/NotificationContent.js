@@ -39,9 +39,9 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
   };
 
   const load = async () => {
+    return
     try {
       const request = await axios.post("/api/phs/notifications", { mode: 0 });
-      console.log(request.data.notifications)
       setNotifications(request.data.notifications);
       setUnreadCount(request.data.unreads);
     } catch (e) {

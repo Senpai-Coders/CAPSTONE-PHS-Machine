@@ -1,13 +1,24 @@
 import checkDiskSpace from 'check-disk-space'
-
 import { GET_SERVER_IP, VERSION } from "../../helpers/api"
 import dbConnect from "../../configs/dbConnection";
+import NextCors from "nextjs-cors"
 
 const configs = require("../../models/configs");
 
 dbConnect();
 
 const handler = async (req, res) => {
+
+    console.log("start")
+    await NextCors(req, res, {
+        // Options
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+        origin: '*',
+        optionsSuccessStatus: 200,
+     });
+
+    console.log("end")
+
     let IP = GET_SERVER_IP()
 
     const serverInfo = await configs.findOne({ config_name : 'identity' })

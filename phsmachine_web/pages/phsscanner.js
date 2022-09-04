@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function phsScan() {
+    axios.defaults.timeout = 4 * 1000
   const [selected, setSelected] = useState({
     connectivity: "ok",
     server_name: "-",
@@ -24,7 +25,7 @@ export default function phsScan() {
     try{
         const data = await axios.get('/api/connectivity')
         setSelected(data.data)
-    }catch(e){}
+    }catch(e){ console.log(e)}
   }
 
   useEffect(()=>{
