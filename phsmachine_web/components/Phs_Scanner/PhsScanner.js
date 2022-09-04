@@ -3,6 +3,7 @@ import { HiArrowNarrowRight } from "react-icons/hi";
 import axios from "axios";
 import { PI_IP } from "../../helpers";
 
+import { FaNetworkWired } from "react-icons/fa";
 import { RiComputerFill } from "react-icons/ri";
 
 const PhsScanner = ({ onSwitch, curIp }) => {
@@ -67,18 +68,21 @@ const PhsScanner = ({ onSwitch, curIp }) => {
 
         setPhsDevices((val) => [...val, response.data]);
         //devices.push(response.data);
-      } catch (e) {
-        console.log("fail ");
-      }
+      } catch (e) {}
     }
-    console.log("done");
     setScanning(false);
     // setPhsDevices(devices)
   };
 
   return (
     <div className="p-4 ">
-      <div className="md:flex justify-start rounded-md items-center">
+      <div className="alert shadow-lg">
+        <div>
+          <FaNetworkWired className="text-xl" />
+          <span>You scan your current local network to find other PHS and connect to them</span>
+        </div>
+      </div>
+      <div className="md:flex mt-4 justify-start rounded-md items-center">
         <div className="form-control">
           <label className="label">
             <span className="label-text font-medium">Start IP</span>
@@ -94,6 +98,8 @@ const PhsScanner = ({ onSwitch, curIp }) => {
                   return;
                 }
                 if (isNaN(v)) return;
+                var parsed = Number.parseInt(v);
+                if (parsed > 255 || parsed < 0) return;
                 set_oct1(Number.parseInt(v));
               }}
               placeholder="1st"
@@ -109,6 +115,8 @@ const PhsScanner = ({ onSwitch, curIp }) => {
                   return;
                 }
                 if (isNaN(v)) return;
+                var parsed = Number.parseInt(v);
+                if (parsed > 255 || parsed < 0) return;
                 set_oct2(Number.parseInt(v));
               }}
               placeholder="2nd "
@@ -124,6 +132,8 @@ const PhsScanner = ({ onSwitch, curIp }) => {
                   return;
                 }
                 if (isNaN(v)) return;
+                var parsed = Number.parseInt(v);
+                if (parsed > 255 || parsed < 0) return;
                 set_oct3(Number.parseInt(v));
               }}
               placeholder="3rd "
@@ -139,6 +149,8 @@ const PhsScanner = ({ onSwitch, curIp }) => {
                   return;
                 }
                 if (isNaN(v)) return;
+                var parsed = Number.parseInt(v);
+                if (parsed > 255 || parsed < 0) return;
                 set_oct4(Number.parseInt(v));
               }}
               placeholder="4th "
@@ -162,6 +174,8 @@ const PhsScanner = ({ onSwitch, curIp }) => {
                   return;
                 }
                 if (isNaN(v)) return;
+                var parsed = Number.parseInt(v);
+                if (parsed > 255 || parsed < 0) return;
                 set_toct1(Number.parseInt(v));
               }}
               placeholder="1st "
@@ -177,6 +191,8 @@ const PhsScanner = ({ onSwitch, curIp }) => {
                   return;
                 }
                 if (isNaN(v)) return;
+                var parsed = Number.parseInt(v);
+                if (parsed > 255 || parsed < 0) return;
                 set_toct2(Number.parseInt(v));
               }}
               placeholder="2nd "
@@ -192,6 +208,8 @@ const PhsScanner = ({ onSwitch, curIp }) => {
                   return;
                 }
                 if (isNaN(v)) return;
+                var parsed = Number.parseInt(v);
+                if (parsed > 255 || parsed < 0) return;
                 set_toct3(Number.parseInt(v));
               }}
               placeholder="3rd "
@@ -207,6 +225,8 @@ const PhsScanner = ({ onSwitch, curIp }) => {
                   return;
                 }
                 if (isNaN(v)) return;
+                var parsed = Number.parseInt(v);
+                if (parsed > 255 || parsed < 0) return;
                 set_toct4(Number.parseInt(v));
               }}
               placeholder="4th "
@@ -261,7 +281,7 @@ const PhsScanner = ({ onSwitch, curIp }) => {
                     </div>
                   </td>
                   <td>
-                    <p className="text-sm">{dev.url}</p>
+                  <a href={dev.url} className='link'>{dev.url}</a>
                     {/* <span className="badge badge-ghost badge-sm">
                       Desktop Support Technician
                     </span> */}

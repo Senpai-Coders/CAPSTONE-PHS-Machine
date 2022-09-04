@@ -9,15 +9,12 @@ dbConnect();
 
 const handler = async (req, res) => {
 
-    console.log("start")
     await NextCors(req, res, {
         // Options
         methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
         origin: '*',
         optionsSuccessStatus: 200,
      });
-
-    console.log("end")
 
     let IP = GET_SERVER_IP()
 
