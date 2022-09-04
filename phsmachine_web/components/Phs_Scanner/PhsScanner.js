@@ -3,10 +3,9 @@ import { HiArrowNarrowRight } from "react-icons/hi";
 import axios from "axios";
 import { PI_IP } from "../../helpers";
 
-import { RiComputerFill } from 'react-icons/ri'
+import { RiComputerFill } from "react-icons/ri";
 
-
-const PhsScanner = () => {
+const PhsScanner = ({ onSwitch, curIp }) => {
   const [oct1, set_oct1] = useState(192);
   const [oct2, set_oct2] = useState(168);
   const [oct3, set_oct3] = useState(1);
@@ -29,11 +28,11 @@ const PhsScanner = () => {
     new Promise((resolve) => setTimeout(() => resolve(email), 1000));
 
   const scan = async (a, b, c, d, aa, bb, cc, dd) => {
-    setPhsDevices([])
+    setPhsDevices([]);
     var from = `${a}.${b}.${c}.${d}`;
     var to = `${aa}.${bb}.${cc}.${dd}`;
 
-    let devices = []
+    let devices = [];
 
     while (from !== to) {
       from = `${a}.${b}.${c}.${d}`;
@@ -58,28 +57,28 @@ const PhsScanner = () => {
         setFocIp(from);
 
         let response = await axios({
-            method: 'get',
-            url: `http://${from}:3000/api/connectivity`,
-            timeout: 1000, // only wait for 2s
-            withCredentials: false,
-            body : { mode : 0 },
-            data : { mode : 1 }
-        })
-        
-        
-        devices.push(response.data);
+          method: "get",
+          url: `http://${from}:3000/api/connectivity`,
+          timeout: 500, // only wait for 2s
+          withCredentials: false,
+          body: { mode: 0 },
+          data: { mode: 1 },
+        });
+
+        setPhsDevices((val) => [...val, response.data]);
+        //devices.push(response.data);
       } catch (e) {
-        console.log('fail ')
+        console.log("fail ");
       }
     }
     console.log("done");
     setScanning(false);
-    setPhsDevices(devices)
+    // setPhsDevices(devices)
   };
 
   return (
     <div className="p-4 ">
-      <div className="flex justify-start rounded-md items-center">
+      <div className="md:flex justify-start rounded-md items-center">
         <div className="form-control">
           <label className="label">
             <span className="label-text font-medium">Start IP</span>
@@ -98,7 +97,7 @@ const PhsScanner = () => {
                 set_oct1(Number.parseInt(v));
               }}
               placeholder="1st"
-              className="input input-bordered w-16 "
+              className="input input-bordered w-14 "
             />
             <input
               type="text"
@@ -113,7 +112,7 @@ const PhsScanner = () => {
                 set_oct2(Number.parseInt(v));
               }}
               placeholder="2nd "
-              className="input input-bordered w-16"
+              className="input input-bordered w-14"
             />
             <input
               type="text"
@@ -128,7 +127,7 @@ const PhsScanner = () => {
                 set_oct3(Number.parseInt(v));
               }}
               placeholder="3rd "
-              className="input input-bordered w-16"
+              className="input input-bordered w-14"
             />
             <input
               type="text"
@@ -143,12 +142,12 @@ const PhsScanner = () => {
                 set_oct4(Number.parseInt(v));
               }}
               placeholder="4th "
-              className="input input-bordered w-16"
+              className="input input-bordered w-14"
             />
           </label>
         </div>
-        <HiArrowNarrowRight className="text-2xl mx-4" />
-        <div className="form-control ml-2">
+        <HiArrowNarrowRight className="text-2xl mx-4 hidden md:block" />
+        <div className="form-control md:ml-2">
           <label className="label">
             <span className="label-text font-medium">End IP</span>
           </label>
@@ -166,7 +165,7 @@ const PhsScanner = () => {
                 set_toct1(Number.parseInt(v));
               }}
               placeholder="1st "
-              className="input input-bordered w-16 "
+              className="input input-bordered w-14 "
             />
             <input
               type="text"
@@ -181,7 +180,7 @@ const PhsScanner = () => {
                 set_toct2(Number.parseInt(v));
               }}
               placeholder="2nd "
-              className="input input-bordered w-16"
+              className="input input-bordered w-14"
             />
             <input
               type="text"
@@ -196,7 +195,7 @@ const PhsScanner = () => {
                 set_toct3(Number.parseInt(v));
               }}
               placeholder="3rd "
-              className="input input-bordered w-16"
+              className="input input-bordered w-14"
             />
             <input
               type="text"
@@ -211,41 +210,37 @@ const PhsScanner = () => {
                 set_toct4(Number.parseInt(v));
               }}
               placeholder="4th "
-              className="input input-bordered w-16"
+              className="input input-bordered w-14"
             />
-            <span
-              onClick={() => {
-                if (!scanning) {
-                  setScanning(true);
-                  scan(oct1, oct2, oct3, oct4, toct1, toct2, toct3, toct4);
-                } else setScanning(false);
-              }}
-              className={`btn ${
-                scanning ? "loading btn-disabled" : "btn-active"
-              }`}
-            >
-              {scanning ? "Scanning.." : "start scan"}
-            </span>
-            <span
-              onClick={() => {
-                source.cancel("Cancelled");
-              }}
-              className={`btn btn-active ${scanning ? "" : "btn-disabled"}`}
-            >
-              Stop Scan
-            </span>
           </label>
         </div>
       </div>
-      {scanning && <div className='flex items-center justify-start mt-4'><p className="text-sm mr-2">Checking : {focIp}</p> <progress className="progress w-8"></progress></div>}
+      <span
+        onClick={() => {
+          if (!scanning) {
+            setScanning(true);
+            scan(oct1, oct2, oct3, oct4, toct1, toct2, toct3, toct4);
+          }
+        }}
+        className={`btn btn-full mt-4 ${scanning ? "loading" : "btn-active"}`}
+      >
+        {scanning ? (
+          <div className="flex items-center justify-start">
+            <p className="text-sm mr-2">Checking : {focIp}</p>{" "}
+            <progress className="progress w-8 progress-accent"></progress>
+          </div>
+        ) : (
+          "start scan"
+        )}
+      </span>
       <div className="mt-4">
-        <div className="overflow-x-auto w-full">
+        <div className="overflow-x-scroll w-full">
           <table className="table w-full">
             <thead>
               <tr>
                 <th>PHS</th>
                 <th>URL</th>
-                <th>Favorite Color</th>
+                <th>Host IP</th>
                 <th></th>
               </tr>
             </thead>
@@ -256,7 +251,7 @@ const PhsScanner = () => {
                     <div className="flex items-center space-x-3">
                       <div className="avatar">
                         <div className="">
-                            <RiComputerFill className='text-xl' />
+                          <RiComputerFill className="text-xl" />
                         </div>
                       </div>
                       <div>
@@ -266,14 +261,24 @@ const PhsScanner = () => {
                     </div>
                   </td>
                   <td>
-                    <p className='text-sm'>{ dev.url }</p>
+                    <p className="text-sm">{dev.url}</p>
                     {/* <span className="badge badge-ghost badge-sm">
                       Desktop Support Technician
                     </span> */}
                   </td>
-                  <td>Purple</td>
+                  <td>{dev.ip}</td>
                   <th>
-                    <button className="btn btn-ghost btn-xs">details</button>
+                    <button
+                      onClick={() => {
+                        onSwitch(dev);
+                        window.scrollTo(0, 0);
+                      }}
+                      className={`btn btn-xs ${
+                        curIp === dev.ip ? "btn-success" : ""
+                      }`}
+                    >
+                      {curIp === dev.ip ? "current" : "switch"}
+                    </button>
                   </th>
                 </tr>
               ))}

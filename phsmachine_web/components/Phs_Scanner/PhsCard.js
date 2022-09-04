@@ -22,7 +22,7 @@ const PhsCard = ({ phs_data, showConnect, title }) => {
 
   return (
     <div className="shadow-lg md:mr-2 py-5 px-6 md:w-6/12 lg:w-4/12 card bg-neutral text-neutral-content">
-      <p className="text-xl text-center">{title}</p>
+      <p className="text-xl font-thin text-center">{title}</p>
       {/* Device Info */}
       <div className="mx-2">
         <div className="flex justify-center">

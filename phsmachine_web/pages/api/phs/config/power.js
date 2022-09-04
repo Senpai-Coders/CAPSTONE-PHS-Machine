@@ -6,7 +6,7 @@ const handler = async (req, res) => {
     const { mode } = req.body
 
     if(mode === 0){
-        const shutdown = exec("shutdown", function (error, stdout, stderr) {
+        const shutdown = exec("sudo shutdown now", function (error, stdout, stderr) {
             if (error) {
               console.log(error.stack);
               console.log("Error code: " + error.code);
@@ -18,7 +18,7 @@ const handler = async (req, res) => {
       
           shutdown.on("exit", function (code) { console.log("Child process exited with exit code " + code); });
     }else if( mode === 1){
-        const reboot = exec("reboot", function (error, stdout, stderr) {
+        const reboot = exec("sudo reboot now", function (error, stdout, stderr) {
             if (error) {
               console.log(error.stack);
               console.log("Error code: " + error.code);
