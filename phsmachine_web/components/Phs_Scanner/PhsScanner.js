@@ -29,8 +29,11 @@ const PhsScanner = () => {
     new Promise((resolve) => setTimeout(() => resolve(email), 1000));
 
   const scan = async (a, b, c, d, aa, bb, cc, dd) => {
+    setPhsDevices([])
     var from = `${a}.${b}.${c}.${d}`;
     var to = `${aa}.${bb}.${cc}.${dd}`;
+
+    let devices = []
 
     while (from !== to) {
       from = `${a}.${b}.${c}.${d}`;
@@ -51,28 +54,27 @@ const PhsScanner = () => {
       }
       if (a >= 255) break;
 
-      const CancelToken = axios.CancelToken;
-      const source = CancelToken.source();
       try {
         setFocIp(from);
 
         let response = await axios({
             method: 'get',
             url: `http://${from}:3000/api/connectivity`,
-            timeout: 10000, // only wait for 2s
+            timeout: 1000, // only wait for 2s
             withCredentials: false,
             body : { mode : 0 },
             data : { mode : 1 }
         })
         
-        console.log('SEARCHED ', response)
-        setPhsDevices([...phsDevices, response.data]);
+        
+        devices.push(response.data);
       } catch (e) {
         console.log('fail ')
       }
     }
     console.log("done");
     setScanning(false);
+    setPhsDevices(devices)
   };
 
   return (
