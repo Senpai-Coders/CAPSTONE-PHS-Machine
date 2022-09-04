@@ -101,7 +101,6 @@ def index():
 #     configs = list(DB_CONFIGS.find({'config_name' : 'system_state'}))
 #     return Response(mongoResToJson(configs), content_type='application/json'), 200
 
-
 @app.route("/getSystemState")
 def getSyState():
     global SYSTEM_STATE
