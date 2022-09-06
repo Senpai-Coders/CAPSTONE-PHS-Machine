@@ -126,11 +126,11 @@ const actionComponent = ({ relayOptions, close, onSave, divisionCount }) => {
             {targets.map((i, idx) => (
               <>
                 <div className="dropdown w-full">
-                  <label tabindex="0" className="btn w-full">
+                  <label tabIndex="0" className="btn w-full">
                     Relay : {i.target_relay}
                   </label>
                   <ul
-                    tabindex="0"
+                    tabIndex="0"
                     className="dropdown-content menu max-h-56 overflow-y-scroll px-3 py-4 shadow backdrop-blur-sm bg-base-100/60 border-b border-l border-r border-base-300 rounded-sm"
                   >
                     {[

@@ -13,7 +13,7 @@ const SinglePick = ({
 
   return (
     <div className="dropdown dropdown-left">
-      <label tabindex="0" className="btn btn-sm btn-ghost btn-outline m-1">
+      <label tabIndex="0" className="btn btn-sm btn-ghost btn-outline m-1">
         {dateMMDDYYYY(defaultDate, "/")}
       </label>
       <div

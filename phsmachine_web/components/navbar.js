@@ -160,7 +160,7 @@ const navbar = ({ toggled, setToggled }) => {
                 <p>...</p>
               )}
             </div>
-            <ThemeChooser />
+            <ThemeChooser textMode={false} />
             <label
               htmlFor="my-modal-6"
               className="font-medium btn btn-outline btn-sm mt-2 btn-ghost cursor-pointer duration-300"

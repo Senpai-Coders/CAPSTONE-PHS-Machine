@@ -1,8 +1,45 @@
+"use strict";
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
 const { networkInterfaces } = require("os");
 
-export const VERSION = 'v1.0 - c7effd8'
+export const VERSION = "v1.0 - c7effd8";
+
+export const writeError = async (obj) => {
+  try {
+    const prev = await readError();
+    const data = await fs.promises.writeFile(
+      "error-logs.json",
+      JSON.stringify([...prev, obj])
+    );
+    return JSON.parse(data);
+  } catch (err) {
+    return [];
+  }
+};
+
+export const readError = async () => {
+  try {
+    const data = await fs.promises.readFile("error-logs.json", "utf8");
+    return JSON.parse(data);
+  } catch (err) {
+    return [];
+  }
+};
+
+export const clearError = async () => {
+  try {
+    const prev = await readError();
+    const data = await fs.promises.writeFile(
+      "error-logs.json",
+      JSON.stringify([])
+    );
+    return JSON.parse(data);
+  } catch (err) {
+    return [];
+  }
+};
 
 export const HASH_PASSWORD = async (PASSWORD) => {
   const HASHED = await bcrypt.hash(PASSWORD, 10);

@@ -5,7 +5,14 @@ import { VscBellDot, VscError } from "react-icons/vsc";
 import { BsClockHistory } from "react-icons/bs";
 import { HiLink } from "react-icons/hi";
 
-import { dateToWord, PI_IP } from "../../helpers/index";
+import {
+  dateToWord,
+  PI_IP,
+  getMyData,
+  localErrorLoad,
+  localErrorDeleteAll,
+  localErrorSetReadAll,
+} from "../../helpers/index";
 
 import axios from "axios";
 
@@ -15,10 +22,13 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
   const [notifications, setNotifications] = useState([]);
 
   const markAll = async (notifs) => {
+    localErrorSetReadAll(userData._id);
+
     let ids = [];
     if (notifs.length <= 0) return;
 
     notifs.forEach((notif, id) => {
+      if (!notif._id) return;
       ids.push(notif._id);
     });
 
@@ -27,22 +37,52 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
         mode: 1,
         ids,
       });
-      load()
+      load();
     } catch (e) {}
   };
 
   const deleteAll = async () => {
     try {
+      localErrorDeleteAll();
       const request = await axios.post("/api/phs/notifications", { mode: -2 });
-      load()
+      load();
     } catch (e) {}
+  };
+
+  const getPhsDbErrors = async () => {
+    try {
+      const request = await axios.post("/api/phs/notifications", { mode: 0 });
+      return request;
+    } catch (e) {
+      const fltr = notifications.filter((not) => {
+        console.log("foc ", not);
+        return not._id !== undefined;
+      });
+      return {
+        data: { unreads: 0, notifications: fltr },
+      };
+    }
   };
 
   const load = async () => {
     try {
-      const request = await axios.post("/api/phs/notifications", { mode: 0 });
-      setNotifications(request.data.notifications);
-      setUnreadCount(request.data.unreads);
+      const userD = await getMyData();
+      const joined = localErrorLoad();
+      let localUnread = 0;
+      if (userD)
+        joined.forEach((localErr) => {
+          if (!(localErr.seenBy.indexOf(userD._id) > -1)) localUnread++;
+        });
+
+      const request = await getPhsDbErrors();
+
+      joined = [...request.data.notifications, ...joined];
+      joined = joined.sort((a, b) => {
+        return new Date(a.date) < new Date(b.date) ? 1 : -1;
+      });
+
+      setNotifications(joined);
+      setUnreadCount(request.data.unreads + localUnread);
     } catch (e) {
       console.log(e);
     }
@@ -109,7 +149,9 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
                   btn btn-square btn-sm btn-ghost mr-2 text-2xl`}
                   >
                     {notif.notification_type == "detection" && <CgThermostat />}
-                    {notif.notification_type == "error" && <VscError />}
+                    {notif.notification_type == "error" && (
+                      <VscError className=" animate-pulse" />
+                    )}
                     {notif.notification_type == "notify" && <VscBellDot />}
                     {notif.notification_type == "reminder" && (
                       <BsClockHistory />
@@ -119,16 +161,16 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
                 </div>
                 <p className="mt-1 text-sm">{notif.message}</p>
                 {notif.notification_type == "error" && (
-                  <div className="mt-5">
+                  <div className="mt-5 ">
                     <div className="flex items-center justify-between">
                       <p className={`mt-1 font-mono text-sm`}>
                         Severity : {notif.additional.severity}
                       </p>
-                      <p className="mt-1 font-mono text-right text-sm text-error">
-                        Error Code : {notif.additional.error_code}
+                      <p className="mt-1 font-black font-mono text-right text-sm text-error">
+                        Error Code : <span className=''>{notif.additional.error_code}</span>
                       </p>
                     </div>
-                    <div className="mt-2 mockup-code">
+                    <div className="mt-2 mockup-code ">
                       <pre>
                         <code className="">{notif.additional.error_log}</code>
                       </pre>

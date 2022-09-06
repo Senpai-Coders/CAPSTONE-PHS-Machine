@@ -10,12 +10,57 @@ import { GiCyberEye } from "react-icons/gi";
 export const bytesToMegaBytes = (bytes) => bytes / 1000000; //bytes / (1024 ** 2)
 export const mbToGB = (mb) => mb / 1000;
 
+export const PI_IP = process.env.PI_IP;
+
+export const localErrorLoad = () => {
+  if (!localStorage) return;
+  var localError = JSON.parse(localStorage.getItem("local-errors"));
+  if (!localError) {
+    localStorage.setItem("local-errors", JSON.stringify([]));
+    return [];
+  }
+  return localError;
+};
+
+export const localErrorAdd = (error_obj) => {
+  if (!localStorage) return;
+  var localError = JSON.parse(localStorage.getItem("local-errors"));
+  var exist = false;
+  if (!localError) localError = [];
+  else {
+    for (var i = 0; i < localError.length && !exist; i++) {
+      if (
+        localError[i].additional.error_code === error_obj.additional.error_code
+      ) {
+        exist = true;
+      }
+    }
+  }
+  if (!exist) {
+    localError = [...localError, error_obj];
+    localStorage.setItem("local-errors", JSON.stringify(localError));
+  }
+};
+
+export const localErrorSetReadAll = (id) => {
+  if (!localStorage) return;
+  var localError = JSON.parse(localStorage.getItem("local-errors"));
+
+  if (!localError) localError = [];
+
+  for (var i = 0; i < localError.length; i++) localError[i].seenBy.push(id);
+
+  localStorage.setItem("local-errors", JSON.stringify(localError));
+};
+
+export const localErrorDeleteAll = () => {
+  localStorage.setItem("local-errors", JSON.stringify([]));
+};
+
 export const getPercentUsage = (total, taken) => {
   var tk = (taken / total) * 100;
   return isNaN(tk) ? 0 : tk;
 };
-
-export const PI_IP = process.env.PI_IP;
 
 export const dayNames = [
   "Sunday",

@@ -295,11 +295,12 @@ const PhsScanner = ({ onSwitch, curIp }) => {
                   <th>
                     <button
                       onClick={() => {
+                        if(curIp === dev.ip) return
                         onSwitch(dev);
                         window.scrollTo(0, 0);
                       }}
                       className={`btn btn-xs ${
-                        curIp === dev.ip ? "btn-success" : ""
+                        curIp === dev.ip ? "btn-success btn-outline btn-ghost outline-success" : ""
                       }`}
                     >
                       {curIp === dev.ip ? "current" : "switch"}

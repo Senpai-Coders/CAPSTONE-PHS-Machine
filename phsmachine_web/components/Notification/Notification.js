@@ -19,7 +19,7 @@ const Notification = ({ userData }) => {
           </div>
         </label>
         <div
-          tabindex="0"
+          tabIndex="0"
           className="dropdown-content card card-compact w-72 md:w-96 p-2 shadow-lg bg-base-100/90 backdrop-blur-md"
         >
           <div className="card-body">

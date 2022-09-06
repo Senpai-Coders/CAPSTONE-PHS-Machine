@@ -145,13 +145,13 @@ const index = () => {
           </p>
 
           <div className="dropdown mr-2 md:mr-0 dropdown-hover">
-            <label tabindex="0" className="btn btn-sm">
+            <label tabIndex="0" className="btn btn-sm">
               {dateMode === 0 && "All"}
               {dateMode === 1 && "Single Date"}
               {dateMode === 2 && "Range Date"}
             </label>
             <ul
-              tabindex="0"
+              tabIndex="0"
               className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
             >
               <li>
