@@ -72,6 +72,7 @@ MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
 DB = MONGO_CONNECTION["PHS_MACHINE"]
 DB_CONFIGS = DB['configs']
 DB_DETECTIONS = DB['thermal_detections']
+DB_NOTIFICATION = DB['notifications']
 
 STREAM_REQ_THERM = False
 STREAM_REQ_NORM = False
@@ -505,11 +506,31 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
         cv2.imwrite(f"{path1}/img_annotated.png", normal_annotated)
         cv2.imwrite(f"{path1}/img_thermal.png", thermal)
 
-        DB_DETECTIONS.insert_one( DATA_DICT )
+        detection_insert = DB_DETECTIONS.insert_one( DATA_DICT )
 
         p = pickle.dump( raw_thermal, open(f'../phsmachine_web/public/detection/Detection-{stmp}/raw_thermal.pkl', 'wb'))
         print("✅ Done Saving Event Data 👌")
-    except Exception as e: print("🚩 Can't Save cuz of this err 👉 ",e)
+
+        DetectionNotification = dict({
+            "notification_type" : "detection",
+            "title" : "Heat Stress Detected",
+            "message" : f" {len(croped_normal)} Pig(s) stressed. Detection record ID is {detection_insert.inserted_id}, you can view more info about this detection on the link below. The system will use the defined actions for heat stress event to releave pig temperature",
+            "priority": 0,
+            "links" : [
+                    {
+                    "link" : "","link_short": f"/detection_details?_id={detection_insert.inserted_id}",
+                    "link_mode": True 
+                    }],
+            "seenBy" : [],
+            "date" : datetime.today()
+            })
+        
+        print("TYPE", type(DetectionNotification))
+
+        DB_NOTIFICATION.insert_one(DetectionNotification)
+        print("✅ Done Creating Notification 👌")
+
+    except Exception as e: print("🚩 Can't Save : err 👉 ",e)
 
 def doesActionNameAlreadyActive(action_name) : 
     global SYSTEM_STATE, R_CONTROLLER, ACTION_STATE
