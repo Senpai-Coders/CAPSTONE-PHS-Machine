@@ -18,6 +18,9 @@ from action.a_controller import a_controller
 from cust_utils.utils import mongoResToJson
 import numpy as np
 import pymongo
+
+from pymongo.errors import ConnectionFailure
+
 import atexit
 from flask_cors import CORS
 import os
@@ -28,6 +31,7 @@ import numpy as np
 import warnings
 import pickle
 import tensorflow as tf
+import json
 
 warnings.filterwarnings("ignore") # Warning will make operation confuse!!!
 tf.get_logger().setLevel(logging.ERROR)
@@ -67,7 +71,30 @@ PHS_CNN=None
 
 MONGO_CONNECTION=None
 
-MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
+def errorWrite():
+    f = open('../phsmachine_web/error-logs.json')
+
+    data = json.load(f)
+
+    print(data)
+    
+    #todo
+
+def readError():
+    f = open('../phsmachine_web/error-logs.json')
+    data = json.load(f)
+    print(data)
+    #todo
+
+    
+readError();
+
+exit()
+
+try:
+    MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
+except ConnectionFailure:
+
 
 DB = MONGO_CONNECTION["PHS_MACHINE"]
 DB_CONFIGS = DB['configs']
