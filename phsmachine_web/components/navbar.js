@@ -118,7 +118,7 @@ const navbar = ({ toggled, setToggled }) => {
             <div className="w-full flex justify-evenly">
               <ul className="menu w-full overflow-y-auto bg-transparent py-2 text-base-content">
                 {PHS_ROUTES.map((routes, idx) => (
-                  <li className="">
+                  <li className="" key={idx}>
                     <a
                       key={idx}
                       onClick={() => router.push(routes.path)}
