@@ -7,7 +7,7 @@ import os
 import warnings
 warnings.filterwarnings("ignore") # Warning will make operation confuse!!!
 
-YOLO_DIR = os.path.join('models','Yolov5')
+YOLO_DIR = os.path.join('Yolov5')
 WEIGHTS_DIR = os.path.join('best.pt')
 
 print("YOLDIR",YOLO_DIR,"WEIGHTS", WEIGHTS_DIR)

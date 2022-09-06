@@ -41,7 +41,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 font = cv2.FONT_HERSHEY_SIMPLEX
 
 YOLO_DIR = os.path.join('models','Yolov5')
-WEIGHTS_DIR = os.path.join('best.pt')
+WEIGHTS_DIR = os.path.join('models','weights','best.pt')
 
 EXITING = False
 
