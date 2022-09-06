@@ -32,6 +32,7 @@ import warnings
 import pickle
 import tensorflow as tf
 import json
+import sys
 
 warnings.filterwarnings("ignore") # Warning will make operation confuse!!!
 tf.get_logger().setLevel(logging.ERROR)
@@ -71,29 +72,72 @@ PHS_CNN=None
 
 MONGO_CONNECTION=None
 
-def errorWrite():
-    f = open('../phsmachine_web/error-logs.json')
+def errorWrite( new_error ):
+    error_logs = readError()
 
-    data = json.load(f)
+    doesExist = False
 
-    print(data)
-    
-    #todo
+    # unique error code only
+    for errors in error_logs:
+        if errors['additional']['error_code'] == new_error['additional']['error_code']:
+            doesExist = True
+            break
+
+    if doesExist: return
+
+    error_logs.append(new_error)
+    with open('../phsmachine_web/error-logs.json', 'w', encoding='utf-8') as f:
+        json.dump(error_logs, f, ensure_ascii=False, indent=4 )
+        f.close()
+
+def deleteErrorCode ( code ):
+    error_logs = readError()
+
+    toWrite = []
+
+    # unique error code only
+    for errors in error_logs:
+        if errors['additional']['error_code'] != code:
+            toWrite.append(errors)
+
+    with open('../phsmachine_web/error-logs.json', 'w', encoding='utf-8') as f:
+        json.dump(toWrite, f, ensure_ascii=False, indent=4 )
+        f.close()
 
 def readError():
-    f = open('../phsmachine_web/error-logs.json')
-    data = json.load(f)
-    print(data)
-    #todo
+    try:
+        f = open('../phsmachine_web/error-logs.json', 'r')
+        f.close()
+    except:
+        with open('../phsmachine_web/error-logs.json', 'w+', encoding='utf-8') as f:
+            json.dump([], f, ensure_ascii=False, indent=4 )
+            f.close()
 
-    
-readError();
-
-exit()
+    try:
+        f = open('../phsmachine_web/error-logs.json')
+        data = json.load(f)
+        return data
+    except:
+        return []
 
 try:
     MONGO_CONNECTION=pymongo.MongoClient("mongodb://localhost:27017")
-except ConnectionFailure:
+    deleteErrorCode(2)
+except Exception as e:
+    errorWrite({
+        "notification_type" : "error",
+        "title": "PHS Core Database Error",
+        "message": "PHS Core Database is not responding or possible not running, try restarting phs. Read description about error code on manual",
+        "additional": {
+            "error_code": 2,
+            "severity": "high",
+            "error_log": ("Error : {0}".format(str(e))),
+        },
+        "priority": 0,
+        "links" : [],
+        "seenBy" : [],
+        "date" : f'{datetime.now()}',
+    })
 
 
 DB = MONGO_CONNECTION["PHS_MACHINE"]
@@ -118,16 +162,10 @@ lock = threading.Lock()
 
 app = Flask(__name__)
 cors = CORS(app, resources={f"/*":{"origins":"*"}})
-#mongo = PyMongo(app, uri="mongodb://localhost:27017/PHS_MACHINE")
 
 @app.route("/")
 def index():
 	return "Hello"
-
-# @app.route("/getConfig")
-# def getConfig():
-#     configs = list(DB_CONFIGS.find({'config_name' : 'system_state'}))
-#     return Response(mongoResToJson(configs), content_type='application/json'), 200
 
 @app.route("/getSystemState")
 def getSyState():
@@ -230,16 +268,6 @@ def feed_annotate():
         STREAM_REQ_ANNOT = True
     return Response(gen_annotate(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
-# This is for testing only to test if activate action is working
-@app.route("/DummyActivateCategory", methods=['POST'])
-def fakeActivate():
-    global ACTION_STATE
-    ReqBod = request.get_json(force=True)
-    callerName = ReqBod['caller']
-    activateCategory([ ], callerName)
-
-    return "ok",200
-
 def get_ip_address():
 	"""Find the current IP address of the device"""
 	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -313,7 +341,7 @@ def getCellLocation(img_h, img_w, center_x, center_y):
 
 def detectHeatStress():
     global font, ANNOT_STREAM_CHECK, DETECTION_MODE, TEMPERATURE_THRESHOLD, IMG_NORMAL_ANNOTATED, PHS_CNN, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD, EXITING
-    while not EXITING:
+    while not EXITING and Yolov5_PHD is not None and PHS_CNN is not None:
         loadDbConfig()
         if IMG_NORMAL is not None and IMG_THERMAL is not None:
             c_IMG_NORMAL = IMG_NORMAL
@@ -600,8 +628,6 @@ def activateCategory(old_activate, caller, ForceActivate, Location):
                 new_activated.append(activated)
                 print(f'Activated {action_name} - Location Based {Location}')
 
-
-
     return old_activate + new_activated
 
 def activateJob(targets, action_name, caller):
@@ -634,7 +660,8 @@ def activateJob(targets, action_name, caller):
 
 def updateJobs():
     global SYSTEM_STATE, R_CONTROLLER, ACTION_STATE, EXITING
-     
+    hasPrev = False
+    
     while not EXITING:
         time.sleep(0.2)
         S_STATE = SYSTEM_STATE['status']
@@ -667,6 +694,7 @@ def updateJobs():
                 R_CONTROLLER.toggleRelay(job['relay_name'],True)
                 ACTION_STATE.toggle(job['action_name'], True)
                 ACTION_STATE.setElapsed(job['action_name'], elapsed)
+                hasPrev = True
         if heatStressResolveJobs <= 0:
             curSysStatus = SYSTEM_STATE['status']
             if curSysStatus not in [ -1, -2, 2 ]:
@@ -755,40 +783,58 @@ def gen_thermal():
 
 def loadDbConfig():
     global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP, DETECTION_MODE, TEMPERATURE_THRESHOLD, GRID_COL, GRID_ROW
-    relays = list(DB_CONFIGS.find({ "category" : "relays" }))
-    actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
-    updateStamp = DB_CONFIGS.find_one({"category" : "update", "config_name" : "update_stamp"})
-
-    detectionMode = DB_CONFIGS.find_one({"category" : "config", "config_name" : "DetectionMode"})
-
-    phs_grid_divisions = DB_CONFIGS.find_one({"category" : "config", "config_name" : "divisions"})
     
-    newUpdateStamp = updateStamp['value'] 
-    hasNewUpdateStamp = False
+    try:
+        relays = list(DB_CONFIGS.find({ "category" : "relays" }))
+        actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
+        updateStamp = DB_CONFIGS.find_one({"category" : "update", "config_name" : "update_stamp"})
 
-    if UPDATE_STAMP is None or UPDATE_STAMP != newUpdateStamp:
-        hasNewUpdateStamp = True
-        with lock:
-            UPDATE_STAMP = newUpdateStamp
+        detectionMode = DB_CONFIGS.find_one({"category" : "config", "config_name" : "DetectionMode"})
+        phs_grid_divisions = DB_CONFIGS.find_one({"category" : "config", "config_name" : "divisions"})
         
-    if hasNewUpdateStamp :
-        with lock:
-            GRID_COL = phs_grid_divisions['value']['col']
-            GRID_ROW = phs_grid_divisions['value']['row']
+        newUpdateStamp = updateStamp['value'] 
+        hasNewUpdateStamp = False
 
-    if hasNewUpdateStamp :
-        with lock:
-            DETECTION_MODE = detectionMode['value']['mode']
-            TEMPERATURE_THRESHOLD = float(detectionMode['value']['temperatureThreshold'])
-   
-    if R_CONTROLLER is not None:
-        if (len(R_CONTROLLER.getAllRelays()) != len(relays) or hasNewUpdateStamp):
-            R_CONTROLLER.delRelays(relays)      
-    else:
-        R_CONTROLLER = r_controller(relays, True, True)
+        if UPDATE_STAMP is None or UPDATE_STAMP != newUpdateStamp:
+            hasNewUpdateStamp = True
+            with lock:
+                UPDATE_STAMP = newUpdateStamp
+            
+        if hasNewUpdateStamp :
+            with lock:
+                GRID_COL = phs_grid_divisions['value']['col']
+                GRID_ROW = phs_grid_divisions['value']['row']
 
-    if len(ACTION_STATE.actions) != len(actions):
-        ACTION_STATE = a_controller(actions, ACTION_STATE.actions)
+        if hasNewUpdateStamp :
+            with lock:
+                DETECTION_MODE = detectionMode['value']['mode']
+                TEMPERATURE_THRESHOLD = float(detectionMode['value']['temperatureThreshold'])
+    
+        if R_CONTROLLER is not None:
+            if (len(R_CONTROLLER.getAllRelays()) != len(relays) or hasNewUpdateStamp):
+                R_CONTROLLER.delRelays(relays)      
+        else:
+            R_CONTROLLER = r_controller(relays, True, True)
+
+        if len(ACTION_STATE.actions) != len(actions):
+            ACTION_STATE = a_controller(actions, ACTION_STATE.actions)
+        
+        deleteErrorCode(2)
+    except Exception as e:
+        errorWrite({
+            "notification_type" : "error",
+            "title": "PHS Core Database Server Timeout",
+            "message": "PHS will not be able to function without the configurations inside the database. Restart PHS to possibly start the database, or read more info about the error code on the manual",
+            "additional": {
+                "error_code": 2,
+                "severity": "high",
+                "error_log": ("Error : {0}".format(str(e)))
+            },
+            "priority": 0,
+            "links" : [],
+            "seenBy" : [],
+            "date" : f'{datetime.now()}',
+        })
 
 def process(raw):
     try:
@@ -799,7 +845,13 @@ def process(raw):
         
 def start_server():
     global Yolov5_PHD, PHS_CNN, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL
+
     print("⏳ Starting PHS ")
+    
+    CAM_NORMAL = Cam_Norm()
+    CAM_THERMAL = cam_therm()
+    time.sleep(0.1)
+    ACTION_STATE = a_controller((),())
 
     IMG_NORMAL_ANNOTATED = cv2.imread('misc/annotation_init.jpg')
 
@@ -814,13 +866,6 @@ def start_server():
         "min_temp" : 0,
         "jobs" : []
     }
-    
-    CAM_NORMAL = Cam_Norm()
-
-    CAM_THERMAL = cam_therm()
-    time.sleep(0.1)
-
-    ACTION_STATE = a_controller((),())
     
     print("⏳ Pulling Configs From DB")
     loadDbConfig()
@@ -837,13 +882,45 @@ def start_server():
                 force_reload=True
             )
         print("✅ Done loading yolo")
+        deleteErrorCode(4)
     except Exception as e:
-        print("ERROR PHS YOLO V5",e)
-    print("⏳ Loading PHS Heat Stress CNN")
+        errorWrite({
+        "notification_type" : "error",
+        "title": "PHS Core Yolo AI failed to load",
+        "message": "PHS will not identify pig because the Yolo model was not loaded successfully, PHS will not be able to detect pig. Please check the manual for fix.",
+        "additional": {
+            "error_code": 4,
+            "severity": "high",
+            "error_log": ("Error : {0}".format(str(e))),
+        },
+        "priority": 0,
+        "links" : [],
+        "seenBy" : [],
+        "date" : f'{datetime.now()}',
+        })
+        print("ERROR LOADING PHS YOLO V5",e)
 
-    PHS_CNN = tf.keras.models.load_model(os.path.join('models','mai_Net.h5'))
-    
-    print("✅ Loaded PHS Heat Stress CNN!")
+    print("⏳ Loading PHS Heat Stress CNN")
+    try:
+        PHS_CNN = tf.keras.models.load_model(os.path.join('models','mai_Net.h5'))
+        print("✅ Loaded PHS Heat Stress CNN!")
+        deleteErrorCode(5)
+    except Exception as e:
+        errorWrite({
+        "notification_type" : "error",
+        "title": "PHS Core Yolo AI failed to load",
+        "message": "PHS will not identify pig because the Yolo model was not loaded successfully, PHS will not be able to detect pig. Please check the manual for fix.",
+        "additional": {
+            "error_code": 5,
+            "severity": "high",
+            "error_log": ("Error : {0}".format(str(e))),
+        },
+        "priority": 0,
+        "links" : [],
+        "seenBy" : [],
+        "date" : f'{datetime.now()}',
+        })
+        print("ERROR LOADING PHS Heat Stress CNN")
 
     camThread = threading.Thread(target=readCams)
     camThread.daemon = True
@@ -876,7 +953,8 @@ def goodbye():
         EXITING = True
     print("\n")
     print("⏾ PHS Turning OFF")
-    R_CONTROLLER.offAll()
+    if R_CONTROLLER is not None:
+        R_CONTROLLER.offAll()
     print("💤 Good Bye ....")
 
 if __name__ == '__main__':
