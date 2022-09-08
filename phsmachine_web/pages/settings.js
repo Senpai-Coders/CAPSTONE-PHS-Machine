@@ -158,7 +158,7 @@ const configuration = () => {
             {/* Configuration */}
           </p>
           <div className="my-2 ">
-            <div className="tabs">
+            <div className="tabs w-72 overflow-x-scroll">
               <a
                 onClick={() => {
                   router.push("settings?tb=0");

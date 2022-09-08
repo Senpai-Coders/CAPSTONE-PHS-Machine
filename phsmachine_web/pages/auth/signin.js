@@ -13,8 +13,8 @@ import axios from "axios"
 
 const signin = () => {
   const router = useRouter();
-  const [username, setUsername] = useState("PHS_SYSTEM_V1");
-  const [password, setPassword] = useState("johny123");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const [show, setShow] = useState(false);

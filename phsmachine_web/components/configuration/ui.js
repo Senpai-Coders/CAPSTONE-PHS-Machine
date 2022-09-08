@@ -7,11 +7,10 @@ import { RiLayout4Fill } from "react-icons/ri";
 
 const ui = () => {
   return (
-    <div className="">
-      <div className="mx-1 md:mx-2 overflow-visible rounded-md p-4 md:p-4 outline mt-4 bg-base-100 shadow-sm outline-1 outline-base-300">
+    <div className="overflow-visible">
+      <div className="mx-1 md:mx-2 overflow-visible rounded-md p-4 md:p-4 outline min-h-screen mt-4 bg-base-100 shadow-sm outline-1 outline-base-300">
         <p className="font-inter font-medium mb-2 text-lg md:text-xl">UI</p>
-        <div className={`grid grid-cols-1 w-full`}>
-          <div className="mt-2 card overflow-visible">
+        <div className="mt-2 card overflow-visible">
             <div className="card-body p-2">
               <div className="md:flex items-center justify-between">
                 <div className="mr-4">
@@ -32,7 +31,7 @@ const ui = () => {
             </div>
           </div>
           <div className="divider"></div>
-          <div className="mt-2 card  overflow-visible">
+          <div className="mt-2 card overflow-visible">
             <div className="card-body p-2">
               <div className="md:flex items-center justify-between">
                 <div className="mr-4">
@@ -52,7 +51,6 @@ const ui = () => {
               </div>
             </div>
           </div>
-        </div>
       </div>
     </div>
   );

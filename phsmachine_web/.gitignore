@@ -32,7 +32,11 @@ yarn-error.log*
 .vercel
 
 # ignore pig datas
-/public/detection
-/public/images
+public/detection
+public/images
+public/exports
 
-# ignore error-logs.json
+# ignore logs/error-logs.json
+logs/logs/error-logs.json
+logs/phs-web-logs.txt
+logs/phs-core-logs.txt

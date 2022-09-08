@@ -1,4 +1,4 @@
-const { exec } = require("child_process");
+import { exec_command } from "../../../../helpers/api"
 
 const handler = async (req, res) => {
   try {
@@ -6,31 +6,10 @@ const handler = async (req, res) => {
     const { mode } = req.body
 
     if(mode === 0){
-        const shutdown = exec("sudo shutdown now", function (error, stdout, stderr) {
-            if (error) {
-              console.log(error.stack);
-              console.log("Error code: " + error.code);
-              console.log("Signal received: " + error.signal);
-            }
-            console.log("Child Process STDOUT: " + stdout);
-            console.log("Child Process STDERR: " + stderr);
-          });
-      
-          shutdown.on("exit", function (code) { console.log("Child process exited with exit code " + code); });
+        const shutdown = await exec_command("sudo shutdown now");
     }else if( mode === 1){
-        const reboot = exec("sudo reboot now", function (error, stdout, stderr) {
-            if (error) {
-              console.log(error.stack);
-              console.log("Error code: " + error.code);
-              console.log("Signal received: " + error.signal);
-            }
-            console.log("Child Process STDOUT: " + stdout);
-            console.log("Child Process STDERR: " + stderr);
-          });
-      
-          reboot.on("exit", function (code) { console.log("Child process exited with exit code " + code); });
+        const reboot = await exec_command("sudo reboot now")
     }
-
     res.status(200).json({ message : "Done" });
   } catch (e) {
     console.log(e);

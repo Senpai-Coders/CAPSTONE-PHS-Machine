@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Loading from "../loading";
 
-import { RebootConfirm, ShutdownConfirm } from "../modals";
+import { RebootConfirm, ShutdownConfirm, ResetConfirm } from "../modals";
 
 import axios from "axios";
 
@@ -11,7 +11,7 @@ import { VscDebugConsole } from "react-icons/vsc";
 import { FiHardDrive } from "react-icons/fi";
 import { MdAutoDelete } from "react-icons/md";
 import { AiFillStop } from "react-icons/ai";
-import { BiNetworkChart } from "react-icons/bi";
+import { BiNetworkChart, BiReset } from "react-icons/bi";
 import { BsGear, BsLayoutThreeColumns } from "react-icons/bs";
 import { TiWarningOutline } from "react-icons/ti";
 
@@ -152,11 +152,33 @@ const phsSettings = ({
         }}
       />
 
+      <ShutdownConfirm
+        shown={selectedModal === -2}
+        onAccept={() => {
+          router.push("/shutdown");
+          axios.post("/api/phs/config/power", { mode: 0 });
+        }}
+        close={() => {
+          setSelectedModal(-1);
+        }}
+      />
+
       <RebootConfirm
         shown={selectedModal === -3}
         onAccept={() => {
           router.push("/reboot");
           axios.post("/api/phs/config/power", { mode: 1 });
+        }}
+        close={() => {
+          setSelectedModal(-1);
+        }}
+      />
+
+      <ResetConfirm
+        shown={selectedModal === -4}
+        onAccept={() => {
+          //router.push("/shutdown");
+          // axios.post("/api/phs/config/power", { mode: 0 });
         }}
         close={() => {
           setSelectedModal(-1);
@@ -429,7 +451,6 @@ const phsSettings = ({
         </div>
       </div>
 
-
       <div className="mx-1 md:mx-2 overflow-visible rounded-md p-4 md:p-4 outline mt-4 bg-base-100 shadow-sm outline-1 outline-base-300">
         {updating === "storage" || (updating === "division" && <Loading />)}
         <p className="font-inter font-medium mb-2 text-lg md:text-xl">PHS</p>
@@ -600,6 +621,27 @@ const phsSettings = ({
                 }}
                 className="toggle  mt-4 md:mt-0"
               />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-2 card ">
+          <div className="card-body p-2">
+            <div className="md:flex items-center justify-between">
+              <div className="mr-4">
+                <div className="flex items-center justify-start mb-2">
+                  <div className="p-2 rounded-xl bg-base-300 mr-2">
+                    <BiReset className="w-6 h-6" />
+                  </div>
+                  <p className="text-lg">Hard Reset PHS</p>
+                </div>
+                <p className="text-xs md:text-sm">
+                  Reset PHS to it's factory default state.
+                </p>
+              </div>
+              <button onClick={()=>setSelectedModal(-4)} className="btn mt-4 md:mt-0 btn-sm btn-ghost btn-outline btn-error">
+                Reset
+              </button>
             </div>
           </div>
         </div>

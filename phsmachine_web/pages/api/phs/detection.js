@@ -1,8 +1,3 @@
-import {
-  COMPARE_PASSWORD,
-  GENERATE_JWT,
-  setCookie,
-} from "../../../helpers/api/index";
 import dbConnect from "../../../configs/dbConnection";
 const cookie = require("cookie");
 const users = require("../../../models/user");
@@ -55,11 +50,17 @@ const handler = async (req, res) => {
     } else if (mode === -2) {
       const { ids } = req.body;
       for (var x = 0; x < ids.length; x++) {
-        const update = await detections.deleteOne({ _id : new ObjectId(ids[x].id) });
-        fs.rmdir(`public/detection/${ids[x].path}`, { recursive: true }, (err) => {
-          if (err) console.log("Err deletion of folder record", err);
-          else console.log("deleted successfuly");
+        const update = await detections.deleteOne({
+          _id: new ObjectId(ids[x].id),
         });
+        fs.rmdir(
+          `public/detection/${ids[x].path}`,
+          { recursive: true },
+          (err) => {
+            if (err) console.log("Err deletion of folder record", err);
+            else console.log("deleted successfuly");
+          }
+        );
       }
 
       return res.status(200).json({ message: "Deleted!" });

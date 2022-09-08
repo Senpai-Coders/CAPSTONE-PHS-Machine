@@ -46,7 +46,7 @@ const handler = async (req, res) => {
     if (mode === 1) {
       // add user id to read
       const data = await notifications.updateMany(
-        { _id: { $in: [ids] } },
+        { _id: { $in: [...ids] } },
         {
           $push: {
             seenBy: editorDetails._id,

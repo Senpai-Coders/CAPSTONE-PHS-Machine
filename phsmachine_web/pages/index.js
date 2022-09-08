@@ -130,7 +130,7 @@ export default function Home() {
           additional: {
             error_code: 0,
             severity: "high",
-            error_log: `${e.message}`,
+            error_log: `PHS Core System ${e.message}`,
           },
           priority: 0,
           links: [
@@ -173,7 +173,7 @@ export default function Home() {
           additional: {
             error_code: 1,
             severity: "high",
-            error_log: `${e.message}`,
+            error_log: `PHS Web Server - ${e.message}`,
           },
           priority: 0,
           links: [
