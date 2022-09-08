@@ -14,6 +14,8 @@ import { AiFillStop } from "react-icons/ai";
 import { BiNetworkChart, BiReset } from "react-icons/bi";
 import { BsGear, BsLayoutThreeColumns } from "react-icons/bs";
 import { TiWarningOutline } from "react-icons/ti";
+import { SiWeightsandbiases } from "react-icons/si";
+import { RiTempColdFill } from "react-icons/ri";
 
 import {
   bytesToMegaBytes,
@@ -25,6 +27,8 @@ import {
 const phsSettings = ({
   autoDelete,
   state,
+  identity,
+  aimodels,
   detectionMode,
   storageInfo,
   divisionCount,
@@ -453,7 +457,9 @@ const phsSettings = ({
 
       <div className="mx-1 md:mx-2 overflow-visible rounded-md p-4 md:p-4 outline mt-4 bg-base-100 shadow-sm outline-1 outline-base-300">
         {updating === "storage" || (updating === "division" && <Loading />)}
-        <p className="font-inter font-medium mb-2 text-lg md:text-xl">PHS</p>
+        <p className="font-inter font-medium mb-2 text-lg md:text-xl">
+          PHS Advance Settings
+        </p>
 
         <div className="mt-4">
           <div className="flex items-center justify-start mb-2">
@@ -575,6 +581,7 @@ const phsSettings = ({
           </div>
           <p className="text-lg">Storage</p>
         </div>
+
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center">
             <div className="flex flex-col">
@@ -603,6 +610,158 @@ const phsSettings = ({
               <div className="mr-4">
                 <div className="flex items-center justify-start mb-2">
                   <div className="p-2 rounded-xl bg-base-300 mr-2">
+                    <SiWeightsandbiases className="w-6 h-6" />
+                  </div>
+                  <p className="text-lg">YoloV5 Weights</p>
+                </div>
+                <p className="text-xs md:text-sm">
+                  PHS use Yolov5 for identifying pigs. Weights contains weight &
+                  bias that makes Yolov5 identified pigs. You can switch between
+                  available weights below.
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={autoDelete.value}
+                onChange={(e) => {
+                  updateAutoDelete();
+                }}
+                className="toggle  mt-4 md:mt-0"
+              />
+            </div>
+          </div>
+          <div className="overflow-x-auto mt-2">
+            <table className="table w-full">
+              <thead>
+                <tr>
+                  {/* <th></th> */}
+                  <th>Weight Name</th>
+                  {/* <th>Path</th> */}
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {identity &&
+                  aimodels &&
+                  aimodels
+                    .filter((mods) => mods.value.for === "yolo")
+                    .map((mods, idx) => (
+                      <tr
+                        className={`${
+                          identity.value.Yolo_Weights.name === mods.value.name
+                            ? "active"
+                            : ""
+                        }`}
+                        key={idx}
+                      >
+                        {/* <th>{idx + 1}</th> */}
+                        <td>{mods.value.name}</td>
+                        {/* <td>{mods.value.path}</td> */}
+                        <td>
+                          <button
+                            disabled={
+                              identity.value.Yolo_Weights.name ===
+                              mods.value.name
+                            }
+                            className={`btn btn-sm  ${
+                              identity.value.Yolo_Weights.name ===
+                              mods.value.name
+                                ? "btn-accent btn-ghost btn-outline"
+                                : ""
+                            }`}
+                          >
+                            {" "}
+                            {identity.value.Yolo_Weights.name ===
+                            mods.value.name
+                              ? "using"
+                              : "set"}{" "}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="divider"></div>
+
+          <div className="card-body p-2">
+            <div className="md:flex items-center justify-between">
+              <div className="mr-4">
+                <div className="flex items-center justify-start mb-2">
+                  <div className="p-2 rounded-xl bg-base-300 mr-2">
+                    <RiTempColdFill className="w-6 h-6" />
+                  </div>
+                  <p className="text-lg">PHS Heatstress CNN weights</p>
+                </div>
+                <p className="text-xs md:text-sm">
+                  PHS use custom made CNN model for identifying heatstress.
+                  These weights contains the entire trained tensorflow CNN
+                  model. You can switch between available weights below.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="overflow-x-auto mt-2">
+            <table className="table w-full">
+              <thead>
+                <tr>
+                  {/* <th></th> */}
+                  <th>Weight Name</th>
+                  {/* <th>Path</th> */}
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {identity &&
+                  aimodels &&
+                  aimodels
+                    .filter((mods) => mods.value.for === "heatstress")
+                    .map((mods, idx) => (
+                      <tr
+                        className={`${
+                          identity.value.Yolo_Weights.name === mods.value.name
+                            ? "active"
+                            : ""
+                        }`}
+                        key={idx}
+                      >
+                        {/* <th>{idx + 1}</th> */}
+                        <td>{mods.value.name}</td>
+                        {/* <td className="truncate">{mods.value.path}</td> */}
+                        <td>
+                          <button
+                            disabled={
+                              identity.value.Yolo_Weights.name ===
+                              mods.value.name
+                            }
+                            className={`btn btn-sm  ${
+                              identity.value.Yolo_Weights.name ===
+                              mods.value.name
+                                ? "btn-accent btn-ghost btn-outline"
+                                : ""
+                            }`}
+                          >
+                            {" "}
+                            {identity.value.Yolo_Weights.name ===
+                            mods.value.name
+                              ? "using"
+                              : "set"}{" "}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="divider"></div>
+
+        <div className="mt-2 card ">
+          <div className="card-body p-2">
+            <div className="md:flex items-center justify-between">
+              <div className="mr-4">
+                <div className="flex items-center justify-start mb-2">
+                  <div className="p-2 rounded-xl bg-base-300 mr-2">
                     <MdAutoDelete className="w-6 h-6" />
                   </div>
                   <p className="text-lg">Automatic Record Deletion</p>
@@ -624,6 +783,7 @@ const phsSettings = ({
             </div>
           </div>
         </div>
+        <div className="divider"></div>
 
         <div className="mt-2 card ">
           <div className="card-body p-2">
@@ -639,34 +799,15 @@ const phsSettings = ({
                   Reset PHS to it's factory default state.
                 </p>
               </div>
-              <button onClick={()=>setSelectedModal(-4)} className="btn mt-4 md:mt-0 btn-sm btn-ghost btn-outline btn-error">
+              <button
+                onClick={() => setSelectedModal(-4)}
+                className="btn mt-4 md:mt-0 btn-sm btn-ghost btn-outline btn-error"
+              >
                 Reset
               </button>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="mx-2 mt-8 font-mono">
-        <p>System Information</p>
-        <p>
-          PHS Version : <span>1.0</span>
-        </p>
-        <p>
-          Python : <span>3.8</span>
-        </p>
-        <p>
-          Server : <span>NextJs/Flask</span>
-        </p>
-        <p>
-          Database : <span>MongoDB</span>
-        </p>
-        <p>
-          PHS System Type : <span>Standalone</span>
-        </p>
-        <p>
-          OS : <span>Raspberry Pi 0s</span>
-        </p>
       </div>
     </div>
   );

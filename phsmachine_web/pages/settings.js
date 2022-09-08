@@ -47,22 +47,7 @@ const configuration = () => {
   });
 
   const [coreActions, setCoreActions] = useState([]);
-  const [coreRelays, setCoreRelays] = useState([
-    {
-        category: "relays",
-        config_name: "21",
-        description: " - ",
-        GPIO_PIN: 21,
-        state: true,
-      },
-      {
-        category: "relays",
-        config_name: "20",
-        description: " - ",
-        GPIO_PIN: 20,
-        state: true,
-      }
-  ]);
+  const [coreRelays, setCoreRelays] = useState([]);
 
   const [phsAutoDelete, setPhsAutoDelete] = useState({ value: false });
   const [phsDivision, setDivision] = useState({ value: { col: 1, row: 1 } });
@@ -70,6 +55,9 @@ const configuration = () => {
 
   const [dbActions, setDbActions] = useState([]);
   const [dbRelays, setDbRelays] = useState([]);
+
+  const [identity, setIdentity] = useState();
+  const [modelsOptions, setModelsOptions] = useState([]);
 
   const phs_init = async () => {
     try {
@@ -122,11 +110,27 @@ const configuration = () => {
         mode: 3,
       });
 
-      const ph_division = await axios.post("/api/phs/config/divisions", {
+      const phs_division = await axios.post("/api/phs/config/divisions", {
         mode: 0,
       });
 
-      setDivision(ph_division.data.value);
+      const phs_models = await axios.post("/api/phs/config/aimodels", {
+        mode: 0,
+        search: { category: "models" }
+      });
+
+      const phs_identity = await axios.post("/api/phs/config/aimodels", {
+        mode: 0,
+        search: {
+            category: "config",
+            config_name: "identity"
+        }
+      });
+
+      setModelsOptions(phs_models.data)
+      setIdentity(phs_identity.data[0])
+
+      setDivision(phs_division.data.value);
       setDbRelays(phs_relays.data);
       setDetectionMode(db_detMode.data);
       setPhsAutoDelete(phs_autodelete.data);
@@ -215,6 +219,8 @@ const configuration = () => {
 
             {tab === 0 && loadA && loadB && (
               <PhsSettingsV2
+                identity={identity}
+                aimodels={modelsOptions}
                 divisionCount={phsDivision}
                 autoDelete={phsAutoDelete}
                 storageInfo={phsStorage}

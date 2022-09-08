@@ -78,12 +78,6 @@ const handler = async (req, res) => {
 
     console.log("Reset PHS system -> Factory Default")
 
-    console.log(del_detect_files,
-        del_user_photos,
-        del_exports,
-        del_errors,
-        del_system_logs)
-
     if(del_detect_files) paths.push({ path : 'public/detection', isFile : false})
     if(del_user_photos) paths.push({ path : 'public/images', isFile : false})
     if(del_exports) paths.push({ path : 'public/exports', isFile : false})
@@ -137,7 +131,7 @@ const handler = async (req, res) => {
     }
 
     res.status(200).json({ status: "Reset 👌" });
-    let reboot = exec_command("sudo reboot now");
+    //TODO: let reboot = exec_command("sudo reboot now");
   } catch (e) {
     console.log(e);
   }

@@ -15,7 +15,17 @@
             "description": "Unique Identity Of phs",
             "value": {
                 "server_name": "PHS A1",
-                "type": "Standalone"
+                "type": "Standalone",
+                "Yolo_Weights": {
+                    "name": "Yolov5 Weight - Pig Detection v1.0",
+                    "path": "models/weights/yolo/best.pt",
+                    "for" : "yolo"
+                },
+                "Heat_Stress_Weights": {
+                    "name": "Heat Stress mai_Net_v2.0.h5 ",
+                    "path": "models/weights/maiCNNet/mai_Net.h5",
+                    "for" : "heatstress"
+                }
             },
             "disabled": false,
             "deletable": false
@@ -58,26 +68,41 @@
             "disabled": false,
             "deletable": false
         },
+
         {
             "category": "models",
-            "config_name": "YoloV5 Weight",
+            "config_name": "Yolov5 Weight - Pig Detection v1.0",
             "description": "Weights are the learning version of the AI, this can be change when PHS release new update that include new weights on the PHS repository",
             "value": {
                 "name": "Yolov5 Weight - Pig Detection v1.0",
-                "path": "models/weights/best.pt"
+                "path": "models/weights/yolo/best.pt",
+                "for" : "yolo"
             },
             "deletable": false
         },
         {
             "category": "models",
-            "config_name": "Heat Stress CNN Weight",
+            "config_name": "Heat Stress mai_Net_v1.0.h5",
             "description": "This defined where the trained PHS CNN for identifying heat stress will be found.",
             "value": {
-                "name": "Yolov5 Weight - Pig Detection v1.0",
-                "path": "models/mai_Net.h5"
+                "name": "Heat Stress mai_Net_v1.0.h5",
+                "path": "models/weights/maiCNNet/mai_Net.h5",
+                "for" : "heatstress"
             },
             "deletable": false
         },
+        {
+            "category": "models",
+            "config_name": "Heat Stress mai_Net_v2.0.h5 ",
+            "description": "This defined where the trained PHS CNN for identifying heat stress will be found.",
+            "value": {
+                "name": "Heat Stress mai_Net_v2.0.h5 ",
+                "path": "models/weights/maiCNNet/mai_Net.h5",
+                "for" : "heatstress"
+            },
+            "deletable": false
+        },
+
         {
             "category": "actions",
             "config_name": "Cell 1",
@@ -94,7 +119,6 @@
                 "eventLocation": 1
             },
             "deletable": false
-            
         },
         {
             "category": "actions",
@@ -112,7 +136,6 @@
                 "eventLocation": 2
             },
             "deletable": false
-            
         },
         {
             "category": "actions",
@@ -130,7 +153,6 @@
                 "eventLocation": 3
             },
             "deletable": false
-            
         },
         {
             "category": "actions",
@@ -148,7 +170,6 @@
                 "eventLocation": 4
             },
             "deletable": false
-            
         },
         {
             "category": "actions",
@@ -166,7 +187,6 @@
                 "eventLocation": 5
             },
             "deletable": false
-            
         },
         {
             "category": "actions",
@@ -184,7 +204,6 @@
                 "eventLocation": 6
             },
             "deletable": false
-            
         },
         {
             "category": "actions",
@@ -202,7 +221,6 @@
                 "eventLocation": 7
             },
             "deletable": false
-            
         },
         {
             "category": "actions",
@@ -220,7 +238,6 @@
                 "eventLocation": 8
             },
             "deletable": false
-            
         },
         {
             "category": "actions",
@@ -238,7 +255,6 @@
                 "eventLocation": 1
             },
             "deletable": false
-            
         },
         {
             "category": "relays",
