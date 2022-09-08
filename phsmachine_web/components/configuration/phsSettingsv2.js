@@ -221,7 +221,7 @@ const phsSettings = ({
                   <p className="text-xs md:text-sm">
                     This will disable detection & actions. You can also be able
                     to test the relays via{" "}
-                    <div class="text-sm text-secondary breadcrumbs">
+                    <div className="text-sm text-secondary breadcrumbs">
                       <ul>
                         <li>Settings</li>
                         <li>Relays</li>

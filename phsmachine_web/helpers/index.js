@@ -76,9 +76,7 @@ export const getMyData = async () => {
   try {
     const myData = await axios.post("/api/phs/userDetails");
     return myData.data.userData;
-  } catch (e) {
-    console.log("Internal Server Error : 500");
-  }
+  } catch (e) {}
 };
 
 export const translateSystemStateToIcon = (status) => {

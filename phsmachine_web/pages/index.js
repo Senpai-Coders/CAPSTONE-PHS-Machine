@@ -22,7 +22,13 @@ import {
   ShutdownConfirm,
 } from "../components/modals/";
 
-import { PI_IP, getCamMode, setCamMode, localErrorAdd, localErrorDeleteAll } from "../helpers";
+import {
+  PI_IP,
+  getCamMode,
+  setCamMode,
+  localErrorAdd,
+  localErrorDeleteAll,
+} from "../helpers";
 
 import { GiPig } from "react-icons/gi";
 import { BsHash } from "react-icons/bs";
@@ -78,26 +84,8 @@ export default function Home() {
   });
   const [dbActions, setDbActions] = useState([]);
   const [dbActiveUsers, setDbActiveUsers] = useState([]);
-  const [phsActions, setPhsActions] = useState([
-    {
-      config_name: "Mist",
-      description: "This will activate the pump",
-      target_relay: "Pump",
-      duration: "5",
-      state: false,
-      elapsed: 25,
-      caller: "Heat Stress Detector",
-    },
-    {
-      config_name: "Fan",
-      description: "Starting Div 1 LED",
-      target_relay: "LED 1",
-      duration: "30",
-      state: true,
-      elapsed: 27,
-      caller: "Dark Scene Detector",
-    },
-  ]);
+  const [phsActions, setPhsActions] = useState([]);
+ 
 
   const phs_core_init = async () => {
     try {
@@ -116,12 +104,12 @@ export default function Home() {
       SETSYSSTATE(phs_response.data.state);
       setIsDown(false);
       setTimeOutCount(0);
-      localErrorDeleteAll()
+      localErrorDeleteAll();
     } catch (e) {
       setIsDown(true);
       setTimeOutCount(timeOutCount + 1);
       SETSYSSTATE({ ...SYSSTATE, status: -2 });
-      if ((e.message == "Network Error"))
+      if (e.message == "Network Error")
         localErrorAdd({
           notification_type: "error",
           title: "PHS Core Error",
@@ -162,9 +150,9 @@ export default function Home() {
       setDbActions(db_actions.data.actions);
       setDbActiveUsers(db_active_users.data.activeUsers);
       setPastDetection(db_past_detections.data.detections);
-      localErrorDeleteAll()
+      localErrorDeleteAll();
     } catch (e) {
-      if ((e.message == "Network Error"))
+      if (e.message == "Network Error")
         localErrorAdd({
           notification_type: "error",
           title: "PHS Web Server Error",

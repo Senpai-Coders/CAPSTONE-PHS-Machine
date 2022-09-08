@@ -61,6 +61,7 @@ const navbar = ({ toggled, setToggled }) => {
   const init = async () => {
     if (!(await amISignedIn())) router.push("/auth/signin");
     const usrData = await getMyData();
+    
     setUserData(usrData);
     setLoading(false);
   };
@@ -103,7 +104,7 @@ const navbar = ({ toggled, setToggled }) => {
           }`}
         >
           <div className="mt-2 flex justify-between items-center">
-            <p>PHS A1</p>
+            <p>PHS</p>
             <button
               className="btn btn-square btn-sm btn-outline btn-ghost"
               onClick={() => {

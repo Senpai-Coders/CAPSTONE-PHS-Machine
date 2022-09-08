@@ -47,13 +47,26 @@ const configuration = () => {
   });
 
   const [coreActions, setCoreActions] = useState([]);
-  const [coreRelays, setCoreRelays] = useState([]);
+  const [coreRelays, setCoreRelays] = useState([
+    {
+        category: "relays",
+        config_name: "21",
+        description: " - ",
+        GPIO_PIN: 21,
+        state: true,
+      },
+      {
+        category: "relays",
+        config_name: "20",
+        description: " - ",
+        GPIO_PIN: 20,
+        state: true,
+      }
+  ]);
 
   const [phsAutoDelete, setPhsAutoDelete] = useState({ value: false });
   const [phsDivision, setDivision] = useState({ value: { col: 1, row: 1 } });
-  const [detectionMode, setDetectionMode] = useState({
-    value: { mode: true, temperatureThreshold: -34 },
-  });
+  const [detectionMode, setDetectionMode] = useState({ value: { mode: true, temperatureThreshold: -34 } });
 
   const [dbActions, setDbActions] = useState([]);
   const [dbRelays, setDbRelays] = useState([]);
@@ -69,8 +82,12 @@ const configuration = () => {
         `http://${PI_IP}:8000/getActionState`,
         {}
       );
+
+      const phs_relays = await axios.get( `http://${PI_IP}:8000/getAllRelays` );
+
       if (exited) return;
       setCoreActions(phs_actions.data.actions);
+      setCoreRelays(phs_relays.data)
       SETSYSSTATE(phs_response.data.state);
       //setIsDown(false);
       setLoadA(true);
@@ -213,7 +230,7 @@ const configuration = () => {
                 coreActions={coreActions}
               />
             )}
-            {tab === 3 && loadA && loadB && <Relays relays={dbRelays} />}
+            {tab === 3 && loadA && loadB && <Relays coreRelays={coreRelays} state={SYSSTATE.status} relays={dbRelays} />}
             {tab === 1 && loadA && loadB && <Ui />}
           </div>
         </div>

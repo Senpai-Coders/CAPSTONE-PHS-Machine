@@ -14,7 +14,7 @@ const Notification = ({ userData }) => {
           <div className="indicator text-neutral-content">
             <IoNotificationsSharp className="text-xl" />
             {unreadCount > 0 && (
-              <span class="indicator-item animate-pulse badge badge-xs badge-primary"></span>
+              <span className="indicator-item animate-pulse badge badge-xs badge-primary"></span>
             )}
           </div>
         </label>
