@@ -4,7 +4,7 @@ export default function _500() {
       <div>
         <h1 className="text-3xl font-lato font-light">500 | Page Not Found</h1>
       </div>
-      <div className='absolute'>
+      <div className="absolute">
         <div className="grid-cols-1 grid-rows-1"></div>
         <div className="grid-cols-2 grid-rows-2"></div>
         <div className="grid-cols-3 grid-rows-3"></div>

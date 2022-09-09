@@ -10,10 +10,13 @@ const handler = async (req, res) => {
     const editorDetails = VERIFY_AUTHORIZATION(auth);
     const { mode, search, changes } = req.body;
     if (mode === 0) {
-      const models = await configs.find({ ...search});
+      const models = await configs.find({ ...search });
       return res.status(200).json(models);
     } else if (mode === 1) {
-      const models = await configs.updateOne({ ...search}, { $set : {...changes}});
+      const models = await configs.updateOne(
+        { ...search },
+        { $set: { ...changes } }
+      );
       return res.status(200).json(models);
     } else if (mode === -1) {
       const del = await configs.deleteOne({ ...search });

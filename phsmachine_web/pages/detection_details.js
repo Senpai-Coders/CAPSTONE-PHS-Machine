@@ -54,12 +54,12 @@ export default function _detection_details() {
     }
   };
 
-  const goBack = () => { 
-    let goBacks = router.back()
-    if(goBacks === undefined){
-        close()
+  const goBack = () => {
+    let goBacks = router.back();
+    if (goBacks === undefined) {
+      close();
     }
-}
+  };
 
   const del = async () => {
     try {
@@ -354,7 +354,7 @@ export default function _detection_details() {
                       <p className="text-lg">
                         Min Temp:{" "}
                         <span className="font-medium text-primary">
-                          {tempParser(data.info.min_temp ,1)} °C
+                          {tempParser(data.info.min_temp, 1)} °C
                         </span>{" "}
                       </p>
                       <p className="text-lg">

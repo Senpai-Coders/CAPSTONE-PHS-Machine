@@ -3,7 +3,7 @@ import {
   writeError,
   removeErrorCode,
   deletePathOrFile,
-  exec_command
+  exec_command,
 } from "../../../helpers/api";
 import dbConnect from "../../../configs/dbConnection";
 
@@ -71,21 +71,37 @@ const handler = async (req, res) => {
       del_user_photos,
       del_exports,
       del_errors,
-      del_system_logs
+      del_system_logs,
     } = req.body;
 
-    let paths = []
+    let paths = [];
 
-    console.log("Reset PHS system -> Factory Default")
+    console.log("Reset PHS system -> Factory Default");
 
-    if(del_detect_files) paths.push({ path : 'public/detection', isFile : false})
-    if(del_user_photos) paths.push({ path : 'public/images', isFile : false})
-    if(del_exports) paths.push({ path : 'public/exports', isFile : false})
-    if(del_errors) paths.push({ path : 'logs/error-logs.json', isFile : true, defaultValue : JSON.stringify([])})
-    if(del_system_logs) paths.push({ path : 'logs/phs-web-logs.txt', isFile : true, defaultValue : '[PHS WEB LOG FILE]'})
-    if(del_system_logs) paths.push({ path : 'logs/phs-core-logs.txt', isFile : true, defaultValue : '[PHS CORE LOG FILE]'})
+    if (del_detect_files)
+      paths.push({ path: "public/detection", isFile: false });
+    if (del_user_photos) paths.push({ path: "public/images", isFile: false });
+    if (del_exports) paths.push({ path: "public/exports", isFile: false });
+    if (del_errors)
+      paths.push({
+        path: "logs/error-logs.json",
+        isFile: true,
+        defaultValue: JSON.stringify([]),
+      });
+    if (del_system_logs)
+      paths.push({
+        path: "logs/phs-web-logs.txt",
+        isFile: true,
+        defaultValue: "[PHS WEB LOG FILE]",
+      });
+    if (del_system_logs)
+      paths.push({
+        path: "logs/phs-core-logs.txt",
+        isFile: true,
+        defaultValue: "[PHS CORE LOG FILE]",
+      });
 
-    paths = deletePathOrFile(paths)
+    paths = deletePathOrFile(paths);
 
     if (default_users) {
       console.log("init users");

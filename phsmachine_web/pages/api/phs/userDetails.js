@@ -1,7 +1,7 @@
 import dbConnect from "../../../configs/dbConnection";
 const users = require("../../../models/user");
 
-import { VERIFY_AUTHORIZATION } from "../../../helpers/api"
+import { VERIFY_AUTHORIZATION } from "../../../helpers/api";
 
 dbConnect();
 
@@ -9,12 +9,12 @@ const handler = async (req, res) => {
   try {
     const token = req.cookies.authorization;
     let { _id } = req.body;
-    
-    if(!token) res.status(401).json({message : "No token provided"})
 
-    if(!_id){ 
-        let tokenPayload = VERIFY_AUTHORIZATION(token);
-        _id = tokenPayload._id
+    if (!token) res.status(401).json({ message: "No token provided" });
+
+    if (!_id) {
+      let tokenPayload = VERIFY_AUTHORIZATION(token);
+      _id = tokenPayload._id;
     }
 
     let userData = {};

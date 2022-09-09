@@ -4,12 +4,11 @@ import { API } from "../../helpers";
 
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { GoInfo } from "react-icons/go";
-import { MdOutlineClose } from "react-icons/md"
+import { MdOutlineClose } from "react-icons/md";
 
 import PhsScanner from "../../components/Phs_Scanner/PhsScanner";
 
-import axios from "axios"
-
+import axios from "axios";
 
 const signin = () => {
   const router = useRouter();
@@ -20,7 +19,7 @@ const signin = () => {
   const [show, setShow] = useState(false);
 
   const [showScan, setShowScan] = useState(false);
-  const [curIp, setCurIp] = useState('-')
+  const [curIp, setCurIp] = useState("-");
 
   const signin = async (e) => {
     try {
@@ -48,14 +47,18 @@ const signin = () => {
     }
   };
 
-  const init = async() => {
-    try{
-        const data = await axios.get('/api/connectivity')
-        setCurIp(data.data.ip)
-    }catch(e){ console.log(e)}
-  }
+  const init = async () => {
+    try {
+      const data = await axios.get("/api/connectivity");
+      setCurIp(data.data.ip);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-useEffect(()=>{init()},[])
+  useEffect(() => {
+    init();
+  }, []);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 h-screen w-screen relative">
@@ -69,16 +72,18 @@ useEffect(()=>{init()},[])
           <p className="mt-8 font-inter text-2xl font-semibold tracking-wider mr-8">
             Helping piggery owners in resolving & preventing pig heat stress
           </p>
-          <p className='mt-9'>You can switch to other phs devices on your local network</p>
+          <p className="mt-9">
+            You can switch to other phs devices on your local network
+          </p>
           <button
-              onClick={(e) => {
-                e.preventDefault();
-                setShowScan(true);
-              }}
-              className="mt-4 btn btn-sm "
-            >
-              Switch PHS
-            </button>
+            onClick={(e) => {
+              e.preventDefault();
+              setShowScan(true);
+            }}
+            className="mt-4 btn btn-sm "
+          >
+            Switch PHS
+          </button>
         </div>
       </div>
       <form

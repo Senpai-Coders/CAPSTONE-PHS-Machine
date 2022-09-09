@@ -156,7 +156,7 @@ const configuration = () => {
     setTab(Number.parseInt(tb));
   }, [router.isReady, router]);
 
-  const fireOnChange = async() => {
+  const fireOnChange = async () => {
     await phs_init();
     await init();
   };
@@ -171,7 +171,7 @@ const configuration = () => {
     //   clearInterval(loader);
     //   setExited(true);
     // };
-    fireOnChange()
+    fireOnChange();
   }, []);
 
   return (

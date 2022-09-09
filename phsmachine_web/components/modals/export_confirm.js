@@ -103,23 +103,37 @@ const ExportConfirm = ({ close, shown, onAccept }) => {
           </div>
         )}
 
-        {
-            exporting && <>
-                <progress className="progress mt-4 mx-auto"></progress>
-                <p className="text-xs text-center mt-2">processing export, please wait.</p>
-            </>
-        }
+        {exporting && (
+          <>
+            <progress className="progress mt-4 mx-auto"></progress>
+            <p className="text-xs text-center mt-2">
+              processing export, please wait.
+            </p>
+          </>
+        )}
 
         {downloadLinks.length > 0 && (
           <div className="mt-4">
             <p className="font-black">Export Ready, click them to download</p>
             <div className="form-control font-medium">
               {downloadLinks.map((lnks, id) => (
-                <label key={id} className="label mt-3  cursor-pointer flex justify-start">
-                  { lnks.type === 'xlsx' && <RiFileExcel2Fill className="text-3xl" />}
-                  { lnks.type === 'csv' && <FaFileCsv className="text-3xl" />}
-                  { lnks.type === 'zip' && <BsFillFileEarmarkZipFill className="text-3xl" />}
-                  <span onClick={()=>window.open(`${lnks.link}`,'_blank')} className="ml-2 truncate underline">{lnks.name}</span>
+                <label
+                  key={id}
+                  className="label mt-3  cursor-pointer flex justify-start"
+                >
+                  {lnks.type === "xlsx" && (
+                    <RiFileExcel2Fill className="text-3xl" />
+                  )}
+                  {lnks.type === "csv" && <FaFileCsv className="text-3xl" />}
+                  {lnks.type === "zip" && (
+                    <BsFillFileEarmarkZipFill className="text-3xl" />
+                  )}
+                  <span
+                    onClick={() => window.open(`${lnks.link}`, "_blank")}
+                    className="ml-2 truncate underline"
+                  >
+                    {lnks.name}
+                  </span>
                 </label>
               ))}
             </div>

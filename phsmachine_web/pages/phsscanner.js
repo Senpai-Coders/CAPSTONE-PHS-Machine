@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function phsScan() {
-    axios.defaults.timeout = 4 * 1000
+  axios.defaults.timeout = 4 * 1000;
   const [selected, setSelected] = useState({
     connectivity: "ok",
     server_name: "-",
@@ -18,22 +18,24 @@ export default function phsScan() {
     url: "-",
     core_ip: "-",
     core_url: "-",
-    version : "-"
+    version: "-",
   });
 
-  const [curIp, setCurIp] = useState('-')
+  const [curIp, setCurIp] = useState("-");
 
-  const init = async() => {
-    try{
-        const data = await axios.get('/api/connectivity')
-        setSelected({ ...data.data })
-        setCurIp(data.data.ip)
-    }catch(e){ console.log(e)}
-  }
+  const init = async () => {
+    try {
+      const data = await axios.get("/api/connectivity");
+      setSelected({ ...data.data });
+      setCurIp(data.data.ip);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-  useEffect(()=>{
-    init()
-  },[])
+  useEffect(() => {
+    init();
+  }, []);
 
   return (
     <motion.div
@@ -44,7 +46,11 @@ export default function phsScan() {
       className="w-full md:justify-between md:flex"
     >
       {/* Current Device */}
-      <PhsCard phs_data={selected} showConnect={ selected.ip !== curIp ? true : false } title={ selected.ip === curIp ? "Current PHS" : "Conect To"} />
+      <PhsCard
+        phs_data={selected}
+        showConnect={selected.ip !== curIp ? true : false}
+        title={selected.ip === curIp ? "Current PHS" : "Conect To"}
+      />
       <div className="card w-full shadow-lg p-4">
         <PhsScanner curIp={curIp} onSwitch={setSelected} />
       </div>

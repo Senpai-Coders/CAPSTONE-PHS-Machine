@@ -1,7 +1,7 @@
 import {
   VERIFY_AUTHORIZATION,
   readError,
-  clearError
+  clearError,
 } from "../../../helpers/api/index";
 import dbConnect from "../../../configs/dbConnection";
 const notifications = require("../../../models/notification");
@@ -20,7 +20,7 @@ const handler = async (req, res) => {
       let toRet = [];
       let unreads = 0;
 
-      let errorLog = await readError()
+      let errorLog = await readError();
 
       data.forEach((notifs) => {
         var focused = notifs.toObject();
@@ -39,8 +39,9 @@ const handler = async (req, res) => {
         if (!seen) unreads += 1;
       });
 
-
-      return res.status(200).json({ notifications: [...toRet, ...errorLog], unreads });
+      return res
+        .status(200)
+        .json({ notifications: [...toRet, ...errorLog], unreads });
     }
 
     if (mode === 1) {
@@ -59,7 +60,7 @@ const handler = async (req, res) => {
     if (mode === -2) {
       // delete all
       const data = await notifications.deleteMany({});
-      clearError()
+      clearError();
       return res.status(200).json({ message: "deleted all" });
     }
 

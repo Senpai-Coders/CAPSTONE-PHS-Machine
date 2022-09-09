@@ -5,7 +5,7 @@ const detections = require("../../../models/thermal_detection");
 let ObjectId = require("mongoose").Types.ObjectId;
 const fs = require("fs");
 
-import { ToExcel, ToCsv, ToZip } from "../../../helpers/api"
+import { ToExcel, ToCsv, ToZip } from "../../../helpers/api";
 
 dbConnect();
 
@@ -67,62 +67,81 @@ const handler = async (req, res) => {
 
       return res.status(200).json({ message: "Deleted!" });
     } else if (mode === 4) {
-        const { toExcel, toCsv, toZip } = toExport
-        let links = []
+      const { toExcel, toCsv, toZip } = toExport;
+      let links = [];
 
-        const data = await detections.find({})
+      const data = await detections.find({});
 
-        if(toExcel){
-            let parsedData = []
+      if (toExcel) {
+        let parsedData = [];
 
-            data.forEach((data)=>{
-                parsedData.push({
-                    "Detection Date" : new Intl.DateTimeFormat('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).format(new Date(data.cat)),
-                    "Time Occured" : new Date(data.cat).toLocaleTimeString(),
-                    "Seen Pig(s)" : data.data.pig_count,
-                    "Stressed Pig(s)" : data.data.stressed_pig,
-                    "Min Temperature" : data.data.min_temp.toFixed(2),
-                    "Average Temperature" : data.data.avg_temp.toFixed(2),
-                    "Maximum Temperature" : data.data.max_temp.toFixed(2),
-                    "Actions Performed" : data.actions.length,
-                    "Raw Data Directory" : data.img_normal.substring(data.img_normal.indexOf('/Dete')+1, 43)  
-                })
-            })
+        data.forEach((data) => {
+          parsedData.push({
+            "Detection Date": new Intl.DateTimeFormat("en-US", {
+              month: "2-digit",
+              day: "2-digit",
+              year: "numeric",
+            }).format(new Date(data.cat)),
+            "Time Occured": new Date(data.cat).toLocaleTimeString(),
+            "Seen Pig(s)": data.data.pig_count,
+            "Stressed Pig(s)": data.data.stressed_pig,
+            "Min Temperature": data.data.min_temp.toFixed(2),
+            "Average Temperature": data.data.avg_temp.toFixed(2),
+            "Maximum Temperature": data.data.max_temp.toFixed(2),
+            "Actions Performed": data.actions.length,
+            "Raw Data Directory": data.img_normal.substring(
+              data.img_normal.indexOf("/Dete") + 1,
+              43
+            ),
+          });
+        });
 
-            const fileUrl = await ToExcel( parsedData )
-            if(fileUrl.length > 0) links.push({ name : 'Excel File', type:'xlsx', link : fileUrl})
-            console.log('Exported -> xlsx ')
-        }
-        
-        if(toCsv){
-            let parsedData = []
+        const fileUrl = await ToExcel(parsedData);
+        if (fileUrl.length > 0)
+          links.push({ name: "Excel File", type: "xlsx", link: fileUrl });
+        console.log("Exported -> xlsx ");
+      }
 
-            data.forEach((data)=>{
-                parsedData.push({
-                    "Detection Date" : new Intl.DateTimeFormat('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).format(new Date(data.cat)),
-                    "Time Occured" : new Date(data.cat).toLocaleTimeString(),
-                    "Seen Pig(s)" : data.data.pig_count,
-                    "Stressed Pig(s)" : data.data.stressed_pig,
-                    "Min Temperature" : data.data.min_temp.toFixed(2),
-                    "Average Temperature" : data.data.avg_temp.toFixed(2),
-                    "Maximum Temperature" : data.data.max_temp.toFixed(2),
-                    "Actions Performed" : data.actions.length,
-                    "Raw Data Directory" : data.img_normal.substring(data.img_normal.indexOf('/Dete')+1, 43)  
-                })
-            })
+      if (toCsv) {
+        let parsedData = [];
 
-            const fileUrl = await ToCsv( parsedData )
-            if(fileUrl.length > 0) links.push({ name : 'CSV File', type:'csv', link : fileUrl})
-            console.log('Exported -> csv ')
-        }
+        data.forEach((data) => {
+          parsedData.push({
+            "Detection Date": new Intl.DateTimeFormat("en-US", {
+              month: "2-digit",
+              day: "2-digit",
+              year: "numeric",
+            }).format(new Date(data.cat)),
+            "Time Occured": new Date(data.cat).toLocaleTimeString(),
+            "Seen Pig(s)": data.data.pig_count,
+            "Stressed Pig(s)": data.data.stressed_pig,
+            "Min Temperature": data.data.min_temp.toFixed(2),
+            "Average Temperature": data.data.avg_temp.toFixed(2),
+            "Maximum Temperature": data.data.max_temp.toFixed(2),
+            "Actions Performed": data.actions.length,
+            "Raw Data Directory": data.img_normal.substring(
+              data.img_normal.indexOf("/Dete") + 1,
+              43
+            ),
+          });
+        });
 
-        if(toZip){
-            const fileUrl = await ToZip( 'public/detection' )
-            if(fileUrl.length > 0) links.push({ name : 'Zip File', type : 'zip', link : fileUrl})
-            console.log('Exported -> zip ')
-        }
+        const fileUrl = await ToCsv(parsedData);
+        if (fileUrl.length > 0)
+          links.push({ name: "CSV File", type: "csv", link: fileUrl });
+        console.log("Exported -> csv ");
+      }
 
-        res.status(200).json({ downloadLinks : links.filter((ln)=>ln.link.length > 0) })
+      if (toZip) {
+        const fileUrl = await ToZip("public/detection");
+        if (fileUrl.length > 0)
+          links.push({ name: "Zip File", type: "zip", link: fileUrl });
+        console.log("Exported -> zip ");
+      }
+
+      res
+        .status(200)
+        .json({ downloadLinks: links.filter((ln) => ln.link.length > 0) });
     }
   } catch (e) {
     console.log(e);

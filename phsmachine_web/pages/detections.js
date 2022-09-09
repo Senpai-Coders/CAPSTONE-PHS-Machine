@@ -3,8 +3,7 @@ import Head from "next/head";
 import { useState } from "react";
 
 import DetectionList from "../components/detection";
-import Statistics from "../components/detection/Statistics"
-
+import Statistics from "../components/detection/Statistics";
 
 const Events = () => {
   const [tab, setTab] = useState(0);
@@ -14,7 +13,6 @@ const Events = () => {
       <Head>
         <title>Detections</title>
       </Head>
-
 
       {/* <div className="flex items-center">
         <p className="text-xl card-title font-lato font-semibold">

@@ -14,14 +14,18 @@ const handler = async (req, res) => {
     } else if (mode === 1) {
       let up_userName = updates.user_name;
 
-      if( up_userName && up_userName !== old_u_name ){
+      if (up_userName && up_userName !== old_u_name) {
+        if (up_userName.length === 0)
+          return res
+            .status(400)
+            .json({ error: 400, message: "Username must not be empty" });
 
-        if( up_userName.length === 0 )
-            return res.status(400).json({error : 400, message : "Username must not be empty"})
-
-        const hasDuplicate = await users.find({ user_name : up_userName}) 
-        if( hasDuplicate.length > 0 )
-            return res.status(409).json({error : 409, message : "User Already Exist With That Username"})
+        const hasDuplicate = await users.find({ user_name: up_userName });
+        if (hasDuplicate.length > 0)
+          return res.status(409).json({
+            error: 409,
+            message: "User Already Exist With That Username",
+          });
       }
 
       if (!hasNewPassword)

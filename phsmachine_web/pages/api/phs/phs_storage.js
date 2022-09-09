@@ -1,8 +1,8 @@
-import checkDiskSpace from 'check-disk-space'
+import checkDiskSpace from "check-disk-space";
 
 const handler = async (req, res) => {
   try {
-    const storage = await checkDiskSpace('/')
+    const storage = await checkDiskSpace("/");
     res.status(200).json({ storage });
   } catch (e) {
     console.log(e);
