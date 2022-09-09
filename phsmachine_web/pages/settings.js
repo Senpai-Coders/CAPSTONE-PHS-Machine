@@ -51,7 +51,9 @@ const configuration = () => {
 
   const [phsAutoDelete, setPhsAutoDelete] = useState({ value: false });
   const [phsDivision, setDivision] = useState({ value: { col: 1, row: 1 } });
-  const [detectionMode, setDetectionMode] = useState({ value: { mode: true, temperatureThreshold: -34 } });
+  const [detectionMode, setDetectionMode] = useState({
+    value: { mode: true, temperatureThreshold: -34 },
+  });
 
   const [dbActions, setDbActions] = useState([]);
   const [dbRelays, setDbRelays] = useState([]);
@@ -71,11 +73,11 @@ const configuration = () => {
         {}
       );
 
-      const phs_relays = await axios.get( `http://${PI_IP}:8000/getAllRelays` );
+      const phs_relays = await axios.get(`http://${PI_IP}:8000/getAllRelays`);
 
       if (exited) return;
       setCoreActions(phs_actions.data.actions);
-      setCoreRelays(phs_relays.data)
+      setCoreRelays(phs_relays.data);
       SETSYSSTATE(phs_response.data.state);
       //setIsDown(false);
       setLoadA(true);
@@ -116,19 +118,19 @@ const configuration = () => {
 
       const phs_models = await axios.post("/api/phs/config/aimodels", {
         mode: 0,
-        search: { category: "models" }
+        search: { category: "models" },
       });
 
       const phs_identity = await axios.post("/api/phs/config/aimodels", {
         mode: 0,
         search: {
-            category: "config",
-            config_name: "identity"
-        }
+          category: "config",
+          config_name: "identity",
+        },
       });
 
-      setModelsOptions(phs_models.data)
-      setIdentity(phs_identity.data[0])
+      setModelsOptions(phs_models.data);
+      setIdentity(phs_identity.data[0]);
 
       setDivision(phs_division.data.value);
       setDbRelays(phs_relays.data);
@@ -147,24 +149,29 @@ const configuration = () => {
   useEffect(() => {
     if (!router.isReady) return;
     let { tb } = router.query;
-    if(!tb){
-        setTab(0)
-        return;
+    if (!tb) {
+      setTab(0);
+      return;
     }
-    setTab(Number.parseInt(tb))
+    setTab(Number.parseInt(tb));
   }, [router.isReady, router]);
 
-  useEffect(() => {
-    var loader = setInterval(async () => {
-      if (exited) return;
-      phs_init();
-      init();
-    }, 2000);
+  const fireOnChange = async() => {
+    await phs_init();
+    await init();
+  };
 
-    return () => {
-      clearInterval(loader);
-      setExited(true);
-    };
+  useEffect(() => {
+    // var loader = setInterval(async () => {
+    //   if (exited) return;
+    //   phs_init();
+    //   init();
+    // }, 2000);
+    // return () => {
+    //   clearInterval(loader);
+    //   setExited(true);
+    // };
+    fireOnChange()
   }, []);
 
   return (
@@ -226,6 +233,7 @@ const configuration = () => {
                 storageInfo={phsStorage}
                 detectionMode={detectionMode}
                 state={SYSSTATE.status}
+                fireOnChange={fireOnChange}
               />
             )}
             {tab === 2 && loadA && loadB && (
@@ -233,10 +241,18 @@ const configuration = () => {
                 divisionCount={phsDivision}
                 actions={dbActions}
                 relays={dbRelays}
+                fireOnChange={fireOnChange}
                 coreActions={coreActions}
               />
             )}
-            {tab === 3 && loadA && loadB && <Relays coreRelays={coreRelays} state={SYSSTATE.status} relays={dbRelays} />}
+            {tab === 3 && loadA && loadB && (
+              <Relays
+                coreRelays={coreRelays}
+                state={SYSSTATE.status}
+                fireOnChange={fireOnChange}
+                relays={dbRelays}
+              />
+            )}
             {tab === 1 && loadA && loadB && <Ui />}
           </div>
         </div>

@@ -10,7 +10,7 @@ import { FaHandSparkles } from "react-icons/fa";
 
 import { PI_IP } from "../../../helpers";
 
-const actionComponent = ({ relayOptions, close, onSave, divisionCount }) => {
+const actionComponent = ({ relayOptions, close, onSave, divisionCount, fireOnChange }) => {
   const [config_name, setConfig_name] = useState("");
   const [description, setDescription] = useState("");
 
@@ -28,7 +28,7 @@ const actionComponent = ({ relayOptions, close, onSave, divisionCount }) => {
     try {
       setLoading(true);
       onSave(true);
-      console.log("saving");
+      
       const add = await axios.post("/api/phs/config/actions", {
         mode: md,
         config_name,
@@ -41,9 +41,10 @@ const actionComponent = ({ relayOptions, close, onSave, divisionCount }) => {
         },
       });
 
-      console.log(add.data);
+      
       setLoading(false);
       close();
+      fireOnChange()
     } catch (e) {
       setLoading(false);
       if (e.response) {

@@ -4,7 +4,7 @@ import ActionComponent from "./component/actionComponent";
 import NewActionComponent from "./component/newComponent";
 import Loading from "../loading"
 
-const Actions = ({ actions, relays, coreActions, divisionCount }) => {
+const Actions = ({ actions, relays, fireOnChange, divisionCount }) => {
   const [fActions, setFActions] = useState([]);
   const [newAct, setNewAct] = useState(false);
 
@@ -31,6 +31,7 @@ const Actions = ({ actions, relays, coreActions, divisionCount }) => {
       )}
       {newAct && (
         <NewActionComponent
+          fireOnChange={fireOnChange}
           relayOptions={relays}
           close={() => {
             console.log("Closed Call")
@@ -48,6 +49,7 @@ const Actions = ({ actions, relays, coreActions, divisionCount }) => {
             relayOptions={relays}
             data={factions}
             key={idx}
+            fireOnChange={fireOnChange}
           />
         ))}
       </div>

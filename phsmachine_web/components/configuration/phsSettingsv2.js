@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Loading from "../loading";
 
-import { RebootConfirm, ShutdownConfirm, ResetConfirm } from "../modals";
+import { RebootConfirm, ShutdownConfirm, ResetConfirm, InfoCustom } from "../modals";
 
 import axios from "axios";
 
@@ -32,6 +32,7 @@ const phsSettings = ({
   detectionMode,
   storageInfo,
   divisionCount,
+  fireOnChange
 }) => {
   const router = useRouter();
   const [selectedModal, setSelectedModal] = useState(-1);
@@ -74,6 +75,7 @@ const phsSettings = ({
       "/api/phs/config/storageAutoDelete",
       { mode: 1, value: !autoDelete.value }
     );
+    fireOnChange();
   };
 
   const updateDivision = async () => {
@@ -87,6 +89,7 @@ const phsSettings = ({
         },
       });
       setHasChanges(false);
+      fireOnChange();
     } catch (e) {}
   };
 
@@ -125,6 +128,7 @@ const phsSettings = ({
 
       setHasChanges(false);
       setSaving(false);
+      fireOnChange();
     } catch (e) {
       console.log(e);
     }
@@ -140,7 +144,19 @@ const phsSettings = ({
       const updateState = await axios.get(
         `http://${PI_IP}:8000/updateState?status=${state}`
       );
+      fireOnChange()
     } catch (e) {}
+  };
+
+  const setModel = async (newValue) => {
+    const updatePhsModel = await axios.post("/api/phs/config/aimodels", {
+      mode: 1,
+      search: { config_name: "identity" },
+      changes: newValue,
+    });
+
+    await fireOnChange()
+    setSelectedModal(1)
   };
 
   return (
@@ -156,14 +172,17 @@ const phsSettings = ({
         }}
       />
 
-      <ShutdownConfirm
-        shown={selectedModal === -2}
-        onAccept={() => {
-          router.push("/shutdown");
-          axios.post("/api/phs/config/power", { mode: 0 });
-        }}
+      <InfoCustom
+        shown={selectedModal === 1}
+        onAccept={() => { }}
+        content={
+            <div className="mt-4">
+                <p>Changes for this setting is saved. But restarting the device is required to apply the changes</p>
+            </div>
+        }
+        onAcceptText={"Ok"}
         close={() => {
-          setSelectedModal(-1);
+          setSelectedModal(-1)
         }}
       />
 
@@ -181,8 +200,7 @@ const phsSettings = ({
       <ResetConfirm
         shown={selectedModal === -4}
         onAccept={() => {
-          //router.push("/shutdown");
-          // axios.post("/api/phs/config/power", { mode: 0 });
+          
         }}
         close={() => {
           setSelectedModal(-1);
@@ -296,6 +314,7 @@ const phsSettings = ({
                       const updateState = await axios.get(
                         `http://${PI_IP}:8000/emergencyStop`
                       );
+                      fireOnChange()
                     } catch (e) {
                       console.log("err ", e);
                     }
@@ -620,14 +639,6 @@ const phsSettings = ({
                   available weights below.
                 </p>
               </div>
-              <input
-                type="checkbox"
-                checked={autoDelete.value}
-                onChange={(e) => {
-                  updateAutoDelete();
-                }}
-                className="toggle  mt-4 md:mt-0"
-              />
             </div>
           </div>
           <div className="overflow-x-auto mt-2">
@@ -659,6 +670,16 @@ const phsSettings = ({
                         {/* <td>{mods.value.path}</td> */}
                         <td>
                           <button
+                            onClick={() => {
+                              setModel({
+                                value: {
+                                  ...identity.value,
+                                  Yolo_Weights: {
+                                    ...mods.value,
+                                  },
+                                },
+                              });
+                            }}
                             disabled={
                               identity.value.Yolo_Weights.name ===
                               mods.value.name
@@ -689,7 +710,7 @@ const phsSettings = ({
               <div className="mr-4">
                 <div className="flex items-center justify-start mb-2">
                   <div className="p-2 rounded-xl bg-base-300 mr-2">
-                    <RiTempColdFill className="w-6 h-6" />
+                    <RiTempColdFill className="w-6 h-6 text-error" />
                   </div>
                   <p className="text-lg">PHS Heatstress CNN weights</p>
                 </div>
@@ -719,7 +740,8 @@ const phsSettings = ({
                     .map((mods, idx) => (
                       <tr
                         className={`${
-                          identity.value.Yolo_Weights.name === mods.value.name
+                          identity.value.Heat_Stress_Weights.name ===
+                          mods.value.name
                             ? "active"
                             : ""
                         }`}
@@ -730,19 +752,29 @@ const phsSettings = ({
                         {/* <td className="truncate">{mods.value.path}</td> */}
                         <td>
                           <button
+                            onClick={() => {
+                              setModel({
+                                value: {
+                                  ...identity.value,
+                                  Heat_Stress_Weights: {
+                                    ...mods.value,
+                                  },
+                                },
+                              });
+                            }}
                             disabled={
-                              identity.value.Yolo_Weights.name ===
+                              identity.value.Heat_Stress_Weights.name ===
                               mods.value.name
                             }
                             className={`btn btn-sm  ${
-                              identity.value.Yolo_Weights.name ===
+                              identity.value.Heat_Stress_Weights.name ===
                               mods.value.name
                                 ? "btn-accent btn-ghost btn-outline"
                                 : ""
                             }`}
                           >
                             {" "}
-                            {identity.value.Yolo_Weights.name ===
+                            {identity.value.Heat_Stress_Weights.name ===
                             mods.value.name
                               ? "using"
                               : "set"}{" "}
@@ -801,7 +833,7 @@ const phsSettings = ({
               </div>
               <button
                 onClick={() => setSelectedModal(-4)}
-                className="btn mt-4 md:mt-0 btn-sm btn-ghost btn-outline btn-error"
+                className="btn mt-4 md:mt-0 btn-active btn-sm btn-ghost btn-outline btn-error"
               >
                 Reset
               </button>

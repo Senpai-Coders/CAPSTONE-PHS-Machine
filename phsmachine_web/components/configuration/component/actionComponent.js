@@ -15,7 +15,7 @@ import { FaHandSparkles } from "react-icons/fa";
 import axios from "axios";
 import { PI_IP } from "../../../helpers";
 
-const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
+const actionComponent = ({ relayOptions, data, onSave, divisionCount, fireOnChange }) => {
   const [editing, setEditing] = useState(false);
 
   const [config_name, setConfig_name] = useState("");
@@ -51,8 +51,6 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
       setLoading(true);
       onSave(true);
 
-      console.log("savuing");
-
       const add = await axios.post("/api/phs/config/actions", {
         mode: md,
         description,
@@ -66,8 +64,7 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
         _id: data._id,
       });
 
-      console.log(add);
-
+      fireOnChange()
       setLoading(false);
       setEditing(false);
     } catch (e) {
@@ -103,6 +100,7 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
         config_name,
         target_relay,
       });
+      fireOnChange()
       setLoading(false);
       setMoadlActionView(false);
       onSave(false);

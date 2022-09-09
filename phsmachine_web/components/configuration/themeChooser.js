@@ -52,7 +52,7 @@ const themeChooser = ( { textMode } ) => {
 
   return (
     <div className="dropdown">
-      <label tabIndex="0" className="btn flex btn-outline btn-ghost shadow-md btn-sm">
+      <label tabIndex="0" className="btn flex btn-active btn-outline btn-ghost shadow-md btn-sm">
         { !textMode ? <AiFillFormatPainter className="w-6 h-6" /> : <p className="uppercase">{selected.name}</p> }
       </label>
       <ul

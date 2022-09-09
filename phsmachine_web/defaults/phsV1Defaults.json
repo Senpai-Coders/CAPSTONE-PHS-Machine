@@ -91,17 +91,6 @@
             },
             "deletable": false
         },
-        {
-            "category": "models",
-            "config_name": "Heat Stress mai_Net_v2.0.h5 ",
-            "description": "This defined where the trained PHS CNN for identifying heat stress will be found.",
-            "value": {
-                "name": "Heat Stress mai_Net_v2.0.h5 ",
-                "path": "models/weights/maiCNNet/mai_Net.h5",
-                "for" : "heatstress"
-            },
-            "deletable": false
-        },
 
         {
             "category": "actions",
