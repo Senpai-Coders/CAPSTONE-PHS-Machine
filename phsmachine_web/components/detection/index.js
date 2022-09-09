@@ -3,9 +3,10 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { IoReloadCircleSharp, IoTrashBinSharp } from "react-icons/io5";
 import { GoPrimitiveDot } from "react-icons/go"
+import { BiExport } from "react-icons/bi"
 
 import { dateToWord } from "../../helpers";
-import { DeleteConfirm, InfoCustom } from "../modals";
+import { DeleteConfirm, InfoCustom, ExportConfirm } from "../modals";
 import { RangePick, SinglePick } from "../DatePick";
 
 
@@ -107,7 +108,7 @@ const index = () => {
   }, []);
 
   return (
-    <div className="relative mt-8 min-h-screen">
+    <div className="relative mt-8">
       {loading && (
         <div className="right-0 top-0 w-1/12 flex absolute items-center space-x-4">
           <progress className="progress"></progress>
@@ -118,6 +119,12 @@ const index = () => {
         shown={modal === 1}
         close={setModal}
         onAccept={deleteSelected}
+      />
+
+      <ExportConfirm
+        shown={modal === 3}
+        close={()=>setModal(-1)}
+        onAccept={()=>{}}
       />
 
       <InfoCustom
@@ -251,10 +258,12 @@ const index = () => {
               </p>
             </>
           )}
+
+          <button onClick={()=>setModal(3)} className="btn mt-2 md:mt-0 btn-sm">Export Data<BiExport className="ml-2 text-lg"/> </button>
         </div>
       </div>
 
-      <div className="mt-4 overflow-x-auto">
+      <div className="mt-4 overflow-x-auto" style={{"maxHeight" : "65vh"}}>
         <table className="mt-2 w-full whitespace-nowrap table-auto rounded-md">
           <thead>
             <tr className="h-16 bg-base-200 rounded-lg shadow-sm">
@@ -277,7 +286,7 @@ const index = () => {
                 />
               </th>
               <th className="text-left">Detection Date</th>
-              <th />
+              <th className=""/>
               <th className="text-right">Pigcount</th>
               <th>Heat Stressed</th>
               <th className="text-left">Normal</th>
@@ -288,7 +297,7 @@ const index = () => {
             {detections.map((detection) => (
               <>
                 <tr
-                  className={` border-b border-base-100 ${
+                  className={`hover:bg-base-300 border-b border-base-100 ${
                     selected.filter((id) => {
                       return id === detection._id;
                     }).length !== 0
@@ -323,7 +332,7 @@ const index = () => {
                   </td>
                   <td className="">
                     <div className="flex items-center">
-                      <p className="text-base font-medium text-center">
+                      <p className="text-base font-medium text-center truncate">
                         {detection.uat
                           ? dateToWord(detection.uat)
                           : dateToWord(new Date())}
@@ -378,68 +387,6 @@ const index = () => {
           <p className="text-sm my-2 text-center">loading please wait..</p>
         )}
       </div>
-
-      {/** OLD VERSION */}
-      {/* <div className="grid gap-4 md:grid-cols-2">
-        {detections.map((record) => (
-          <div<button className="btn btn-circle">
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-</button>
-            key={record._id}
-            className="card md:card-side space-x-2 shadow-xl"
-          >
-            <figure className="md:w-1/2 flex">
-              <img
-                className="rounded-l-lg object-cover h-full w-1/2"
-                src={record.img_normal}
-              ></img>
-              <img
-                className=" rounded-r-lg object-cover h-full w-1/2"
-                src={record.img_thermal}
-              ></img>
-            </figure>
-            <div className="md:w-1/2 card-body font-inter">
-              <p className="font-bold text-lg">
-                {record.data.pig_count} Pigs Onframe
-              </p>
-              <p className="text-lg">
-                Min Temp:{" "}
-                <span className="font-medium text-primary">
-                  {tempParser(record.data.min_temp)} °C
-                </span>{" "}
-              </p>
-              <p className="text-lg">
-                Average Temp:{" "}
-                <span className="font-medium text-primary">
-                  {tempParser(record.data.avg_temp)} °°C
-                </span>{" "}
-                {"   "}{" "}
-              </p>
-              <p className="text-lg">
-                Max Temp: {"   "}{" "}
-                <span className="font-medium text-error">
-                  {tempParser(record.data.max_temp)}°C
-                </span>
-              </p>
-              <p className="font-bold text-lg">
-                <span className="text-warning">{record.data.stressed_pig}</span>{" "}
-                Stressed Pig
-              </p>
-              <p className="text-sm">{record.date}</p>
-              <div className="card-actions justify-end">
-                <button
-                  onClick={() =>
-                    router.push(`/detection_details?_id=${record._id}`)
-                  }
-                  className="btn btn-block"
-                >
-                  More Info
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div> */}
 
       {!loading && detections.length === 0 && (
         <p className="tracking-wider opacity-70 text-sm font-inter text-center my-4">

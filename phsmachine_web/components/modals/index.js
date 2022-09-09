@@ -6,5 +6,6 @@ import RebootConfirm from "./reboot_confirm"
 import DeleteConfirm from "./delete_confirm"
 import InfoCustom from "./infoCustom"
 import ResetConfirm from "./reset_confirm"
+import ExportConfirm from "./export_confirm"
 
-export { InfoCustom, DeleteConfirm, DebugAlert, DebugConfirm, OffAlert, ShutdownConfirm, RebootConfirm, ResetConfirm}
+export { InfoCustom, DeleteConfirm, DebugAlert, DebugConfirm, OffAlert, ShutdownConfirm, RebootConfirm, ResetConfirm, ExportConfirm}
