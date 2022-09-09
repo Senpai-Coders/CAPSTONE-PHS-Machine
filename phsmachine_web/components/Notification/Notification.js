@@ -5,7 +5,7 @@ import NotificationContent from "./NotificationContent";
 
 const Notification = ({ userData }) => {
   const [unreadCount, setUnreadCount] = useState(0);
-  const [markAll, setMarkAll] = useState(()=>{})
+  const [markAll, setMarkAll] = useState(() => {});
 
   return (
     <div>
@@ -23,11 +23,11 @@ const Notification = ({ userData }) => {
           className="dropdown-content card card-compact w-72 md:w-96 p-2 shadow-lg bg-base-100/90 backdrop-blur-md"
         >
           <div className="card-body">
-              <NotificationContent
-                userData={userData}
-                setUnreadCount={setUnreadCount}
-                setMarkAll={setMarkAll}
-              />
+            <NotificationContent
+              userData={userData}
+              setUnreadCount={setUnreadCount}
+              setMarkAll={setMarkAll}
+            />
           </div>
         </div>
       </div>

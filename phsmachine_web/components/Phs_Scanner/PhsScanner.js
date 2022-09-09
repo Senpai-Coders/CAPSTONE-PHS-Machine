@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { HiArrowNarrowRight } from "react-icons/hi";
 import axios from "axios";
-import { PI_IP } from "../../helpers";
 
 import { FaNetworkWired } from "react-icons/fa";
 import { RiComputerFill } from "react-icons/ri";
+
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
 
 const PhsScanner = ({ onSwitch, curIp }) => {
   const [oct1, set_oct1] = useState(192);
@@ -22,41 +24,66 @@ const PhsScanner = ({ onSwitch, curIp }) => {
 
   const [focIp, setFocIp] = useState("");
 
-  let CancelToken = axios.CancelToken;
-  let source = CancelToken.source();
-
-  const send = (email) =>
-    new Promise((resolve) => setTimeout(() => resolve(email), 1000));
+  const pad = (num) => String("00" + num).slice(-3);
+  const rangeCheck = (rng) => {
+    let [ip1, ip2] = rng.split("-");
+    ip1 = ip1
+      .split(".")
+      .map((num) => pad(num))
+      .join(".");
+    ip2 = ip2
+      .split(".")
+      .map((num) => pad(num))
+      .join(".");
+    return ip1 > ip2;
+  };
 
   const scan = async (a, b, c, d, aa, bb, cc, dd) => {
+    if (rangeCheck(`${a}.${b}.${c}.${d}-${aa}.${bb}.${cc}.${dd}`)) {
+      toast.error("Invalid. Start IP must be smaller than End IP", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });
+
+      return;
+    }
+    setScanning(true);
+
+    const id = toast.loading("Searching for other PHS...", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     setPhsDevices([]);
     var from = `${a}.${b}.${c}.${d}`;
     var to = `${aa}.${bb}.${cc}.${dd}`;
 
-    let devices = [];
-
     while (from !== to) {
       from = `${a}.${b}.${c}.${d}`;
-
       if (d >= 255) {
         d = 0;
         c++;
       } else d++;
-
       if (c >= 255) {
         c = 0;
         b++;
       }
-
       if (b >= 255) {
         a++;
         b = 0;
       }
       if (a >= 255) break;
-
       try {
         setFocIp(from);
-
         let response = await axios({
           method: "get",
           url: `http://${from}:3000/api/connectivity`,
@@ -65,17 +92,33 @@ const PhsScanner = ({ onSwitch, curIp }) => {
           body: { mode: 0 },
           data: { mode: 1 },
         });
-
         setPhsDevices((val) => [...val, response.data]);
-        //devices.push(response.data);
       } catch (e) {}
     }
+
+    toast.update(id, {
+      render: "Scan Completed",
+      type: "success",
+      isLoading: false,
+      autoClose: true,
+    });
     setScanning(false);
-    // setPhsDevices(devices)
   };
 
   return (
     <div className="p-4 ">
+      <ToastContainer
+        position="top-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        theme={"dark"}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="alert shadow-lg">
         <div>
           <FaNetworkWired className="text-xl" />
@@ -93,6 +136,7 @@ const PhsScanner = ({ onSwitch, curIp }) => {
           <label className="input-group ">
             <input
               type="text"
+              disabled={scanning}
               value={oct1}
               onChange={(e) => {
                 var v = e.target.value;
@@ -110,6 +154,7 @@ const PhsScanner = ({ onSwitch, curIp }) => {
             />
             <input
               type="text"
+              disabled={scanning}
               value={oct2}
               onChange={(e) => {
                 var v = e.target.value;
@@ -127,6 +172,7 @@ const PhsScanner = ({ onSwitch, curIp }) => {
             />
             <input
               type="text"
+              disabled={scanning}
               value={oct3}
               onChange={(e) => {
                 var v = e.target.value;
@@ -143,6 +189,7 @@ const PhsScanner = ({ onSwitch, curIp }) => {
               className="input input-bordered w-14"
             />
             <input
+              disabled={scanning}
               type="text"
               value={oct4}
               onChange={(e) => {
@@ -168,6 +215,7 @@ const PhsScanner = ({ onSwitch, curIp }) => {
           </label>
           <label className="input-group ">
             <input
+              disabled={scanning}
               type="text"
               value={toct1}
               onChange={(e) => {
@@ -185,6 +233,7 @@ const PhsScanner = ({ onSwitch, curIp }) => {
               className="input input-bordered w-14 "
             />
             <input
+              disabled={scanning}
               type="text"
               value={toct2}
               onChange={(e) => {
@@ -203,6 +252,7 @@ const PhsScanner = ({ onSwitch, curIp }) => {
             />
             <input
               type="text"
+              disabled={scanning}
               value={toct3}
               onChange={(e) => {
                 var v = e.target.value;
@@ -220,6 +270,7 @@ const PhsScanner = ({ onSwitch, curIp }) => {
             />
             <input
               type="text"
+              disabled={scanning}
               value={toct4}
               onChange={(e) => {
                 var v = e.target.value;
@@ -241,7 +292,6 @@ const PhsScanner = ({ onSwitch, curIp }) => {
       <span
         onClick={() => {
           if (!scanning) {
-            setScanning(true);
             scan(oct1, oct2, oct3, oct4, toct1, toct2, toct3, toct4);
           }
         }}
@@ -295,12 +345,14 @@ const PhsScanner = ({ onSwitch, curIp }) => {
                   <th>
                     <button
                       onClick={() => {
-                        if(curIp === dev.ip) return
+                        if (curIp === dev.ip) return;
                         onSwitch(dev);
                         window.scrollTo(0, 0);
                       }}
                       className={`btn btn-xs ${
-                        curIp === dev.ip ? "btn-success btn-outline btn-ghost outline-success" : ""
+                        curIp === dev.ip
+                          ? "btn-success btn-outline btn-ghost outline-success"
+                          : ""
                       }`}
                     >
                       {curIp === dev.ip ? "current" : "switch"}

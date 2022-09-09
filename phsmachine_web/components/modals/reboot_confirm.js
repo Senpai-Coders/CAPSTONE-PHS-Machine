@@ -1,5 +1,5 @@
 import React from "react";
-import { BsBootstrapReboot } from "react-icons/bs"
+import { BsBootstrapReboot } from "react-icons/bs";
 
 const RebootConfirm = ({ close, shown, onAccept }) => {
   return (
@@ -11,13 +11,20 @@ const RebootConfirm = ({ close, shown, onAccept }) => {
       <div className="modal-box">
         <div className="flex justify-between">
           <h3 className="font-bold text-lg">Reboot Confirmation</h3>
-          <BsBootstrapReboot className="w-6 h-6 text-primary"/>
+          <BsBootstrapReboot className="w-6 h-6 text-primary" />
         </div>
         <p className="py-4">
-          The PHS system will be rebooted (restart). Any actions will be stopped. Are you sure to proceed rebooting?
+          The PHS system will be rebooted (restart). Any actions will be
+          stopped. Are you sure to proceed rebooting?
         </p>
         <div className="modal-action">
-          <label onClick={() => { close(); onAccept(); }} className="btn">
+          <label
+            onClick={() => {
+              close();
+              onAccept();
+            }}
+            className="btn"
+          >
             Yes
           </label>
           <label onClick={() => close()} className="btn">

@@ -1,11 +1,12 @@
 import { setTheme, loadTheme } from "../../helpers";
-
 import { MdDarkMode, MdOutlineLightMode } from "react-icons/md";
-
 import { AiFillFormatPainter } from "react-icons/ai";
 import { useEffect, useState } from "react";
 
-const themeChooser = ( { textMode } ) => {
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
+
+const themeChooser = ({ textMode }) => {
   const themes = [
     { name: "light", type: "light" },
     { name: "dark", type: "dark" },
@@ -18,7 +19,6 @@ const themeChooser = ( { textMode } ) => {
     { name: "valentine", type: "light" },
     { name: "dracula", type: "dark" },
     { name: "fantasy", type: "light" },
-    //{ name: "luxury", type: "dark" },
     { name: "lofi", type: "light" },
     { name: "coffee", type: "dark" },
     { name: "pastel", type: "light" },
@@ -26,16 +26,6 @@ const themeChooser = ( { textMode } ) => {
     { name: "wireframe", type: "light" },
     { name: "cmyk", type: "light" },
     { name: "autumn", type: "light" },
-    //{ name: "emerald", type: "light" },
-    //{ name: "synthwave", type: "light" },
-    //{ name: "retro", type: "light" },
-    //{ name: "cyberpunk", type: "light" },
-    //{ name: "garden", type: "light" },
-    //{ name: "aqua", type: "light" },
-    //{ name: "business", type: "dark" },
-    //{ name: "lemonade", type: "light" },
-    //{ name: "night", type: "dark" },
-    //{ name: "winter", type: "light" },
   ];
 
   const [selected, setSelected] = useState({ name: "Choose Theme" });
@@ -45,15 +35,34 @@ const themeChooser = ( { textMode } ) => {
     setTheme(selected.name);
   }, [selected]);
 
-  useEffect(()=>{
-    let chosen = loadTheme()
-    setSelected({ name : chosen })
-  },[])
+  useEffect(() => {
+    let chosen = loadTheme();
+    setSelected({ name: chosen });
+  }, []);
 
   return (
     <div className="dropdown">
-      <label tabIndex="0" className="btn flex btn-active btn-outline btn-ghost shadow-md btn-sm">
-        { !textMode ? <AiFillFormatPainter className="w-6 h-6" /> : <p className="uppercase">{selected.name}</p> }
+      <ToastContainer
+        position="top-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        theme={"dark"}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <label
+        tabIndex="0"
+        className="btn flex btn-active btn-outline btn-ghost shadow-md btn-sm"
+      >
+        {!textMode ? (
+          <AiFillFormatPainter className="w-6 h-6" />
+        ) : (
+          <p className="uppercase">{selected.name}</p>
+        )}
       </label>
       <ul
         tabIndex="0"
@@ -61,16 +70,31 @@ const themeChooser = ( { textMode } ) => {
       >
         {themes.map((th, i) => (
           <li
-            tabIndex={i+1}
+            tabIndex={i + 1}
             key={th.name}
-            onClick={() => setSelected(th)}
-            className={`cursor-pointer duration-100 m-1 snap-center ${th.name === selected.name ? "bg-base-200 outline outline-1" : ""}`}
+            onClick={() => {
+              toast.success(`Theme changed to ${th.name}`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+              });
+              setSelected(th);
+            }}
+            className={`cursor-pointer duration-100 m-1 snap-center ${
+              th.name === selected.name ? "bg-base-200 outline outline-1" : ""
+            }`}
           >
             <div className="flex p-4 justify-between">
               <p className="text-sm">{th.name}</p>
-              {
-                th.type === "dark" ? <MdDarkMode className="text-lg"/> : <MdOutlineLightMode className="text-lg"/> 
-              }
+              {th.type === "dark" ? (
+                <MdDarkMode className="text-lg" />
+              ) : (
+                <MdOutlineLightMode className="text-lg" />
+              )}
               {/* <div className="flex justify-center space-x-2 mt-2">
                 <div
                   data-theme={th.name}

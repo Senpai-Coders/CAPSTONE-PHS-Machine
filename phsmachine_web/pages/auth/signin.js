@@ -34,15 +34,11 @@ const signin = () => {
       console.log(e);
       setLoading(false);
       if (e.response) {
-        //request was made but theres a response status code
-        console.log(e.response.data);
         if (e.response.data.error === 403) setErr("password");
         if (e.response.data.error === 404) setErr("username");
       } else if (e.request) {
-        // The request was made but no response was received
       } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log("Error", error.message);
+        console.log("Error", e.message);
       }
     }
   };

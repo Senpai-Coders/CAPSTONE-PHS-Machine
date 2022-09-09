@@ -2,7 +2,12 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Loading from "../loading";
 
-import { RebootConfirm, ShutdownConfirm, ResetConfirm, InfoCustom } from "../modals";
+import {
+  RebootConfirm,
+  ShutdownConfirm,
+  ResetConfirm,
+  InfoCustom,
+} from "../modals";
 
 import axios from "axios";
 
@@ -24,6 +29,9 @@ import {
   PI_IP,
 } from "../../helpers";
 
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
+
 const phsSettings = ({
   autoDelete,
   state,
@@ -32,7 +40,7 @@ const phsSettings = ({
   detectionMode,
   storageInfo,
   divisionCount,
-  fireOnChange
+  fireOnChange,
 }) => {
   const router = useRouter();
   const [selectedModal, setSelectedModal] = useState(-1);
@@ -70,15 +78,48 @@ const phsSettings = ({
   }, [storageInfo]);
 
   const updateAutoDelete = async () => {
-    setUpdating("autodelete");
-    let updateAutoDelete = await axios.post(
-      "/api/phs/config/storageAutoDelete",
-      { mode: 1, value: !autoDelete.value }
-    );
+    const toast_id = toast.loading("updating...", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+    try {
+      setUpdating("autodelete");
+      let updateAutoDelete = await axios.post(
+        "/api/phs/config/storageAutoDelete",
+        { mode: 1, value: !autoDelete.value }
+      );
+      toast.update(toast_id, {
+        render: "PHS autodelete enabled",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
+    } catch (e) {
+      toast.update(toast_id, {
+        render: "Failed saving changes",
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
+    }
     fireOnChange();
   };
 
   const updateDivision = async () => {
+    const toast_id = toast.loading("updating...", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     try {
       setUpdating("division");
       const ph_division = await axios.post("/api/phs/config/divisions", {
@@ -90,7 +131,20 @@ const phsSettings = ({
       });
       setHasChanges(false);
       fireOnChange();
-    } catch (e) {}
+      toast.update(toast_id, {
+        render: "PHS Division updated",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
+    } catch (e) {
+      toast.update(toast_id, {
+        render: "Failed saving changes",
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
+    }
   };
 
   useEffect(() => {
@@ -98,6 +152,15 @@ const phsSettings = ({
   }, [autoDelete, storageInfo, detectionMode, divisionCount]);
 
   const saveChange = async (val) => {
+    const toast_id = toast.loading("updating...", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     try {
       setSaving(true);
       setUpdating("autodetect");
@@ -126,10 +189,23 @@ const phsSettings = ({
         );
       }
 
+      toast.update(toast_id, {
+        render: "Updated PHS Detection settings",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
+
       setHasChanges(false);
       setSaving(false);
       fireOnChange();
     } catch (e) {
+      toast.update(toast_id, {
+        render: "Failed saving changes",
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
       console.log(e);
     }
   };
@@ -140,27 +216,93 @@ const phsSettings = ({
   }, [detectionMode]);
 
   const chooseState = async (state) => {
+    const toast_id = toast.loading("updating...", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     try {
       const updateState = await axios.get(
         `http://${PI_IP}:8000/updateState?status=${state}`
       );
-      fireOnChange()
-    } catch (e) {}
+      toast.update(toast_id, {
+        render: "System state changed",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
+      fireOnChange();
+    } catch (e) {
+      toast.update(toast_id, {
+        render: "Failed changing state",
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
+    }
   };
 
   const setModel = async (newValue) => {
-    const updatePhsModel = await axios.post("/api/phs/config/aimodels", {
-      mode: 1,
-      search: { config_name: "identity" },
-      changes: newValue,
+    const toast_id = toast.loading("changing weights..", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
     });
-
-    await fireOnChange()
-    setSelectedModal(1)
+    try {
+      const updatePhsModel = await axios.post("/api/phs/config/aimodels", {
+        mode: 1,
+        search: { config_name: "identity" },
+        changes: newValue,
+      });
+      toast.update(toast_id, {
+        render: "Changed weights successfuly",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
+    } catch (e) {
+      toast.update(toast_id, {
+        render: "Failed changing weights",
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
+    }
+    await fireOnChange();
+    toast.info("Restart is required for the changes to take effect", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
   };
 
   return (
     <div className="">
+      <ToastContainer
+        position="top-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        theme={"dark"}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+
       <ShutdownConfirm
         shown={selectedModal === -2}
         onAccept={() => {
@@ -169,20 +311,6 @@ const phsSettings = ({
         }}
         close={() => {
           setSelectedModal(-1);
-        }}
-      />
-
-      <InfoCustom
-        shown={selectedModal === 1}
-        onAccept={() => { }}
-        content={
-            <div className="mt-4">
-                <p>Changes for this setting is saved. But restarting the device is required to apply the changes</p>
-            </div>
-        }
-        onAcceptText={"Ok"}
-        close={() => {
-          setSelectedModal(-1)
         }}
       />
 
@@ -199,9 +327,7 @@ const phsSettings = ({
 
       <ResetConfirm
         shown={selectedModal === -4}
-        onAccept={() => {
-          
-        }}
+        onAccept={() => {}}
         close={() => {
           setSelectedModal(-1);
         }}
@@ -314,7 +440,7 @@ const phsSettings = ({
                       const updateState = await axios.get(
                         `http://${PI_IP}:8000/emergencyStop`
                       );
-                      fireOnChange()
+                      fireOnChange();
                     } catch (e) {
                       console.log("err ", e);
                     }

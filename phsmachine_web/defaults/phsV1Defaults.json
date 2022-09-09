@@ -22,7 +22,7 @@
           "for": "yolo"
         },
         "Heat_Stress_Weights": {
-          "name": "Heat Stress mai_Net_v2.0.h5 ",
+          "name": "Heat Stress mai_Net_v1.0.h5",
           "path": "models/weights/maiCNNet/mai_Net.h5",
           "for": "heatstress"
         }

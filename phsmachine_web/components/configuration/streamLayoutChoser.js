@@ -1,43 +1,61 @@
 import { setCamMode, getCamMode } from "../../helpers";
-
-import { MdDarkMode, MdOutlineLightMode } from "react-icons/md";
-
 import { AiFillFormatPainter } from "react-icons/ai";
 import { useEffect, useState } from "react";
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
 
-const themeChooser = ( { textMode } ) => {
+const themeChooser = ({ textMode }) => {
   const layouts = [
-    { name: "Triple", val : 0 },
+    { name: "Triple", val: 0 },
     { name: "Dual", val: 1 },
-    { name: "Merged", val : 2}
+    { name: "Merged", val: 2 },
   ];
 
-  const [selected, setSelected] = useState({ val : -1 });
+  const [selected, setSelected] = useState({ val: -1 });
 
   useEffect(() => {
-    if(selected.val === -1) return
+    if (selected.val === -1) return;
     setCamMode(selected.val);
   }, [selected]);
 
-  useEffect(()=>{
-    let chosen = getCamMode()
-    setSelected({ val : Number.parseInt(chosen) })
-  },[])
+  useEffect(() => {
+    let chosen = getCamMode();
+    setSelected({ val: Number.parseInt(chosen) });
+  }, []);
 
   const findName = (val) => {
-    let defMode = { name : "Tripple View", val : 0}
-    for(var x = 0; x < layouts.length; x++)
-        if(layouts[x].val === val){
-            defMode = layouts[x];
-            break;
-        }
-    return defMode
-  }
+    let defMode = { name: "Tripple View", val: 0 };
+    for (var x = 0; x < layouts.length; x++)
+      if (layouts[x].val === val) {
+        defMode = layouts[x];
+        break;
+      }
+    return defMode;
+  };
 
   return (
     <div className="dropdown">
-      <label tabIndex="0" className="btn flex btn-active btn-outline btn-ghost shadow-md btn-sm">
-        { !textMode ? <AiFillFormatPainter className="w-6 h-6" /> : <p className="uppercase">{ findName(selected.val).name }</p> }
+      <ToastContainer
+        position="top-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        theme={"dark"}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <label
+        tabIndex="0"
+        className="btn flex btn-active btn-outline btn-ghost shadow-md btn-sm"
+      >
+        {!textMode ? (
+          <AiFillFormatPainter className="w-6 h-6" />
+        ) : (
+          <p className="uppercase">{findName(selected.val).name}</p>
+        )}
       </label>
       <ul
         tabIndex="0"
@@ -45,10 +63,23 @@ const themeChooser = ( { textMode } ) => {
       >
         {layouts.map((th, i) => (
           <li
-            tabIndex={i+1}
+            tabIndex={i + 1}
             key={th.name}
-            onClick={() => setSelected(th)}
-            className={`cursor-pointer duration-100 m-1 snap-center ${th.val === selected.val ? "bg-base-200 outline outline-1" : ""}`}
+            onClick={() => {
+              toast.success(`Changed camera stream layout to ${th.name}`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+              });
+              setSelected(th);
+            }}
+            className={`cursor-pointer duration-100 m-1 snap-center ${
+              th.val === selected.val ? "bg-base-200 outline outline-1" : ""
+            }`}
           >
             <div className="flex p-4 justify-between">
               <p className="text-sm">{th.name}</p>

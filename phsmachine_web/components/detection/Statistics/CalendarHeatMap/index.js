@@ -6,7 +6,7 @@ import Loading from "../../../loading";
 
 const index = ({ refresh, data, loading }) => {
   let curDate = new Date();
-  let curYear = new Date().getFullYear()
+  let curYear = new Date().getFullYear();
   const baseYear = curYear - 1;
 
   const [fromYear, setFromYear] = useState(baseYear);
@@ -71,7 +71,9 @@ const index = ({ refresh, data, loading }) => {
               onClick={() => {
                 setSelectedYear(yr);
               }}
-              className={`my-2 ${curYear == yr ? 'border-l-4 border-accent' : ''} duration-300 cursor-pointer hover:bg-base-200 px-6 py-2 w-full ${
+              className={`my-2 ${
+                curYear == yr ? "border-l-4 border-accent" : ""
+              } duration-300 cursor-pointer hover:bg-base-200 px-6 py-2 w-full ${
                 selectedYear === yr ? "bg-base-300" : ""
               }`}
               key={i}

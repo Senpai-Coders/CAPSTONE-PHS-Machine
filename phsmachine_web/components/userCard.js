@@ -22,7 +22,7 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
 
   const [loading, setLoading] = useState(false);
 
-  const [errMsg, setErrMsg] = useState("")
+  const [errMsg, setErrMsg] = useState("");
 
   const editable = () => {
     if (u._id === editor_info._id) return true;
@@ -80,38 +80,37 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
       let update = {};
       setLoading(true);
 
-      if(hasNewImage){
+      if (hasNewImage) {
         const body = new FormData();
         body.append("file", image);
         body.append("uid", u._id);
         const response = await fetch("/api/phs/uploadPhoto", {
-            method: "POST",
-            body,
+          method: "POST",
+          body,
         });
       }
 
-      if(pass.length === 0 && username.length === 0){
+      if (pass.length === 0 && username.length === 0) {
         setLoading(false);
         init();
         onUpdate();
-        return
+        return;
       }
 
-      if ( pass.length === 0){
-        console.log(username)
+      if (pass.length === 0) {
+        console.log(username);
         update = await axios.post("/api/phs/updateUser", {
           _id: u._id,
           mode: 1,
-          old_u_name : u.user_name,
+          old_u_name: u.user_name,
           updates: { user_name: username },
         });
-    }
-      else
+      } else
         update = await axios.post("/api/phs/updateUser", {
           _id: u._id,
           mode: 1,
-          old_u_name : u.user_name,
-          updates: { user_name : username, password: pass },
+          old_u_name: u.user_name,
+          updates: { user_name: username, password: pass },
           hasNewPassword: true,
         });
       setLoading(false);
@@ -292,7 +291,7 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                   value={username}
                   onChange={(e) => {
                     // setErr("");
-                    setErrMsg('')
+                    setErrMsg("");
                     setUserName(e.target.value);
                   }}
                   className={`tracking-wider input-sm input input-bordered w-full input-md`}
@@ -311,7 +310,7 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                       value={pass}
                       onChange={(e) => {
                         //setErr("");
-                        setErrMsg('')
+                        setErrMsg("");
                         setPass(e.target.value);
                       }}
                       required
@@ -335,38 +334,48 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                     </span>
                   </label>
                 </div>
-              </div>{
-                (errMsg.length > 0 && <p className="text-center text-error my-2 text-sm">{errMsg}</p>)
-              }
-              {((username !== u.user_name || pass.length !== 0 || hasNewImage) && username.length !== 0) && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.4 }}
-                  exit={{ opacity: 0 }}
-                  className="flex mb-4"
-                >
-                  <button
-                    onClick={() => {
-                      updateInfo();
-                    }}
-                    disabled={username === u.user_name && pass.length === 0 && !hasNewImage}
-                    className="btn w-1/2 btn-sm"
-                  >
-                    Save
-                  </button>
-                  <button
-                    disabled={username === u.user_name && pass.length === 0 && !hasNewImage}
-                    onClick={() => {
-                      init();
-                      setPass("");
-                    }}
-                    className="btn w-1/2 btn-sm glass"
-                  >
-                    Reset
-                  </button>
-                </motion.div>
+              </div>
+              {errMsg.length > 0 && (
+                <p className="text-center text-error my-2 text-sm">{errMsg}</p>
               )}
+              {(username !== u.user_name || pass.length !== 0 || hasNewImage) &&
+                username.length !== 0 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.4 }}
+                    exit={{ opacity: 0 }}
+                    className="flex mb-4"
+                  >
+                    <button
+                      onClick={() => {
+                        updateInfo();
+                      }}
+                      disabled={
+                        username === u.user_name &&
+                        pass.length === 0 &&
+                        !hasNewImage
+                      }
+                      className="btn w-1/2 btn-sm"
+                    >
+                      Save
+                    </button>
+                    <button
+                      disabled={
+                        username === u.user_name &&
+                        pass.length === 0 &&
+                        !hasNewImage
+                      }
+                      onClick={() => {
+                        init();
+                        setPass("");
+                      }}
+                      className="btn w-1/2 btn-sm glass"
+                    >
+                      Reset
+                    </button>
+                  </motion.div>
+                )}
             </motion.div>
           )}
         </AnimatePresence>

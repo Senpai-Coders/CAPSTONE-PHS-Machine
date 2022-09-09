@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { AiFillEdit } from "react-icons/ai";
-import {
-  RiListSettingsLine,
-  RiListSettingsFill,
-  RiTimerFill,
-} from "react-icons/ri";
+import { RiListSettingsLine, RiListSettingsFill } from "react-icons/ri";
 import { MdMyLocation, MdClose } from "react-icons/md";
 import { GiProcessor } from "react-icons/gi";
 import { GoCircuitBoard } from "react-icons/go";
@@ -15,8 +11,20 @@ import { FaHandSparkles } from "react-icons/fa";
 import axios from "axios";
 import { PI_IP } from "../../../helpers";
 
-const actionComponent = ({ relayOptions, data, onSave, divisionCount, fireOnChange }) => {
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
+
+import { DeleteConfirm } from "../../modals/";
+
+const actionComponent = ({
+  relayOptions,
+  data,
+  onSave,
+  divisionCount,
+  fireOnChange,
+}) => {
   const [editing, setEditing] = useState(false);
+  const [toDelete, setToDelete] = useState();
 
   const [config_name, setConfig_name] = useState("");
   const [description, setDescription] = useState("");
@@ -30,6 +38,8 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount, fireOnChan
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const [mode, setMode] = useState(2);
+
+  const [modalActionView, setMoadlActionView] = useState(-1);
 
   const set = (d) => {
     setConfig_name(d.config_name);
@@ -47,10 +57,19 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount, fireOnChan
   }, []);
 
   const save = async (md) => {
+    let toast_id = toast.loading("Saving changes lol", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+
     try {
       setLoading(true);
       onSave(true);
-
       const add = await axios.post("/api/phs/config/actions", {
         mode: md,
         description,
@@ -63,8 +82,14 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount, fireOnChan
         },
         _id: data._id,
       });
-
-      fireOnChange()
+      console.log("done succ");
+      toast.update(toast_id, {
+        render: "Successfuly saved",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
+      fireOnChange();
       setLoading(false);
       setEditing(false);
     } catch (e) {
@@ -74,6 +99,12 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount, fireOnChan
         //request was made but theres a response status code
         if (e.response.status === 409) setErr(e.response.data.message);
       }
+      toast.update(toast_id, {
+        render: "Failed saving changes",
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
     }
   };
 
@@ -88,10 +119,26 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount, fireOnChan
     if (config_name.length === 0) return false;
     if (description.length === 0) return false;
     if (caller.length === 0) return false;
+    if (targets.length === 0) return false;
+    if (caller === "Choose") return false;
+
+    if (caller !== "Dark Scene Detector" && !forceActivate) {
+      if (eventLocation === -1) return false;
+    }
+
     return true;
   };
 
   const delAction = async (config_name, target_relay) => {
+    let toast_id = toast.loading("Deleting lol", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     try {
       setLoading(true);
       onSave(true);
@@ -100,16 +147,28 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount, fireOnChan
         config_name,
         target_relay,
       });
-      fireOnChange()
+      toast.update(toast_id, {
+        render: "Successfuly deleted",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
       setLoading(false);
-      setMoadlActionView(false);
+      setMoadlActionView(-1);
+      fireOnChange();
       onSave(false);
     } catch (e) {
       setLoading(false);
       if (e.response) {
-        //request was made but theres a response status code
         if (e.response.data.error === 409) setErr(e.response.data.message);
       }
+      console.log(e);
+      toast.update(toast_id, {
+        render: "Failed to remove",
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
     }
   };
 
@@ -120,6 +179,26 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount, fireOnChan
           editing ? "outline-accent-focus" : "outline-base-300"
         } bg-base-100 rounded-md my-2 px-3 md:px-4`}
       >
+        <ToastContainer
+          position="top-left"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          theme={"dark"}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+        <DeleteConfirm
+          deleteWhat={"Action"}
+          onAccept={() => {
+            delAction(toDelete.config_name, toDelete.value.target_relay);
+          }}
+          close={setMoadlActionView}
+          shown={modalActionView !== -1}
+        />
         {editing ? (
           <>
             <div className="flex items-center justify-between">
@@ -141,17 +220,6 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount, fireOnChan
                     value={config_name}
                     className={`tracking-wider input input-bordered w-full input-md`}
                   />
-                  {/* <span
-                  className="cursor-pointer "
-                  onClick={() => { }}
-                >
-                  <div
-                    className="tooltip tracking-wide"
-                    data-tip="show/hide password"
-                  >
-
-                  </div>
-                </span> */}
                 </label>
               </div>
             </div>
@@ -276,28 +344,6 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount, fireOnChan
               </select>
             </div>
 
-            {/* <div className="mb-6">
-              <label className="block mb-2 text-sm ">Event Location</label>
-              <select
-                placeholder="Choose AI that will handle this action"
-                onChange={(e) => {
-                  setEventLocation(e.target.value);
-                }}
-                value={eventLocation}
-                className="select select-bordered w-full max-w-xs"
-              >
-                <option>Choose</option>
-                {
-                  // filter((e) => e !== data.value.eventLocation )
-                  Array.from({ length: divisionCount }, (_, i) => i + 1).map(
-                    (e, idx) => (
-                      <option key={idx}>{e}</option>
-                    )
-                  )
-                }
-              </select>
-            </div> */}
-
             {(caller === "Heat Stress Detector" ||
               caller === "Pig Detector") && (
               <>
@@ -335,35 +381,30 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount, fireOnChan
                       <div
                         className="w-full coverStretch bg-no-repeat h-80 bg-base-100"
                         style={{
-                          //https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Road_in_Norway.jpg/1200px-Road_in_Norway.jpg
-                          //http://${PI_IP}:8000/normal_feed
                           backgroundImage: `url("http://${PI_IP}:8000/normal_feed")`,
                         }}
                       ></div>
                       <div
                         className={`w-full h-full grid grid-cols-${divisionCount.col} grid-rows-${divisionCount.row} overflow-hidden overflow-x-scroll absolute top-0 left-0`}
                       >
-                        {
-                          // filter((e) => e !== data.value.eventLocation )
-                          Array.from(
-                            { length: divisionCount.col * divisionCount.row },
-                            (_, i) => i + 1
-                          ).map((e, idx) => (
-                            <div
-                              key={idx}
-                              onClick={() => {
-                                setEventLocation(e);
-                              }}
-                              className={`w-full p-4 outline outline-1 bg-base-100/70 hover:bg-base-100/95  outline-base-300 rounded-sm ${
-                                eventLocation === e
-                                  ? "bg-base-300/90 outline-secondary shadow-md backdrop-blur-sm"
-                                  : ""
-                              }`}
-                            >
-                              <p className="text-center text-sm">{e}</p>
-                            </div>
-                          ))
-                        }
+                        {Array.from(
+                          { length: divisionCount.col * divisionCount.row },
+                          (_, i) => i + 1
+                        ).map((e, idx) => (
+                          <div
+                            key={idx}
+                            onClick={() => {
+                              setEventLocation(e);
+                            }}
+                            className={`w-full p-4 outline outline-1 bg-base-100/70 hover:bg-base-100/95  outline-base-300 rounded-sm ${
+                              eventLocation === e
+                                ? "bg-base-300/90 outline-secondary shadow-md backdrop-blur-sm"
+                                : ""
+                            }`}
+                          >
+                            <p className="text-center text-sm">{e}</p>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -382,8 +423,8 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount, fireOnChan
                 <label
                   onClick={() => {
                     setLoading(false);
-                    delAction(data.config_name, data.value.target_relay);
-                    setEditing();
+                    setToDelete(data);
+                    setMoadlActionView(0);
                   }}
                   className="btn"
                 >

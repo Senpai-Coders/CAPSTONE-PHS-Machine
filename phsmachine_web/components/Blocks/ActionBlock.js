@@ -28,7 +28,7 @@ const ActionBlock = ({ db_actions, phsActions, state }) => {
         merge[x] = { ...merge[x], ...new_fields };
       }
 
-    merge.sort((a, b) => Number(b.state) - Number(a.state) )
+    merge.sort((a, b) => Number(b.state) - Number(a.state));
 
     setMergedActions(merge);
   }, [db_actions]);
@@ -63,14 +63,19 @@ const ActionBlock = ({ db_actions, phsActions, state }) => {
                   <RiTimerFill className={getIconActiveStyle(action.state)} />
                   {action.config_name}
                 </p>
-                <p className="text-xs">{action.value.targets.length} component{action.value.targets.length > 1 ? 's' : ''}</p>
+                <p className="text-xs">
+                  {action.value.targets.length} component
+                  {action.value.targets.length > 1 ? "s" : ""}
+                </p>
               </div>
               <div className="flex items-center">
                 <span className="text-xs font-inter font-bold mr-2 ml-2 md:ml-4">
-                  {action.state ? "Active" : (state === -2 ? '-' : "Stndby")}
+                  {action.state ? "Active" : state === -2 ? "-" : "Stndby"}
                 </span>
                 {action.state && (
-                  <p className='text-xs font-inter font-bold mr-1'>{action.elapsed}s</p>
+                  <p className="text-xs font-inter font-bold mr-1">
+                    {action.elapsed}s
+                  </p>
                 )}
                 <AiFillThunderbolt
                   className={getIconActiveStyle(action.state)}

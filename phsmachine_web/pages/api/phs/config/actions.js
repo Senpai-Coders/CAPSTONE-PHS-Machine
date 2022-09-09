@@ -89,16 +89,6 @@ const handler = async (req, res) => {
     } else if (mode === -1) {
       const del = await configs.deleteOne({ config_name });
 
-      // update relay to unused
-      const updateRelay = await configs.updateOne(
-        { config_name: target_relay },
-        {
-          $set: {
-            "value.isUsed": false,
-            uby: editorDetails._id,
-          },
-        }
-      );
       hasUpdate(editorDetails);
     }
 

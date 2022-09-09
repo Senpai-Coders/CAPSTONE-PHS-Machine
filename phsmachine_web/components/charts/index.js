@@ -1,4 +1,4 @@
-import HeatmapCalendar from "./HeatmapCalendar"
-import MorphChart from "./MorphChart"
+import HeatmapCalendar from "./HeatmapCalendar";
+import MorphChart from "./MorphChart";
 
-export { MorphChart, HeatmapCalendar }
+export { MorphChart, HeatmapCalendar };

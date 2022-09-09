@@ -157,6 +157,7 @@ const configuration = () => {
   }, [router.isReady, router]);
 
   const fireOnChange = async () => {
+    console.log("fired onchange");
     await phs_init();
     await init();
   };

@@ -8,9 +8,18 @@ import { GoCircuitBoard } from "react-icons/go";
 import { CgDetailsLess } from "react-icons/cg";
 import { FaHandSparkles } from "react-icons/fa";
 
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
+
 import { PI_IP } from "../../../helpers";
 
-const actionComponent = ({ relayOptions, close, onSave, divisionCount, fireOnChange }) => {
+const actionComponent = ({
+  relayOptions,
+  close,
+  onSave,
+  divisionCount,
+  fireOnChange,
+}) => {
   const [config_name, setConfig_name] = useState("");
   const [description, setDescription] = useState("");
 
@@ -25,10 +34,19 @@ const actionComponent = ({ relayOptions, close, onSave, divisionCount, fireOnCha
   const [mode, setMode] = useState(1);
 
   const save = async (md) => {
+    let toast_id = toast.loading("Saving changes lol", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     try {
       setLoading(true);
       onSave(true);
-      
+
       const add = await axios.post("/api/phs/config/actions", {
         mode: md,
         config_name,
@@ -41,15 +59,27 @@ const actionComponent = ({ relayOptions, close, onSave, divisionCount, fireOnCha
         },
       });
 
-      
+      toast.update(toast_id, {
+        render: "Successfuly saved",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
+
       setLoading(false);
       close();
-      fireOnChange()
+      fireOnChange();
     } catch (e) {
       setLoading(false);
       if (e.response) {
         if (e.response.status === 409) setErr(e.response.data.message);
       }
+      toast.update(toast_id, {
+        render: "Failed saving changes",
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
     }
   };
 
@@ -58,9 +88,10 @@ const actionComponent = ({ relayOptions, close, onSave, divisionCount, fireOnCha
     if (description.length === 0) return false;
     if (caller.length === 0) return false;
     if (targets.length === 0) return false;
+    if (caller === "Choose") return false;
 
-    if (!forceActivate) {
-      if (eventLocation === -1) return;
+    if (caller !== "Dark Scene Detector" && !forceActivate) {
+      if (eventLocation === -1) return false;
     }
 
     return true;
@@ -76,6 +107,18 @@ const actionComponent = ({ relayOptions, close, onSave, divisionCount, fireOnCha
   return (
     <>
       <div className="shadow-md py-4 outline outline-1 outline-base-300 bg-base-100 rounded-md my-2 px-3 md:px-4">
+        <ToastContainer
+          position="top-left"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          theme={"dark"}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <div className="flex items-center justify-between">
           <div className="form-control">
             <div className="flex items-center justify-start mb-2">
@@ -194,78 +237,6 @@ const actionComponent = ({ relayOptions, close, onSave, divisionCount, fireOnCha
             Add Target
           </button>
         </div>
-
-        {/*
-        
-        <div className="form-control drop-shadow-lg mr-3">
-                      <label className="input-group input-group-sm">
-                        <input
-                          type="number"
-                          onChange={(e) => {
-                            if (isNaN(Number.parseFloat(e.target.value)))
-                              return;
-                            setHasChanges(true);
-                            setTempThresh(Number.parseFloat(e.target.value));
-                          }}
-                          placeholder="Enter Temperature °C"
-                          value={tempThresh}
-                          className="input w-full text-2xl font-mono max-w-xs text-neutral-content bg-neutral "
-                        />
-                        <span className="text-3xl">°C</span>
-                      </label>
-                    </div>
-
-        <div className="mt-4">
-          <div className="flex items-center justify-start mb-2">
-            <div className="p-2 rounded-xl bg-base-300 mr-2">
-              <GoCircuitBoard className="w-6 h-6" />
-            </div>
-            <p className="text-lg">Target Relay</p>
-          </div>
-          <select
-            placeholder="Choose AI that will handle this action"
-            value={target_relay}
-            onChange={(e) => {
-              setTargetRelay(e.target.value);
-            }}
-            className="select select-bordered w-full max-w-xs"
-          >
-            <option>Select Target Relay</option>
-            {target_relay.length !== 0 &&
-              target_relay !== "Select Target Relay" && (
-                <option>{target_relay}</option>
-              )}
-            {relayOptions
-              .filter((rel, i) => {
-                return !rel.value.isUsed;
-              })
-              .map((rel, i) => (
-                <option key={i}>{rel.config_name}</option>
-              ))}
-          </select>
-        </div>
-
-        <div className="mt-4">
-          <div className="flex items-center justify-start mb-2">
-            <div className="p-2 rounded-xl bg-base-300 mr-2">
-              <RiTimerFill className="w-6 h-6" />
-            </div>
-            <p className="text-lg">
-              Action Duration (<span>sec</span>)
-            </p>
-          </div>
-          <input
-            type="text"
-            placeholder="Seconds ex: 1, 2, 3, 4"
-            value={duration}
-            onChange={(e) => {
-              setDuration(e.target.value);
-            }}
-            className={`tracking-wider input input-bordered w-full input-md`}
-            required
-          />
-        </div> */}
-
         <div className="mt-4">
           <div className="flex items-center justify-start mb-2">
             <div className="p-2 rounded-xl bg-base-300 mr-2">
@@ -324,8 +295,6 @@ const actionComponent = ({ relayOptions, close, onSave, divisionCount, fireOnCha
                   <div
                     className="w-full coverStretch bg-no-repeat h-80 bg-base-100"
                     style={{
-                      //https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Road_in_Norway.jpg/1200px-Road_in_Norway.jpg
-                      //http://${PI_IP}:8000/normal_feed
                       backgroundImage: `url("http://${PI_IP}:8000/normal_feed")`,
                     }}
                   ></div>

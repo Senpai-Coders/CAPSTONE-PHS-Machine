@@ -27,7 +27,7 @@ import {
   getCamMode,
   setCamMode,
   localErrorAdd,
-  localErrorDeleteAll,
+  localErrorRemoveCode,
 } from "../helpers";
 
 import { GiPig } from "react-icons/gi";
@@ -103,7 +103,7 @@ export default function Home() {
       SETSYSSTATE(phs_response.data.state);
       setIsDown(false);
       setTimeOutCount(0);
-      localErrorDeleteAll();
+      localErrorDeleteAll(0);
     } catch (e) {
       setIsDown(true);
       setTimeOutCount(timeOutCount + 1);
@@ -149,7 +149,7 @@ export default function Home() {
       setDbActions(db_actions.data.actions);
       setDbActiveUsers(db_active_users.data.activeUsers);
       setPastDetection(db_past_detections.data.detections);
-      localErrorDeleteAll();
+      localErrorDeleteAll(1);
     } catch (e) {
       if (e.message == "Network Error")
         localErrorAdd({

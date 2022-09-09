@@ -2,19 +2,18 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { IoReloadCircleSharp, IoTrashBinSharp } from "react-icons/io5";
-import { GoPrimitiveDot } from "react-icons/go"
-import { BiExport } from "react-icons/bi"
+import { GoPrimitiveDot } from "react-icons/go";
+import { BiExport } from "react-icons/bi";
 
 import { dateToWord } from "../../helpers";
 import { DeleteConfirm, InfoCustom, ExportConfirm } from "../modals";
 import { RangePick, SinglePick } from "../DatePick";
 
-
 const index = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [detections, setDetections] = useState([]);
-  const [copDet, setCopDet] = useState([]) //copy of detections state
+  const [copDet, setCopDet] = useState([]); //copy of detections state
 
   const [selected, setSelected] = useState([]);
   const [modal, setModal] = useState(-1);
@@ -25,14 +24,16 @@ const index = () => {
   const [dateChanged, setDateChange] = useState(false);
 
   const filterDateRange = (from, to, date) => {
-    let FROM = new Date(from)
+    let FROM = new Date(from);
     FROM.setDate(FROM.getDate());
-    let TO = new Date(to)
+    let TO = new Date(to);
     TO.setDate(TO.getDate() + 1);
     return date >= FROM && date <= TO;
   };
 
-  const filterDateEqual = (to, date) => { return to.toDateString() === date.toDateString(); };
+  const filterDateEqual = (to, date) => {
+    return to.toDateString() === date.toDateString();
+  };
 
   const filterData = (data) => {
     let filtered = [];
@@ -62,9 +63,9 @@ const index = () => {
     try {
       setLoading(true);
       const resp = await axios.post("/api/phs/detection", { mode: 0 });
-      let det = resp.data.detection_data
+      let det = resp.data.detection_data;
       setDetections(filterData(det));
-      setCopDet(det)
+      setCopDet(det);
       setLoading(false);
     } catch (e) {
       console.log(e);
@@ -123,21 +124,29 @@ const index = () => {
 
       <ExportConfirm
         shown={modal === 3}
-        close={()=>setModal(-1)}
-        onAccept={()=>{}}
+        close={() => setModal(-1)}
+        onAccept={() => {}}
       />
 
       <InfoCustom
         shown={modal === 2}
         close={setModal}
         title={"Invalid Date"}
-        content={<div>
+        content={
+          <div>
             <p className="mt-2">Please follow this rule</p>
             <ul className="my-2">
-                <li className="flex items-center"><GoPrimitiveDot className="mr-2"/>Start Date must always greater than End Date</li>
-                <li className="flex items-center"><GoPrimitiveDot className="mr-2"/>End Date must always less than Start Date</li>
+              <li className="flex items-center">
+                <GoPrimitiveDot className="mr-2" />
+                Start Date must always greater than End Date
+              </li>
+              <li className="flex items-center">
+                <GoPrimitiveDot className="mr-2" />
+                End Date must always less than Start Date
+              </li>
             </ul>
-        </div>}
+          </div>
+        }
         onAcceptText={"ok"}
       />
 
@@ -165,8 +174,8 @@ const index = () => {
                 <a
                   onClick={() => {
                     setDateMode(0);
-                    setDetections(copDet)
-                    init()
+                    setDetections(copDet);
+                    init();
                   }}
                 >
                   All Date
@@ -212,9 +221,9 @@ const index = () => {
           {dateMode === 2 && (
             <RangePick
               onApply={() => {
-                if(toDate <= fromDate){
-                    setModal(2)
-                    return
+                if (toDate <= fromDate) {
+                  setModal(2);
+                  return;
                 }
                 setDateChange(false);
                 init();
@@ -259,11 +268,17 @@ const index = () => {
             </>
           )}
 
-          <button onClick={()=>setModal(3)} className="btn mt-2 md:mt-0 btn-sm">Export Data<BiExport className="ml-2 text-lg"/> </button>
+          <button
+            onClick={() => setModal(3)}
+            className="btn mt-2 md:mt-0 btn-sm"
+          >
+            Export Data
+            <BiExport className="ml-2 text-lg" />{" "}
+          </button>
         </div>
       </div>
 
-      <div className="mt-4 overflow-x-auto" style={{"maxHeight" : "65vh"}}>
+      <div className="mt-4 overflow-x-auto" style={{ maxHeight: "65vh" }}>
         <table className="mt-2 w-full whitespace-nowrap table-auto rounded-md">
           <thead>
             <tr className="h-16 bg-base-200 rounded-lg shadow-sm">
@@ -286,7 +301,7 @@ const index = () => {
                 />
               </th>
               <th className="text-left">Detection Date</th>
-              <th className=""/>
+              <th className="" />
               <th className="text-right">Pigcount</th>
               <th>Heat Stressed</th>
               <th className="text-left">Normal</th>

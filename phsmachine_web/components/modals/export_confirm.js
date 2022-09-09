@@ -114,7 +114,7 @@ const ExportConfirm = ({ close, shown, onAccept }) => {
 
         {downloadLinks.length > 0 && (
           <div className="mt-4">
-            <p className="font-black">Export Ready, click them to download</p>
+            <p className="font-black">Export Ready, click to download them</p>
             <div className="form-control font-medium">
               {downloadLinks.map((lnks, id) => (
                 <label

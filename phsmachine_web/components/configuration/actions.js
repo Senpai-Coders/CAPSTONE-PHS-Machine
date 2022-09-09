@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import ActionComponent from "./component/actionComponent";
 import NewActionComponent from "./component/newComponent";
-import Loading from "../loading"
+import Loading from "../loading";
 
 const Actions = ({ actions, relays, fireOnChange, divisionCount }) => {
   const [fActions, setFActions] = useState([]);
@@ -12,14 +12,12 @@ const Actions = ({ actions, relays, fireOnChange, divisionCount }) => {
 
   useEffect(() => {
     setFActions(actions);
-    setLoading(false)
+    setLoading(false);
   }, [actions]);
 
   return (
     <div className="min-h-screen">
-        {
-            loading && <Loading />
-        }
+      {loading && <Loading />}
       <p className="mt-4 text-sm">
         You can define different actions that will use devices that can be
         toggled by relays on or off
@@ -34,10 +32,10 @@ const Actions = ({ actions, relays, fireOnChange, divisionCount }) => {
           fireOnChange={fireOnChange}
           relayOptions={relays}
           close={() => {
-            console.log("Closed Call")
+            console.log("Closed Call");
             setNewAct(false);
           }}
-          divisionCount = {divisionCount}
+          divisionCount={divisionCount}
           onSave={setLoading}
         />
       )}

@@ -53,6 +53,12 @@ export const localErrorSetReadAll = (id) => {
   localStorage.setItem("local-errors", JSON.stringify(localError));
 };
 
+export const localErrorRemoveCode = (error_code) => {
+    if (!localStorage) return;
+    var localError = JSON.parse(localStorage.getItem("local-errors")).filter((ers)=>ers.additional.error_code !== error_code);
+    localStorage.setItem("local-errors", JSON.stringify(localError));
+  };
+
 export const localErrorDeleteAll = () => {
   localStorage.setItem("local-errors", JSON.stringify([]));
 };

@@ -167,7 +167,8 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
                         Severity : {notif.additional.severity}
                       </p>
                       <p className="mt-1 font-black font-mono text-right text-sm text-error">
-                        Error Code : <span className=''>{notif.additional.error_code}</span>
+                        Error Code :{" "}
+                        <span className="">{notif.additional.error_code}</span>
                       </p>
                     </div>
                     <div className="mt-2 mockup-code ">

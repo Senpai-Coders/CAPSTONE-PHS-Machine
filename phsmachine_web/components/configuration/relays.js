@@ -70,7 +70,11 @@ const Relays = ({ relays, coreRelays, state, onSave }) => {
                 <td>
                   <div className="flex items-center space-x-3">
                     <div className="avatar">
-                      <GoCircuitBoard className={`text-2xl ${rel.state ? 'animate-pulse text-accent' : ''}`} />
+                      <GoCircuitBoard
+                        className={`text-2xl ${
+                          rel.state ? "animate-pulse text-accent" : ""
+                        }`}
+                      />
                     </div>
                     <div>
                       <div className="font-bold">{rel.config_name}</div>
@@ -91,10 +95,18 @@ const Relays = ({ relays, coreRelays, state, onSave }) => {
                         onChange={(e) => {
                           emit(rel.config_name, e.target.value);
                         }}
-                        className={`toggle ${rel.state ? 'text-accent' : 'opacity-40'}`}
+                        className={`toggle ${
+                          rel.state ? "text-accent" : "opacity-40"
+                        }`}
                         checked={!rel.state ? false : rel.state}
                       />
-                      <span className={`ml-2 label-text ${rel.state ? 'text-accent' : 'opacity-40'}`}>{rel.state ? 'On' : 'Off'}</span>
+                      <span
+                        className={`ml-2 label-text ${
+                          rel.state ? "text-accent" : "opacity-40"
+                        }`}
+                      >
+                        {rel.state ? "On" : "Off"}
+                      </span>
                     </label>
                   </div>
                 </th>

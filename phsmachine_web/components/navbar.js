@@ -52,16 +52,16 @@ const navbar = ({ toggled, setToggled }) => {
       icon: GoGear,
     },
     {
-        name: "Switch PHS",
-        path: "/phsscanner",
-        icon: GoGear,
-      },
+      name: "Switch PHS",
+      path: "/phsscanner",
+      icon: GoGear,
+    },
   ];
 
   const init = async () => {
     if (!(await amISignedIn())) router.push("/auth/signin");
     const usrData = await getMyData();
-    
+
     setUserData(usrData);
     setLoading(false);
   };
@@ -94,7 +94,6 @@ const navbar = ({ toggled, setToggled }) => {
           </div>
         </div>
       </div>
-      
 
       {/* NAV ALL */}
       <nav className=" fixed z-30 flex-shrink-0 href w-screen bg-neutral shadow-lg block">
@@ -182,10 +181,7 @@ const navbar = ({ toggled, setToggled }) => {
 
           {/* PHS TITLE */}
           <div className="flex justify-center items-center my-4 text-neutral-content">
-            <Link
-              className="lg:block font-inter text-2xl font-bold"
-              href="/"
-            >
+            <Link className="lg:block font-inter text-2xl font-bold" href="/">
               <span className="text-xl tracking-widest cursor-pointer">
                 PHS
               </span>
@@ -204,4 +200,3 @@ const navbar = ({ toggled, setToggled }) => {
 };
 
 export default navbar;
-
