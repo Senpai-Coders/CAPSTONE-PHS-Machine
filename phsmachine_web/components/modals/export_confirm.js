@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BiExport } from "react-icons/bi";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { BsFillFileEarmarkZipFill } from "react-icons/bs";
 import { FaFileCsv } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 import { appendToFSUrl } from "../../helpers";
 
@@ -17,23 +18,61 @@ const ExportConfirm = ({ close, shown, onAccept }) => {
   const [downloadLinks, setDownloadLinks] = useState([]);
 
   const requestFiles = async () => {
+    const toast_id = toast.loading("Processing Export...", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     try {
       setExporting(true);
-      const requestResponse = await axios.post("/api/phs/detection", {
-        mode: 4,
-        toExport: {
-          toExcel,
-          toCsv,
-          toZip,
+      //   const requestResponse = await axios.post("/api/phs/detection", {
+      //     mode: 4,
+      //     toExport: {
+      //       toExcel,
+      //       toCsv,
+      //       toZip,
+      //     },
+      //   });
+      let requestResponse = await axios({
+        method: "post",
+        url: `/api/phs/detection`,
+        timeout: 60000 * 10, // only wait for 2s
+        withCredentials: true,
+        data: {
+          mode: 4,
+          toExport: {
+            toExcel,
+            toCsv,
+            toZip,
+          },
         },
       });
       setExporting(false);
-
+      toast.update(id, {
+        render: "Your download is ready",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
       setDownloadLinks(requestResponse.data.downloadLinks);
     } catch (e) {
-      console.log(e);
+      toast.update(toast_id, {
+        render: "Failed processing your export",
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
+      setExporting(false);
     }
   };
+
+  useEffect(() => {
+    setExporting(false);
+  }, []);
 
   return (
     <div
@@ -156,7 +195,6 @@ const ExportConfirm = ({ close, shown, onAccept }) => {
             </button>
           )}
           <label
-            disabled={exporting}
             onClick={() => {
               setDownloadLinks([]);
               close();

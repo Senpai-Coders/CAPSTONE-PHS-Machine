@@ -13,7 +13,7 @@ import ThemeChooser from "./configuration/themeChooser";
 import Notification from "./Notification/Notification";
 
 import "react-toastify/dist/ReactToastify.css";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 const navbar = ({ toggled, setToggled }) => {
   const router = useRouter();
@@ -104,6 +104,7 @@ const navbar = ({ toggled, setToggled }) => {
       {/* NAV ALL */}
       <nav className=" fixed z-30 flex-shrink-0 href w-screen bg-neutral shadow-lg block">
         <ToastContainer
+          className={"z-50"}
           position="top-left"
           autoClose={5000}
           hideProgressBar={false}

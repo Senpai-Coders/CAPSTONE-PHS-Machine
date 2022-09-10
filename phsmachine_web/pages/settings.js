@@ -157,21 +157,11 @@ const configuration = () => {
   }, [router.isReady, router]);
 
   const fireOnChange = async () => {
-    console.log("fired onchange");
     await phs_init();
     await init();
   };
 
   useEffect(() => {
-    // var loader = setInterval(async () => {
-    //   if (exited) return;
-    //   phs_init();
-    //   init();
-    // }, 2000);
-    // return () => {
-    //   clearInterval(loader);
-    //   setExited(true);
-    // };
     fireOnChange();
   }, []);
 

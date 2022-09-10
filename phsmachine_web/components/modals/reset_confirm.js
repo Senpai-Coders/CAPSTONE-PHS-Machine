@@ -154,7 +154,7 @@ const RebootConfirm = ({ close, shown, onAccept }) => {
             </label>
             <p className=" text-xs font-normal">
               PHS error logs at{" "}
-              <span className="font-bold">logs/error-logs.json</span>
+              <span className="font-bold">public/logs/error-logs.json</span>
             </p>
 
             <label className="label mt-2  cursor-pointer flex justify-start">
@@ -168,10 +168,7 @@ const RebootConfirm = ({ close, shown, onAccept }) => {
             </label>
             <p className="text-xs font-normal">
               Include deletion for PHS logs at{" "}
-              <span className="font-bold">
-                logs/phs-core-logs.txt <span className="font-normal">and</span>{" "}
-                logs/phs-web-logs.txt
-              </span>
+              <span className="font-bold">public/logs/</span>
             </p>
           </div>
           <div className="divider"></div>

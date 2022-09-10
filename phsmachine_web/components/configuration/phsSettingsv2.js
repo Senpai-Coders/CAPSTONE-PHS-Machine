@@ -29,7 +29,6 @@ import {
   PI_IP,
 } from "../../helpers";
 
-import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 
 const phsSettings = ({
@@ -94,7 +93,7 @@ const phsSettings = ({
         { mode: 1, value: !autoDelete.value }
       );
       toast.update(toast_id, {
-        render: "PHS autodelete enabled",
+        render: `toggled PHS autodelete ${!autoDelete.value ? "on" : "off"}`,
         type: "success",
         isLoading: false,
         autoClose: true,

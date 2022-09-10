@@ -7,12 +7,12 @@ import { GiProcessor } from "react-icons/gi";
 import { GoCircuitBoard } from "react-icons/go";
 import { CgDetailsLess } from "react-icons/cg";
 import { FaHandSparkles } from "react-icons/fa";
+import { AiOutlinePlus } from "react-icons/ai";
 
 import axios from "axios";
 import { PI_IP } from "../../../helpers";
 
-import "react-toastify/dist/ReactToastify.css";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 import { DeleteConfirm } from "../../modals/";
 
@@ -82,7 +82,6 @@ const actionComponent = ({
         },
         _id: data._id,
       });
-      console.log("done succ");
       toast.update(toast_id, {
         render: "Successfuly saved",
         type: "success",
@@ -94,9 +93,7 @@ const actionComponent = ({
       setEditing(false);
     } catch (e) {
       setLoading(false);
-      console.log(e.response.data.message);
       if (e.response) {
-        //request was made but theres a response status code
         if (e.response.status === 409) setErr(e.response.data.message);
       }
       toast.update(toast_id, {
@@ -236,78 +233,114 @@ const actionComponent = ({
                 </div>
                 <p className="text-lg">Target Relays</p>
               </div>
-              <div className="grid mt-4 grid-cols-2 gap-1">
-                <p>Relay</p>
-                <p>Duration (Seconds)</p>
-                {targets.map((i, idx) => (
-                  <>
-                    <div className="dropdown w-full">
-                      <label tabIndex="0" className="btn  w-full">
-                        Relay : {i.target_relay}
-                      </label>
-                      <ul
-                        tabIndex="0"
-                        className="dropdown-content menu max-h-56 overflow-y-scroll px-3 py-4 shadow backdrop-blur-sm bg-base-100/60 border-b border-l border-r border-base-300 rounded-sm"
-                      >
-                        {[
-                          4, 14, 15, 17, 18, 27, 22, 23, 24, 10, 9, 25, 11, 8,
-                          7, 0, 1, 5, 6, 12, 13, 19, 16, 26, 20, 21,
-                        ].map((rel, id) => (
-                          <li
-                            tabIndex={i + 1}
-                            key={id}
-                            onClick={() => updateSpecificTarget(idx, true, rel)}
-                            className={`cursor-pointer duration-100 m-1 snap-center ${
-                              i.target_relay === rel
-                                ? "bg-base-200 outline outline-1"
-                                : ""
-                            }`}
+              <div className="overflow-y-scroll h-56">
+                <table className="table table-compact table-zebra w-full">
+                  <thead>
+                    <tr>
+                      <th>Target Relay</th>
+                      <th>Duration (seconds)</th>
+                      <th>
+                        <div
+                          className="tooltip text-sm"
+                          data-tip="Add New Target"
+                        >
+                          <button
+                            onClick={() =>
+                              setTargets([
+                                ...targets,
+                                { target_relay: 18, duration: 1 },
+                              ])
+                            }
+                            className="mt-2 btn-square btn btn-sm"
                           >
-                            <div className="flex p-4 justify-between">
-                              <p className="text-md">{rel}</p>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="items-center flex">
-                      <input
-                        type="number"
-                        onChange={(e) => {
-                          let val = e.target.value;
+                            <AiOutlinePlus className="text-2xl" />
+                          </button>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {targets.map((i, idx) => (
+                      <tr className="">
+                        <td>
+                          <div className="dropdown w-full">
+                            <label
+                              tabIndex="0"
+                              className="btn font-mono btn-sm w-full"
+                            >
+                              <GoCircuitBoard className={`text-sm mr-2`} />
+                              {i.target_relay}
+                            </label>
+                            <ul
+                              tabIndex="0"
+                              className="dropdown-content menu max-h-56 overflow-y-scroll px-3 py-4 shadow backdrop-blur-sm bg-base-100/60 border-b border-l border-r border-base-300 rounded-sm"
+                            >
+                              {[
+                                4, 14, 15, 17, 18, 27, 22, 23, 24, 10, 9, 25,
+                                11, 8, 7, 0, 1, 5, 6, 12, 13, 19, 16, 26, 20,
+                                21,
+                              ].map((rel, id) => (
+                                <li
+                                  tabIndex={i + 1}
+                                  key={id}
+                                  onClick={() =>
+                                    updateSpecificTarget(idx, true, rel)
+                                  }
+                                  className={`cursor-pointer duration-100 m-1 snap-center ${
+                                    i.target_relay === rel
+                                      ? "bg-base-200 outline outline-1"
+                                      : ""
+                                  }`}
+                                >
+                                  <div className="flex p-4 justify-between">
+                                    <p className="text-md">{rel}</p>
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            onChange={(e) => {
+                              let val = e.target.value;
 
-                          if (isNaN(Number.parseInt(val))) return;
+                              if (isNaN(Number.parseInt(val))) return;
 
-                          val = Number.parseInt(val);
-                          if (val <= 0) return;
-                          updateSpecificTarget(idx, false, i.target_relay, val);
-                        }}
-                        placeholder="Enter Duration"
-                        value={i.duration}
-                        className="input text-lg w-full font-mono text-neutral-content bg-neutral "
-                      />
-                      <div
-                        className="btn ml-2 text-lg"
-                        onClick={() => {
-                          let targs = [...targets];
-                          targs.splice(idx, 1);
-                          setTargets(targs);
-                        }}
-                      >
-                        <MdClose className="" />
-                      </div>
-                    </div>
-                  </>
-                ))}
+                              val = Number.parseInt(val);
+                              if (val <= 0) return;
+                              updateSpecificTarget(
+                                idx,
+                                false,
+                                i.target_relay,
+                                val
+                              );
+                            }}
+                            placeholder="Enter Duration"
+                            value={i.duration}
+                            className="input input-sm bg-base-100/50 w-full text-sm font-mono "
+                          />
+                        </td>
+                        <td>
+                          <div className="tooltip" data-tip="Remove Target">
+                            <button
+                              className="btn btn-square btn-sm text-lg"
+                              onClick={() => {
+                                let targs = [...targets];
+                                targs.splice(idx, 1);
+                                setTargets(targs);
+                              }}
+                            >
+                              <MdClose className="" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <button
-                onClick={() =>
-                  setTargets([...targets, { target_relay: 18, duration: 1 }])
-                }
-                className="mt-2 btn btn-md btn-block"
-              >
-                Add Target
-              </button>
             </div>
 
             <div className="mt-4">

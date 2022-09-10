@@ -32,7 +32,6 @@ const Actions = ({ actions, relays, fireOnChange, divisionCount }) => {
           fireOnChange={fireOnChange}
           relayOptions={relays}
           close={() => {
-            console.log("Closed Call");
             setNewAct(false);
           }}
           divisionCount={divisionCount}

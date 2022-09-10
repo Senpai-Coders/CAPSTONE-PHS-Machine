@@ -3,6 +3,8 @@ import { MdDarkMode, MdOutlineLightMode } from "react-icons/md";
 import { AiFillFormatPainter } from "react-icons/ai";
 import { useEffect, useState } from "react";
 
+import { toast } from "react-toastify";
+
 const themeChooser = ({ textMode }) => {
   const themes = [
     { name: "light", type: "light" },
@@ -58,6 +60,15 @@ const themeChooser = ({ textMode }) => {
             tabIndex={i + 1}
             key={th.name}
             onClick={() => {
+              toast.success(`Theme changed to ${th.name}`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+              });
               setSelected(th);
             }}
             className={`cursor-pointer duration-100 m-1 snap-center ${
@@ -71,24 +82,6 @@ const themeChooser = ({ textMode }) => {
               ) : (
                 <MdOutlineLightMode className="text-lg" />
               )}
-              {/* <div className="flex justify-center space-x-2 mt-2">
-                <div
-                  data-theme={th.name}
-                  className="card drop-shadow-xl border h-6 w-6 bg-base"
-                />
-                <div
-                  data-theme={th.name}
-                  className="card  drop-shadow-xl border h-6 w-6 bg-primary"
-                />
-                <div
-                  data-theme={th.name}
-                  className="card drop-shadow-xl border h-6 w-6 bg-secondar"
-                />
-                <div
-                  data-theme={th.name}
-                  className="card drop-shadow-xl border h-6 w-6 bg-accent"
-                />
-              </div> */}
             </div>
           </li>
         ))}

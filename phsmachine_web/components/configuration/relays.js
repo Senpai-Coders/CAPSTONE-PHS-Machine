@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Loading from "../loading";
+import { toast } from "react-toastify";
 
 import { GoCircuitBoard } from "react-icons/go";
 import axios from "axios";
@@ -10,14 +11,52 @@ const Relays = ({ relays, coreRelays, state, onSave }) => {
   const [loading, setLoading] = useState(false);
   const [merged, setMerged] = useState([]);
 
-  const emit = async (relay_name, state) => {
+  const emit = async (relay_name, new_state) => {
+    let toast_id = toast.loading(`Updating State`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      draggable: true,
+      progress: undefined,
+    });
+
+    if (state !== 2) {
+      if (state === -2)
+        toast.update(toast_id, {
+          render: `PHS Core is off, this relay won't toggle`,
+          type: "error",
+          isLoading: false,
+          autoClose: true,
+        });
+      else
+        toast.update(toast_id, {
+          render: `Please set system state to Debug for safety`,
+          type: "error",
+          isLoading: false,
+          autoClose: true,
+        });
+      return;
+    }
+
     try {
       const toggle = await axios.post(`http://${PI_IP}:8000/emitRelay`, {
         relay_name,
-        state,
+        new_state,
+      });
+      toast.update(toast_id, {
+        render: `${relay_name} toggled to ${new_state}`,
+        type: "success",
+        isLoading: false,
+        autoClose: true,
       });
     } catch (e) {
-      console.log(e);
+      toast.update(toast_id, {
+        render: `Unable To Toggle ${new_state}`,
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
     }
   };
 
@@ -77,12 +116,14 @@ const Relays = ({ relays, coreRelays, state, onSave }) => {
                       />
                     </div>
                     <div>
-                      <div className="font-bold">{rel.config_name}</div>
+                      <div className="font-bold font-mono">
+                        {rel.config_name}
+                      </div>
                     </div>
                   </div>
                 </td>
                 <td>
-                  <span className="badge badge-ghost font-medium badge-sm">
+                  <span className="badge badge-ghost font-medium badge-lg">
                     GPIO {rel.value.GPIO_PIN}
                   </span>
                 </td>
@@ -91,7 +132,6 @@ const Relays = ({ relays, coreRelays, state, onSave }) => {
                     <label className="label flex justify-start cursor-pointer">
                       <input
                         type="checkbox"
-                        disabled={state !== 2}
                         onChange={(e) => {
                           emit(rel.config_name, e.target.value);
                         }}

@@ -5,6 +5,8 @@ import { VscBellDot, VscError } from "react-icons/vsc";
 import { BsClockHistory } from "react-icons/bs";
 import { HiLink } from "react-icons/hi";
 
+import { toast } from "react-toastify";
+
 import {
   dateToWord,
   PI_IP,
@@ -25,7 +27,10 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
     localErrorSetReadAll(userData._id);
 
     let ids = [];
-    if (notifs.length <= 0) return;
+    if (notifs.length <= 0) {
+      toast.info("Nothing to mark", { position: "top-right", autoClose: 5000 });
+      return;
+    }
 
     notifs.forEach((notif, id) => {
       if (!notif._id) return;
@@ -37,16 +42,65 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
         mode: 1,
         ids,
       });
+      toast.success(`Marked all as read`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });
       load();
-    } catch (e) {}
+    } catch (e) {
+      toast.error(`Can't mark all as read`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
   const deleteAll = async () => {
+    if (notifications.length === 0) {
+      toast.info("Nothing to clear", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+      return;
+    }
+
+    let toast_id = toast.loading("Clearing Notification", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     try {
       localErrorDeleteAll();
       const request = await axios.post("/api/phs/notifications", { mode: -2 });
+      toast.update(toast_id, {
+        render: "Notification Cleared",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
       load();
-    } catch (e) {}
+    } catch (e) {
+      toast.update(toast_id, {
+        render: "Failed",
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
+    }
   };
 
   const getPhsDbErrors = async () => {
@@ -112,7 +166,7 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
   };
 
   return (
-    <div>
+    <>
       <div className="flex justify-between items-center">
         <p className="text-lg font-medium">Notifications</p>
         <p
@@ -122,17 +176,18 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
           Mark all as read
         </p>
       </div>
-      <div className="mt-3 max-h-96 shadow-inner overflow-y-scroll">
+      <div className="mt-3 md:w-full max-h-96 shadow-inner overflow-scroll">
         {notifications.length <= 0 ? (
           <p className="my-4 text-center text-sm opacity-70">No Notification</p>
         ) : (
           <>
             {notifications.map((notif, idx) => (
               <div
+                key={idx}
                 className={`border-b-2 duration-200 ease-out ${
                   notif.isMarkedSeen
                     ? "bg-base-200/30"
-                    : `border-l-4 ${
+                    : ` ${
                         notif.notification_type == "error" ||
                         notif.notification_type == "detection"
                           ? "border-error"
@@ -140,7 +195,7 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
                           ? "border-info"
                           : "border-accent"
                       }`
-                } hover:bg-base-200/40 p-4`}
+                } hover:bg-base-200/40 py-4 w-full md:p-4`}
               >
                 <div className="flex justify-start items-center">
                   <div
@@ -162,19 +217,21 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
                 <p className="mt-1 text-sm">{notif.message}</p>
                 {notif.notification_type == "error" && (
                   <div className="mt-5 ">
-                    <div className="flex items-center justify-between">
+                    <div className="md:flex items-center justify-between">
                       <p className={`mt-1 font-mono text-sm`}>
                         Severity : {notif.additional.severity}
                       </p>
-                      <p className="mt-1 font-black font-mono text-right text-sm text-error">
+                      <p className="mt-1 font-black font-mono md:text-right text-sm text-error">
                         Error Code :{" "}
                         <span className="">{notif.additional.error_code}</span>
                       </p>
                     </div>
-                    <div className="mt-2 mockup-code ">
-                      <pre>
-                        <code className="">{notif.additional.error_log}</code>
-                      </pre>
+                    <div className="overflow-scroll w-full">
+                      <div className="mt-2 mockup-code">
+                        <pre className="">
+                          <code className="">{notif.additional.error_log}</code>
+                        </pre>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -202,7 +259,7 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
                     )
                   )}
                 </div>
-                <p className="mt-3 font-medium text-xs text-right opacity-80">
+                <p className="mt-3 md:mr-4 font-medium text-xs text-right opacity-80">
                   {dateToWord(notif.date)}
                 </p>
               </div>
@@ -218,7 +275,7 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
           Clear All
         </p>
       </div>
-    </div>
+    </>
   );
 };
 

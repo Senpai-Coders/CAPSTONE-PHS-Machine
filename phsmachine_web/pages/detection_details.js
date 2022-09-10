@@ -1,3 +1,4 @@
+import Layout from "../components/layout";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -5,22 +6,22 @@ import { dateToWord, tempParser } from "../helpers";
 
 import { RiCloseLine } from "react-icons/ri";
 import { FaTemperatureHigh, FaTemperatureLow } from "react-icons/fa";
-import { GiPowerLightning, GiTargeting, GiDustCloud } from "react-icons/gi";
+import { GiPowerLightning, GiDustCloud } from "react-icons/gi";
 import { BsFillLayersFill, BsFolderFill } from "react-icons/bs";
 import { TiInfoLarge } from "react-icons/ti";
 
 import Head from "next/head";
 import axios from "axios";
+import BreakDown from "../components/BreakDown";
 
 import { appendToFSUrl } from "../helpers";
 
-export default function _detection_details() {
+const _detection_details = () => {
   const router = useRouter();
   const { _id } = router.query;
 
   const [loading, setLoading] = useState(true);
   const [detection, setDetection] = useState();
-  const [merge, setMerge] = useState(false);
   const [err, setErr] = useState(false);
 
   const init = async () => {
@@ -227,7 +228,6 @@ export default function _detection_details() {
                 </div>
                 <div className="stat-title">Stressed Pig</div>
                 <div className="stat-value ">{detection.data.stressed_pig}</div>
-                <div className="stat-desc">Number of stressed pig</div>
               </div>
 
               <div className="stat snap-center">
@@ -236,7 +236,7 @@ export default function _detection_details() {
                 </div>
                 <div className="stat-title">Actions</div>
                 <div className="stat-value ">{detection.actions.length}</div>
-                <div className="stat-desc">resolving heat stress</div>
+                <div className="stat-desc">to resolving heat stress</div>
               </div>
 
               <div className="stat snap-center">
@@ -302,21 +302,14 @@ export default function _detection_details() {
           </div>
 
           <p className="font-inter text-xl mt-8">Detection Breakdown</p>
-          <div className="form-control w-40">
-            <label className="label cursor-pointer">
-              <BsFillLayersFill className="h-7 w-7 mr-2" />
-              <span className="label-text">Merge Layers</span>
-              <input
-                type="checkbox"
-                onChange={() => {
-                  setMerge(!merge);
-                }}
-                className="toggle"
-              />
-            </label>
+
+          <div className="">
+            {detection.data.breakdown.map((data, i) => (
+              <BreakDown key={i} data={data} nth={i} />
+            ))}
           </div>
 
-          <div className="mx-auto mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+          {/* <div className="mx-auto mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
             {detection.data.breakdown.map((data, i) => (
               <div key={i} className="bg-base-200 rounded-lg p-5 shadow-xl">
                 <p className="font-inter my-2">Pig {i + 1}</p>
@@ -379,7 +372,7 @@ export default function _detection_details() {
                 </div>
               </div>
             ))}
-          </div>
+          </div> */}
 
           <div className="my-8 text-sm alert shadow-lg">
             <div>
@@ -411,4 +404,10 @@ export default function _detection_details() {
       )}
     </motion.div>
   );
-}
+};
+
+_detection_details.getLayout = function getLayout(page) {
+  return <Layout>{page}</Layout>;
+};
+
+export default _detection_details;
