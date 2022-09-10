@@ -4,7 +4,7 @@ import { RiFileExcel2Fill } from "react-icons/ri";
 import { BsFillFileEarmarkZipFill } from "react-icons/bs";
 import { FaFileCsv } from "react-icons/fa";
 
-import { PI_IP } from "../../helpers";
+import { appendToFSUrl } from "../../helpers";
 
 import axios from "axios";
 
@@ -129,7 +129,9 @@ const ExportConfirm = ({ close, shown, onAccept }) => {
                     <BsFillFileEarmarkZipFill className="text-3xl" />
                   )}
                   <span
-                    onClick={() => window.open(`${lnks.link}`, "_blank")}
+                    onClick={() =>
+                      window.open(appendToFSUrl(lnks.link), "_blank")
+                    }
                     className="ml-2 truncate underline"
                   >
                     {lnks.name}

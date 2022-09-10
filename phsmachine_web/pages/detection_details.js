@@ -12,6 +12,8 @@ import { TiInfoLarge } from "react-icons/ti";
 import Head from "next/head";
 import axios from "axios";
 
+import { appendToFSUrl } from "../helpers";
+
 export default function _detection_details() {
   const router = useRouter();
   const { _id } = router.query;
@@ -210,7 +212,7 @@ export default function _detection_details() {
             <div className="stats card bg-base-200 overflow-x-scroll snap-x rounded-box mt-8 font-inter shadow">
               <div className="stat snap-center">
                 <div className="stat-figure text-primary">
-                  <img src={`/pig.svg`} className="w-10 h-10" />
+                  <img src={appendToFSUrl(`/pig.svg`)} className="w-10 h-10" />
                 </div>
                 <div className="stat-title">Identified Pig</div>
                 <div className="stat-value text-primary">
@@ -278,22 +280,22 @@ export default function _detection_details() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               <img
                 className="h-64 w-96 shadow-xl rounded-lg object-fill"
-                src={detection.img_normal}
+                src={appendToFSUrl(detection.img_normal)}
                 alt="detection_image"
               />
               <img
                 className="h-64 w-96 shadow-xl rounded-lg object-fill"
-                src={detection.img_annotated}
+                src={appendToFSUrl(detection.img_annotated)}
                 alt="detection_image"
               />
               <div className="relative h-64 shadow-xl rounded-lg">
                 <img
                   className="h-64 w-full rounded-lg object-fill absolute left-0 top-0"
-                  src={detection.img_normal}
+                  src={appendToFSUrl(detection.img_normal)}
                 />
                 <img
                   className="h-64 w-full rounded-lg object-fill saturate-200 absolute left-0 top-0 opacity-60"
-                  src={detection.img_thermal}
+                  src={appendToFSUrl(detection.img_thermal)}
                 />
               </div>
             </div>
@@ -325,11 +327,11 @@ export default function _detection_details() {
                 >
                   <img
                     className={`h-64 w-full rounded-lg object-fill absolute left-0 top-0 `}
-                    src={data.normal_thumb}
+                    src={appendToFSUrl(data.normal_thumb)}
                   />
                   <img
                     className="h-64 w-full rounded-lg object-fill saturate-200 absolute left-0 top-0 opacity-60"
-                    src={data.thermal_thumb}
+                    src={appendToFSUrl(data.thermal_thumb)}
                   />
                 </div>
                 <div
@@ -339,11 +341,11 @@ export default function _detection_details() {
                 >
                   <img
                     className="w-64 h-32 rounded-lg"
-                    src={data.normal_thumb}
+                    src={appendToFSUrl(data.normal_thumb)}
                   />
                   <img
                     className="w-64 h-32 rounded-lg"
-                    src={data.thermal_thumb}
+                    src={appendToFSUrl(data.thermal_thumb)}
                   />
                   <p>normal</p>
                   <p>processed thermal</p>

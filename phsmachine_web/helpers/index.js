@@ -12,6 +12,10 @@ export const mbToGB = (mb) => mb / 1000;
 
 export const PI_IP = process.env.PI_IP;
 
+export const fileServerUrl = `http://${process.env.PI_IP}:8001`
+
+export const appendToFSUrl = ( path ) => { return fileServerUrl + path }
+
 export const localErrorLoad = () => {
   if (!localStorage) return;
   var localError = JSON.parse(localStorage.getItem("local-errors"));

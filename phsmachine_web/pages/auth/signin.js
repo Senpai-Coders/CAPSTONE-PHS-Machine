@@ -200,6 +200,7 @@ const signin = () => {
         </div>
         <PhsScanner
           curIp={curIp}
+          mountedOnSignIn={true}
           onSwitch={(v) => {
             window.open(v.url, "_blank");
           }}

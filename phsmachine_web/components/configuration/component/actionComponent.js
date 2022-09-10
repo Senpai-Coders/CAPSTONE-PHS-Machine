@@ -179,18 +179,6 @@ const actionComponent = ({
           editing ? "outline-accent-focus" : "outline-base-300"
         } bg-base-100 rounded-md my-2 px-3 md:px-4`}
       >
-        <ToastContainer
-          position="top-left"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          theme={"dark"}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
         <DeleteConfirm
           deleteWhat={"Action"}
           onAccept={() => {

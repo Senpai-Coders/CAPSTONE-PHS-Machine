@@ -90,14 +90,14 @@ const handler = async (req, res) => {
       });
     if (del_system_logs)
       paths.push({
-        path: "logs/phs-web-logs.txt",
-        isFile: true,
+        path: "public/logs/core",
+        isFile: false,
         defaultValue: "[PHS WEB LOG FILE]",
       });
     if (del_system_logs)
       paths.push({
-        path: "logs/phs-core-logs.txt",
-        isFile: true,
+        path: "public/logs/web",
+        isFile: false,
         defaultValue: "[PHS CORE LOG FILE]",
       });
 

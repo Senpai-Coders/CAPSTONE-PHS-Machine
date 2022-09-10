@@ -4,50 +4,92 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const { exec } = require("child_process");
 var XLSX = require("xlsx");
-import { zip } from "zip-a-folder"
+import { zip } from "zip-a-folder";
+
+export const createPathIfNotExist = async (path) => {
+  try {
+    await fs.promises.mkdir(path);
+  } catch (e) {
+    return true;
+  }
+};
+
+createPathIfNotExist("public/exports");
+createPathIfNotExist("public/detections");
+createPathIfNotExist("public/images");
+createPathIfNotExist("public/logs/web");
+createPathIfNotExist("public/logs/core");
 
 export const VERSION = "v1.0 - c7effd8";
 
-export const ToExcel = async ( data ) => {
-    const timeStamp = new Date()
-    const pth = `/exports/${timeStamp.toDateString().replaceAll(' ','_')}_Detection_Export_${timeStamp.getTime()}.xlsx`
-    let exportLink = ''
-    try{
-        var workbook = XLSX.utils.book_new();
-        var worksheet = XLSX.utils.json_to_sheet(data)
-        worksheet['!cols'] = [{ width: 14 }, { width: 14 }, { width: 12 }, { width: 12 }, { width: 20 }, { width: 15 }, { width: 20 }, { width: 20 }, { width: 150 } ]
-        XLSX.utils.book_append_sheet(workbook, worksheet, `Detection ${timeStamp.toLocaleDateString().replaceAll('/','_')}`, true);
-        let writeResult = await XLSX.writeFile(workbook, 'public'+pth)
-        if(writeResult === undefined) exportLink = pth
-    }catch(e){ console.log(e) }
-    return exportLink;
-}
+export const ToExcel = async (data) => {
+  await createPathIfNotExist("public/exports");
+  const timeStamp = new Date();
+  const pth = `/exports/${timeStamp
+    .toDateString()
+    .replaceAll(" ", "_")}_Detection_Export_${timeStamp.getTime()}.xlsx`;
+  let exportLink = "";
+  try {
+    var workbook = XLSX.utils.book_new();
+    var worksheet = XLSX.utils.json_to_sheet(data);
+    worksheet["!cols"] = [
+      { width: 14 },
+      { width: 14 },
+      { width: 12 },
+      { width: 12 },
+      { width: 20 },
+      { width: 15 },
+      { width: 20 },
+      { width: 20 },
+      { width: 150 },
+    ];
+    XLSX.utils.book_append_sheet(
+      workbook,
+      worksheet,
+      `Detection ${timeStamp.toLocaleDateString().replaceAll("/", "_")}`,
+      true
+    );
+    let writeResult = await XLSX.writeFile(workbook, "public" + pth);
+    if (writeResult === undefined) exportLink = pth;
+  } catch (e) {
+    console.log(e);
+  }
+  return exportLink;
+};
 
-export const ToCsv = async ( data ) => {
-    const timeStamp = new Date()
-    const pth = `/exports/${timeStamp.toDateString().replaceAll(' ','_')}_Detection_Export_${timeStamp.getTime()}.csv`
-    let exportLink = ''
-    try{
-        var worksheet = XLSX.utils.json_to_sheet(data)
-        var CsvSheet = XLSX.utils.sheet_to_csv(worksheet)
-        const writeResult = await fs.promises.writeFile( 'public'+pth , CsvSheet);
-        if(writeResult === undefined) exportLink = pth
-    }catch(e){ console.log(e) }
-    return exportLink;
-}
+export const ToCsv = async (data) => {
+  await createPathIfNotExist("public/exports");
+  const timeStamp = new Date();
+  const pth = `/exports/${timeStamp
+    .toDateString()
+    .replaceAll(" ", "_")}_Detection_Export_${timeStamp.getTime()}.csv`;
+  let exportLink = "";
+  try {
+    var worksheet = XLSX.utils.json_to_sheet(data);
+    var CsvSheet = XLSX.utils.sheet_to_csv(worksheet);
+    const writeResult = await fs.promises.writeFile("public" + pth, CsvSheet);
+    if (writeResult === undefined) exportLink = pth;
+  } catch (e) {
+    console.log(e);
+  }
+  return exportLink;
+};
 
-export const ToZip = async ( path ) => {
-    const timeStamp = new Date()
-    const pth = `/exports/${timeStamp.toDateString().replaceAll(' ','_')}_Detection_Export_${timeStamp.getTime()}.zip`
-    try{
-        const result = await zip(path, 'public'+pth)
-        if(result === undefined) return pth
-        return ''
-    }catch(e){
-        console.log(e)
-        return ''
-    }
-}
+export const ToZip = async (path) => {
+  await createPathIfNotExist("public/exports");
+  const timeStamp = new Date();
+  const pth = `/exports/${timeStamp
+    .toDateString()
+    .replaceAll(" ", "_")}_Detection_Export_${timeStamp.getTime()}.zip`;
+  try {
+    const result = await zip(path, "public" + pth);
+    if (result === undefined) return pth;
+    return "";
+  } catch (e) {
+    console.log(e);
+    return "";
+  }
+};
 
 export const exec_command = async (comnd) => {
   let exec_res = exec(comnd, function (error, stdout, stderr) {
@@ -109,7 +151,7 @@ export const writeError = async (obj) => {
     if (dupl) return [];
 
     const data = await fs.promises.writeFile(
-      "logs/error-logs.json",
+      "public/logs/error-logs.json",
       JSON.stringify([...prev, obj])
     );
     return JSON.parse(data);
@@ -123,7 +165,7 @@ export const removeErrorCode = async (error_code) => {
     const prev = await readError();
 
     const data = await fs.promises.writeFile(
-      "logs/error-logs.json",
+      "public/logs/error-logs.json",
       JSON.stringify(
         prev.filter((err_obj) => err_obj.additional.error_code !== error_code)
       )
@@ -136,14 +178,36 @@ export const removeErrorCode = async (error_code) => {
 
 export const readError = async () => {
   try {
-    const data = await fs.promises.readFile("logs/error-logs.json", "utf8");
+    const data = await fs.promises.readFile("public/logs/error-logs.json", "utf8");
     return JSON.parse(data);
   } catch (err) {
     const data = await fs.promises.writeFile(
-      "logs/error-logs.json",
+      "public/logs/error-logs.json",
       JSON.stringify([])
     );
     return [];
+  }
+};
+
+export const readDirContent = async (path) => {
+  try {
+    let files = fs.readdirSync(path, { withFileTypes: true })
+      .filter((item) => !item.isDirectory())
+      .map((item) => item.name );
+    return files;
+  } catch (e) {
+    console.log(e)
+    return [];
+  }
+};
+
+export const readLogs = async (logFileName) => {
+  try {
+    const data = await fs.promises.readFile(logFileName, "utf8");
+    return data;
+  } catch (err) {
+    const data = await fs.promises.writeFile(logFileName, "");
+    return "";
   }
 };
 
@@ -151,7 +215,7 @@ export const clearError = async () => {
   try {
     const prev = await readError();
     const data = await fs.promises.writeFile(
-      "logs/error-logs.json",
+      "public/logs/error-logs.json",
       JSON.stringify([])
     );
     return JSON.parse(data);

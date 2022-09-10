@@ -30,7 +30,7 @@ import {
 } from "../../helpers";
 
 import "react-toastify/dist/ReactToastify.css";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 const phsSettings = ({
   autoDelete,
@@ -290,19 +290,6 @@ const phsSettings = ({
 
   return (
     <div className="">
-      <ToastContainer
-        position="top-left"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        theme={"dark"}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-
       <ShutdownConfirm
         shown={selectedModal === -2}
         onAccept={() => {

@@ -8,7 +8,7 @@ import { RiComputerFill } from "react-icons/ri";
 import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
 
-const PhsScanner = ({ onSwitch, curIp }) => {
+const PhsScanner = ({ onSwitch, curIp, mountedOnSignIn }) => {
   const [oct1, set_oct1] = useState(192);
   const [oct2, set_oct2] = useState(168);
   const [oct3, set_oct3] = useState(1);
@@ -107,18 +107,20 @@ const PhsScanner = ({ onSwitch, curIp }) => {
 
   return (
     <div className="p-4 ">
-      <ToastContainer
-        position="top-left"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        theme={"dark"}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      {mountedOnSignIn && (
+        <ToastContainer
+          position="top-left"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          theme={"dark"}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+      )}
       <div className="alert shadow-lg">
         <div>
           <FaNetworkWired className="text-xl" />

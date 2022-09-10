@@ -12,7 +12,8 @@ import { API, amISignedIn, getMyData, getRole } from "../helpers";
 import ThemeChooser from "./configuration/themeChooser";
 import Notification from "./Notification/Notification";
 
-import Time_Strip from "./Time_Strp";
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
 
 const navbar = ({ toggled, setToggled }) => {
   const router = useRouter();
@@ -56,6 +57,11 @@ const navbar = ({ toggled, setToggled }) => {
       path: "/phsscanner",
       icon: GoGear,
     },
+    {
+      name: "PHS Logs",
+      path: "/systemlogs",
+      icon: GoGear,
+    },
   ];
 
   const init = async () => {
@@ -97,6 +103,18 @@ const navbar = ({ toggled, setToggled }) => {
 
       {/* NAV ALL */}
       <nav className=" fixed z-30 flex-shrink-0 href w-screen bg-neutral shadow-lg block">
+        <ToastContainer
+          position="top-left"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          theme={"dark"}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <div
           className={`z-40 overflow-y-scroll w-64 px-4 py-2 h-screen bg-base-100 shadow-lg absolute duration-300 ease-in-out top-0 ${
             toggled ? "left-0" : "-left-96 "
@@ -118,7 +136,7 @@ const navbar = ({ toggled, setToggled }) => {
             <div className="w-full flex justify-evenly">
               <ul className="menu w-full overflow-y-auto bg-transparent py-2 text-base-content">
                 {PHS_ROUTES.map((routes, idx) => (
-                  <li className="" key={idx}>
+                  <li className="mt-2" key={idx}>
                     <a
                       key={idx}
                       onClick={() => router.push(routes.path)}

@@ -29,21 +29,12 @@ module.exports = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  exportPathMap: async function () {
-    const paths = {
-      "/": { page: "/" },
-      "/auth/signin": { page: "/auth/signin" },
-      "/anlysis": { page: "/analysis" },
-      "/configuration": { page: "/configuration" },
-    };
-    return paths; //<--this was missing previously
-  },
   env: {
     MONGODB_URI: IS_PI
       ? `mongodb://${IP}:27017/PHS_MACHINE`
       : "mongodb+srv://Jervx:helloworld@capstone.nv1cu.mongodb.net/?retryWrites=true&w=majority",
     JWT_SCRT: "ErenJaeger",
-    PI_IP: IP,
+    PI_IP : IP,
     EXPIRATION: 86400, //Seconds
   },
 };

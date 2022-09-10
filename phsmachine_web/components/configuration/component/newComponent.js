@@ -9,7 +9,7 @@ import { CgDetailsLess } from "react-icons/cg";
 import { FaHandSparkles } from "react-icons/fa";
 
 import "react-toastify/dist/ReactToastify.css";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 import { PI_IP } from "../../../helpers";
 
@@ -34,7 +34,7 @@ const actionComponent = ({
   const [mode, setMode] = useState(1);
 
   const save = async (md) => {
-    let toast_id = toast.loading("Saving changes lol", {
+    let toast_id = toast.loading("Saving New Action...", {
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,
@@ -60,7 +60,7 @@ const actionComponent = ({
       });
 
       toast.update(toast_id, {
-        render: "Successfuly saved",
+        render: "Successfuly Saved!",
         type: "success",
         isLoading: false,
         autoClose: true,
@@ -107,18 +107,6 @@ const actionComponent = ({
   return (
     <>
       <div className="shadow-md py-4 outline outline-1 outline-base-300 bg-base-100 rounded-md my-2 px-3 md:px-4">
-        <ToastContainer
-          position="top-left"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          theme={"dark"}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
         <div className="flex items-center justify-between">
           <div className="form-control">
             <div className="flex items-center justify-start mb-2">

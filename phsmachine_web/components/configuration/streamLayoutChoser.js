@@ -1,8 +1,6 @@
 import { setCamMode, getCamMode } from "../../helpers";
 import { AiFillFormatPainter } from "react-icons/ai";
 import { useEffect, useState } from "react";
-import "react-toastify/dist/ReactToastify.css";
-import { toast, ToastContainer } from "react-toastify";
 
 const themeChooser = ({ textMode }) => {
   const layouts = [
@@ -35,18 +33,6 @@ const themeChooser = ({ textMode }) => {
 
   return (
     <div className="dropdown">
-      <ToastContainer
-        position="top-left"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        theme={"dark"}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
       <label
         tabIndex="0"
         className="btn flex btn-active btn-outline btn-ghost shadow-md btn-sm"
@@ -66,15 +52,6 @@ const themeChooser = ({ textMode }) => {
             tabIndex={i + 1}
             key={th.name}
             onClick={() => {
-              toast.success(`Changed camera stream layout to ${th.name}`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-              });
               setSelected(th);
             }}
             className={`cursor-pointer duration-100 m-1 snap-center ${
