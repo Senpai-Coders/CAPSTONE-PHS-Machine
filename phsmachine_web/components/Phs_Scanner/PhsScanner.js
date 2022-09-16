@@ -5,7 +5,6 @@ import axios from "axios";
 import { FaNetworkWired } from "react-icons/fa";
 import { RiComputerFill } from "react-icons/ri";
 
-import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
 
 const PhsScanner = ({ onSwitch, curIp, mountedOnSignIn }) => {

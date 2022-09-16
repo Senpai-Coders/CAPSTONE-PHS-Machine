@@ -31,7 +31,7 @@ const PhsCard = ({ phs_data, showConnect, title }) => {
         </div>
 
         <p className="w-full mt-1 text-xl text-center font-inter font-bold">
-          PHS1
+          {phs_data.server_name}
         </p>
 
         <div className="mt-4 flex items-center justify-between">

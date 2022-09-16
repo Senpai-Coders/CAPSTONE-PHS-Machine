@@ -27,6 +27,7 @@ import {
   mbToGB,
   getPercentUsage,
   PI_IP,
+  getMyData,
 } from "../../helpers";
 
 import { toast } from "react-toastify";
@@ -57,6 +58,9 @@ const phsSettings = ({
   const [size, setSize] = useState(0);
   const [perc, setPerc] = useState(0);
 
+  const [userData, setUserData] = useState();
+  const [canEdit, setCanEdit] = useState(false);
+
   const [divCol, setDivCol] = useState(1);
   const [divRow, setDivRow] = useState(1);
 
@@ -75,6 +79,16 @@ const phsSettings = ({
     setUsed(Used.toFixed(1));
     setPerc(getPercentUsage(Size, Used));
   }, [storageInfo]);
+
+  const getUserData = async () => {
+    const usrData = await getMyData();
+    setUserData(usrData);
+    setCanEdit(usrData.role > 1);
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, []);
 
   const updateAutoDelete = async () => {
     const toast_id = toast.loading("updating...", {
@@ -944,6 +958,7 @@ const phsSettings = ({
                 </p>
               </div>
               <button
+                disabled={!canEdit}
                 onClick={() => setSelectedModal(-4)}
                 className="btn mt-4 md:mt-0 btn-active btn-sm btn-ghost btn-outline btn-error"
               >

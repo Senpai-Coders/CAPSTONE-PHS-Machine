@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import MorphChart from "../charts/MorphChart";
+import MorphChart from "./charts/MorphChart";
 import { toast } from "react-toastify";
 
 const heatmapRaw = ({ data, chartName, textColor, title, subTitle }) => {

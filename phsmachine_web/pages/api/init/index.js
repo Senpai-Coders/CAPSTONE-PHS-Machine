@@ -4,6 +4,9 @@ import {
   removeErrorCode,
   deletePathOrFile,
   exec_command,
+  PI_IP,
+  dateToBeutify,
+  VERIFY_AUTHORIZATION,
 } from "../../../helpers/api";
 import dbConnect from "../../../configs/dbConnection";
 
@@ -17,6 +20,9 @@ let ObjectId = require("mongoose").Types.ObjectId;
 dbConnect();
 
 const handler = async (req, res) => {
+  const auth = req.cookies.authorization;
+  const editorDetails = VERIFY_AUTHORIZATION(auth);
+
   const defs = await readDefaults();
 
   if (!defs) {
@@ -74,6 +80,48 @@ const handler = async (req, res) => {
       del_system_logs,
     } = req.body;
 
+    if (default_users || settings || detections || notifications) {
+      let inits = "";
+      if (default_users) inits += "Users~";
+      if (settings) inits += "settings~";
+      if (detections) inits += "Detections~";
+      if (notifications) inits += "Notifications~";
+      if (del_detect_files) inits += "Detections Raw Files~";
+      if (del_user_photos) inits += "User photos~";
+      if (del_exports) inits += "File Exports~";
+      if (del_errors) inits += "Error logs~";
+      if (del_system_logs) inits += "System Logs~";
+      inits = inits.replaceAll("~", ", ");
+
+      const callEmail = await fetch(`http:${PI_IP}:3000/api/sendMail`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: 2,
+          template_content: {
+            user_id: editorDetails ? editorDetails._id : "N/A - System | Dev",
+            user_name: editorDetails
+              ? editorDetails.user_name
+              : "N/A - System | Dev",
+            reset_content: inits,
+            time_string: dateToBeutify(new Date()),
+          },
+        }), // body data type must match "Content-Type" header
+      });
+
+      const notify_reset = await notification.create({
+        notification_type: "notify",
+        title: "PHS reset completed",
+        message: `Reset for ${inits} to PHS factory default is completed`,
+        priority: 0,
+        links: [],
+        seenBy: [],
+        date: new Date(),
+      });
+    }
+
     let paths = [];
 
     console.log("Reset PHS system -> Factory Default");
@@ -84,7 +132,7 @@ const handler = async (req, res) => {
     if (del_exports) paths.push({ path: "public/exports", isFile: false });
     if (del_errors)
       paths.push({
-        path: "logs/error-logs.json",
+        path: "public/logs/error-logs.json",
         isFile: true,
         defaultValue: JSON.stringify([]),
       });
@@ -125,25 +173,6 @@ const handler = async (req, res) => {
       console.log("init notifications");
       const del4 = await notification.deleteMany({});
       const resp4 = await notification.insertMany(DEFAULT_NOTIFICATIONS);
-    }
-
-    if (default_users || settings || detections || notifications) {
-      let inits = "";
-      if (default_users) inits += "Users ";
-      if (settings) inits += "settings ";
-      if (detections) inits += "Detections ";
-      if (notifications) inits += "Notifications ";
-      inits = inits.replace(/\s/g, ", ");
-
-      const notify_reset = await notification.create({
-        notification_type: "notify",
-        title: "PHS reset completed",
-        message: `Reset for ${inits} to PHS factory default is completed`,
-        priority: 0,
-        links: [],
-        seenBy: [],
-        date: new Date(),
-      });
     }
 
     res.status(200).json({ status: "Reset 👌" });

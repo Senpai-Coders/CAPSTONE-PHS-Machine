@@ -7,12 +7,15 @@ import { dateToWord, tempParser } from "../helpers";
 import { RiCloseLine } from "react-icons/ri";
 import { FaTemperatureHigh, FaTemperatureLow } from "react-icons/fa";
 import { GiPowerLightning, GiDustCloud } from "react-icons/gi";
-import { BsFillLayersFill, BsFolderFill } from "react-icons/bs";
+import { BsFolderFill } from "react-icons/bs";
 import { TiInfoLarge } from "react-icons/ti";
+import { MdScience } from "react-icons/md";
+import { HiOutlineArrowSmDown } from "react-icons/hi";
+import { BiMerge } from "react-icons/bi";
 
 import Head from "next/head";
 import axios from "axios";
-import BreakDown from "../components/BreakDown";
+import HeatmapRaw from "../components/heatmapRaw";
 
 import { appendToFSUrl } from "../helpers";
 
@@ -23,6 +26,9 @@ const _detection_details = () => {
   const [loading, setLoading] = useState(true);
   const [detection, setDetection] = useState();
   const [err, setErr] = useState(false);
+
+  const [selected, setSelected] = useState(-1);
+  const [merge, setMerge] = useState(false);
 
   const init = async () => {
     try {
@@ -93,12 +99,42 @@ const _detection_details = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
       exit={{ opacity: 0 }}
-      className="relative mx-4"
+      className="relative"
     >
       <Head>
         <title>Event View</title>
       </Head>
+
+      <div
+        className={`modal modal-bottom ${selected !== -1 ? "modal-open" : ""}`}
+      >
+        <div className="modal-box w-11/12 h-fit max-w-5xl">
+          <h3 className="font-bold text-lg">Thermal Map</h3>
+          <div style={{ height: "70vh" }}>
+            {selected !== -1 && (
+              <HeatmapRaw
+                chartName={`Raw Heatmap - Pig ${selected + 1}`}
+                textColor={"#7d6d72"}
+                title={`Raw HeatMap`}
+                subTitle={`Pig ${+1}`}
+                data={detection.data.breakdown[selected].raw}
+              />
+            )}
+          </div>
+          <div className="modal-action">
+            <label
+              onClick={() => {
+                setSelected(-1);
+              }}
+              className="btn"
+            >
+              close
+            </label>
+          </div>
+        </div>
+      </div>
       <input type="checkbox" id="del-rec-confirm" className="modal-toggle" />
+
       <div className="modal bg-base-100/60 backdrop-blur-md modal-bottom sm:modal-middle">
         <div className="modal-box">
           <div className="flex items-center justify-between">
@@ -162,7 +198,7 @@ const _detection_details = () => {
         </div>
       )}
       {!loading && !err && (
-        <section className="mt-8 mx-4 md:mx-8">
+        <section className="mt-8 sm:mx-1 md:mx-8">
           <p className="font-inter text-lg">
             Detection Date -{" "}
             <span className="font-lato text-sm">
@@ -213,7 +249,7 @@ const _detection_details = () => {
             <div className="stats card bg-base-200 overflow-x-scroll snap-x rounded-box mt-8 font-inter shadow">
               <div className="stat snap-center">
                 <div className="stat-figure text-primary">
-                  <img src={appendToFSUrl(`/pig.svg`)} className="w-10 h-10" />
+                  <img src={appendToFSUrl(`/pig.png`)} className="w-10 h-10" />
                 </div>
                 <div className="stat-title">Identified Pig</div>
                 <div className="stat-value text-primary">
@@ -303,76 +339,99 @@ const _detection_details = () => {
 
           <p className="font-inter text-xl mt-8">Detection Breakdown</p>
 
-          <div className="">
-            {detection.data.breakdown.map((data, i) => (
-              <BreakDown key={i} data={data} nth={i} />
-            ))}
-          </div>
+          <button
+            onClick={() => {
+              setMerge(!merge);
+            }}
+            className="btn btn-sm btn-active"
+          >
+            <BiMerge className="text-xl mr-2" /> Merge View
+          </button>
 
-          {/* <div className="mx-auto mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {detection.data.breakdown.map((data, i) => (
-              <div key={i} className="bg-base-200 rounded-lg p-5 shadow-xl">
-                <p className="font-inter my-2">Pig {i + 1}</p>
-                <div
-                  className={`duration-300 relative h-64 shadow-xl rounded-lg ${
-                    merge ? "opacity-100 z-40" : "hidden z-0"
-                  }`}
-                >
-                  <img
-                    className={`h-64 w-full rounded-lg object-fill absolute left-0 top-0 `}
-                    src={appendToFSUrl(data.normal_thumb)}
-                  />
-                  <img
-                    className="h-64 w-full rounded-lg object-fill saturate-200 absolute left-0 top-0 opacity-60"
-                    src={appendToFSUrl(data.thermal_thumb)}
-                  />
-                </div>
-                <div
-                  className={`duration-300 mt-2 grid gap-2 grid-cols-2 font-inter text-sm ${
-                    !merge ? "opacity-100 z-40" : "hidden z-0"
-                  }`}
-                >
-                  <img
-                    className="w-64 h-32 rounded-lg"
-                    src={appendToFSUrl(data.normal_thumb)}
-                  />
-                  <img
-                    className="w-64 h-32 rounded-lg"
-                    src={appendToFSUrl(data.thermal_thumb)}
-                  />
-                  <p>normal</p>
-                  <p>processed thermal</p>
-                </div>
-                <div className="mt-2 font-inter">
-                  {data.info ? (
-                    <>
-                      <p className="text-lg">
-                        Min Temp:{" "}
-                        <span className="font-medium text-primary">
-                          {tempParser(data.info.min_temp, 1)} °C
-                        </span>{" "}
+          <div className="flex mt-4 flex-wrap">
+            {detection.data.breakdown.map((data, nth) => (
+              //   <BreakDown key={i} data={data} nth={i} />
+              <div key={nth} className="p-3 w-full sm:w-1/2 md:w-1/3">
+                <div className="card bg-neutral overflow-visible shadow-lg">
+                  <div className="flex justify-between items-center p-4">
+                    <div className="flex justify-start items-center">
+                      <div className="avatar">
+                        <div className="w-12 mask mask-squircle">
+                          <img src={appendToFSUrl(data.normal_thumb)} />
+                        </div>
+                      </div>
+                      <p className="ml-2 text-neutral text-lg">Pig {nth + 1}</p>
+                    </div>
+                    <div className="flex items-center justify-end">
+                      <div className="tooltip " data-tip="View Raw Heat Map">
+                        <button
+                          onClick={() => {
+                            setSelected(nth);
+                          }}
+                          className="btn btn-square btn-sm btn-active mr-2"
+                        >
+                          <MdScience className="text-xl" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="shadow shadow-inner mt-2 p-4 bg-base-100 outline outline-1 outline-base-100 flex items-center justify-evenly">
+                    <div className="flex flex-col items-center">
+                      <p className="w-1/3 text-left  flex items-center">Max </p>
+                      <HiOutlineArrowSmDown className="mx-2" />{" "}
+                      <p className="font-bold text-error/90 font-mono">
+                        {" "}
+                        {data.info.max_temp.toFixed(2)}°C
                       </p>
-                      <p className="text-lg">
-                        Average Temp:{" "}
-                        <span className="font-medium text-primary">
-                          {tempParser(data.info.avg_temp, 1)} °C
-                        </span>{" "}
-                        {"   "}{" "}
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <p className=" w-1/3 text-center flex items-center">
+                        Avg{" "}
                       </p>
-                      <p className="text-lg">
-                        Max Temp: {"   "}{" "}
-                        <span className="font-medium text-error">
-                          {tempParser(data.info.max_temp, 1)} °C
-                        </span>
+                      <HiOutlineArrowSmDown className="mx-2" />{" "}
+                      <p className="font-bold font-mono text-warning">
+                        {data.info.avg_temp.toFixed(2)}°C
                       </p>
-                    </>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <p className=" w-1/3 text-right  flex items-center text-netural-content">
+                        Min{" "}
+                      </p>
+                      <HiOutlineArrowSmDown className="mx-2" />{" "}
+                      <p className="font-bold font-mono  ">
+                        {data.info.min_temp.toFixed(2)}°C
+                      </p>
+                    </div>
+                  </div>
+
+                  {!merge ? (
+                    <div className=" bg-base-100 p-2 flex items-center justify-between">
+                      <img
+                        className="w-1/2"
+                        src={appendToFSUrl(data.normal_thumb)}
+                      />
+                      <img
+                        className="w-1/2"
+                        src={appendToFSUrl(data.thermal_thumb)}
+                      />
+                    </div>
                   ) : (
-                    <p className="text-xs opacity-80"> No Sub Info To Show </p>
+                    <div className="bg-base-100 h-[24rem] p-2 flex items-center justify-between relative">
+                      <img
+                        className="absolute top-0 left-0 w-full h-[23rem]"
+                        src={appendToFSUrl(data.normal_thumb)}
+                      />
+                      <img
+                        className="absolute top-0 left-0 opacity-70 h-[23rem] w-full saturate-100"
+                        src={appendToFSUrl(data.thermal_thumb)}
+                      />
+                    </div>
                   )}
                 </div>
               </div>
             ))}
-          </div> */}
+          </div>
 
           <div className="my-8 text-sm alert shadow-lg">
             <div>

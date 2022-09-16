@@ -6,6 +6,8 @@ const { exec } = require("child_process");
 var XLSX = require("xlsx");
 import { zip } from "zip-a-folder";
 
+export const PI_IP = process.env.PI_IP;
+
 export const createPathIfNotExist = async (path) => {
   try {
     await fs.promises.mkdir(path);
@@ -189,6 +191,15 @@ export const readError = async () => {
   }
 };
 
+export const readJsonFile = async (path) => {
+    try {
+        const content = await fs.promises.readFile(path, "utf8");
+        return JSON.parse(content);
+      } catch (err) {
+        return { sendGrid : "" };
+      }
+}
+
 export const readDirContent = async (path) => {
   try {
     let files = fs.readdirSync(path, { withFileTypes: true })
@@ -267,5 +278,29 @@ export const VERIFY_AUTHORIZATION = (JWT) => {
     return false;
   }
 };
+
+export const bytesToMegaBytes = (bytes) => bytes / 1000000; //bytes / (1024 ** 2)
+
+export const mbToGB = (mb) => mb / 1000;
+
+export const getPercentUsage = (total, taken) => {
+    var tk = (taken / total) * 100;
+    return isNaN(tk) ? 0 : tk;
+  };
+
+export const dateToBeutify = (date) => {
+    let thisDate = new Date(date);
+    let wordDate = `${thisDate.toLocaleString("en-us", {
+      month: "short",
+    })} ${thisDate.getDate()}, ${thisDate.getFullYear()} at ${thisDate.toLocaleTimeString(
+      "en-US",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    )}`;
+    return wordDate;
+  };
+  
 
 export default {};

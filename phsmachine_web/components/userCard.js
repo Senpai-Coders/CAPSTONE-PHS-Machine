@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { validate } from "email-validator";
 
 import { AiFillEdit } from "react-icons/ai";
 import { VscClose } from "react-icons/vsc";
@@ -8,9 +9,10 @@ import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { TiUserDelete } from "react-icons/ti";
 
 import axios from "axios";
-import { getRole, getRoleIcon } from "../helpers";
+import { getRole, getRoleIcon, appendToFSUrl } from "../helpers";
+import { toast } from "react-toastify";
 
-const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
+const userCard = ({ u, editor_info, onUpdate, onDelete, onNav }) => {
   const [editing, setEditing] = useState(false);
   const [show, setShow] = useState(false);
   const [image, setImage] = useState(null);
@@ -18,17 +20,17 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
 
   const [pass, setPass] = useState("");
   const [username, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [toNotify, setToNotify] = useState(false);
   const [createObjectURL, setCreateObjectURL] = useState("");
 
   const [loading, setLoading] = useState(false);
-
-  const [errMsg, setErrMsg] = useState("");
-
   const editable = () => {
     if (u._id === editor_info._id) return true;
     if (u.role === 3) return false;
     return editor_info.role >= u.role;
   };
+  const owned = () => u._id === editor_info._id;
 
   const changableRole = () => {
     if (editor_info._id === u._id || editor_info.role <= 1) return false;
@@ -76,6 +78,15 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
   };
 
   const updateInfo = async () => {
+    const id = toast.loading("Saving changes...", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     try {
       let update = {};
       setLoading(true);
@@ -103,31 +114,56 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
           _id: u._id,
           mode: 1,
           old_u_name: u.user_name,
-          updates: { user_name: username },
+          updates: { user_name: username, email, toNotify },
         });
       } else
         update = await axios.post("/api/phs/updateUser", {
           _id: u._id,
           mode: 1,
           old_u_name: u.user_name,
-          updates: { user_name: username, password: pass },
+          updates: { user_name: username, password: pass, email, toNotify },
           hasNewPassword: true,
         });
       setLoading(false);
       init();
       onUpdate();
+      setEditing(false);
+      toast.update(id, {
+        render: "Saved!",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
     } catch (e) {
       console.log(e);
       setLoading(false);
       if (e.response) {
-        //request was made but theres a response status code
-        //console.log(e.response.data);
-        if (e.response.data.error === 409) setErrMsg(e.response.data.message);
+        if (e.response.data.error === 409) {
+          toast.update(id, {
+            render: e.response.data.message,
+            type: "error",
+            isLoading: false,
+            autoClose: true,
+          });
+        }
       } else if (e.request) {
         // The request was made but no response was received
+        toast.update(id, {
+          render: "No response from server, please reload",
+          type: "error",
+          isLoading: false,
+          autoClose: true,
+        });
       } else {
         // Something happened in setting up the request that triggered an Error
         //console.log("Error", error.message);
+
+        toast.update(id, {
+          render: "Failed to save changes",
+          type: "error",
+          isLoading: false,
+          autoClose: true,
+        });
       }
     }
   };
@@ -135,8 +171,10 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
   const init = () => {
     setCreateObjectURL(u.photo);
     setUserName(u.user_name);
+    setEmail(u.email);
     setHasNewImage(false);
     setPass("");
+    setToNotify(u.toNotify);
   };
 
   useEffect(() => {
@@ -146,11 +184,11 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
   return (
     <div className="mb-4">
       <div className="shadow-lg rounded-2xl p-4 bg-base-200 w-full">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between">
           <div className="flex items-center">
             <div className="avatar">
               <div className="w-12 mask mask-squircle">
-                <img src={u.photo} />
+                <img src={appendToFSUrl(u.photo)} />
               </div>
             </div>
             <div className="flex flex-col w-10/12">
@@ -167,6 +205,7 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
               </span>
             </div>
           </div>
+
           <div className="flex items-center">
             <div
               className="tooltip"
@@ -188,57 +227,55 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                 )}
               </button>
             </div>
-            <div className="tooltip" data-tip="Change Role">
-              <div className="dropdown dropdown-left">
-                <label
-                  tabIndex="0"
-                  className={`btn btn-sm btn-square m-1  ${
-                    changableRole() ? "" : "btn-disabled"
-                  }`}
-                >
-                  {getRoleIcon(u.role)}
-                </label>
-                <ul
-                  tabIndex="0"
-                  className="dropdown-content font-inter menu p-2 shadow bg-base-100/25 backdrop-blur-md rounded-box w-48"
-                >
-                  <p className="my-4 mx-2">Change Role</p>
-                  {editor_info.role > 2 && (
-                    <li onClick={() => updateRole(2)}>
+            {!onNav && (
+              <div className="tooltip" data-tip="Change Role">
+                <div className="dropdown dropdown-left">
+                  <label
+                    tabIndex="0"
+                    className={`btn btn-sm btn-square m-1  ${
+                      changableRole() ? "" : "btn-disabled"
+                    }`}
+                  >
+                    {getRoleIcon(u.role)}
+                  </label>
+                  <ul
+                    tabIndex="0"
+                    className="dropdown-content font-inter menu p-2 shadow bg-base-100/25 backdrop-blur-md rounded-box w-48"
+                  >
+                    <p className="my-4 mx-2">Change Role</p>
+                    {editor_info.role > 2 && (
+                      <li onClick={() => updateRole(2)}>
+                        <div className="flex w-full items-center justify-start">
+                          {getRoleIcon(2)}
+                          <a>Admin</a>
+                        </div>
+                      </li>
+                    )}
+                    <li onClick={() => updateRole(1)}>
                       <div className="flex w-full items-center justify-start">
-                        {getRoleIcon(2)}
-                        <a>Admin</a>
+                        {getRoleIcon(1)}
+                        <a>Employee</a>
                       </div>
                     </li>
-                  )}
-                  <li onClick={() => updateRole(1)}>
-                    <div className="flex w-full items-center justify-start">
-                      {getRoleIcon(1)}
-                      <a>Employee</a>
-                    </div>
-                  </li>
-                  {/* <li onClick={() => updateRole(0)}>
-                    <div className="flex w-full items-center justify-start">
-                      {getRoleIcon(0)}
-                      <a>Viewer</a>
-                    </div>
-                  </li> */}
-                </ul>
+                  </ul>
+                </div>
               </div>
-            </div>
-            <div className="tooltip" data-tip="Delete User">
-              <label
-                htmlFor="modal-user-delete"
-                className={`btn btn-sm btn-square  ${
-                  changableRole() ? "" : "btn-disabled"
-                }`}
-                onClick={() => {
-                  onDelete(u._id);
-                }}
-              >
-                <TiUserDelete className="h-5 w-5" />
-              </label>
-            </div>
+            )}
+            {!onNav && (
+              <div className="tooltip" data-tip="Delete User">
+                <label
+                  htmlFor="modal-user-delete"
+                  className={`btn btn-sm btn-square  ${
+                    changableRole() ? "" : "btn-disabled"
+                  }`}
+                  onClick={() => {
+                    onDelete(u._id);
+                  }}
+                >
+                  <TiUserDelete className="h-5 w-5" />
+                </label>
+              </div>
+            )}
           </div>
         </div>
         <AnimatePresence>
@@ -254,7 +291,7 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                   <progress className="progress progress-accent"></progress>
                 </div>
               )}
-              <div className=" font-inter">
+              <div className="mt-4 font-inter">
                 <div className="flex justify-center mb-4">
                   <div className="h-44 avatar">
                     <div className="mask mask-squircle ring ring-primary ring-offset-base-100 ring-offset-1">
@@ -290,11 +327,28 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                   placeholder=""
                   value={username}
                   onChange={(e) => {
-                    // setErr("");
-                    setErrMsg("");
                     setUserName(e.target.value);
                   }}
-                  className={`tracking-wider input-sm input input-bordered w-full input-md`}
+                  className={`tracking-wider input-sm input input-bordered w-full input-md ${
+                    username.length === 0 ? "input-error" : ""
+                  }`}
+                  required
+                />
+              </div>
+              <div className="mb-4 font-inter">
+                <label className="block mb-2 text-sm font-medium  dark:text-gray-300">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  placeholder=""
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                  className={`tracking-wider input-sm input input-bordered w-full input-md ${
+                    validate(email) ? "" : "input-error"
+                  }`}
                   required
                 />
               </div>
@@ -309,8 +363,6 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                       placeholder="New Password"
                       value={pass}
                       onChange={(e) => {
-                        //setErr("");
-                        setErrMsg("");
                         setPass(e.target.value);
                       }}
                       required
@@ -335,17 +387,36 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                   </label>
                 </div>
               </div>
-              {errMsg.length > 0 && (
-                <p className="text-center text-error my-2 text-sm">{errMsg}</p>
+              <div className="divider" />
+              <div className="form-control">
+                <label className="label cursor-pointer">
+                  <span className="label-text">Notification Me Via Email</span>
+                  <input
+                    type="checkbox"
+                    onChange={(e) => setToNotify(e.target.checked)}
+                    className="toggle"
+                    checked={toNotify}
+                  />
+                </label>
+              </div>
+              {toNotify && (
+                <p className="text-sm mt-2 text-center">
+                  Notify via email only works when internet is present
+                </p>
               )}
-              {(username !== u.user_name || pass.length !== 0 || hasNewImage) &&
+
+              {(username !== u.user_name ||
+                pass.length !== 0 ||
+                email !== u.email ||
+                toNotify !== u.toNotify ||
+                hasNewImage) &&
                 username.length !== 0 && (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.4 }}
                     exit={{ opacity: 0 }}
-                    className="flex mb-4"
+                    className="flex mt-4 "
                   >
                     <button
                       onClick={() => {
@@ -354,6 +425,8 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                       disabled={
                         username === u.user_name &&
                         pass.length === 0 &&
+                        email.length === 0 &&
+                        toNotify === u.toNotify &&
                         !hasNewImage
                       }
                       className="btn w-1/2 btn-sm"
@@ -364,6 +437,8 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
                       disabled={
                         username === u.user_name &&
                         pass.length === 0 &&
+                        email === u.email &&
+                        toNotify === u.toNotify &&
                         !hasNewImage
                       }
                       onClick={() => {
@@ -379,16 +454,18 @@ const userCard = ({ u, editor_info, onUpdate, onDelete }) => {
             </motion.div>
           )}
         </AnimatePresence>
-        <div className="block m-auto">
-          <div className="flex mt-5 items-center justify-between">
-            <span className="text-sm inline-block ">
-              {/* Actions : <span className="text-accent font-bold">25</span> */}
-            </span>
-            <span className=" items-center text-xs rounded-md">
-              Last Login: {new Date(u.sign_in).toLocaleDateString()}
-            </span>
+        {!onNav && (
+          <div className="block m-auto">
+            <div className="flex mt-5 items-center justify-between">
+              <span className="text-sm inline-block ">
+                {/* Actions : <span className="text-accent font-bold">25</span> */}
+              </span>
+              <span className=" items-center text-xs rounded-md">
+                Last Login: {new Date(u.sign_in).toLocaleDateString()}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

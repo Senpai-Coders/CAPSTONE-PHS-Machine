@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.6.1",
+    "@sendgrid/mail": "^7.7.0",
     "@vespaiach/axios-fetch-adapter": "^0.2.2",
     "axios": "^0.26.1",
     "bcryptjs": "^2.4.3",
@@ -17,6 +18,8 @@
     "cookie": "^0.5.0",
     "daisyui": "^2.14.3",
     "echarts-for-react": "^2.0.15-beta.0",
+    "email-validator": "^2.0.4",
+    "es6-template-strings": "^2.0.1",
     "formidable": "^2.0.1",
     "framer-motion": "^6.3.3",
     "jsonwebtoken": "^8.5.1",

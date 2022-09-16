@@ -24,7 +24,8 @@ const handler = async (req, res) => {
         if (hasDuplicate.length > 0)
           return res.status(409).json({
             error: 409,
-            message: "User Already Exist With That Username",
+            message:
+              "Username already used by other user. Please use another username.",
           });
       }
 
@@ -42,7 +43,12 @@ const handler = async (req, res) => {
       const genNum = Math.floor(Math.random() * 10000000);
       const user_name = `New User ${genNum}`;
       const pass = await HASH_PASSWORD(`New User ${genNum}`);
-      action = await users.create({ user_name, password: pass, role: 0 });
+      action = await users.create({
+        user_name,
+        password: pass,
+        role: 0,
+        email: "-",
+      });
     }
 
     res.status(200).json({ status: "ok" });
