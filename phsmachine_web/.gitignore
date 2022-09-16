@@ -35,9 +35,6 @@ yarn-error.log*
 public/detection
 public/images
 public/exports
+public/logs
 
-# ignore logs/error-logs.json
-logs/error-logs.json
-logs/phs-web-logs.txt
-logs/phs-core-logs.txt
-next.config.js
+apikey.json
