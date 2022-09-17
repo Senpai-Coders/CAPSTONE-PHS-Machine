@@ -3,7 +3,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { IoReloadCircleSharp, IoTrashBinSharp } from "react-icons/io5";
 import { GoPrimitiveDot } from "react-icons/go";
-import { BiExport } from "react-icons/bi";
+import { BiExport, BiSearchAlt } from "react-icons/bi";
 
 import { dateToWord } from "../../helpers";
 import { DeleteConfirm, InfoCustom, ExportConfirm } from "../modals";
@@ -22,6 +22,7 @@ const index = () => {
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const [dateChanged, setDateChange] = useState(false);
+  const [searchId, setSearchId] = useState("");
 
   const filterDateRange = (from, to, date) => {
     let FROM = new Date(from);
@@ -37,7 +38,8 @@ const index = () => {
 
   const filterData = (data) => {
     let filtered = [];
-    if (dateMode === 0) return data;
+    if (dateMode === 0) filtered = data;
+
     if (dateMode === 1) {
       data.forEach((det) => {
         let focObj = { ...det };
@@ -45,9 +47,8 @@ const index = () => {
         if (filterDateEqual(fromDate, new Date(focObj.cat)))
           filtered.push(focObj);
       });
-
-      return filtered;
     }
+
     if (dateMode === 2) {
       data.forEach((det) => {
         let focObj = { ...det };
@@ -55,8 +56,15 @@ const index = () => {
         if (filterDateRange(fromDate, toDate, new Date(focObj.cat)))
           filtered.push(focObj);
       });
-      return filtered;
     }
+
+    if (searchId.length > 0) {
+      filtered = data.filter((data) => {
+        return data._id.includes(searchId);
+      });
+    }
+
+    return filtered;
   };
 
   const init = async (t) => {
@@ -275,6 +283,23 @@ const index = () => {
             Export Data
             <BiExport className="ml-2 text-lg" />{" "}
           </button>
+
+          <div className="form-control mt-2 md:mt-0">
+            <div className="input-group">
+              <input
+                type="text"
+                value={searchId}
+                onChange={(e) => {
+                  setSearchId(e.target.value);
+                }}
+                placeholder="Detection ID"
+                className="input input-sm input-bordered"
+              />
+              <button onClick={() => init()} className="btn btn-square btn-sm">
+                <BiSearchAlt className="text-xl" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -301,7 +326,7 @@ const index = () => {
                 />
               </th>
               <th className="text-left">Detection Date</th>
-              <th className="" />
+              <th className="">Detection Id</th>
               <th className="text-right">Pigcount</th>
               <th>Heat Stressed</th>
               <th className="text-left">Normal</th>
@@ -354,7 +379,9 @@ const index = () => {
                       </p>
                     </div>
                   </td>
-                  <td />
+                  <td>
+                    <p className="text-xs text-center">{detection._id}</p>
+                  </td>
                   <td className="">
                     <div className="flex items-center justify-end">
                       <div className="py-1 px-2 rounded-full ">

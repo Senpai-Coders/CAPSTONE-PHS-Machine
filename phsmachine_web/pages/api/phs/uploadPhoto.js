@@ -3,6 +3,7 @@ import fs from "fs";
 import dbConnect from "../../../configs/dbConnection";
 
 const users = require("../../../models/user");
+import logger from "../../../services/logger";
 
 dbConnect();
 
@@ -19,11 +20,11 @@ const post = async (req, res) => {
         { _id: uid },
         { $set: { photo: photoURL } }
       );
-
+      logger.info(`Uploaded photo for user -> ${uid} -> ${photoURL}`);
       return res.status(201).json({ status: "ok", url: photoURL });
     });
   } catch (e) {
-    console.log(e);
+    logger.error(e.stack);
     return res.status(500).json({ status: "Internal Server Error" });
   }
 };

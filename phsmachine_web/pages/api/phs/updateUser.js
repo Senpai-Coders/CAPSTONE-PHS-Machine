@@ -1,16 +1,26 @@
 import dbConnect from "../../../configs/dbConnection";
 const users = require("../../../models/user");
 
-import { HASH_PASSWORD } from "../../../helpers/api/index";
+import {
+  HASH_PASSWORD,
+  VERIFY_AUTHORIZATION,
+} from "../../../helpers/api/index";
+import logger from "../../../services/logger";
 
 dbConnect();
 
 const handler = async (req, res) => {
   try {
+    const auth = req.cookies.authorization;
+    const editorDetails = VERIFY_AUTHORIZATION(auth);
+
     const { updates, _id, mode, hasNewPassword, old_u_name } = req.body;
     let action = {};
     if (mode === -1) {
       action = await users.deleteOne({ _id });
+      logger.info(
+        `User ${editorDetails.user_name}(${editorDetails._id}) -> deleted user -> ${_id} `
+      );
     } else if (mode === 1) {
       let up_userName = updates.user_name;
 
@@ -39,6 +49,9 @@ const handler = async (req, res) => {
           { $set: { user_name: up_userName, password: up_password } }
         );
       }
+      logger.info(
+        `User ${editorDetails.user_name}(${editorDetails._id}) -> updated user -> ${_id} `
+      );
     } else if (mode === 0) {
       const genNum = Math.floor(Math.random() * 10000000);
       const user_name = `New User ${genNum}`;
@@ -49,11 +62,14 @@ const handler = async (req, res) => {
         role: 0,
         email: "-",
       });
+      logger.info(
+        `User ${editorDetails.user_name}(${editorDetails._id}) -> Created New User -> ${action.user_name} `
+      );
     }
 
     res.status(200).json({ status: "ok" });
   } catch (e) {
-    console.log(e);
+    logger.info(e.stack);
     res.status(500).json({
       message: "Internal Server Error 😥",
     });

@@ -10,6 +10,8 @@ const configs = require("../../../../models/configs");
 
 let ObjectId = require("mongoose").Types.ObjectId;
 
+import logger from "../../../../services/logger";
+
 dbConnect();
 
 const hasUpdate = async (editorDetails) => {
@@ -46,14 +48,6 @@ const handler = async (req, res) => {
         config_name,
         "value.isUsed": true,
       });
-      // check if relay in use
-
-      if (isExist)
-        return res.status(409).json({ message: "Action name already exist" });
-      if (isRelayUsed)
-        return res
-          .status(409)
-          .json({ message: "Relay is already used by other actions" });
 
       const insert = await configs.create({
         category: "actions",
@@ -64,6 +58,9 @@ const handler = async (req, res) => {
       });
       // insert
 
+      logger.info(
+        `User ${editorDetails.user_name}(${editorDetails._id}) -> Created new action`
+      );
       hasUpdate(editorDetails);
     } else if (mode === 2) {
       const isExist = await configs.findOne({ config_name });
@@ -85,16 +82,21 @@ const handler = async (req, res) => {
         }
       );
 
+      logger.info(
+        `User ${editorDetails.user_name}(${editorDetails._id}) -> Updated Action -> ${_id}`
+      );
       hasUpdate(editorDetails);
     } else if (mode === -1) {
       const del = await configs.deleteOne({ config_name });
-
+      logger.info(
+        `User ${editorDetails.user_name}(${editorDetails._id}) -> Deleted Action -> ${config_name}`
+      );
       hasUpdate(editorDetails);
     }
 
     res.status(200).json({ message: "Ok" });
   } catch (e) {
-    console.log(e);
+    logger.error(e.stack);
     res.status(500).json({
       message: "Internal Server Error 😥",
     });

@@ -23,7 +23,6 @@ const transTemplate = (template_content) => {
 const sendMail = async(msg) => {
     try{
         //const sent = await sgMail.send(msg);
-        console.log("Email Sent!")
         logger.info(`Email Sent -> ${msg.to}`);
         //return sent;
     }catch(e){
@@ -49,7 +48,6 @@ const sendEmail = async(userEmail, template_content) => {
         html: transTemplate(template_content)
     };
     
-    console.log(mailOptions.html)
     sendMail(mailOptions)
 }
 

@@ -8,7 +8,13 @@ import { FaThermometerHalf } from "react-icons/fa";
 import { IoPeopleSharp, IoBookSharp } from "react-icons/io5";
 import { GoGear, GoSignOut } from "react-icons/go";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { API, amISignedIn, getMyData, getRole } from "../helpers";
+import {
+  API,
+  amISignedIn,
+  getMyData,
+  getRole,
+  appendToFSUrl,
+} from "../helpers";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 
 import ThemeChooser from "./configuration/themeChooser";
@@ -204,7 +210,7 @@ const navbar = ({ toggled, setToggled, userToggled, setUserToggled }) => {
           </div>
 
           {userData && (
-            <div ckassN>
+            <div className="mt-4">
               <UserCard
                 onNav={true}
                 u={userData}
@@ -260,7 +266,7 @@ const navbar = ({ toggled, setToggled, userToggled, setUserToggled }) => {
           </div>
 
           {/*  */}
-          <div className="flex justify-end items-center space-x-8">
+          <div className="flex justify-end items-center space-x-2">
             <Notification userData={userData} />
 
             <div
@@ -274,7 +280,7 @@ const navbar = ({ toggled, setToggled, userToggled, setUserToggled }) => {
                 {!userData ? (
                   <img src="/pig.png" />
                 ) : (
-                  <img src={userData.photo} />
+                  <img src={appendToFSUrl(userData.photo)} />
                 )}
               </div>
             </div>

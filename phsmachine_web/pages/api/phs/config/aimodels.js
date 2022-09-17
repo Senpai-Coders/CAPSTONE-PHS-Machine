@@ -1,6 +1,7 @@
 import { VERIFY_AUTHORIZATION } from "../../../../helpers/api/index";
 import dbConnect from "../../../../configs/dbConnection";
 const configs = require("../../../../models/configs");
+import logger from "../../../../services/logger";
 
 dbConnect();
 
@@ -17,14 +18,26 @@ const handler = async (req, res) => {
         { ...search },
         { $set: { ...changes } }
       );
+      logger.info(
+        `User ${editorDetails.user_name}(${
+          editorDetails._id
+        }) -> Updated -> ${JSON.stringify(search)} -> ${JSON.stringify(
+          changes
+        )}`
+      );
       return res.status(200).json(models);
     } else if (mode === -1) {
       const del = await configs.deleteOne({ ...search });
+      logger.info(
+        `User ${editorDetails.user_name}(${
+          editorDetails._id
+        }) -> Deleted -> ${JSON.stringify(search)} `
+      );
     }
 
     res.status(200).json({ message: "Ok" });
   } catch (e) {
-    console.log(e);
+    logger.error(e.stack);
     res.status(500).json({
       message: "Internal Server Error 😥",
     });

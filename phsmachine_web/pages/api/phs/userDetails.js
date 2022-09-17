@@ -2,6 +2,7 @@ import dbConnect from "../../../configs/dbConnection";
 const users = require("../../../models/user");
 
 import { VERIFY_AUTHORIZATION } from "../../../helpers/api";
+import logger from "../../../services/logger";
 
 dbConnect();
 
@@ -23,7 +24,7 @@ const handler = async (req, res) => {
 
     res.status(200).json({ userData });
   } catch (e) {
-    console.log(e);
+    logger.error(e.stack);
     res.status(500).json({
       message: "Internal Server Error 😥",
     });

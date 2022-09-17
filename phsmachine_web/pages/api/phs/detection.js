@@ -6,6 +6,7 @@ let ObjectId = require("mongoose").Types.ObjectId;
 const fs = require("fs");
 
 import { ToExcel, ToCsv, ToZip } from "../../../helpers/api";
+import logger from "../../../services/logger";
 
 dbConnect();
 
@@ -14,13 +15,17 @@ const handler = async (req, res) => {
     const { mode, detection_id, updates, path, toExport } = req.body;
     if (mode === 0) {
       const detData = await detections.find({});
+      logger.info("Retrieved all detections");
       return res.status(200).json({ detection_data: detData });
     } else if (mode === 1) {
       const detection_info = await detections.findOne({
         _id: new ObjectId(detection_id),
       });
-      if (!detection_info)
+      logger.info(`Retrieve Detection -> ${detection_id}`);
+      if (!detection_info) {
+        logger.error(`${detection_id} does not exist in detection`);
         return res.status(404).json({ message: "Detection Doesn't Exist" });
+      }
       return res.status(200).json({ detection_data: detection_info });
     } else if (mode === 2) {
       const update = await detections.updateOne(
@@ -31,6 +36,7 @@ const handler = async (req, res) => {
           },
         }
       );
+      logger.info(`Updated detection -> ${detection_id}`);
       return res.status(200).json({
         message: "Updated!",
       });
@@ -44,13 +50,24 @@ const handler = async (req, res) => {
       const update = await detections.deleteOne({
         _id: new ObjectId(detection_id),
       });
-      fs.rmdir(`public/detection/${path}`, { recursive: true }, (err) => {
-        if (err) console.log("Err deletion of folder record", err);
-        else console.log("deleted successfuly");
-      });
+
+      try {
+        const delRecrd = await fs.promises.rmdir(`public/detection/${path}`, {
+          recursive: true,
+        });
+        logger.info(`Deleted detecion & it's data -> ${detection_id}`);
+      } catch (e) {
+        logger.error(`Failed To Delete, ${e.stack}`);
+      }
+
       return res.status(200).json({ message: "Deleted!" });
     } else if (mode === -2) {
       const { ids } = req.body;
+      logger.info(
+        `Deleting multiple detections ${JSON.stringify(
+          ids.map((dtss) => dtss._id)
+        )}`
+      );
       for (var x = 0; x < ids.length; x++) {
         const update = await detections.deleteOne({
           _id: new ObjectId(ids[x].id),
@@ -59,8 +76,7 @@ const handler = async (req, res) => {
           `public/detection/${ids[x].path}`,
           { recursive: true },
           (err) => {
-            if (err) console.log("Err deletion of folder record", err);
-            else console.log("deleted successfuly");
+            logger.error(`Failed To Delete, ${err.stack}`);
           }
         );
       }
@@ -93,13 +109,14 @@ const handler = async (req, res) => {
               data.img_normal.indexOf("/Dete") + 1,
               43
             ),
+            "Detection ID": `${data._id}`,
           });
         });
 
         const fileUrl = await ToExcel(parsedData);
         if (fileUrl.length > 0)
           links.push({ name: "Excel File", type: "xlsx", link: fileUrl });
-        console.log("Exported -> xlsx ");
+        logger.info("Exported -> xlsx");
       }
 
       if (toCsv) {
@@ -123,20 +140,21 @@ const handler = async (req, res) => {
               data.img_normal.indexOf("/Dete") + 1,
               43
             ),
+            "Detection ID": `${data._id}`,
           });
         });
 
         const fileUrl = await ToCsv(parsedData);
         if (fileUrl.length > 0)
           links.push({ name: "CSV File", type: "csv", link: fileUrl });
-        console.log("Exported -> csv ");
+        logger.info("Exported -> csv");
       }
 
       if (toZip) {
         const fileUrl = await ToZip("public/detection");
         if (fileUrl.length > 0)
           links.push({ name: "Zip File", type: "zip", link: fileUrl });
-        console.log("Exported -> zip ");
+        logger.info("Exported -> zip");
       }
 
       res

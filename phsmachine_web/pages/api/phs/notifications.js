@@ -5,6 +5,7 @@ import {
 } from "../../../helpers/api/index";
 import dbConnect from "../../../configs/dbConnection";
 const notifications = require("../../../models/notification");
+import logger from "../../../services/logger";
 
 dbConnect();
 
@@ -54,6 +55,9 @@ const handler = async (req, res) => {
           },
         }
       );
+      logger.info(
+        `Mark read by -> ${editorDetails.user_name} -> ${editorDetails._id}`
+      );
       return res.status(200).json({ notifications: data });
     }
 
@@ -61,6 +65,9 @@ const handler = async (req, res) => {
       // delete all
       const data = await notifications.deleteMany({});
       clearError();
+      logger.info(
+        `Notification cleared by -> ${editorDetails.user_name} -> ${editorDetails._id}`
+      );
       return res.status(200).json({ message: "deleted all" });
     }
 
@@ -68,7 +75,7 @@ const handler = async (req, res) => {
       notifications: [],
     });
   } catch (e) {
-    console.log(e);
+    logger.error(e.stack);
     res.status(500).json({
       message: "",
     });

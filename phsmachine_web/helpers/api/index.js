@@ -5,6 +5,7 @@ const fs = require("fs");
 const { exec } = require("child_process");
 var XLSX = require("xlsx");
 import { zip } from "zip-a-folder";
+import logger from "../../services/logger"
 
 export const PI_IP = process.env.PI_IP;
 
@@ -54,7 +55,7 @@ export const ToExcel = async (data) => {
     let writeResult = await XLSX.writeFile(workbook, "public" + pth);
     if (writeResult === undefined) exportLink = pth;
   } catch (e) {
-    console.log(e);
+    logger.error(e.stack)
   }
   return exportLink;
 };
@@ -72,7 +73,7 @@ export const ToCsv = async (data) => {
     const writeResult = await fs.promises.writeFile("public" + pth, CsvSheet);
     if (writeResult === undefined) exportLink = pth;
   } catch (e) {
-    console.log(e);
+    logger.error(e.stack)
   }
   return exportLink;
 };
@@ -88,7 +89,7 @@ export const ToZip = async (path) => {
     if (result === undefined) return pth;
     return "";
   } catch (e) {
-    console.log(e);
+    logger.error(e.stack)
     return "";
   }
 };
@@ -96,15 +97,15 @@ export const ToZip = async (path) => {
 export const exec_command = async (comnd) => {
   let exec_res = exec(comnd, function (error, stdout, stderr) {
     if (error) {
-      console.log(error.stack);
-      console.log("Error code: " + error.code);
-      console.log("Signal received: " + error.signal);
+        logger.error(e.stack)
+      logger.error("Error code: " + error.code);
+      logger.error("Signal received: " + error.signal);
     }
-    console.log("Child Process STDOUT: " + stdout);
-    console.log("Child Process STDERR: " + stderr);
+    logger.error("Child Process STDOUT: " + stdout);
+    logger.error("Child Process STDERR: " + stderr);
   });
   exec_res.on("exit", function (code) {
-    console.log("Child process exited with exit code " + code);
+    logger.info("Child process exited with exit code " + code);
   });
 };
 
@@ -113,16 +114,14 @@ export const deletePathOrFile = async (paths) => {
   paths.forEach(async (path) => {
     try {
       if (path.isFile) {
-        console.log(`Replaced content of ${path.path} -> ${path.defaultValue}`);
         const data = await fs.promises.writeFile(path.path, path.defaultValue);
       } else {
-        console.log("Deleted all content -> ", path.path);
         await fs.promises.rm(path.path, { recursive: true });
         await fs.promises.mkdir(path.path);
       }
       result.done += 1;
     } catch (e) {
-      console.log(e);
+      logger.error(e.stack)
       result.failed += 1;
     }
   });
@@ -207,7 +206,7 @@ export const readDirContent = async (path) => {
       .map((item) => item.name );
     return files;
   } catch (e) {
-    console.log(e)
+    logger.error(e.stack)
     return [];
   }
 };

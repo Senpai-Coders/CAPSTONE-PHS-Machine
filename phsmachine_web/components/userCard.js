@@ -169,7 +169,7 @@ const userCard = ({ u, editor_info, onUpdate, onDelete, onNav }) => {
   };
 
   const init = () => {
-    setCreateObjectURL(u.photo);
+    setCreateObjectURL(appendToFSUrl(u.photo));
     setUserName(u.user_name);
     setEmail(u.email);
     setHasNewImage(false);

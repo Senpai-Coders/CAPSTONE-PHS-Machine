@@ -1,4 +1,5 @@
 const cookie = require("cookie");
+import logger from "../../../services/logger";
 
 const handler = async (req, res) => {
   try {
@@ -17,9 +18,10 @@ const handler = async (req, res) => {
         }
       )
     );
+    logger.info(`Signed Out User `);
     res.status(200).json({ message: "Signed Out 👌" });
   } catch (e) {
-    console.log(e);
+    logger.error(e.stack);
     res.status(500).json({
       message: `Internal Server Error 😥`,
     });

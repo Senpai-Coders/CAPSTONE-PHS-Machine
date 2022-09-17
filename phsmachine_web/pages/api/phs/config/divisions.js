@@ -1,6 +1,7 @@
 import { VERIFY_AUTHORIZATION } from "../../../../helpers/api/index";
 import dbConnect from "../../../../configs/dbConnection";
 const configs = require("../../../../models/configs");
+import logger from "../../../../services/logger";
 
 dbConnect();
 
@@ -31,26 +32,28 @@ const handler = async (req, res) => {
     var toRet = { message: "Ok" };
 
     if (mode === 0) {
-      // check if action exist
       const data = await configs.findOne({
         category: "config",
         config_name: "divisions",
       });
       toRet = data;
-      // update relay to use
     } else if (mode === 1) {
-      // gettingAllDbActions
       const data = await configs.updateOne(
         { config_name: "divisions" },
         { $set: { value } }
       );
       toRet = data;
+      logger.info(
+        `User ${editorDetails.user_name}(${
+          editorDetails._id
+        }) -> Updated division -> ${JSON.stringify(value)}`
+      );
       hasUpdate(editorDetails);
     }
 
     res.status(200).json(toRet);
   } catch (e) {
-    console.log(e);
+    logger.error(e.stack);
     res.status(500).json({
       message: "Internal Server Error 😥",
     });

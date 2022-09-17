@@ -3,6 +3,8 @@ import dbConnect from "../../../configs/dbConnection";
 const cookie = require("cookie");
 const users = require("../../../models/user");
 
+import logger from "../../../services/logger";
+
 dbConnect();
 
 const handler = async (req, res) => {
@@ -10,13 +12,16 @@ const handler = async (req, res) => {
     let { username, password } = req.body;
 
     let USER = await users.findOne({ user_name: username }).lean();
+    logger.info(`Attempt signin -> ${username}`);
 
     // check if not exist
-    if (!USER)
+    if (!USER) {
+      logger.error(`User does not exist in database -> ${username}`);
       return res.status(404).json({
         error: 404,
         message: "Sorry but you are not in our database.",
       });
+    }
 
     const PASSWORD = USER.password;
 
@@ -25,11 +30,13 @@ const handler = async (req, res) => {
     delete USER.password;
 
     // compare password
-    if (!(await COMPARE_PASSWORD(PASSWORD, password)))
+    if (!(await COMPARE_PASSWORD(PASSWORD, password))) {
+      logger.error(`Password not match for -> ${username}`);
       return res.status(404).json({
         error: 403,
         message: "Sorry but you entered a wrong password",
       });
+    }
 
     const JWT = GENERATE_JWT(USER);
     const updateLastSignIn = await users.updateOne(
@@ -55,10 +62,10 @@ const handler = async (req, res) => {
         path: "/",
       })
     );
-
+    logger.info(`Authorization given to -> ${username} -> Signed in`);
     res.status(200).json(JWT);
   } catch (e) {
-    console.log(e);
+    logger.error(e.stack);
     res.status(500).json({
       message: "Error 😥",
     });

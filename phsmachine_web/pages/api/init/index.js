@@ -15,6 +15,8 @@ const configs = require("../../../models/configs");
 const detection = require("../../../models/thermal_detection");
 const notification = require("../../../models/notification");
 
+import logger from "../../../services/logger";
+
 let ObjectId = require("mongoose").Types.ObjectId;
 
 dbConnect();
@@ -80,7 +82,17 @@ const handler = async (req, res) => {
       del_system_logs,
     } = req.body;
 
-    if (default_users || settings || detections || notifications) {
+    if (
+      default_users ||
+      settings ||
+      detections ||
+      notifications ||
+      del_detect_files ||
+      del_user_photos ||
+      del_exports ||
+      del_errors ||
+      del_system_logs
+    ) {
       let inits = "";
       if (default_users) inits += "Users~";
       if (settings) inits += "settings~";
@@ -111,6 +123,10 @@ const handler = async (req, res) => {
         }), // body data type must match "Content-Type" header
       });
 
+      logger.info(
+        `(Possible) Reset or Deletion of system state/settings/files -> ${editorDetails.user_name}(${editorDetails._id}) : Affected -> ${inits} `
+      );
+
       const notify_reset = await notification.create({
         notification_type: "notify",
         title: "PHS reset completed",
@@ -123,8 +139,6 @@ const handler = async (req, res) => {
     }
 
     let paths = [];
-
-    console.log("Reset PHS system -> Factory Default");
 
     if (del_detect_files)
       paths.push({ path: "public/detection", isFile: false });
@@ -152,31 +166,27 @@ const handler = async (req, res) => {
     paths = deletePathOrFile(paths);
 
     if (default_users) {
-      console.log("init users");
       const del = await users.deleteMany({});
       const resp = await users.insertMany(DEFAULT_USERS);
     }
 
     if (settings) {
-      console.log("init conf");
       const del2 = await configs.deleteMany({});
       const resp2 = await configs.insertMany(DEFAULT_CONFIGS);
     }
 
     if (detections) {
-      console.log("init det");
       const del3 = await detection.deleteMany({});
       const resp3 = await detection.insertMany(DEFAULT_DETECTS);
     }
 
     if (notifications) {
-      console.log("init notifications");
       const del4 = await notification.deleteMany({});
       const resp4 = await notification.insertMany(DEFAULT_NOTIFICATIONS);
     }
 
     res.status(200).json({ status: "Reset 👌" });
-    //TODO: let reboot = exec_command("sudo reboot now");
+    //TODO UNCOMMENT let reboot = exec_command("sudo reboot now");
   } catch (e) {
     console.log(e);
   }

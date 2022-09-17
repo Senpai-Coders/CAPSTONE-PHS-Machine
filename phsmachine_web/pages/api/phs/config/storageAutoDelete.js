@@ -2,6 +2,8 @@ import dbConnect from "../../../../configs/dbConnection";
 import { VERIFY_AUTHORIZATION } from "../../../../helpers/api/index";
 
 const configs = require("../../../../models/configs");
+import logger from "../../../../services/logger";
+
 dbConnect();
 
 const hasUpdate = async (editorDetails) => {
@@ -49,13 +51,16 @@ const handler = async (req, res) => {
           },
         }
       );
+      logger.info(
+        `User ${editorDetails.user_name}(${editorDetails._id}) -> Updated Autodelete -> ${value}`
+      );
       dataReturn = { message: "ok" };
       hasUpdate(editorDetails);
     }
 
     res.status(200).json(dataReturn);
   } catch (e) {
-    console.log(e);
+    logger.error(e.stack);
     res.status(500).json({
       message: "Internal Server Error 😥",
     });

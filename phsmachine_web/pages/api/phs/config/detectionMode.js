@@ -1,5 +1,6 @@
 import dbConnect from "../../../../configs/dbConnection";
 import { VERIFY_AUTHORIZATION } from "../../../../helpers/api/index";
+import logger from "../../../../services/logger";
 
 const configs = require("../../../../models/configs");
 dbConnect();
@@ -45,12 +46,17 @@ const handler = async (req, res) => {
         }
       );
       hasUpdate(editorDetails);
+      logger.info(
+        `User ${editorDetails.user_name}(${
+          editorDetails._id
+        }) -> Updated detection mode -> ${JSON.stringify(value)}`
+      );
       dataReturn = { message: "ok" };
     }
 
     res.status(200).json(dataReturn);
   } catch (e) {
-    console.log(e);
+    logger.error(e.stack);
     res.status(500).json({
       message: "Internal Server Error 😥",
     });

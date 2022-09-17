@@ -6,8 +6,8 @@ import { dateToWord, tempParser } from "../helpers";
 
 import { RiCloseLine } from "react-icons/ri";
 import { FaTemperatureHigh, FaTemperatureLow } from "react-icons/fa";
-import { GiPowerLightning, GiDustCloud } from "react-icons/gi";
-import { BsFolderFill } from "react-icons/bs";
+import { GiPowerLightning } from "react-icons/gi";
+import { BsFolderFill, BsFillTrash2Fill } from "react-icons/bs";
 import { TiInfoLarge } from "react-icons/ti";
 import { MdScience } from "react-icons/md";
 import { HiOutlineArrowSmDown } from "react-icons/hi";
@@ -106,7 +106,9 @@ const _detection_details = () => {
       </Head>
 
       <div
-        className={`modal modal-bottom ${selected !== -1 ? "modal-open" : ""}`}
+        className={`modal backdrop-blur-lg ${
+          selected !== -1 ? "modal-open" : ""
+        }`}
       >
         <div className="modal-box w-11/12 h-fit max-w-5xl">
           <h3 className="font-bold text-lg">Thermal Map</h3>
@@ -139,10 +141,10 @@ const _detection_details = () => {
         <div className="modal-box">
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-lg">Destroy Data</h3>
-            <GiDustCloud className="w-8 h-8" />
+            <BsFillTrash2Fill className="w-8 h-8" />
           </div>
           <p className="py-4">
-            You are about to destroy/delete this record forever, are you sure to
+            You are about to destroy/delete this record forever. Do you want to
             proceed?
           </p>
           <div className="modal-action">
@@ -163,7 +165,7 @@ const _detection_details = () => {
             className="btn btn-sm modal-button btn-outline"
           >
             Delete Record
-            <GiDustCloud className="ml-2 w-5 h-5" />
+            <BsFillTrash2Fill className="ml-2 w-5 h-5" />
           </label>
         )}
         <button
@@ -212,7 +214,7 @@ const _detection_details = () => {
               className="btn btn-sm modal-button btn-outline"
             >
               Delete Record
-              <GiDustCloud className="ml-2 w-5 h-5" />
+              <BsFillTrash2Fill className="ml-2 w-5 h-5" />
             </label>
             <button
               onClick={() => {
@@ -376,7 +378,7 @@ const _detection_details = () => {
                     </div>
                   </div>
 
-                  <div className="shadow shadow-inner mt-2 p-4 bg-base-100 outline outline-1 outline-base-100 flex items-center justify-evenly">
+                  <div className="shadow-inner mt-2 p-4 bg-base-100 outline outline-1 outline-base-100 flex items-center justify-evenly">
                     <div className="flex flex-col items-center">
                       <p className="w-1/3 text-left  flex items-center">Max </p>
                       <HiOutlineArrowSmDown className="mx-2" />{" "}

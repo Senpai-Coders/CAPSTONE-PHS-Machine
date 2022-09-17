@@ -14,17 +14,6 @@ const Events = () => {
         <title>Detections</title>
       </Head>
 
-      {/* <div className="flex items-center">
-        <p className="text-xl card-title font-lato font-semibold">
-          Event History
-        </p>
-        {loading && (
-          <div className="mx-10 w-1/12 flex items-center space-x-4">
-            <progress className="progress"></progress>
-          </div>
-        )}
-      </div> */}
-
       <div className="mb-4">
         <div className="tabs">
           <a

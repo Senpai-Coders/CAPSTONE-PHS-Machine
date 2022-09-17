@@ -52,7 +52,7 @@ const ExportConfirm = ({ close, shown, onAccept }) => {
         },
       });
       setExporting(false);
-      toast.update(id, {
+      toast.update(toast_id, {
         render: "Your download is ready",
         type: "success",
         isLoading: false,
@@ -60,6 +60,7 @@ const ExportConfirm = ({ close, shown, onAccept }) => {
       });
       setDownloadLinks(requestResponse.data.downloadLinks);
     } catch (e) {
+      console.log(e);
       toast.update(toast_id, {
         render: "Failed processing your export",
         type: "error",
