@@ -8,12 +8,7 @@ import { FaThermometerHalf } from "react-icons/fa";
 import { IoPeopleSharp, IoBookSharp } from "react-icons/io5";
 import { GoGear, GoSignOut } from "react-icons/go";
 import { GiHamburgerMenu } from "react-icons/gi";
-import {
-  amISignedIn,
-  getMyData,
-  getRole,
-  appendToFSUrl,
-} from "../helpers";
+import { appendToFSUrl } from "../helpers";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 
 import ThemeChooser from "./configuration/themeChooser";
@@ -34,7 +29,6 @@ const navbar = ({ toggled, setToggled, userToggled, setUserToggled }) => {
 
   const signout = async () => {
     try {
-      console.log("signedout");
       const response = await axios.post("/api/authentication/signout");
       router.push("/auth/signin");
     } catch (e) {
@@ -76,8 +70,10 @@ const navbar = ({ toggled, setToggled, userToggled, setUserToggled }) => {
   ];
 
   const init = async () => {
-    if (!(await amISignedIn())) router.push("/auth/signin");
-    const usrData = await getMyData();
+    let usrData;
+    try{
+        usrData = await axios.post("/api/phs/userDetails");
+    }catch(e){ router.push("auth/signin") }
     const PHS_INFO = await axios.get("/api/connectivity");
     setPhsInfo(PHS_INFO.data);
     setUserData(usrData);
@@ -88,7 +84,6 @@ const navbar = ({ toggled, setToggled, userToggled, setUserToggled }) => {
     init();
   }, []);
 
-  // hidden
   return (
     <>
       <input type="checkbox" id="my-modal-6" className="modal-toggle " />
