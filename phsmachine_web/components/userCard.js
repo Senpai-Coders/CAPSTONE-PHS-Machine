@@ -423,11 +423,11 @@ const userCard = ({ u, editor_info, onUpdate, onDelete, onNav }) => {
                         updateInfo();
                       }}
                       disabled={
-                        username === u.user_name &&
+                        (username === u.user_name &&
                         pass.length === 0 &&
                         email.length === 0 &&
-                        toNotify === u.toNotify &&
-                        !hasNewImage
+                        toNotify === u.toNotify && 
+                        !hasNewImage) || !validate(email) 
                       }
                       className="btn w-1/2 btn-sm"
                     >

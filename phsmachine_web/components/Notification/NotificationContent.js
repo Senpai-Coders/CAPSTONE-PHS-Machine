@@ -18,6 +18,7 @@ import {
 } from "../../helpers/index";
 
 import axios from "axios";
+import { MdSurroundSound } from "react-icons/md";
 
 const NotificationContent = ({ userData, setUnreadCount }) => {
   axios.defaults.timeout = 4 * 1000;
@@ -34,7 +35,7 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
     }
 
     notifs.forEach((notif, id) => {
-      if (!notif._id) return;
+      if (notif._id.includes("-LOCAL")) return;
       ids.push(notif._id);
     });
 
@@ -96,7 +97,7 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
       load();
     } catch (e) {
       toast.update(toast_id, {
-        render: "Failed",
+        render: "Failed clearing notifications",
         type: "error",
         isLoading: false,
         autoClose: true,
@@ -110,7 +111,6 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
       return request;
     } catch (e) {
       const fltr = notifications.filter((not) => {
-        console.log("foc ", not);
         return not._id !== undefined;
       });
       return {
@@ -120,6 +120,10 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
   };
 
   const load = async () => {
+    var audNotify = new Audio("/sounds/notify.mp3");
+    var audError = new Audio("/sounds/notify-error.mp3");
+    var audRemind = new Audio("/sounds/notify-remind.mp3");
+
     try {
       const userD = await getMyData();
       const joined = localErrorLoad();
@@ -147,8 +151,37 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
             found = true;
             y = pushedNotify.length;
           }
-        if(!found){
-            notify(pushedNotify, joined[x])
+        if (!found) {
+          notify(joined[x]);
+
+          if (joined[x].notification_type === "notify") {
+            toast.info(joined[x].title, {
+              position: "top-right",
+              autoClose: 5000,
+            });
+            audNotify.play()
+          }
+
+          if (joined[x].notification_type === "error") {
+            toast.error(joined[x].title, {
+              position: "top-right",
+              autoClose: 5000,
+            });
+            audError.play();
+          }
+
+          if (joined[x].notification_type === "reminder") {
+            toast.info(joined[x].title, {
+              position: "top-right",
+              autoClose: 5000,
+            });
+            audRemind.play()
+          }
+
+          localStorage.setItem(
+            "notified",
+            JSON.stringify([...pushedNotify, joined[x]._id])
+          );
         }
       }
 

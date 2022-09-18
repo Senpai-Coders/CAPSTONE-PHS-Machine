@@ -73,10 +73,10 @@ const navbar = ({ toggled, setToggled, userToggled, setUserToggled }) => {
     let usrData;
     try{
         usrData = await axios.post("/api/phs/userDetails");
+        setUserData(usrData.data.userData);
     }catch(e){ router.push("auth/signin") }
     const PHS_INFO = await axios.get("/api/connectivity");
     setPhsInfo(PHS_INFO.data);
-    setUserData(usrData.data.userData);
     setLoading(false);
   };
 
