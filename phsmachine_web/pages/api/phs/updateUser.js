@@ -4,6 +4,8 @@ const users = require("../../../models/user");
 import {
   HASH_PASSWORD,
   VERIFY_AUTHORIZATION,
+  PI_IP,
+  dateToBeutify
 } from "../../../helpers/api/index";
 import logger from "../../../services/logger";
 
@@ -36,6 +38,24 @@ const handler = async (req, res) => {
             error: 409,
             message:
               "Username already used by other user. Please use another username.",
+          });
+      }
+
+      if(updates.toNotify) {
+        const enableMyNotification = await fetch(`http:${PI_IP}:3000/api/sendMail`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              type: 0,
+              template_content: {
+                user_id: editorDetails._id,
+                user_name: editorDetails.user_name,
+                email : editorDetails.email,
+                time_string: dateToBeutify(new Date()),
+              },
+            }), // body data type must match "Content-Type" header
           });
       }
 

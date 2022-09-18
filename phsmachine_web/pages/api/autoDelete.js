@@ -36,7 +36,7 @@ const handler = async (req, res) => {
     }
   }
 
-  res.status(200).json({ perc, isSafe : perc < 95 });
+  res.status(200).json({ perc, canSave : perc < 95 });
 };
 
 export default handler;

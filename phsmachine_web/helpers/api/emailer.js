@@ -33,7 +33,6 @@ const sendMail = async(msg) => {
 }
 
 const sendEmail = async(userEmail, template_content) => {
-    const { subject } = template_content
     /**
      * user_email : string
      * template_content : {
@@ -45,9 +44,10 @@ const sendEmail = async(userEmail, template_content) => {
     let mailOptions = {
         from: "phscapstonesystem@gmail.com",
         to: userEmail,
-        subject,    
+        subject : template_content.subject,    
         html: transTemplate(template_content)
     };
+    console.log(mailOptions.html)
     sendMail(mailOptions)
 }
 
