@@ -13,10 +13,17 @@ const ShutdownConfirm = ({ close, shown, onAccept }) => {
           <FiZapOff className="text-error w-6 h-6" />
         </div>
         <p className="py-4">
-          The PHS system will be shutdown (entirely). You can start it back again by turning the power supply 'off' 'on'. Are you sure to proceed?
+          The PHS system will be shutdown (entirely). You can start it back
+          again by turning the power supply 'off' 'on'. Are you sure to proceed?
         </p>
         <div className="modal-action">
-          <label onClick={() => { close(); onAccept(); }} className="btn">
+          <label
+            onClick={() => {
+              close();
+              onAccept();
+            }}
+            className="btn"
+          >
             Yes
           </label>
           <label onClick={() => close()} className="btn">

@@ -1,22 +1,30 @@
 import { useState, useEffect } from "react";
 
 import { AiFillEdit } from "react-icons/ai";
-import {
-  RiListSettingsLine,
-  RiListSettingsFill,
-  RiTimerFill,
-} from "react-icons/ri";
+import { RiListSettingsLine, RiListSettingsFill } from "react-icons/ri";
 import { MdMyLocation, MdClose } from "react-icons/md";
 import { GiProcessor } from "react-icons/gi";
 import { GoCircuitBoard } from "react-icons/go";
 import { CgDetailsLess } from "react-icons/cg";
 import { FaHandSparkles } from "react-icons/fa";
+import { AiOutlinePlus } from "react-icons/ai";
 
 import axios from "axios";
 import { PI_IP } from "../../../helpers";
 
-const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
+import { toast } from "react-toastify";
+
+import { DeleteConfirm } from "../../modals/";
+
+const actionComponent = ({
+  relayOptions,
+  data,
+  onSave,
+  divisionCount,
+  fireOnChange,
+}) => {
   const [editing, setEditing] = useState(false);
+  const [toDelete, setToDelete] = useState();
 
   const [config_name, setConfig_name] = useState("");
   const [description, setDescription] = useState("");
@@ -30,6 +38,8 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const [mode, setMode] = useState(2);
+
+  const [modalActionView, setMoadlActionView] = useState(-1);
 
   const set = (d) => {
     setConfig_name(d.config_name);
@@ -47,36 +57,51 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
   }, []);
 
   const save = async (md) => {
+    let toast_id = toast.loading("Saving changes lol", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+
     try {
       setLoading(true);
       onSave(true);
-        
-      console.log("savuing")
-    
       const add = await axios.post("/api/phs/config/actions", {
         mode: md,
         description,
         config_name,
-        value : {
-            targets,
-            caller,
-            forceActivate,
-            eventLocation,
+        value: {
+          targets,
+          caller,
+          forceActivate,
+          eventLocation,
         },
-        _id : data._id
+        _id: data._id,
       });
-
-      console.log(add)
-      
+      toast.update(toast_id, {
+        render: "Successfuly saved",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
+      fireOnChange();
       setLoading(false);
       setEditing(false);
     } catch (e) {
       setLoading(false);
-      console.log(e.response.data.message);
       if (e.response) {
-        //request was made but theres a response status code
         if (e.response.status === 409) setErr(e.response.data.message);
       }
+      toast.update(toast_id, {
+        render: "Failed saving changes",
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
     }
   };
 
@@ -91,10 +116,26 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
     if (config_name.length === 0) return false;
     if (description.length === 0) return false;
     if (caller.length === 0) return false;
+    if (targets.length === 0) return false;
+    if (caller === "Choose") return false;
+
+    if (caller !== "Dark Scene Detector" && !forceActivate) {
+      if (eventLocation === -1) return false;
+    }
+
     return true;
   };
 
   const delAction = async (config_name, target_relay) => {
+    let toast_id = toast.loading("Deleting lol", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     try {
       setLoading(true);
       onSave(true);
@@ -103,15 +144,28 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
         config_name,
         target_relay,
       });
+      toast.update(toast_id, {
+        render: "Successfuly deleted",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
       setLoading(false);
-      setMoadlActionView(false);
+      setMoadlActionView(-1);
+      fireOnChange();
       onSave(false);
     } catch (e) {
       setLoading(false);
       if (e.response) {
-        //request was made but theres a response status code
         if (e.response.data.error === 409) setErr(e.response.data.message);
       }
+      console.log(e);
+      toast.update(toast_id, {
+        render: "Failed to remove",
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
     }
   };
 
@@ -122,6 +176,14 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
           editing ? "outline-accent-focus" : "outline-base-300"
         } bg-base-100 rounded-md my-2 px-3 md:px-4`}
       >
+        <DeleteConfirm
+          deleteWhat={"Action"}
+          onAccept={() => {
+            delAction(toDelete.config_name, toDelete.value.target_relay);
+          }}
+          close={setMoadlActionView}
+          shown={modalActionView !== -1}
+        />
         {editing ? (
           <>
             <div className="flex items-center justify-between">
@@ -143,17 +205,6 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
                     value={config_name}
                     className={`tracking-wider input input-bordered w-full input-md`}
                   />
-                  {/* <span
-                  className="cursor-pointer "
-                  onClick={() => { }}
-                >
-                  <div
-                    className="tooltip tracking-wide"
-                    data-tip="show/hide password"
-                  >
-
-                  </div>
-                </span> */}
                 </label>
               </div>
             </div>
@@ -182,75 +233,114 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
                 </div>
                 <p className="text-lg">Target Relays</p>
               </div>
-              <div className="grid mt-4 grid-cols-2 gap-1">
-                <p>Relay</p>
-                <p>Duration (Seconds)</p>
-                {targets.map((i, idx) => (
-                  <>
-                    <div className="dropdown w-full">
-                      <label tabindex="0" className="btn  w-full">
-                        Relay : {i.target_relay}
-                      </label>
-                      <ul
-                        tabindex="0"
-                        className="dropdown-content menu max-h-56 overflow-y-scroll px-3 py-4 shadow backdrop-blur-sm bg-base-100/60 border-b border-l border-r border-base-300 rounded-sm"
-                      >
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rel, id) => (
-                          <li
-                            tabIndex={i + 1}
-                            key={id}
-                            onClick={() => updateSpecificTarget(idx, true, rel)}
-                            className={`cursor-pointer duration-100 m-1 snap-center ${
-                              i.target_relay === rel
-                                ? "bg-base-200 outline outline-1"
-                                : ""
-                            }`}
+              <div className="overflow-y-scroll h-56">
+                <table className="table table-compact table-zebra w-full">
+                  <thead>
+                    <tr>
+                      <th>Target Relay</th>
+                      <th>Duration (seconds)</th>
+                      <th>
+                        <div
+                          className="tooltip text-sm"
+                          data-tip="Add New Target"
+                        >
+                          <button
+                            onClick={() =>
+                              setTargets([
+                                ...targets,
+                                { target_relay: 18, duration: 1 },
+                              ])
+                            }
+                            className="mt-2 btn-square btn btn-sm"
                           >
-                            <div className="flex p-4 justify-between">
-                              <p className="text-md">{rel}</p>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="items-center flex">
-                      <input
-                        type="number"
-                        onChange={(e) => {
-                          let val = e.target.value;
+                            <AiOutlinePlus className="text-2xl" />
+                          </button>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {targets.map((i, idx) => (
+                      <tr className="">
+                        <td>
+                          <div className="dropdown w-full">
+                            <label
+                              tabIndex="0"
+                              className="btn font-mono btn-sm w-full"
+                            >
+                              <GoCircuitBoard className={`text-sm mr-2`} />
+                              {i.target_relay}
+                            </label>
+                            <ul
+                              tabIndex="0"
+                              className="dropdown-content menu max-h-56 overflow-y-scroll px-3 py-4 shadow backdrop-blur-sm bg-base-100/60 border-b border-l border-r border-base-300 rounded-sm"
+                            >
+                              {[
+                                4, 14, 15, 17, 18, 27, 22, 23, 24, 10, 9, 25,
+                                11, 8, 7, 0, 1, 5, 6, 12, 13, 19, 16, 26, 20,
+                                21,
+                              ].map((rel, id) => (
+                                <li
+                                  tabIndex={i + 1}
+                                  key={id}
+                                  onClick={() =>
+                                    updateSpecificTarget(idx, true, rel)
+                                  }
+                                  className={`cursor-pointer duration-100 m-1 snap-center ${
+                                    i.target_relay === rel
+                                      ? "bg-base-200 outline outline-1"
+                                      : ""
+                                  }`}
+                                >
+                                  <div className="flex p-4 justify-between">
+                                    <p className="text-md">{rel}</p>
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            onChange={(e) => {
+                              let val = e.target.value;
 
-                          if (isNaN(Number.parseInt(val))) return;
+                              if (isNaN(Number.parseInt(val))) return;
 
-                          val = Number.parseInt(val);
-                          if (val <= 0) return;
-                          updateSpecificTarget(idx, false, i.target_relay, val);
-                        }}
-                        placeholder="Enter Duration"
-                        value={i.duration}
-                        className="input text-lg w-full font-mono text-neutral-content bg-neutral "
-                      />
-                      <div
-                        className="btn ml-2 text-lg"
-                        onClick={() => {
-                          let targs = [...targets];
-                          targs.splice(idx, 1);
-                          setTargets(targs);
-                        }}
-                      >
-                        <MdClose className="" />
-                      </div>
-                    </div>
-                  </>
-                ))}
+                              val = Number.parseInt(val);
+                              if (val <= 0) return;
+                              updateSpecificTarget(
+                                idx,
+                                false,
+                                i.target_relay,
+                                val
+                              );
+                            }}
+                            placeholder="Enter Duration"
+                            value={i.duration}
+                            className="input input-sm bg-base-100/50 w-full text-sm font-mono "
+                          />
+                        </td>
+                        <td>
+                          <div className="tooltip" data-tip="Remove Target">
+                            <button
+                              className="btn btn-square btn-sm text-lg"
+                              onClick={() => {
+                                let targs = [...targets];
+                                targs.splice(idx, 1);
+                                setTargets(targs);
+                              }}
+                            >
+                              <MdClose className="" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <button
-                onClick={() =>
-                  setTargets([...targets, { target_relay: 18, duration: 1 }])
-                }
-                className="mt-2 btn btn-md btn-block"
-              >
-                Add Target
-              </button>
             </div>
 
             <div className="mt-4">
@@ -274,28 +364,6 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
                 <option>Dark Scene Detector</option>
               </select>
             </div>
-
-            {/* <div className="mb-6">
-              <label className="block mb-2 text-sm ">Event Location</label>
-              <select
-                placeholder="Choose AI that will handle this action"
-                onChange={(e) => {
-                  setEventLocation(e.target.value);
-                }}
-                value={eventLocation}
-                className="select select-bordered w-full max-w-xs"
-              >
-                <option>Choose</option>
-                {
-                  // filter((e) => e !== data.value.eventLocation )
-                  Array.from({ length: divisionCount }, (_, i) => i + 1).map(
-                    (e, idx) => (
-                      <option key={idx}>{e}</option>
-                    )
-                  )
-                }
-              </select>
-            </div> */}
 
             {(caller === "Heat Stress Detector" ||
               caller === "Pig Detector") && (
@@ -334,35 +402,30 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
                       <div
                         className="w-full coverStretch bg-no-repeat h-80 bg-base-100"
                         style={{
-                          //https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Road_in_Norway.jpg/1200px-Road_in_Norway.jpg
-                          //http://${PI_IP}:8000/normal_feed
-                          backgroundImage: `url("https://image.shutterstock.com/shutterstock/photos/1506244592/display_1500/stock-photo-top-view-of-three-little-black-and-white-pigs-standing-on-hay-in-a-cage-1506244592.jpg")`,
+                          backgroundImage: `url("http://${PI_IP}:8000/normal_feed")`,
                         }}
                       ></div>
                       <div
                         className={`w-full h-full grid grid-cols-${divisionCount.col} grid-rows-${divisionCount.row} overflow-hidden overflow-x-scroll absolute top-0 left-0`}
                       >
-                        {
-                          // filter((e) => e !== data.value.eventLocation )
-                          Array.from(
-                            { length: divisionCount.col * divisionCount.row },
-                            (_, i) => i + 1
-                          ).map((e, idx) => (
-                            <div
-                              key={idx}
-                              onClick={() => {
-                                setEventLocation(e);
-                              }}
-                              className={`w-full p-4 outline outline-1 bg-base-100/70 hover:bg-base-100/95  outline-base-300 rounded-sm ${
-                                eventLocation === e
-                                  ? "bg-base-300/90 outline-secondary shadow-md backdrop-blur-sm"
-                                  : ""
-                              }`}
-                            >
-                              <p className="text-center text-sm">{e}</p>
-                            </div>
-                          ))
-                        }
+                        {Array.from(
+                          { length: divisionCount.col * divisionCount.row },
+                          (_, i) => i + 1
+                        ).map((e, idx) => (
+                          <div
+                            key={idx}
+                            onClick={() => {
+                              setEventLocation(e);
+                            }}
+                            className={`w-full p-4 outline outline-1 bg-base-100/70 hover:bg-base-100/95  outline-base-300 rounded-sm ${
+                              eventLocation === e
+                                ? "bg-base-300/90 outline-secondary shadow-md backdrop-blur-sm"
+                                : ""
+                            }`}
+                          >
+                            <p className="text-center text-sm">{e}</p>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -381,8 +444,8 @@ const actionComponent = ({ relayOptions, data, onSave, divisionCount }) => {
                 <label
                   onClick={() => {
                     setLoading(false);
-                    delAction(data.config_name, data.value.target_relay);
-                    setEditing();
+                    setToDelete(data);
+                    setMoadlActionView(0);
                   }}
                   className="btn"
                 >

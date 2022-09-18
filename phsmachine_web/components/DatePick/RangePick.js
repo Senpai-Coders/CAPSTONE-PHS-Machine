@@ -15,7 +15,7 @@ const SinglePick = ({
 
   return (
     <div className="dropdown dropdown-left md:dropdown-right">
-      <label tabindex="0" className="btn btn-sm btn-ghost btn-outline m-1">
+      <label tabIndex="0" className="btn btn-sm btn-ghost btn-outline m-1">
         {dateMMDDYYYY(date1, "/")} <FaLongArrowAltRight className="mx-2" />{" "}
         {dateMMDDYYYY(date2, "/")}
       </label>

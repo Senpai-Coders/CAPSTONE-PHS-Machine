@@ -8,6 +8,7 @@ import axios from "axios";
 import { BsFillKeyFill } from "react-icons/bs";
 
 import { TiInfoLarge, TiUserAdd } from "react-icons/ti";
+import { toast } from "react-toastify";
 
 const Accounts = () => {
   const [loading, setLoading] = useState(true);
@@ -21,7 +22,6 @@ const Accounts = () => {
     try {
       const resp = await axios.post("/api/phs/accounts", {});
       const myData = await axios.post("/api/phs/userDetails");
-      // setUsers(resp.data.users.sort((a, b) => (a.role < b.role ? 1 : -1)));
       setUsers(resp.data.users);
       setUserData(myData.data.userData);
       setLoading(false);
@@ -31,6 +31,15 @@ const Accounts = () => {
   };
 
   const deleteUser = async () => {
+    const id = toast.loading("Deleting user...", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     try {
       const response = await axios.post("/api/phs/updateUser", {
         mode: -1,
@@ -39,17 +48,48 @@ const Accounts = () => {
       setDeleteModal(false);
       setTargetId(null);
       init();
+      toast.update(id, {
+        render: "Deleted successfuly!",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
     } catch (e) {
-      console.log(e);
+      toast.update(id, {
+        render: "Error saving changes",
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
     }
   };
 
   const newUser = async () => {
+    const id = toast.loading("Generating User...", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     try {
       const resp = await axios.post("/api/phs/updateUser", { mode: 0 });
       init();
+      toast.update(id, {
+        render: "User Created!",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
     } catch (e) {
-      console.log(e);
+      toast.update(id, {
+        render: "Error creating user",
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
     }
   };
 

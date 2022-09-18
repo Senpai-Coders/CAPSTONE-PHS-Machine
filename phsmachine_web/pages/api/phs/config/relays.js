@@ -7,8 +7,26 @@ import {
 import dbConnect from "../../../../configs/dbConnection";
 const cookie = require("cookie");
 const configs = require("../../../../models/configs");
+import logger from "../../../../services/logger"
 
 dbConnect();
+
+const hasUpdate = async (editorDetails) => {
+  // set app config to forceUpdate all info in phs machine
+  const updateStamp = `${new Date().valueOf()}`;
+  const updatePHSSys = await configs.updateOne(
+    { category: "update", config_name: "update_stamp" },
+    {
+      $set: {
+        category: "update",
+        config_name: "update_stamp",
+        description: "This will update phs system infos forced",
+        value: updateStamp,
+        uby: editorDetails._id,
+      },
+    }
+  );
+};
 
 const handler = async (req, res) => {
   try {
@@ -39,33 +57,19 @@ const handler = async (req, res) => {
         },
         uby: editorDetails._id,
       });
+      hasUpdate(editorDetails);
     } else if (mode === -1) {
       const del = await configs.deleteOne({ config_name });
-    }else if(mode === 3){
-        const rels = await configs.find({ category: "relays" });
-
-        return res.status(200).json(rels)
+      logger.info(`User ${editorDetails.user_name}(${editorDetails._id}) -> Deleted relay -> ${config_name}`)
+      hasUpdate(editorDetails);
+    } else if (mode === 3) {
+      const rels = await configs.find({ category: "relays" });
+      return res.status(200).json(rels);
     }
-
-    // set app config to forceUpdate all info in phs machine
-    const updateStamp = `${new Date().valueOf()}`;
-    const updatePHSSys = await configs.updateOne(
-      { category: "update", config_name: "update_stamp" },
-      {
-        $set: {
-          category: "update",
-          config_name: "update_stamp",
-          description: "This will update phs system infos forced",
-          value: updateStamp,
-          uby: editorDetails._id,
-        },
-      },
-      { upsert: true }
-    );
 
     res.status(200).json({ message: "Ok" });
   } catch (e) {
-    console.log(e);
+    logger.error(e.stack)
     res.status(500).json({
       message: "Internal Server Error 😥",
     });

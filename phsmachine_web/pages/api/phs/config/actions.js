@@ -10,8 +10,26 @@ const configs = require("../../../../models/configs");
 
 let ObjectId = require("mongoose").Types.ObjectId;
 
+import logger from "../../../../services/logger";
 
 dbConnect();
+
+const hasUpdate = async (editorDetails) => {
+  // set app config to forceUpdate all info in phs machine
+  const updateStamp = `${new Date().valueOf()}`;
+  const updatePHSSys = await configs.updateOne(
+    { category: "update", config_name: "update_stamp" },
+    {
+      $set: {
+        category: "update",
+        config_name: "update_stamp",
+        description: "This will update phs system infos forced",
+        value: updateStamp,
+        uby: editorDetails._id,
+      },
+    }
+  );
+};
 
 const handler = async (req, res) => {
   try {
@@ -30,14 +48,6 @@ const handler = async (req, res) => {
         config_name,
         "value.isUsed": true,
       });
-      // check if relay in use
-
-      if (isExist)
-        return res.status(409).json({ message: "Action name already exist" });
-      if (isRelayUsed)
-        return res
-          .status(409)
-          .json({ message: "Relay is already used by other actions" });
 
       const insert = await configs.create({
         category: "actions",
@@ -48,56 +58,45 @@ const handler = async (req, res) => {
       });
       // insert
 
+      logger.info(
+        `User ${editorDetails.user_name}(${editorDetails._id}) -> Created new action`
+      );
+      hasUpdate(editorDetails);
     } else if (mode === 2) {
-        const isExist = await configs.findOne({ config_name });
+      const isExist = await configs.findOne({ config_name });
 
-        if(isExist){
-            if(isExist._id.toString() !== _id)
-                return res.status(409).json({ message: "Action name already exist" });
-        }
-        
-        const updateRelay = await configs.updateOne({ _id }, {
-            $set : {
-                config_name,
-                description,
-                value,
-                uby: editorDetails._id
-            }
-        })
+      if (isExist) {
+        if (isExist._id.toString() !== _id)
+          return res.status(409).json({ message: "Action name already exist" });
+      }
 
-    } else if (mode === -1) {
-      const del = await configs.deleteOne({ config_name });
-
-      // update relay to unused
       const updateRelay = await configs.updateOne(
-        { config_name: target_relay },
+        { _id },
         {
           $set: {
-            "value.isUsed": false,
+            config_name,
+            description,
+            value,
             uby: editorDetails._id,
           },
         }
       );
-    }
 
-    // set app config to forceUpdate all info in phs machine
-    const updateStamp = `${new Date().valueOf()}`;
-    const updatePHSSys = await configs.updateOne(
-      { category: "update", config_name: "update_stamp" },
-      {
-        $set: {
-          category: "update",
-          config_name: "update_stamp",
-          description: "This will update phs system infos forced",
-          value: updateStamp,
-          uby: editorDetails._id,
-        },
-      }
-    );
+      logger.info(
+        `User ${editorDetails.user_name}(${editorDetails._id}) -> Updated Action -> ${_id}`
+      );
+      hasUpdate(editorDetails);
+    } else if (mode === -1) {
+      const del = await configs.deleteOne({ config_name });
+      logger.info(
+        `User ${editorDetails.user_name}(${editorDetails._id}) -> Deleted Action -> ${config_name}`
+      );
+      hasUpdate(editorDetails);
+    }
 
     res.status(200).json({ message: "Ok" });
   } catch (e) {
-    console.log(e);
+    logger.error(e.stack);
     res.status(500).json({
       message: "Internal Server Error 😥",
     });

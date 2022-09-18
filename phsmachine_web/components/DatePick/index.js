@@ -1,4 +1,4 @@
-import RangePick from "./RangePick"
-import SinglePick from "./SinglePick"
+import RangePick from "./RangePick";
+import SinglePick from "./SinglePick";
 
-export { RangePick, SinglePick }
+export { RangePick, SinglePick };

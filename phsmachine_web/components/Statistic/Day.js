@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MorphChart } from "../charts"
+import { MorphChart } from "../charts";
 
 const index = () => {
   const [data, setData] = useState([

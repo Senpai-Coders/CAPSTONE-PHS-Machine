@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { appendToFSUrl } from "../../helpers";
 
 const ActiveUserBlock = ({ users }) => {
   const max = 4;
@@ -15,9 +15,9 @@ const ActiveUserBlock = ({ users }) => {
           <div className="avatar-group -space-x-6">
             {users.map((usr, idx) =>
               idx < max ? (
-                <div key={idx} className="avatar">
+                <div key={idx} className="avatar bg-base-300 shadow-xl">
                   <div className="w-12">
-                    <img src={usr.photo} />
+                    <img src={appendToFSUrl(usr.photo)} />
                   </div>
                 </div>
               ) : (

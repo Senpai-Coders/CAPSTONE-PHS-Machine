@@ -1,22 +1,23 @@
 import { useEffect, useState } from "react";
 import { FiHardDrive } from "react-icons/fi";
 
-import { bytesToMegaBytes, mbToGB, getPercentUsage } from "../../helpers"
+import { bytesToMegaBytes, mbToGB, getPercentUsage } from "../../helpers";
 
-const PhsStorageBlock = ({storageInfo}) => {
+const PhsStorageBlock = ({ storageInfo }) => {
+  const [used, setUsed] = useState(0);
+  const [free, setFree] = useState(0);
+  const [size, setSize] = useState(0);
+  const [perc, setPerc] = useState(0);
 
-  const [used, setUsed] = useState(0)
-  const [free, setFree] = useState(0)
-  const [size, setSize] = useState(0)
-  const [perc, setPerc] = useState(0)
-
-  useEffect(()=>{
-    let Size = mbToGB(bytesToMegaBytes(storageInfo.size)), Free = mbToGB(bytesToMegaBytes(storageInfo.free)), Used = Size - Free
-    setSize(Size.toFixed(1))
-    setFree(Free.toFixed(1))
-    setUsed((Used).toFixed(1))
-    setPerc(getPercentUsage(Size, Used))
-  },[storageInfo])
+  useEffect(() => {
+    let Size = mbToGB(bytesToMegaBytes(storageInfo.size)),
+      Free = mbToGB(bytesToMegaBytes(storageInfo.free)),
+      Used = Size - Free;
+    setSize(Size.toFixed(1));
+    setFree(Free.toFixed(1));
+    setUsed(Used.toFixed(1));
+    setPerc(getPercentUsage(Size, Used));
+  }, [storageInfo]);
 
   return (
     <div className="mb-2">
@@ -33,7 +34,9 @@ const PhsStorageBlock = ({storageInfo}) => {
             </div>
           </div>
         </div>
-        <p>{used} GB used out of {size} Gb ({perc.toFixed(1)}%)</p>
+        <p>
+          {used} GB used out of {size} Gb ({perc.toFixed(1)}%)
+        </p>
         <progress
           className="mt-1 progress progress-primary"
           value={used}

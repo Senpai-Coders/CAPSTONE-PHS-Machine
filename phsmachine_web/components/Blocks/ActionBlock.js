@@ -5,6 +5,7 @@ import { AiFillThunderbolt } from "react-icons/ai";
 
 const ActionBlock = ({ db_actions, phsActions, state }) => {
   const [mergedActions, setMergedActions] = useState([]);
+
   const getMatchingAction = (action) => {
     let toReturn = { state: false, duration: "-", caller: "-" };
     if (!phsActions || phsActions.length === 0) return toReturn;
@@ -27,6 +28,8 @@ const ActionBlock = ({ db_actions, phsActions, state }) => {
         merge[x] = { ...merge[x], ...new_fields };
       }
 
+    merge.sort((a, b) => Number(b.state) - Number(a.state));
+
     setMergedActions(merge);
   }, [db_actions]);
 
@@ -48,11 +51,11 @@ const ActionBlock = ({ db_actions, phsActions, state }) => {
             <RiListSettingsLine className="h-7 w-7 text-primary mr-2" />
             <p className="font-bold text-md ">Actions</p>
           </div>
-          <a href="/configuration" className="text-sm p-1 text-primary">
+          <a href="/settings?tb=2" className="text-sm p-1 text-primary">
             Manage Actions
           </a>
         </div>
-        <div className="mb-6">
+        <div className="mb-6 max-h-80 overflow-y-scroll">
           {mergedActions.map((action, idx) => (
             <div key={idx} className={getActiveStyle(action.state)}>
               <div>
@@ -60,16 +63,19 @@ const ActionBlock = ({ db_actions, phsActions, state }) => {
                   <RiTimerFill className={getIconActiveStyle(action.state)} />
                   {action.config_name}
                 </p>
-                <p className="text-xs">{action.value.target_relay}</p>
+                <p className="text-xs">
+                  {action.value.targets.length} component
+                  {action.value.targets.length > 1 ? "s" : ""}
+                </p>
               </div>
               <div className="flex items-center">
-                <span className="text-xs text-gray-400 mr-2 ml-2 md:ml-4">
-                  {action.state ? "Active" : "Stndby"}
+                <span className="text-xs font-inter font-bold mr-2 ml-2 md:ml-4">
+                  {action.state ? "Active" : state === -2 ? "-" : "Stndby"}
                 </span>
                 {action.state && (
-                  <span className="countdown text-xs text-accent mr-1">
-                    <span style={{ "--value": action.elapsed }}></span>s
-                  </span>
+                  <p className="text-xs font-inter font-bold mr-1">
+                    {action.elapsed}s
+                  </p>
                 )}
                 <AiFillThunderbolt
                   className={getIconActiveStyle(action.state)}

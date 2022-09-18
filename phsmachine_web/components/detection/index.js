@@ -2,18 +2,18 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { IoReloadCircleSharp, IoTrashBinSharp } from "react-icons/io5";
-import { GoPrimitiveDot } from "react-icons/go"
+import { GoPrimitiveDot } from "react-icons/go";
+import { BiExport, BiSearchAlt } from "react-icons/bi";
 
 import { dateToWord } from "../../helpers";
-import { DeleteConfirm, InfoCustom } from "../modals";
+import { DeleteConfirm, InfoCustom, ExportConfirm } from "../modals";
 import { RangePick, SinglePick } from "../DatePick";
-
 
 const index = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [detections, setDetections] = useState([]);
-  const [copDet, setCopDet] = useState([]) //copy of detections state
+  const [copDet, setCopDet] = useState([]); //copy of detections state
 
   const [selected, setSelected] = useState([]);
   const [modal, setModal] = useState(-1);
@@ -22,20 +22,24 @@ const index = () => {
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const [dateChanged, setDateChange] = useState(false);
+  const [searchId, setSearchId] = useState("");
 
   const filterDateRange = (from, to, date) => {
-    let FROM = new Date(from)
+    let FROM = new Date(from);
     FROM.setDate(FROM.getDate());
-    let TO = new Date(to)
+    let TO = new Date(to);
     TO.setDate(TO.getDate() + 1);
     return date >= FROM && date <= TO;
   };
 
-  const filterDateEqual = (to, date) => { return to.toDateString() === date.toDateString(); };
+  const filterDateEqual = (to, date) => {
+    return to.toDateString() === date.toDateString();
+  };
 
   const filterData = (data) => {
     let filtered = [];
-    if (dateMode === 0) return data;
+    if (dateMode === 0) filtered = data;
+
     if (dateMode === 1) {
       data.forEach((det) => {
         let focObj = { ...det };
@@ -43,9 +47,8 @@ const index = () => {
         if (filterDateEqual(fromDate, new Date(focObj.cat)))
           filtered.push(focObj);
       });
-
-      return filtered;
     }
+
     if (dateMode === 2) {
       data.forEach((det) => {
         let focObj = { ...det };
@@ -53,17 +56,24 @@ const index = () => {
         if (filterDateRange(fromDate, toDate, new Date(focObj.cat)))
           filtered.push(focObj);
       });
-      return filtered;
     }
+
+    if (searchId.length > 0) {
+      filtered = data.filter((data) => {
+        return data._id.includes(searchId);
+      });
+    }
+
+    return filtered;
   };
 
   const init = async (t) => {
     try {
       setLoading(true);
       const resp = await axios.post("/api/phs/detection", { mode: 0 });
-      let det = resp.data.detection_data
+      let det = resp.data.detection_data;
       setDetections(filterData(det));
-      setCopDet(det)
+      setCopDet(det);
       setLoading(false);
     } catch (e) {
       console.log(e);
@@ -107,7 +117,7 @@ const index = () => {
   }, []);
 
   return (
-    <div className="relative mt-8 min-h-screen">
+    <div className="relative mt-8">
       {loading && (
         <div className="right-0 top-0 w-1/12 flex absolute items-center space-x-4">
           <progress className="progress"></progress>
@@ -120,17 +130,31 @@ const index = () => {
         onAccept={deleteSelected}
       />
 
+      <ExportConfirm
+        shown={modal === 3}
+        close={() => setModal(-1)}
+        onAccept={() => {}}
+      />
+
       <InfoCustom
         shown={modal === 2}
         close={setModal}
         title={"Invalid Date"}
-        content={<div>
+        content={
+          <div>
             <p className="mt-2">Please follow this rule</p>
             <ul className="my-2">
-                <li className="flex items-center"><GoPrimitiveDot className="mr-2"/>Start Date must always greater than End Date</li>
-                <li className="flex items-center"><GoPrimitiveDot className="mr-2"/>End Date must always less than Start Date</li>
+              <li className="flex items-center">
+                <GoPrimitiveDot className="mr-2" />
+                Start Date must always greater than End Date
+              </li>
+              <li className="flex items-center">
+                <GoPrimitiveDot className="mr-2" />
+                End Date must always less than Start Date
+              </li>
             </ul>
-        </div>}
+          </div>
+        }
         onAcceptText={"ok"}
       />
 
@@ -145,21 +169,21 @@ const index = () => {
           </p>
 
           <div className="dropdown mr-2 md:mr-0 dropdown-hover">
-            <label tabindex="0" className="btn btn-sm">
+            <label tabIndex="0" className="btn btn-sm">
               {dateMode === 0 && "All"}
               {dateMode === 1 && "Single Date"}
               {dateMode === 2 && "Range Date"}
             </label>
             <ul
-              tabindex="0"
+              tabIndex="0"
               className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
             >
               <li>
                 <a
                   onClick={() => {
                     setDateMode(0);
-                    setDetections(copDet)
-                    init()
+                    setDetections(copDet);
+                    init();
                   }}
                 >
                   All Date
@@ -205,9 +229,9 @@ const index = () => {
           {dateMode === 2 && (
             <RangePick
               onApply={() => {
-                if(toDate <= fromDate){
-                    setModal(2)
-                    return
+                if (toDate <= fromDate) {
+                  setModal(2);
+                  return;
                 }
                 setDateChange(false);
                 init();
@@ -251,10 +275,35 @@ const index = () => {
               </p>
             </>
           )}
+
+          <button
+            onClick={() => setModal(3)}
+            className="btn mt-2 md:mt-0 btn-sm"
+          >
+            Export Data
+            <BiExport className="ml-2 text-lg" />{" "}
+          </button>
+
+          <div className="form-control mt-2 md:mt-0">
+            <div className="input-group">
+              <input
+                type="text"
+                value={searchId}
+                onChange={(e) => {
+                  setSearchId(e.target.value);
+                }}
+                placeholder="Detection ID"
+                className="input input-sm input-bordered"
+              />
+              <button onClick={() => init()} className="btn btn-square btn-sm">
+                <BiSearchAlt className="text-xl" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="mt-4 overflow-x-auto">
+      <div className="mt-4 overflow-x-auto" style={{ maxHeight: "65vh" }}>
         <table className="mt-2 w-full whitespace-nowrap table-auto rounded-md">
           <thead>
             <tr className="h-16 bg-base-200 rounded-lg shadow-sm">
@@ -277,7 +326,7 @@ const index = () => {
                 />
               </th>
               <th className="text-left">Detection Date</th>
-              <th />
+              <th className="">Detection Id</th>
               <th className="text-right">Pigcount</th>
               <th>Heat Stressed</th>
               <th className="text-left">Normal</th>
@@ -288,7 +337,7 @@ const index = () => {
             {detections.map((detection) => (
               <>
                 <tr
-                  className={` border-b border-base-100 ${
+                  className={`hover:bg-base-300 border-b border-base-100 ${
                     selected.filter((id) => {
                       return id === detection._id;
                     }).length !== 0
@@ -323,14 +372,16 @@ const index = () => {
                   </td>
                   <td className="">
                     <div className="flex items-center">
-                      <p className="text-base font-medium text-center">
+                      <p className="text-base font-medium text-center truncate">
                         {detection.uat
                           ? dateToWord(detection.uat)
                           : dateToWord(new Date())}
                       </p>
                     </div>
                   </td>
-                  <td />
+                  <td>
+                    <p className="text-xs text-center">{detection._id}</p>
+                  </td>
                   <td className="">
                     <div className="flex items-center justify-end">
                       <div className="py-1 px-2 rounded-full ">
@@ -378,68 +429,6 @@ const index = () => {
           <p className="text-sm my-2 text-center">loading please wait..</p>
         )}
       </div>
-
-      {/** OLD VERSION */}
-      {/* <div className="grid gap-4 md:grid-cols-2">
-        {detections.map((record) => (
-          <div<button className="btn btn-circle">
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-</button>
-            key={record._id}
-            className="card md:card-side space-x-2 shadow-xl"
-          >
-            <figure className="md:w-1/2 flex">
-              <img
-                className="rounded-l-lg object-cover h-full w-1/2"
-                src={record.img_normal}
-              ></img>
-              <img
-                className=" rounded-r-lg object-cover h-full w-1/2"
-                src={record.img_thermal}
-              ></img>
-            </figure>
-            <div className="md:w-1/2 card-body font-inter">
-              <p className="font-bold text-lg">
-                {record.data.pig_count} Pigs Onframe
-              </p>
-              <p className="text-lg">
-                Min Temp:{" "}
-                <span className="font-medium text-primary">
-                  {tempParser(record.data.min_temp)} °C
-                </span>{" "}
-              </p>
-              <p className="text-lg">
-                Average Temp:{" "}
-                <span className="font-medium text-primary">
-                  {tempParser(record.data.avg_temp)} °°C
-                </span>{" "}
-                {"   "}{" "}
-              </p>
-              <p className="text-lg">
-                Max Temp: {"   "}{" "}
-                <span className="font-medium text-error">
-                  {tempParser(record.data.max_temp)}°C
-                </span>
-              </p>
-              <p className="font-bold text-lg">
-                <span className="text-warning">{record.data.stressed_pig}</span>{" "}
-                Stressed Pig
-              </p>
-              <p className="text-sm">{record.date}</p>
-              <div className="card-actions justify-end">
-                <button
-                  onClick={() =>
-                    router.push(`/detection_details?_id=${record._id}`)
-                  }
-                  className="btn btn-block"
-                >
-                  More Info
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div> */}
 
       {!loading && detections.length === 0 && (
         <p className="tracking-wider opacity-70 text-sm font-inter text-center my-4">

@@ -4,8 +4,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const index = () => {
-  const [loading, setLoading] = useState(false)
-  const [detections, setDetections] = useState([])
+  const [loading, setLoading] = useState(false);
+  const [detections, setDetections] = useState([]);
 
   const init = async (t) => {
     try {
@@ -19,15 +19,17 @@ const index = () => {
     }
   };
 
-  useEffect(()=>{
-    init()
-  }, [])
+  useEffect(() => {
+    init();
+  }, []);
 
-  return <div className="min-h-screen">
-    <CalendarHeatMap loading={loading} refresh={init} data={detections} />
-    <div className="divider my-8"></div> 
-    <WeekDetection loading={loading} refresh={init} data={detections} />
-  </div>;
+  return (
+    <div className="min-h-screen">
+      <CalendarHeatMap loading={loading} refresh={init} data={detections} />
+      <div className="divider my-8"></div>
+      <WeekDetection loading={loading} refresh={init} data={detections} />
+    </div>
+  );
 };
 
 export default index;

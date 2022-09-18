@@ -7,7 +7,7 @@ const MorphChart = ({ option, onEvents }) => {
         onEvents={onEvents}
         option={option}
         style={{ height: "100%", width: "100%" }}
-        theme={'infographic'}
+        theme={"infographic"}
         opts={{ renderer: "canvas" }}
       />
     </div>
@@ -15,4 +15,3 @@ const MorphChart = ({ option, onEvents }) => {
 };
 
 export default MorphChart;
-

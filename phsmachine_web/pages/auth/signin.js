@@ -1,23 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { API } from "../../helpers";
 
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { GoInfo } from "react-icons/go";
+import { MdOutlineClose } from "react-icons/md";
+
+import PhsScanner from "../../components/Phs_Scanner/PhsScanner";
+
+import axios from "axios";
 
 const signin = () => {
   const router = useRouter();
-  const [username, setUsername] = useState("PHS_SYSTEM_V1");
-  const [password, setPassword] = useState("johny123");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const [show, setShow] = useState(false);
+
+  const [showScan, setShowScan] = useState(false);
+  const [curIp, setCurIp] = useState("-");
 
   const signin = async (e) => {
     try {
       e.preventDefault();
       setLoading(true);
-      const response = await API.post("/api/authentication/signin", {
+      const response = await axios.post("/api/authentication/signin", {
         username,
         password,
       });
@@ -26,29 +33,52 @@ const signin = () => {
       console.log(e);
       setLoading(false);
       if (e.response) {
-        //request was made but theres a response status code
-        console.log(e.response.data);
         if (e.response.data.error === 403) setErr("password");
         if (e.response.data.error === 404) setErr("username");
       } else if (e.request) {
-        // The request was made but no response was received
       } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log("Error", error.message);
+        console.log("Error", e.message);
       }
     }
   };
 
+  const init = async () => {
+    try {
+      const data = await axios.get("/api/connectivity");
+      setCurIp(data.data.ip);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    init();
+  }, []);
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 h-screen w-screen">
+    <div className="grid grid-cols-1 md:grid-cols-2 h-screen w-screen relative">
       <div className="flex items-center bg-[#FDE9F4]">
         <div className="m-auto my-10 w-9/12 text-[#663A52]">
-          <p className="font-inter text-xl opacity-80 font-light tracking-wide mb-8">
-            PHS
-          </p>
-          <p className="font-inter text-2xl font-semibold tracking-wider mb-8 mr-8">
+          <div className="flex justify-start items-center">
+            <p className="font-inter text-xl opacity-80 font-light tracking-wide">
+              PHS
+            </p>
+          </div>
+          <p className="mt-8 font-inter text-2xl font-semibold tracking-wider mr-8">
             Helping piggery owners in resolving & preventing pig heat stress
           </p>
+          <p className="mt-9">
+            You can switch to other phs devices on your local network
+          </p>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setShowScan(true);
+            }}
+            className="mt-4 btn btn-sm "
+          >
+            Switch PHS
+          </button>
         </div>
       </div>
       <form
@@ -56,10 +86,12 @@ const signin = () => {
         className="flex font-inter items-center"
       >
         <div className="m-auto py-8 md:py-0 w-9/12 md:w-7/12">
-          <p className=" text-2xl font-semibold tracking-wide mb-8">
-            Signin To PHS
-          </p>
-          <div className="mb-6">
+          <div className="flex justify-start items-center">
+            <p className="text-2xl font-semibold tracking-wide">
+              Signin To PHS
+            </p>
+          </div>
+          <div className="mt-8">
             <label className="block mb-2 text-sm font-medium  dark:text-gray-300">
               Username
             </label>
@@ -77,7 +109,7 @@ const signin = () => {
               required
             />
           </div>
-          <div className="mb-6">
+          <div className="mt-4">
             <label className="block mb-2 text-sm font-medium dark:text-gray-300">
               Password
             </label>
@@ -136,7 +168,7 @@ const signin = () => {
               username.length === 0 || password.length === 0 || loading
                 ? "btn-disabled"
                 : ""
-            } btn btn-primary btn-md btn-block md:btn-wide `}
+            } btn btn-primary btn-md mt-4 btn-block md:btn-wide `}
           >
             Sign In
           </button>
@@ -149,6 +181,30 @@ const signin = () => {
           </div>
         </div>
       </form>
+      <div
+        onClick={(e) => {
+          e.preventDefault();
+        }}
+        className={`duration-500 ease-in-out w-screen min-h-screen bg-base-100/80 backdrop-blur-xl absolute ${
+          showScan ? "left-0" : "-left-full"
+        }`}
+      >
+        {" "}
+        <div className="flex justify-between items-center p-4">
+          <p></p>
+          <MdOutlineClose
+            onClick={() => setShowScan(false)}
+            className="text-2xl"
+          />
+        </div>
+        <PhsScanner
+          curIp={curIp}
+          mountedOnSignIn={true}
+          onSwitch={(v) => {
+            window.open(v.url, "_blank");
+          }}
+        />
+      </div>
     </div>
   );
 };

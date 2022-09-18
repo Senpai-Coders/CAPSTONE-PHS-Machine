@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
-import { dateYYYYMMDD, dateToBeutify} from "../../helpers";
+import { dateYYYYMMDD, dateToBeutify } from "../../helpers";
 import HeatmapCalendar from "../charts/HeatmapCalendar";
 import { InfoCustom } from "../modals/";
 
 import { FiChevronRight } from "react-icons/fi";
 import { BsClipboardData } from "react-icons/bs";
 
-const index = ({ saveFileName, detections, yearChosen, hoverSeriesName, textColor }) => {
+const index = ({
+  saveFileName,
+  detections,
+  yearChosen,
+  hoverSeriesName,
+  textColor,
+}) => {
   const [dateSelected, setDateSelected] = useState(
     dateYYYYMMDD(new Date(), "-")
   );
@@ -69,8 +75,12 @@ const index = ({ saveFileName, detections, yearChosen, hoverSeriesName, textColo
                     <p>{dateToBeutify(new Date(det.cat), "-")}</p>
                   </div>
                 </div>
-                <a target='blank' className="flex items-center hover:text-primary" href={`/detection_details?_id=${det._id}`} >
-                    View
+                <a
+                  target="blank"
+                  className="flex items-center hover:text-primary"
+                  href={`/detection_details?_id=${det._id}`}
+                >
+                  View
                   <FiChevronRight className="h-5 w-5" />
                 </a>
                 {/* <div onClick={()=>router.push(`/detection_details?_id=${det._id}`)} className="cursor-pointer hover:text-primary flex items-center">
@@ -101,7 +111,11 @@ const index = ({ saveFileName, detections, yearChosen, hoverSeriesName, textColo
               toolbox: {
                 show: true,
                 feature: {
-                  saveAsImage: { name : !saveFileName ? 'chart' : saveFileName, title: "Save", show: true },
+                  saveAsImage: {
+                    name: !saveFileName ? "chart" : saveFileName,
+                    title: "Save",
+                    show: true,
+                  },
                 },
               },
               //   title: {
@@ -160,15 +174,15 @@ const index = ({ saveFileName, detections, yearChosen, hoverSeriesName, textColo
                   fontSize: 30,
                 },
                 monthLabel: {
-                    show: true,
-                    color: textColor,
-                    fontSize: 15,
-                  },
-                  dayLabel: {
-                    show: true,
-                    color: textColor,
-                    fontSize: 15,
-                  }
+                  show: true,
+                  color: textColor,
+                  fontSize: 15,
+                },
+                dayLabel: {
+                  show: true,
+                  color: textColor,
+                  fontSize: 15,
+                },
               },
               series: {
                 name: hoverSeriesName,

@@ -1,28 +1,41 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 import { BsClipboardData } from "react-icons/bs";
-import { FaThermometerHalf, FaSignOutAlt } from "react-icons/fa";
-import { IoPeopleSharp, IoRemoveOutline } from "react-icons/io5";
-import { GoGear } from "react-icons/go";
+import { FaThermometerHalf } from "react-icons/fa";
+import { IoPeopleSharp, IoBookSharp } from "react-icons/io5";
+import { GoGear, GoSignOut } from "react-icons/go";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { RiPagesFill } from "react-icons/ri";
-import { API, amISignedIn, getMyData, getRole } from "../helpers";
+import {
+  amISignedIn,
+  getMyData,
+  getRole,
+  appendToFSUrl,
+} from "../helpers";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+
 import ThemeChooser from "./configuration/themeChooser";
+import Notification from "./Notification/Notification";
+import UserCard from "./userCard";
 
-import Time_Strip from "./Time_Strp";
+import { PI_IP } from "../helpers";
 
-const navbar = ({toggled, setToggled}) => {
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+
+const navbar = ({ toggled, setToggled, userToggled, setUserToggled }) => {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState();
+  const [phsInfo, setPhsInfo] = useState();
 
   const signout = async () => {
     try {
       console.log("signedout");
-      const response = await API.post("/api/authentication/signout");
+      const response = await axios.post("/api/authentication/signout");
       router.push("/auth/signin");
     } catch (e) {
       console.log("err", e);
@@ -46,8 +59,18 @@ const navbar = ({toggled, setToggled}) => {
       icon: IoPeopleSharp,
     },
     {
-      name: "Config ",
-      path: "/configuration",
+      name: "Settings",
+      path: "/settings",
+      icon: GoGear,
+    },
+    {
+      name: "Switch PHS",
+      path: "/phsscanner",
+      icon: GoGear,
+    },
+    {
+      name: "PHS Logs",
+      path: "/systemlogs",
       icon: GoGear,
     },
   ];
@@ -55,6 +78,8 @@ const navbar = ({toggled, setToggled}) => {
   const init = async () => {
     if (!(await amISignedIn())) router.push("/auth/signin");
     const usrData = await getMyData();
+    const PHS_INFO = await axios.get("/api/connectivity");
+    setPhsInfo(PHS_INFO.data);
     setUserData(usrData);
     setLoading(false);
   };
@@ -88,196 +113,176 @@ const navbar = ({toggled, setToggled}) => {
         </div>
       </div>
 
-      {/* <div className="md:hidden flex w-full justify-evenly my-4 items-center">
-        {PHS_ROUTES.map((routes, idx) => (
-          <routes.icon
-            key={idx}
-            onClick={() => router.push(routes.path)}
-            className={`${
-              router.pathname === routes.path ? "scale-110" : "opacity-50"
-            } h-5 w-5 text-primary cursor-pointer duration-300`}
-          />
-        ))}
+      {/* NAV ALL */}
+      <nav className=" fixed z-30 flex-shrink-0 href w-screen bg-neutral shadow-lg block">
+        <ToastContainer
+          className={"z-50"}
+          position="top-left"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          theme={"dark"}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
 
-        <label htmlFor="my-modal-6" className="modal-button">
-          <FaSignOutAlt
-            className={`hover:scale-110 hover:opacity-100 opacity-50 h-5 w-5 text-primary cursor-pointer duration-300`}
-          />
-        </label>
-      </div> */}
-
-      {/* NAV MOBILE */}
-      <nav className=" fixed z-30 flex-shrink-0 href w-screen bg-base-200 shadow-lg block">
-        {/* <div className="overflow-y-auto overflow-x-hidden flex justify-between px-8"> */}
-        {/* SideBar Show/Hide */}
+        {/* Left Nav */}
         <div
-          className={`z-40 overflow-y-scroll w-64 px-6 py-2 h-screen bg-base-300 absolute duration-300 ease-in-out top-0 ${
+          className={`z-40 overflow-y-scroll w-64 px-4 py-2 h-screen bg-base-100 shadow-lg absolute duration-300 ease-in-out top-0 ${
             toggled ? "left-0" : "-left-96 "
           }`}
         >
           <div className="mt-2 flex justify-between items-center">
-            <p>PHS A1</p>
+            <div>
+              <p>{!phsInfo ? "PHS" : phsInfo.server_name}</p>
+              <p className="text-xs mt-2">
+                Host IP {!phsInfo ? "-" : phsInfo.ip}
+              </p>
+              <p className="text-xs mt-2">
+                Version {!phsInfo ? "-" : phsInfo.version}
+              </p>
+            </div>
             <button
               className="btn btn-square btn-sm btn-outline btn-ghost"
               onClick={() => {
                 setToggled(false);
               }}
             >
-              <IoRemoveOutline className="h-5 w-5" />
+              <MdKeyboardArrowLeft className="h-5 w-5" />
             </button>
           </div>
           <div className="divider" />
-          <div className="mt-4">
-            <div className="flex items-center justify-start mb-2">
-              <div className="py-2 pr-2 rounded-xl bg-base-300">
-                <RiPagesFill className="w-5 h-5" />
-              </div>
-              <p className="text-lg">Pages</p>
+          <div className="mt-2">
+            <div className="w-full flex justify-evenly">
+              <ul className="menu w-full overflow-y-auto bg-transparent py-2 text-base-content">
+                {PHS_ROUTES.map((routes, idx) => (
+                  <li className="mt-2" key={idx}>
+                    <a
+                      key={idx}
+                      onClick={() => router.push(routes.path)}
+                      className={`${
+                        router.pathname === routes.path
+                          ? "pl-3 pr-4 py-2 border-l-4 border-primary bg-base-200 text-base font-medium transition duration-200 ease-in-out"
+                          : "pl-3 pr-4 py-2 border-l-4 border-transparent text-base hover:border-primary font-medium transition duration-200 ease-in-out"
+                      } cursor-pointer rounded-md duration-300 w-full`}
+                    >
+                      {routes.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
-            {PHS_ROUTES.map((routes, idx) => (
-              <p
-                key={idx}
-                onClick={() => router.push(routes.path)}
-                className={`${
-                  router.pathname === routes.path
-                    ? "text-lg text-primary"
-                    : "opacity-50 text-sm "
-                } cursor-pointer duration-300 my-2`}
-              >
-                {routes.name}
-              </p>
-            ))}
           </div>
           <div className="divider" />
           <div className="mt-4 grid grid-cols-1">
-            <div className="flex items-center justify-start mb-2">
-              {!userData ? (
-                <div className="w-5/12 flex items-center space-x-4">
-                  <progress className="progress progress-primary"></progress>
-                </div>
-              ) : (
-                <div
-                  className="tooltip tooltip-right"
-                  data-tip={`Your Role : ${getRole(userData.role)}`}
-                >
-                  <div className="avatar">
-                    <div className="w-10 ring-1 mask mask-hexagon-2">
-                      <img src={userData.photo} />
-                    </div>
-                  </div>
-                </div>
-              )}
-              {userData ? <p className="ml-2 text-sm">{userData.user_name}</p> : <p>...</p>}
-            </div>
-            <ThemeChooser />
-            <label
-              htmlFor="my-modal-6"
-              className="font-medium btn mt-4 btn-sm modal-button cursor-pointer duration-300 text-primary"
+            <ThemeChooser textMode={false} />
+            <button
+              onClick={() => {
+                window.open(`http://${PI_IP}:3001`, "_blank");
+              }}
+              className="btn btn-md btn-ghost mt-4 btn-active"
             >
-              Sign Out
-            </label>
+              <IoBookSharp className="text-xl mr-2" /> Manual
+            </button>
           </div>
-          
         </div>
 
+        {/* User Nav */}
+        <div
+          className={`z-40 overflow-y-scroll md:w-96 px-4 py-2 h-screen bg-base-100 shadow-lg absolute duration-300 ease-in-out top-0 ${
+            userToggled ? "right-0" : "-right-[32rem] md:-right-96"
+          }`}
+        >
+          <div className="mt-2 flex justify-between items-center">
+            <p>Your Account</p>
+            <button
+              className="btn btn-square btn-sm btn-outline btn-ghost"
+              onClick={() => {
+                setUserToggled(false);
+              }}
+            >
+              <MdKeyboardArrowRight className="h-5 w-5" />
+            </button>
+          </div>
+
+          {userData && (
+            <div className="mt-4">
+              <UserCard
+                onNav={true}
+                u={userData}
+                editor_info={userData}
+                onUpdate={init}
+              />
+            </div>
+          )}
+
+          <label
+            htmlFor="my-modal-6"
+            className="btn btn-active w-full btn-md mt-2 btn-ghost cursor-pointer duration-300"
+          >
+            <GoSignOut className="text-xl mr-2" />
+            Sign Out
+          </label>
+          <button
+            onClick={() => {
+              window.open(`http://${PI_IP}:3001`, "_blank");
+            }}
+            className="btn btn-md btn-ghost mt-4 btn-active w-full"
+          >
+            <IoBookSharp className="text-xl mr-2" /> Manual
+          </button>
+        </div>
+
+        {/* TOP BAR */}
         <div className="grid text-sm grid-cols-3 mx-4">
-          <div className="flex justify-start items-center space-x-20 my-1">
+          <div className="flex justify-start items-center space-x-20 my-1 text-neutral-content">
             <GiHamburgerMenu
               className="h-5 w-5"
               onClick={() => {
                 setToggled(true);
+                setUserToggled(false);
               }}
             />
-            {/*<GiStopSign
-                className={`opacity-90 h-7 w-7 text-error cursor-pointer duration-300`}
-              />*/}
           </div>
 
           {/* PHS TITLE */}
-          <div className="flex justify-center items-center my-4">
-            <Link
-              className="lg:block font-inter text-2xl font-bold text-gray-800 dark:text-gray-200"
-              href="/"
-            >
+          <div
+            className="tooltip-bottom flex justify-center items-center my-4 text-neutral-content tooltip"
+            data-tip={
+              !phsInfo
+                ? "You are connected to PHS"
+                : `You are connected to ${phsInfo.server_name} @ ${phsInfo.ip}`
+            }
+          >
+            <Link className="lg:block font-inter text-2xl font-bold" href="/">
               <span className="text-xl tracking-widest cursor-pointer">
-                PHS
+                {!phsInfo ? "PHS" : phsInfo.server_name}
               </span>
             </Link>
           </div>
 
           {/*  */}
-          <div className="flex justify-end items-center space-x-8">
-            <Time_Strip />
-          </div>
-        </div>
-      </nav>
+          <div className="flex justify-end items-center space-x-2">
+            <Notification userData={userData} />
 
-      {/* NAV Tablet + Md + Lg + Full */}
-      <nav className="hidden left-0 fixed z-30 w-full flex-shrink-0 px-5 href dark:bg-gray-800 bg-base-200 shadow-lg ">
-        {/* <div className="overflow-y-auto overflow-x-hidden flex justify-between px-8"> */}
-        <div className=" grid text-sm grid-cols-3 mx-4">
-          <div className="flex justify-evenly items-center space-x-20 my-1">
-            {PHS_ROUTES.map((routes, idx) => (
-              <p
-                key={idx}
-                onClick={() => router.push(routes.path)}
-                className={`${
-                  router.pathname === routes.path
-                    ? "scale-110 text-primary"
-                    : "opacity-50"
-                } cursor-pointer duration-300`}
-              >
-                {routes.name}
-              </p>
-            ))}
-            {/*<GiStopSign
-                className={`opacity-90 h-7 w-7 text-error cursor-pointer duration-300`}
-              />*/}
-          </div>
-
-          {/* PHS TITLE */}
-          <div className="flex justify-center items-center my-4">
-            <Link
-              className="lg:block font-inter text-2xl font-bold text-gray-800 dark:text-gray-200"
-              href="/"
+            <div
+              className="avatar"
+              onClick={() => {
+                setUserToggled(true);
+                setToggled(false);
+              }}
             >
-              <span className="text-xl tracking-widest cursor-pointer">
-                PHS
-              </span>
-            </Link>
-          </div>
-
-          {/* USER INFO & SIGNOUT */}
-          <div className="flex justify-end items-center space-x-8">
-          <div className="md:hidden lg:block"><Time_Strip /></div>
-            <ThemeChooser />
-            {!userData ? (
-              <div className="w-5/12 flex items-center space-x-4">
-                <progress className="progress progress-primary"></progress>
+              <div className="w-8 cursor-pointer duration-500 ease-in-out rounded-full ring ring-accent/20 hover:ring-accent">
+                {!userData ? (
+                  <img src="/pig.png" />
+                ) : (
+                  <img src={appendToFSUrl(userData.photo)} />
+                )}
               </div>
-            ) : (
-              <>
-                <div
-                  className="tooltip tooltip-bottom"
-                  data-tip={`Your Role : ${getRole(userData.role)}`}
-                >
-                  <div className="avatar">
-                    <div className="w-10 mask mask-hexagon-2">
-                      <img src={userData.photo} />
-                    </div>
-                  </div>
-                </div>
-
-                <p>{userData.user_name}</p>
-                <p></p>
-              </>
-            )}
-            <label
-              htmlFor="my-modal-6"
-              className="font-medium modal-button cursor-pointer duration-300 text-primary"
-            >
-              Signout
-            </label>
+            </div>
           </div>
         </div>
       </nav>

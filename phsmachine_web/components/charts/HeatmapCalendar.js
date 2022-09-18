@@ -7,7 +7,7 @@ const HeatMapCalendar = ({ option, onEvents }) => {
         onEvents={onEvents}
         option={option}
         style={{ height: "40vh", width: "100%" }}
-        theme={'infographic'}
+        theme={"infographic"}
         opts={{ renderer: "canvas" }}
       />
     </div>
@@ -15,4 +15,3 @@ const HeatMapCalendar = ({ option, onEvents }) => {
 };
 
 export default HeatMapCalendar;
-

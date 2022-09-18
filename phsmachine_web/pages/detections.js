@@ -3,8 +3,7 @@ import Head from "next/head";
 import { useState } from "react";
 
 import DetectionList from "../components/detection";
-import Statistics from "../components/detection/Statistics"
-
+import Statistics from "../components/detection/Statistics";
 
 const Events = () => {
   const [tab, setTab] = useState(0);
@@ -14,18 +13,6 @@ const Events = () => {
       <Head>
         <title>Detections</title>
       </Head>
-
-
-      {/* <div className="flex items-center">
-        <p className="text-xl card-title font-lato font-semibold">
-          Event History
-        </p>
-        {loading && (
-          <div className="mx-10 w-1/12 flex items-center space-x-4">
-            <progress className="progress"></progress>
-          </div>
-        )}
-      </div> */}
 
       <div className="mb-4">
         <div className="tabs">

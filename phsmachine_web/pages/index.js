@@ -1,8 +1,19 @@
 import Layout from "../components/layout";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
+import { useEffect, useState, Suspense } from "react";
+
+const Stream_Triple = dynamic(() => import("../components/Stream/triple"), {
+  suspense: true,
+});
+const Stream_Dual = dynamic(() => import("../components/Stream/dual"), {
+  suspense: true,
+});
+const Stream_Merge = dynamic(() => import("../components/Stream/merge"), {
+  suspense: true,
+});
 
 import Head from "next/head";
-import { useEffect, useState } from "react";
 import axios from "axios";
 
 import {
@@ -11,7 +22,13 @@ import {
   ShutdownConfirm,
 } from "../components/modals/";
 
-import { PI_IP, getCamMode, setCamMode } from "../helpers";
+import {
+  PI_IP,
+  getCamMode,
+  setCamMode,
+  localErrorAdd,
+  localErrorRemoveCode,
+} from "../helpers";
 
 import { GiPig } from "react-icons/gi";
 import { BsHash } from "react-icons/bs";
@@ -45,7 +62,7 @@ export default function Home() {
     actions: [],
   });
 
-  const [timeOutCount, setTimeOutCount] = useState(0)
+  const [timeOutCount, setTimeOutCount] = useState(0);
 
   const [exited, setExited] = useState(false);
   const [stamp, setStamp] = useState(0);
@@ -67,28 +84,9 @@ export default function Home() {
   });
   const [dbActions, setDbActions] = useState([]);
   const [dbActiveUsers, setDbActiveUsers] = useState([]);
-  const [phsActions, setPhsActions] = useState([
-    {
-      config_name: "Mist",
-      description: "This will activate the pump",
-      target_relay: "Pump",
-      duration: "5",
-      state: false,
-      elapsed: 25,
-      caller: "Heat Stress Detector",
-    },
-    {
-      config_name: "Fan",
-      description: "Starting Div 1 LED",
-      target_relay: "LED 1",
-      duration: "30",
-      state: true,
-      elapsed: 27,
-      caller: "Dark Scene Detector",
-    },
-  ]);
+  const [phsActions, setPhsActions] = useState([]);
 
-  const phs_init = async () => {
+  const phs_core_init = async () => {
     try {
       if (exited) return;
       const phs_response = await axios.get(
@@ -101,14 +99,38 @@ export default function Home() {
       );
 
       if (exited) return;
-      //setACTIONSTATE(phs_actions.data.actions);
+      setPhsActions(phs_actions.data.actions);
       SETSYSSTATE(phs_response.data.state);
       setIsDown(false);
-      setTimeOutCount(0)
+      setTimeOutCount(0);
+      localErrorRemoveCode(0);
     } catch (e) {
       setIsDown(true);
-      setTimeOutCount(timeOutCount + 1)
+      setTimeOutCount(timeOutCount + 1);
       SETSYSSTATE({ ...SYSSTATE, status: -2 });
+      if (e.message == "Network Error")
+        localErrorAdd({
+          _id : `${new Date().toLocaleDateString()}_${new Date().getTime()}`,
+          notification_type: "error",
+          title: "PHS Core Error",
+          message:
+            "PHS Core is not responding or possible not running, try restarting phs. Read description about error code on manual",
+          additional: {
+            error_code: 0,
+            severity: "high",
+            error_log: `PHS Core System ${e.message}`,
+          },
+          priority: 0,
+          links: [
+            {
+              link: "http://localhost:3001/",
+              link_mode: false,
+              link_short: "/",
+            },
+          ],
+          seenBy: [],
+          date: new Date(),
+        });
     }
   };
 
@@ -128,7 +150,32 @@ export default function Home() {
       setDbActions(db_actions.data.actions);
       setDbActiveUsers(db_active_users.data.activeUsers);
       setPastDetection(db_past_detections.data.detections);
-    } catch (e) {}
+      localErrorRemoveCode(1);
+    } catch (e) {
+      if (e.message == "Network Error")
+        localErrorAdd({
+          _id : `${new Date().toLocaleDateString()}_${new Date().getTime()}`,
+          notification_type: "error",
+          title: "PHS Web Server Error",
+          message:
+            "PHS Web Server is not responding or possible not running, try restarting phs. Read description about error code on manual",
+          additional: {
+            error_code: 1,
+            severity: "high",
+            error_log: `PHS Web Server - ${e.message}`,
+          },
+          priority: 0,
+          links: [
+            {
+              link: "http://localhost:3001/",
+              link_mode: false,
+              link_short: "/",
+            },
+          ],
+          seenBy: [],
+          date: new Date(),
+        });
+    }
   };
 
   useEffect(() => {
@@ -137,8 +184,7 @@ export default function Home() {
     var loader = setInterval(async () => {
       if (exited) return;
       setStamp(stmp);
-      console.log("Render", stmp);
-      phs_init();
+      phs_core_init();
       init();
     }, 2000);
 
@@ -209,72 +255,27 @@ export default function Home() {
         )}
 
         {/** MONITORING LAYOUT */}
-        { SYSSTATE.status > -1 && timeOutCount < 3 && SYSSTATE.status !== 3 && (
+        {!isDown && SYSSTATE.status !== 3 && (
           <div className="relative pb-4">
             {/* layout 0 - tripple */}
             {viewMode === 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 w-full">
-                {/* normal */}
-                <div className="min-h-12">
-                  <img
-                    className="w-full outline outline-1 outline-base-100 rounded-sm"
-                    src={`http://${PI_IP}:8000/normal_feed`}
-                  />
-                </div>
-                {/* thermal */}
-                <div className="min-h-12">
-                  <img
-                    className="w-full outline outline-1 outline-base-100 rounded-sm"
-                    src={`http://${PI_IP}:8000/thermal_feed`}
-                  />
-                </div>
-                {/* annotation */}
-                <div className="min-h-12">
-                  <img
-                    className="w-full outline outline-1 outline-base-100 rounded-sm"
-                    src={`http://${PI_IP}:8000/annotate_feed`}
-                  />
-                </div>
-              </div>
+              <Suspense fallback={`Loading...`}>
+                <Stream_Triple />
+              </Suspense>
             )}
 
             {/* layout 1 - dual */}
             {viewMode === 1 && (
-              <div className="md:grid md:grid-cols-2 w-full">
-                {/* normal */}
-                <div className="min-h-12">
-                  <img
-                    className="w-full outline outline-1 outline-base-100 rounded-sm"
-                    src={`http://${PI_IP}:8000/normal_feed`}
-                  />
-                </div>
-                {/* thermal */}
-                <div className="min-h-12">
-                  <img
-                    className="w-full outline outline-1 outline-base-100 rounded-sm"
-                    src={`http://${PI_IP}:8000/thermal_feed`}
-                  />
-                </div>
-              </div>
+              <Suspense fallback={`Loading...`}>
+                <Stream_Dual />
+              </Suspense>
             )}
 
             {/* layout 2 - merged */}
             {viewMode === 2 && (
-              <div
-                className="relative"
-                style={{ height: "calc(100vh * 0.70)" }}
-              >
-                <img
-                  style={{ height: "calc(100vh * 0.70)" }}
-                  className="w-full object-fill absolute outline outline-1 outline-base-200 rounded-sm left-0 top-0"
-                  src={`http://${PI_IP}:8000/normal_feed`}
-                />
-                <img
-                  style={{ height: "calc(100vh * 0.70)" }}
-                  className="w-full object-fill saturate-100 absolute left-0 top-0 opacity-60"
-                  src={`http://${PI_IP}:8000/thermal_feed`}
-                />
-              </div>
+              <Suspense fallback={`Loading...`}>
+                <Stream_Merge />
+              </Suspense>
             )}
           </div>
         )}
@@ -301,11 +302,18 @@ export default function Home() {
                 <div className="shadow-lg rounded-2xl card bg-base-100 w-full">
                   <div className="p-4 flex items-center justify-start">
                     <GiPig className="w-7 h-7 text-pink-200" />
-                    <p className="ml-2 font-bold text-md">{SYSSTATE.pig_count} Pig On Frame</p>
+                    <p className="ml-2 font-bold text-md">
+                      {SYSSTATE.pig_count} Pig On Frame
+                    </p>
                   </div>
                   <div className="mx-4 mb-4 flex justify-between itms-center">
-                    <p className="text-success">{SYSSTATE.pig_count - SYSSTATE.stressed_pigcount} Normal</p>
-                    <p className="text-error"> {SYSSTATE.stressed_pigcount} Heat Stress </p>
+                    <p className="text-success">
+                      {SYSSTATE.pig_count - SYSSTATE.stressed_pigcount} Normal
+                    </p>
+                    <p className="text-error">
+                      {" "}
+                      {SYSSTATE.stressed_pigcount} Heat Stress{" "}
+                    </p>
                   </div>
                 </div>
               </div>
