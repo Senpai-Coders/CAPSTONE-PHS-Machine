@@ -2,18 +2,13 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Loading from "../loading";
 
-import {
-  RebootConfirm,
-  ShutdownConfirm,
-  ResetConfirm,
-  InfoCustom,
-} from "../modals";
+import { RebootConfirm, ShutdownConfirm, ResetConfirm } from "../modals";
 
 import axios from "axios";
 
 import { VscDebugConsole } from "react-icons/vsc";
 
-import { FiHardDrive } from "react-icons/fi";
+import { FiHardDrive, FiZapOff } from "react-icons/fi";
 import { MdAutoDelete } from "react-icons/md";
 import { AiFillStop } from "react-icons/ai";
 import { BiNetworkChart, BiReset } from "react-icons/bi";
@@ -21,6 +16,8 @@ import { BsGear, BsLayoutThreeColumns } from "react-icons/bs";
 import { TiWarningOutline } from "react-icons/ti";
 import { SiWeightsandbiases } from "react-icons/si";
 import { RiTempColdFill } from "react-icons/ri";
+import { FaStopCircle } from "react-icons/fa";
+import { BsBootstrapReboot } from "react-icons/bs";
 
 import {
   bytesToMegaBytes,
@@ -64,6 +61,8 @@ const phsSettings = ({
   const [divCol, setDivCol] = useState(1);
   const [divRow, setDivRow] = useState(1);
 
+  const [PHS_NAME, setPHS_NAME] = useState("");
+
   useEffect(() => {
     if (hasChanges) return;
     setDivCol(divisionCount.col);
@@ -80,10 +79,55 @@ const phsSettings = ({
     setPerc(getPercentUsage(Size, Used));
   }, [storageInfo]);
 
+  useEffect(() => {
+    setPHS_NAME(identity.value.server_name);
+  }, [identity]);
+
   const getUserData = async () => {
     const usrData = await getMyData();
     setUserData(usrData);
     setCanEdit(usrData.role > 1);
+  };
+
+  const updatePhsName = async () => {
+    const toast_id = toast.loading("Updating PHS name...", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+    try {
+      const phs_identity = await axios.post("/api/phs/config/aimodels", {
+        mode: 1,
+        search: {
+          category: "config",
+          config_name: "identity",
+        },
+        changes: {
+          value: {
+            ...identity.value,
+            server_name: PHS_NAME,
+          },
+        },
+      });
+      toast.update(toast_id, {
+        render: "Done!",
+        type: "success",
+        isLoading: false,
+        autoClose: true,
+      });
+      location.reload();
+    } catch (e) {
+      toast.update(toast_id, {
+        render: "Failed saving changes",
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
+    }
   };
 
   useEffect(() => {
@@ -348,9 +392,33 @@ const phsSettings = ({
       <div className="mt-4 mx-1 md:mx-2 rounded-md p-4 md:p-4 outline  bg-base-100 shadow-sm outline-1 outline-base-300">
         {/** Simple Control & Status */}
 
-        <p className="font-inter font-medium mb-2 text-lg md:text-xl">
-          System State
-        </p>
+        <p className="font-inter font-medium mb-2 text-lg md:text-xl">System</p>
+
+        <div className="form-control mt-2 md:mt-0">
+          <div className="input-group">
+            <input
+              type="text"
+              value={PHS_NAME}
+              onChange={(e) => {
+                // setSearchId(e.target.value);
+                setPHS_NAME(e.target.value);
+              }}
+              placeholder="Set PHS Name"
+              className="input w-full input-bordered"
+            />
+            <button
+              onClickCapture={() => updatePhsName()}
+              disabled={
+                identity.value.server_name === PHS_NAME || PHS_NAME.length === 0
+              }
+              onClick={() => {}}
+              className="btn "
+            >
+              Update
+            </button>
+          </div>
+        </div>
+
         <div
           className={`grid grid-cols-1 w-full ${
             state === -2 || state === 3 ? "opacity-50" : ""
@@ -483,6 +551,40 @@ const phsSettings = ({
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="flex justify-evenly mt-4">
+          <button
+            onClick={async () => {
+              if (state == -1) return;
+              try {
+                const updateState = await axios.get(
+                  `http://${PI_IP}:8000/emergencyStop`
+                );
+              } catch (e) {
+                console.log("err ", e);
+              }
+            }}
+            disabled={state < 0 || state === 3}
+            className="btn btn-warning my-1 w-1/3"
+          >
+            <FaStopCircle className="w-4 h-4 text-error mr-2" />
+            Emergency Stop
+          </button>
+          <button
+            onClick={() => setSelectedModal(-2)}
+            className="btn my-1 btn-error w-1/3"
+          >
+            <FiZapOff className="w-4 h-4 mr-2" />
+            Shutdown PHS
+          </button>
+          <button
+            onClick={() => setSelectedModal(-3)}
+            className="btn my-1 btn-active w-1/3"
+          >
+            <BsBootstrapReboot className="w-4 h-4 mr-2" />
+            Reboot PHS
+          </button>
         </div>
       </div>
 
@@ -720,35 +822,6 @@ const phsSettings = ({
 
         <div className="divider"></div>
 
-        <div className="flex items-center justify-start mb-2">
-          <div className="p-2 rounded-xl bg-base-300 mr-2">
-            <FiHardDrive className="w-6 h-6" />
-          </div>
-          <p className="text-lg">Storage</p>
-        </div>
-
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center">
-            <div className="flex flex-col">
-              <p className="">
-                {used} GB used out of {size} Gb ({perc.toFixed(1)}%)
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <progress
-          className="mx-2 progress progress-primary"
-          value={used}
-          max={size}
-        ></progress>
-        <p className="text-warning text-xs md:text-sm my-2">
-          If the storage get's too small, PHS will stop saving detections & you
-          must delete some detection records to free up storage space
-        </p>
-        <div className="divider"></div>
-        {updating === "autodelete" && <Loading />}
-
         <div className="mt-2 card ">
           <div className="card-body p-2">
             <div className="md:flex items-center justify-between">
@@ -914,6 +987,33 @@ const phsSettings = ({
         </div>
         <div className="divider"></div>
 
+        <div className="flex items-center justify-start mb-2">
+          <div className="p-2 rounded-xl bg-base-300 mr-2">
+            <FiHardDrive className="w-6 h-6" />
+          </div>
+          <p className="text-lg">Storage</p>
+        </div>
+
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center">
+            <div className="flex flex-col">
+              <p className="">
+                {used} GB used out of {size} Gb ({perc.toFixed(1)}%)
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <progress
+          className="mx-2 progress progress-primary"
+          value={used}
+          max={size}
+        ></progress>
+        <p className="text-warning text-xs md:text-sm my-2">
+          If the storage get's too small, PHS will stop saving detections & you
+          must delete some detection records to free up storage space
+        </p>
+
         <div className="mt-2 card ">
           <div className="card-body p-2">
             <div className="md:flex items-center justify-between">
@@ -941,6 +1041,8 @@ const phsSettings = ({
             </div>
           </div>
         </div>
+        {updating === "autodelete" && <Loading />}
+
         <div className="divider"></div>
 
         <div className="mt-2 card ">
