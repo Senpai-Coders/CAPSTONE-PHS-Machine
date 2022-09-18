@@ -552,7 +552,7 @@ const phsSettings = ({
             </div>
           </div>
         </div>
-
+        <div className="divider" />
         <div className="flex justify-evenly mt-4">
           <button
             onClick={async () => {
