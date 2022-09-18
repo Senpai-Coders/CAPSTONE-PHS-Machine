@@ -1,1 +1,17 @@
-[]
+[
+    {
+        "_id": "2022-09-18 17:28:02.722488-LOCAL",
+        "notification_type": "error",
+        "title": "PHS Core Database Server Timeout",
+        "message": "PHS will not be able to function without the configurations inside the database. Restart PHS to possibly start the database, or read more info about the error code on the manual",
+        "additional": {
+            "error_code": 2,
+            "severity": "high",
+            "error_log": "Error : 'Yolo_Weights'"
+        },
+        "priority": 0,
+        "links": [],
+        "seenBy": [],
+        "date": "2022-09-18 17:28:02.722561"
+    }
+]

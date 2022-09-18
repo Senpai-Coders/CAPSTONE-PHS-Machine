@@ -8,6 +8,8 @@ import cv2
 import logging
 import math
 
+import requests
+
 from cameras.cam_normal import Cam_Norm
 from cameras.cam_thermal import cam_therm
 
@@ -41,7 +43,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 font = cv2.FONT_HERSHEY_SIMPLEX
 
 YOLO_DIR = os.path.join('models','Yolov5')
-WEIGHTS_DIR = os.path.join('models','weights','best.pt')
+WEIGHTS_DIR = ""
+PHS_CNN_DIR = ""
 
 EXITING = False
 
@@ -62,6 +65,7 @@ EMERGENCY_STOP=False
 #Identifies if PHS should use AI else use temperature threshold instead
 DETECTION_MODE=False
 TEMPERATURE_THRESHOLD=38.5
+AUTODELETE=False
 
 # For PHS Area Tracking & Action Location
 GRID_COL=1
@@ -106,15 +110,15 @@ def deleteErrorCode ( code ):
 
 def readError():
     try:
-        f = open('../phsmachine_web/error-logs.json', 'r')
+        f = open('../phsmachine_web/public/logs/error-logs.json', 'r')
         f.close()
     except:
-        with open('../phsmachine_web/error-logs.json', 'w+', encoding='utf-8') as f:
+        with open('../phsmachine_web/public/logs/error-logs.json', 'w+', encoding='utf-8') as f:
             json.dump([], f, ensure_ascii=False, indent=4 )
             f.close()
 
     try:
-        f = open('../phsmachine_web/error-logs.json')
+        f = open('../phsmachine_web/public/logs/error-logs.json')
         data = json.load(f)
         return data
     except:
@@ -125,6 +129,7 @@ try:
     deleteErrorCode(2)
 except Exception as e:
     errorWrite({
+        "_id" : f'{datetime.now()}-LOCAL',
         "notification_type" : "error",
         "title": "PHS Core Database Error",
         "message": "PHS Core Database is not responding or possible not running, try restarting phs. Read description about error code on manual",
@@ -709,7 +714,7 @@ def isDarkScene(image):
     L = L/np.max(L)
     res = np.mean(L) < thresh
     if res:
-        print(f"📹 Camera Seems seing very 🌃 dark scene.{np.mean(L)} gastug di ako makakita 😣")
+        print(f"📹 Camera Seems seing very 🌃 dark scene.{np.mean(L)}")
     else:
         print(f"📹 Camera seems seing👀 fine.{np.mean(L)}")
     return res
@@ -782,7 +787,7 @@ def gen_thermal():
             THERM_STREAM_UP = THERM_STREAM_CHECK
 
 def loadDbConfig():
-    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP, DETECTION_MODE, TEMPERATURE_THRESHOLD, GRID_COL, GRID_ROW
+    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP, DETECTION_MODE, TEMPERATURE_THRESHOLD, GRID_COL, GRID_ROW, AUTODELETE, WEIGHTS_DIR, PHS_CNN_DIR
     
     try:
         relays = list(DB_CONFIGS.find({ "category" : "relays" }))
@@ -791,6 +796,9 @@ def loadDbConfig():
 
         detectionMode = DB_CONFIGS.find_one({"category" : "config", "config_name" : "DetectionMode"})
         phs_grid_divisions = DB_CONFIGS.find_one({"category" : "config", "config_name" : "divisions"})
+        phs_autodelete = DB_CONFIGS.find_one({"category" : "config", "config_name" : "storageAutoDelete"})
+
+        phs_identity = DB_CONFIGS.find_one({"category" : "config", "config_name" : "identity"})
         
         newUpdateStamp = updateStamp['value'] 
         hasNewUpdateStamp = False
@@ -804,6 +812,9 @@ def loadDbConfig():
             with lock:
                 GRID_COL = phs_grid_divisions['value']['col']
                 GRID_ROW = phs_grid_divisions['value']['row']
+                AUTODELETE = phs_autodelete['value']
+                WEIGHTS_DIR = os.path.join(phs_identity['value']['Yolo_Weights']['path'])
+                PHS_CNN_DIR = os.path.join(phs_identity['value']['Heat_Stress_Weights']['path'])
 
         if hasNewUpdateStamp :
             with lock:
@@ -822,6 +833,7 @@ def loadDbConfig():
         deleteErrorCode(2)
     except Exception as e:
         errorWrite({
+            "_id" : f'{datetime.now()}-LOCAL',
             "notification_type" : "error",
             "title": "PHS Core Database Server Timeout",
             "message": "PHS will not be able to function without the configurations inside the database. Restart PHS to possibly start the database, or read more info about the error code on the manual",
@@ -836,6 +848,11 @@ def loadDbConfig():
             "date" : f'{datetime.now()}',
         })
 
+    try:
+        if AUTODELETE : x = requests.post("http://localhost:3000/api/autoDelete")
+    except Exception as e:
+        print(e)
+
 def process(raw):
     try:
         raw.shape = (24,32)
@@ -844,7 +861,7 @@ def process(raw):
     except Exception as e: print("🚩 Can't Processs this raw thermal",e)
         
 def start_server():
-    global Yolov5_PHD, PHS_CNN, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL
+    global Yolov5_PHD, PHS_CNN, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL, WEIGHTS_DIR, PHS_CNN_DIR
 
     print("⏳ Starting PHS ")
     
@@ -869,10 +886,10 @@ def start_server():
     
     print("⏳ Pulling Configs From DB")
     loadDbConfig()
-
+    print('Done Config')
     RAW_THERMAL = np.zeros((24*32,))        
     try:
-        print("⏳ Loading Yolo V5 ")
+        print("⏳ Loading Yolo V5 ->",WEIGHTS_DIR)
         Yolov5_PHD = torch.hub.load(
                 YOLO_DIR,
                 'custom',
@@ -885,6 +902,7 @@ def start_server():
         deleteErrorCode(4)
     except Exception as e:
         errorWrite({
+        "_id" : f'{datetime.now()}-LOCAL',
         "notification_type" : "error",
         "title": "PHS Core Yolo AI failed to load",
         "message": "PHS will not identify pig because the Yolo model was not loaded successfully, PHS will not be able to detect pig. Please check the manual for fix.",
@@ -900,13 +918,14 @@ def start_server():
         })
         print("ERROR LOADING PHS YOLO V5",e)
 
-    print("⏳ Loading PHS Heat Stress CNN")
+    print("⏳ Loading PHS Heat Stress CNN -> ", PHS_CNN_DIR)
     try:
-        PHS_CNN = tf.keras.models.load_model(os.path.join('models','mai_Net.h5'))
+        PHS_CNN = tf.keras.models.load_model(PHS_CNN_DIR)
         print("✅ Loaded PHS Heat Stress CNN!")
         deleteErrorCode(5)
     except Exception as e:
         errorWrite({
+        "_id" : f'{datetime.now()}-LOCAL',
         "notification_type" : "error",
         "title": "PHS Core Yolo AI failed to load",
         "message": "PHS will not identify pig because the Yolo model was not loaded successfully, PHS will not be able to detect pig. Please check the manual for fix.",
