@@ -18,7 +18,7 @@ export const appendToFSUrl = (path) => {
   return fileServerUrl + path;
 };
 
-export const notify = (prevNotifications, notifyObject) => {
+export const notify = (notifyObject) => {
   if (!("Notification" in window)) {
     alert("This browser does not support desktop notification");
   } else if (Notification.permission === "granted") {
@@ -27,10 +27,6 @@ export const notify = (prevNotifications, notifyObject) => {
       data: {},
       icon: "pig.png",
     });
-    localStorage.setItem(
-      "notified",
-      JSON.stringify([...prevNotifications, notifyObject._id])
-    );
   } else if (Notification.permission !== "denied") {
     Notification.requestPermission().then((permission) => {
       if (permission === "granted") {
@@ -39,10 +35,6 @@ export const notify = (prevNotifications, notifyObject) => {
           data: {},
           icon: "pig.png",
         });
-        localStorage.setItem(
-          "notified",
-          JSON.stringify([...prevNotifications, notifyObject._id])
-        );
       }
     });
   }
@@ -58,7 +50,8 @@ export const localErrorLoad = () => {
   return localError;
 };
 
-export const localErrorAdd = (error_obj) => {
+export const localErrorAdd = (error_objj) => {
+  let error_obj = { _id : `${new Date().toLocaleDateString()}_${new Date().getTime()}-LOCAL`, ...error_objj}
   if (!localStorage) return;
   var localError = JSON.parse(localStorage.getItem("local-errors"));
   var exist = false;

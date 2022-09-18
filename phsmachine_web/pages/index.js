@@ -110,7 +110,6 @@ export default function Home() {
       SETSYSSTATE({ ...SYSSTATE, status: -2 });
       if (e.message == "Network Error")
         localErrorAdd({
-          _id : `${new Date().toLocaleDateString()}_${new Date().getTime()}`,
           notification_type: "error",
           title: "PHS Core Error",
           message:
@@ -154,7 +153,6 @@ export default function Home() {
     } catch (e) {
       if (e.message == "Network Error")
         localErrorAdd({
-          _id : `${new Date().toLocaleDateString()}_${new Date().getTime()}`,
           notification_type: "error",
           title: "PHS Web Server Error",
           message:
