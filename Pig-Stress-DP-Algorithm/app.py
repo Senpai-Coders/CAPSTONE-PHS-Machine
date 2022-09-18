@@ -65,7 +65,8 @@ EMERGENCY_STOP=False
 #Identifies if PHS should use AI else use temperature threshold instead
 DETECTION_MODE=False
 TEMPERATURE_THRESHOLD=38.5
-AUTODELETE=False
+AUTODELETE= True
+CANSAVE= True
 
 # For PHS Area Tracking & Action Location
 GRID_COL=1
@@ -509,7 +510,44 @@ def detectHeatStress():
         else:
             time.sleep(4.5)
 
+@app.route("/testFunc", methods=['GET', 'POST'])
+def testFunc():
+    
+    return {"message" : "ok"}, 200
+
 def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_normal, croped_thermal, croped_thermal_raw, total_pig, sub_info, o_min_temp, o_avg_temp, o_max_temp, Actions_did):
+    global CANSAVE
+
+    if not CANSAVE:
+        DetectionNotification = dict({
+            "notification_type" : "detection",
+            "title" : "Heat Stress Detected",
+            "message" : f" {len(croped_normal)} Pig(s) stressed. Detection record ID is {detection_insert.inserted_id}, you can view more info about this detection on the link below. The system will use the defined actions for heat stress event to releave pig temperature",
+            "priority": 0,
+            "links" : [
+                    {
+                    "link" : "",
+                    "link_short": f"/detection_details?_id={detection_insert.inserted_id}",
+                    "link_mode": True 
+                    }],
+            "seenBy" : [],
+            "date" : datetime.today()
+            })
+
+
+        emailContent =  {
+              "type" : 3,
+              "template_content": {
+                "heat_stress_count" : len(croped_normal),
+                "action_count" : len(Actions_did),
+                "detection_id" : "No ID, data not save -> error storage usage exceed 95%"
+              }
+          }
+        x = requests.post('http://localhost:3000/api/sendMail', json=emailContent)
+
+        DB_NOTIFICATION.insert_one(DetectionNotification)
+        return
+
     try:
         path1 = f"../phsmachine_web/public/detection/Detection-{stmp}"
         path2 = f"../phsmachine_web/public/detection/Detection-{stmp}/Target"
@@ -578,17 +616,24 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
             "priority": 0,
             "links" : [
                     {
-                    "link" : "","link_short": f"/detection_details?_id={detection_insert.inserted_id}",
+                    "link" : "",
+                    "link_short": f"/detection_details?_id={detection_insert.inserted_id}",
                     "link_mode": True 
                     }],
             "seenBy" : [],
             "date" : datetime.today()
             })
-        
-        print("TYPE", type(DetectionNotification))
-
         DB_NOTIFICATION.insert_one(DetectionNotification)
-        print("✅ Done Creating Notification 👌")
+        
+        emailContent =  {
+              "type" : 1,
+              "template_content": {
+                "heat_stress_count" : len(croped_normal),
+                "action_count" : len(Actions_did),
+                "detection_id" : f"{detection_insert.inserted_id}"
+              }
+          }
+        x = requests.post('http://localhost:3000/api/sendMail', json=emailContent)
 
     except Exception as e: print("🚩 Can't Save : err 👉 ",e)
 
@@ -787,8 +832,7 @@ def gen_thermal():
             THERM_STREAM_UP = THERM_STREAM_CHECK
 
 def loadDbConfig():
-    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP, DETECTION_MODE, TEMPERATURE_THRESHOLD, GRID_COL, GRID_ROW, AUTODELETE, WEIGHTS_DIR, PHS_CNN_DIR
-    
+    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP, DETECTION_MODE, TEMPERATURE_THRESHOLD, GRID_COL, GRID_ROW, AUTODELETE, WEIGHTS_DIR, PHS_CNN_DIR, CANSAVE
     try:
         relays = list(DB_CONFIGS.find({ "category" : "relays" }))
         actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
@@ -799,6 +843,9 @@ def loadDbConfig():
         phs_autodelete = DB_CONFIGS.find_one({"category" : "config", "config_name" : "storageAutoDelete"})
 
         phs_identity = DB_CONFIGS.find_one({"category" : "config", "config_name" : "identity"})
+
+        phs_identity_next = requests.get('http://192.168.1.8:3000/api/connectivity')
+        phs_identity_next = phs_identity_next.json()
         
         newUpdateStamp = updateStamp['value'] 
         hasNewUpdateStamp = False
@@ -815,6 +862,7 @@ def loadDbConfig():
                 AUTODELETE = phs_autodelete['value']
                 WEIGHTS_DIR = os.path.join(phs_identity['value']['Yolo_Weights']['path'])
                 PHS_CNN_DIR = os.path.join(phs_identity['value']['Heat_Stress_Weights']['path'])
+                CANSAVE = phs_identity_next['storage']['canSave']
 
         if hasNewUpdateStamp :
             with lock:
@@ -849,7 +897,7 @@ def loadDbConfig():
         })
 
     try:
-        if AUTODELETE : x = requests.post("http://localhost:3000/api/autoDelete")
+        if AUTODELETE and not CANSAVE : x = requests.post("http://localhost:3000/api/autoDelete")
     except Exception as e:
         print(e)
 
