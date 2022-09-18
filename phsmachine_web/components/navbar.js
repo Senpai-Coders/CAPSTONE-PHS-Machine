@@ -76,7 +76,7 @@ const navbar = ({ toggled, setToggled, userToggled, setUserToggled }) => {
     }catch(e){ router.push("auth/signin") }
     const PHS_INFO = await axios.get("/api/connectivity");
     setPhsInfo(PHS_INFO.data);
-    setUserData(usrData);
+    setUserData(usrData.data);
     setLoading(false);
   };
 
