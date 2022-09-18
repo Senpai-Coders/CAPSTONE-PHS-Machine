@@ -184,18 +184,6 @@ export const CtoF = (C) => {
   return C.toFixed(2);
 };
 
-export let API = axios.create({ baseURL: "", withCredentials: true });
-API.defaults.withCredentials = true;
-
-export const amISignedIn = async () => {
-  try {
-    const resp = await API.post("/api/phs/checkCreds");
-    return true;
-  } catch (e) {
-    console.log("err");
-  }
-  return false;
-};
 
 export const translateSystemState = (status) => {
   if (status === 0) return "Detecting";
