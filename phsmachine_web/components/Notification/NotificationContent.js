@@ -14,6 +14,7 @@ import {
   localErrorLoad,
   localErrorDeleteAll,
   localErrorSetReadAll,
+  notify,
 } from "../../helpers/index";
 
 import axios from "axios";
@@ -134,6 +135,22 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
       joined = joined.sort((a, b) => {
         return new Date(a.date) < new Date(b.date) ? 1 : -1;
       });
+
+      // TODO Push Notify
+      let doneNotify = JSON.parse(localStorage.getItem("notified"));
+      let pushedNotify = doneNotify ? doneNotify : [];
+
+      for (var x = 0; x < joined.length; x++) {
+        let found = false;
+        for (var y = 0; y < pushedNotify.length; y++)
+          if (pushedNotify[y] === joined[x]._id) {
+            found = true;
+            y = pushedNotify.length;
+          }
+        if(!found){
+            notify(pushedNotify, joined[x])
+        }
+      }
 
       setNotifications(joined);
       setUnreadCount(request.data.unreads + localUnread);

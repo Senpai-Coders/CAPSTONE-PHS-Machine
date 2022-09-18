@@ -18,7 +18,11 @@ const handler = async (req, res) => {
   let IP = GET_SERVER_IP();
 
   const serverInfo = await configs.findOne({ config_name: "identity" });
-  const storage = await checkDiskSpace("/");
+  const storageInfo = await checkDiskSpace("/");
+  let storage = { 
+    ...storageInfo,
+    perc : (storageInfo.size - storageInfo.free) / storageInfo.size * 100
+  }
 
   res.status(200).json({
     connectivity: "ok",

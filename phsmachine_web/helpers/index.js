@@ -12,9 +12,41 @@ export const mbToGB = (mb) => mb / 1000;
 
 export const PI_IP = process.env.PI_IP;
 
-export const fileServerUrl = `http://${process.env.PI_IP}:8001`
+export const fileServerUrl = `http://${process.env.PI_IP}:8001`;
 
-export const appendToFSUrl = ( path ) => { return fileServerUrl + path }
+export const appendToFSUrl = (path) => {
+  return fileServerUrl + path;
+};
+
+export const notify = (prevNotifications, notifyObject) => {
+  if (!("Notification" in window)) {
+    alert("This browser does not support desktop notification");
+  } else if (Notification.permission === "granted") {
+    const notification = new Notification(notifyObject.title, {
+      body: notifyObject.message,
+      data: {},
+      icon: "pig.png",
+    });
+    localStorage.setItem(
+      "notified",
+      JSON.stringify([...prevNotifications, notifyObject._id])
+    );
+  } else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        const notification = new Notification(notifyObject.title, {
+          body: notifyObject.message,
+          data: {},
+          icon: "pig.png",
+        });
+        localStorage.setItem(
+          "notified",
+          JSON.stringify([...prevNotifications, notifyObject._id])
+        );
+      }
+    });
+  }
+};
 
 export const localErrorLoad = () => {
   if (!localStorage) return;
@@ -58,10 +90,12 @@ export const localErrorSetReadAll = (id) => {
 };
 
 export const localErrorRemoveCode = (error_code) => {
-    if (!localStorage) return;
-    var localError = JSON.parse(localStorage.getItem("local-errors")).filter((ers)=>ers.additional.error_code !== error_code);
-    localStorage.setItem("local-errors", JSON.stringify(localError));
-  };
+  if (!localStorage) return;
+  var localError = JSON.parse(localStorage.getItem("local-errors")).filter(
+    (ers) => ers.additional.error_code !== error_code
+  );
+  localStorage.setItem("local-errors", JSON.stringify(localError));
+};
 
 export const localErrorDeleteAll = () => {
   localStorage.setItem("local-errors", JSON.stringify([]));

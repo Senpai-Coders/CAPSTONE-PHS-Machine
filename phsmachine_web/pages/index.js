@@ -103,13 +103,14 @@ export default function Home() {
       SETSYSSTATE(phs_response.data.state);
       setIsDown(false);
       setTimeOutCount(0);
-      localErrorDeleteAll(0);
+      localErrorRemoveCode(0);
     } catch (e) {
       setIsDown(true);
       setTimeOutCount(timeOutCount + 1);
       SETSYSSTATE({ ...SYSSTATE, status: -2 });
       if (e.message == "Network Error")
         localErrorAdd({
+          _id : `${new Date().toLocaleDateString()}_${new Date().getTime()}`,
           notification_type: "error",
           title: "PHS Core Error",
           message:
@@ -149,10 +150,11 @@ export default function Home() {
       setDbActions(db_actions.data.actions);
       setDbActiveUsers(db_active_users.data.activeUsers);
       setPastDetection(db_past_detections.data.detections);
-      localErrorDeleteAll(1);
+      localErrorRemoveCode(1);
     } catch (e) {
       if (e.message == "Network Error")
         localErrorAdd({
+          _id : `${new Date().toLocaleDateString()}_${new Date().getTime()}`,
           notification_type: "error",
           title: "PHS Web Server Error",
           message:

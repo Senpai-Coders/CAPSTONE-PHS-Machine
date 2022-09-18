@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { API } from "../../helpers";
 
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { GoInfo } from "react-icons/go";
@@ -25,7 +24,7 @@ const signin = () => {
     try {
       e.preventDefault();
       setLoading(true);
-      const response = await API.post("/api/authentication/signin", {
+      const response = await axios.post("/api/authentication/signin", {
         username,
         password,
       });

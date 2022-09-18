@@ -7,7 +7,7 @@ import {
 import dbConnect from "../../../../configs/dbConnection";
 const cookie = require("cookie");
 const configs = require("../../../../models/configs");
-import logger from "../../../../services/logger";
+import logger from "../../../../services/logger"
 
 dbConnect();
 
@@ -60,6 +60,7 @@ const handler = async (req, res) => {
       hasUpdate(editorDetails);
     } else if (mode === -1) {
       const del = await configs.deleteOne({ config_name });
+      logger.info(`User ${editorDetails.user_name}(${editorDetails._id}) -> Deleted relay -> ${config_name}`)
       hasUpdate(editorDetails);
     } else if (mode === 3) {
       const rels = await configs.find({ category: "relays" });
@@ -68,7 +69,7 @@ const handler = async (req, res) => {
 
     res.status(200).json({ message: "Ok" });
   } catch (e) {
-    logger.error(e.stack);
+    logger.error(e.stack)
     res.status(500).json({
       message: "Internal Server Error 😥",
     });

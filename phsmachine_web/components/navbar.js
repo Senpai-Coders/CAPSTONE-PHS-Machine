@@ -9,7 +9,6 @@ import { IoPeopleSharp, IoBookSharp } from "react-icons/io5";
 import { GoGear, GoSignOut } from "react-icons/go";
 import { GiHamburgerMenu } from "react-icons/gi";
 import {
-  API,
   amISignedIn,
   getMyData,
   getRole,
@@ -36,7 +35,7 @@ const navbar = ({ toggled, setToggled, userToggled, setUserToggled }) => {
   const signout = async () => {
     try {
       console.log("signedout");
-      const response = await API.post("/api/authentication/signout");
+      const response = await axios.post("/api/authentication/signout");
       router.push("/auth/signin");
     } catch (e) {
       console.log("err", e);
