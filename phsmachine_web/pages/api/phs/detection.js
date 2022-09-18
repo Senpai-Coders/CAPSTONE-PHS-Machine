@@ -1,6 +1,4 @@
 import dbConnect from "../../../configs/dbConnection";
-const cookie = require("cookie");
-const users = require("../../../models/user");
 const detections = require("../../../models/thermal_detection");
 let ObjectId = require("mongoose").Types.ObjectId;
 const fs = require("fs");
