@@ -186,7 +186,7 @@ const handler = async (req, res) => {
     }
 
     res.status(200).json({ status: "Reset 👌" });
-    //TODO UNCOMMENT let reboot = exec_command("sudo reboot now");
+    let reboot = exec_command("sudo reboot now");
   } catch (e) {
     console.log(e);
   }
