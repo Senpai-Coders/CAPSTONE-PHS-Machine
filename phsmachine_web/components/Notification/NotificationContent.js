@@ -297,6 +297,7 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
                     link.link.length > 0 ? (
                       <a
                         className="link mt-2 truncate flex items-center"
+                        key={id}
                         target="blank"
                         href={getLink(
                           link.link,
