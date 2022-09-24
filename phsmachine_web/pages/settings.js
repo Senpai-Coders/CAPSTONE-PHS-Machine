@@ -79,10 +79,8 @@ const configuration = () => {
       setCoreActions(phs_actions.data.actions);
       setCoreRelays(phs_relays.data);
       SETSYSSTATE(phs_response.data.state);
-      //setIsDown(false);
       setLoadA(true);
     } catch (e) {
-      //setIsDown(true);
       SETSYSSTATE({ ...SYSSTATE, status: -2 });
       setLoadA(true);
     }

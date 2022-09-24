@@ -12,6 +12,7 @@ const Relays = ({ relays, coreRelays, state, fireOnChange }) => {
   const [merged, setMerged] = useState([]);
 
   const emit = async (relay_name, new_state) => {
+    console.log("Emitting ", new_state)
     let toast_id = toast.loading(`Updating State`, {
       position: "top-right",
       autoClose: 5000,
@@ -82,8 +83,6 @@ const Relays = ({ relays, coreRelays, state, fireOnChange }) => {
       merge[x] = { ...merge[x], ...new_fields };
     }
 
-    merge.sort((a, b) => Number(b.state) - Number(a.state));
-
     setMerged(merge);
   }, [relays]);
 
@@ -106,7 +105,7 @@ const Relays = ({ relays, coreRelays, state, fireOnChange }) => {
           </thead>
           <tbody>
             {merged.map((rel, i) => (
-              <tr>
+              <tr key={i}>
                 <td>
                   <div className="flex items-center space-x-3">
                     <div className="avatar">
@@ -134,12 +133,12 @@ const Relays = ({ relays, coreRelays, state, fireOnChange }) => {
                       <input
                         type="checkbox"
                         onChange={(e) => {
-                          emit(rel.config_name, e.target.value);
+                          emit(rel.config_name, e.target.checked);
                         }}
                         className={`toggle ${
                           rel.state ? "text-accent" : "opacity-40"
                         }`}
-                        checked={!rel.state ? false : rel.state}
+                        checked={rel.state}
                       />
                       <span
                         className={`ml-2 label-text ${
