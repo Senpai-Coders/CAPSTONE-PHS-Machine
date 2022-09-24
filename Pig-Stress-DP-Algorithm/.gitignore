@@ -272,3 +272,5 @@ testcodes
 #test_img
 phstst.py
 model_test
+
+public/logs/*

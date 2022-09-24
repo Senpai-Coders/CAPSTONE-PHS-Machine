@@ -36,7 +36,7 @@ class relay:
     def toggle(self,STATE):
         self.STATE= self.translateState(STATE)
         GPIO.output(self.GPIO_PIN,self.STATE)
-        print(f"🔹 Relay Toggled : {self.NAME} -> {self.GPIO_PIN} -> {self.STATE} -> {self.stateToWord(self.STATE)}")
+        #print(f"🔹 Relay Toggled : {self.NAME} -> {self.GPIO_PIN} -> {self.STATE} -> {self.stateToWord(self.STATE)}")
 
     def __str__(self):
             return f"🔹 PIN: {self.GPIO_PIN}, Name: {self.NAME}, State: {self.STATE}, {self.stateToWord(self.STATE)}\nDescription: { self.DESCRIPTION }"

@@ -9,10 +9,13 @@ class a_controller:
                 state = False
 
             Action = action(
+                category=A['category'],
                 config_name=A['config_name'],
                 description=A['description'],
-                # todo targets & duration
+                targets=A['value']['targets'],
                 caller=A['value']['caller'],
+                forceActivate=A['value']['forceActivate'],
+                eventLocation=A['value']['eventLocation'],
                 state=state
             )
 
@@ -29,6 +32,11 @@ class a_controller:
         for A in self.actions:
             if A.config_name == config_name:
                 A.toggle(state)
+
+    def setElapsed(self, config_name, sec):
+        for A in self.actions:
+            if A.config_name == config_name:
+                A.setElapsed(sec)
 
     def offAll(self):
         for A in self.actions:
@@ -48,10 +56,13 @@ class a_controller:
                 state = False
 
             Action = action(
+                category=A['category'],
                 config_name=A['config_name'],
                 description=A['description'],
-                duration=A['value']['duration'],
-                target_relay=A['value']['target_relay'],
+                targets=A['value']['targets'],
+                caller=A['value']['caller'],
+                forceActivate=A['value']['forceActivate'],
+                eventLocation=A['value']['eventLocation'],
                 state=state
             )
 
