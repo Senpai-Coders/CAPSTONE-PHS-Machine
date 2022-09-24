@@ -7,7 +7,7 @@ import axios from "axios";
 
 import { PI_IP } from "../../helpers";
 
-const Relays = ({ relays, coreRelays, state, onSave }) => {
+const Relays = ({ relays, coreRelays, state, fireOnChange }) => {
   const [loading, setLoading] = useState(false);
   const [merged, setMerged] = useState([]);
 
@@ -42,7 +42,7 @@ const Relays = ({ relays, coreRelays, state, onSave }) => {
     try {
       const toggle = await axios.post(`http://${PI_IP}:8000/emitRelay`, {
         relay_name,
-        new_state,
+        state : new_state,
       });
       toast.update(toast_id, {
         render: `${relay_name} toggled to ${new_state}`,
@@ -50,6 +50,7 @@ const Relays = ({ relays, coreRelays, state, onSave }) => {
         isLoading: false,
         autoClose: true,
       });
+      fireOnChange()
     } catch (e) {
       toast.update(toast_id, {
         render: `Unable To Toggle ${new_state}`,
