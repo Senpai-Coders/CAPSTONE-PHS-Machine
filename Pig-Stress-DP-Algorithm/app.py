@@ -253,8 +253,9 @@ def emitRelay():
     ReqBod = request.get_json(force=True)
     target = ReqBod['relay_name']
     state = ReqBod['state']
-    LOGGER.info(f"Manual Relay Activation")
+    LOGGER.info(f"Manual Relay Activation {target} -> {state}")
     R_CONTROLLER.toggleRelay(target,state)
+
     response = Response( mongoResToJson({"status":200, "message":"Ok "}) , content_type="application/json")
     return response, 200
 
@@ -728,7 +729,9 @@ def updateJobs():
     while not EXITING:
         time.sleep(0.2)
         S_STATE = SYSTEM_STATE['status']
-        if EMERGENCY_STOP or S_STATE == 2 or S_STATE == -1:
+        if S_STATE == 2:
+            ACTION_STATE.offAll()
+        if EMERGENCY_STOP or S_STATE == -1:
             SYSTEM_STATE['jobs'] = []
             R_CONTROLLER.offAll()
             ACTION_STATE.offAll()
