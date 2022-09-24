@@ -8,7 +8,7 @@ import axios from "axios";
 
 import { VscDebugConsole } from "react-icons/vsc";
 
-import { FiHardDrive, FiZapOff } from "react-icons/fi";
+import { FiHardDrive, FiZapOff, FiRefreshCcw } from "react-icons/fi";
 import { MdAutoDelete } from "react-icons/md";
 import { AiFillStop } from "react-icons/ai";
 import { BiNetworkChart, BiReset } from "react-icons/bi";
@@ -391,10 +391,12 @@ const phsSettings = ({
 
       <div className="mt-4 mx-1 md:mx-2 rounded-md p-4 md:p-4 outline  bg-base-100 shadow-sm outline-1 outline-base-300">
         {/** Simple Control & Status */}
+        <div className="flex justify-between items-center">
+            <p className="font-inter font-medium mb-2 text-lg md:text-xl">System</p>
+            <button onClick={()=>fireOnChange()} className="btn btn-sm btn-active ">Refresh <FiRefreshCcw className="ml-2"/></button>
+        </div>
 
-        <p className="font-inter font-medium mb-2 text-lg md:text-xl">System</p>
-
-        <div className="form-control mt-2 md:mt-0">
+        <div className="form-control mt-2 md:mt-6">
           <div className="input-group">
             <input
               type="text"
@@ -561,8 +563,10 @@ const phsSettings = ({
                 const updateState = await axios.get(
                   `http://${PI_IP}:8000/emergencyStop`
                 );
+                fireOnChange()
               } catch (e) {
                 console.log("err ", e);
+                fireOnChange()
               }
             }}
             disabled={state < 0 || state === 3}
