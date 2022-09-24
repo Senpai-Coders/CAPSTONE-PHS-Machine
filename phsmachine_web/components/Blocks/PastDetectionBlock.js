@@ -1,6 +1,7 @@
 // import { FiHardDrive } from "react-icons/fi";
 import { useRouter } from "next/router";
 import { FaEye } from "react-icons/fa";
+import { appendToFSUrl } from "../../helpers/"
 
 const PastDetectionBlock = ({ pastDetection }) => {
   const router = useRouter();
@@ -25,7 +26,7 @@ const PastDetectionBlock = ({ pastDetection }) => {
             >
               <div className="flex items-center justify-start text-sm">
                 <span className="mx-4">{idx + 1}</span>
-                <img className="h-8 w-8" src={det.img_annotated} />
+                <img className="h-8 w-8" src={appendToFSUrl(det.img_annotated)} />
                 <span className=""></span>
               </div>
               <div

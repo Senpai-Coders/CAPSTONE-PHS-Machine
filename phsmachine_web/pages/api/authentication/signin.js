@@ -56,7 +56,6 @@ const handler = async (req, res) => {
       "Set-Cookie",
       cookie.serialize("authorization", JWT, {
         httpOnly: true,
-        secure: process.env.NODE_ENV !== "development",
         maxAge: Number.parseInt(process.env.EXPIRATION),
         sameSite: "strict",
         path: "/",
