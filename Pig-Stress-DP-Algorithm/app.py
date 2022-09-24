@@ -624,9 +624,9 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
             "priority": 0,
             "links" : [
                     {
-                    "link" : "",
-                    "link_short": f"/detection_details?_id={detection_insert.inserted_id}",
-                    "link_mode": True 
+                        "link" : f"/detection_details?_id={detection_insert.inserted_id}",
+                        "link_short": f"/detection_details?_id={detection_insert.inserted_id}",
+                        "link_mode": True 
                     }],
             "seenBy" : [],
             "date" : datetime.today()
@@ -897,7 +897,13 @@ def loadDbConfig():
                 "error_log": ("Error : {0}".format(str(e)))
             },
             "priority": 0,
-            "links" : [],
+            "links" : [
+                {
+                        "link" : "http://localhost:3001/",
+                        "link_mode" : false,
+                        "link_short" : "/",
+                    }
+            ],
             "seenBy" : [],
             "date" : f'{datetime.now()}',
         })
@@ -974,7 +980,13 @@ def start_server():
             "error_log": ("Error : {0}".format(str(e))),
         },
         "priority": 0,
-        "links" : [],
+        "links" : [
+            {
+                        "link" : "http://localhost:3001/",
+                        "link_mode" : false,
+                        "link_short" : "/",
+                    }
+        ],
         "seenBy" : [],
         "date" : f'{datetime.now()}',
         })
@@ -998,7 +1010,13 @@ def start_server():
             "error_log": ("Error : {0}".format(str(e))),
         },
         "priority": 0,
-        "links" : [],
+        "links" : [
+            {
+                        "link" : "http://localhost:3001/",
+                        "link_mode" : false,
+                        "link_short" : "/",
+                    }
+        ],
         "seenBy" : [],
         "date" : f'{datetime.now()}',
         })
