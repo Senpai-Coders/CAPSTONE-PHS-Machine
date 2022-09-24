@@ -26,6 +26,12 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
   const [notifications, setNotifications] = useState([]);
 
   const markAll = async (notifs) => {
+    
+    if(!userData){
+        toast("Seem's like youre signed out or your info was missing, refresh or sign in again.", {position : "top-right"})
+        return;
+    }
+
     localErrorSetReadAll(userData._id);
 
     let ids = [];
@@ -123,6 +129,7 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
     var audNotify = new Audio("/sounds/notify.mp3");
     var audError = new Audio("/sounds/notify-error.mp3");
     var audRemind = new Audio("/sounds/notify-remind.mp3");
+    var audDetect = new Audio("/sounds/notify-detect.mp3");
 
     try {
       const userD = await getMyData();
@@ -162,7 +169,7 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
             audNotify.play()
           }
 
-          if (joined[x].notification_type === "error") {
+          if (joined[x].notification_type === "error" || joined[x].notification_type === "detection") {
             toast.error(joined[x].title, {
               position: "top-right",
               autoClose: 5000,
