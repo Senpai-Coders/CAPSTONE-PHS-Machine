@@ -9,12 +9,41 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^1.6.1",
+    "@sendgrid/mail": "^7.7.0",
+    "@vespaiach/axios-fetch-adapter": "^0.2.2",
+    "axios": "^0.26.1",
+    "bcryptjs": "^2.4.3",
+    "check-disk-space": "^3.3.1",
+    "cookie": "^0.5.0",
+    "daisyui": "^2.14.3",
+    "echarts-for-react": "^2.0.15-beta.0",
+    "email-validator": "^2.0.4",
+    "es6-template-strings": "^2.0.1",
+    "formidable": "^2.0.1",
+    "framer-motion": "^6.3.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.3.2",
     "next": "12.1.5",
+    "nextjs-cors": "^2.1.1",
     "react": "18.0.0",
-    "react-dom": "18.0.0"
+    "react-calendar": "^3.7.0",
+    "react-compare-slider": "^2.2.0",
+    "react-dom": "18.0.0",
+    "react-icons": "^4.3.1",
+    "react-toastify": "^9.0.8",
+    "socket.io": "^4.5.0",
+    "winston": "^3.8.2",
+    "winston-daily-rotate-file": "^4.7.1",
+    "xlsx": "^0.18.5",
+    "zip-a-folder": "^1.1.5"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.5",
     "eslint": "8.14.0",
-    "eslint-config-next": "12.1.5"
+    "eslint-config-next": "12.1.5",
+    "postcss": "^8.4.12",
+    "prettier": "2.7.1",
+    "tailwindcss": "^3.0.24"
   }
 }
