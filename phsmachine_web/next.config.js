@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 
-const PI_IP 2;
+const PI_IP = 2;
 const IS_PI = true;
 
 const GET_SERVER_IP = () => {
