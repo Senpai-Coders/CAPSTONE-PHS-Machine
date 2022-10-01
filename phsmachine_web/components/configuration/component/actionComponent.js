@@ -248,7 +248,7 @@ const actionComponent = ({
                             onClick={() =>
                               setTargets([
                                 ...targets,
-                                { target_relay: 18, duration: 1 },
+                                { target_relay: 4, duration: 1 },
                               ])
                             }
                             className="mt-2 btn-square btn btn-sm"
@@ -275,25 +275,21 @@ const actionComponent = ({
                               tabIndex="0"
                               className="dropdown-content menu max-h-56 overflow-y-scroll px-3 py-4 shadow backdrop-blur-sm bg-base-100/60 border-b border-l border-r border-base-300 rounded-sm"
                             >
-                              {[
-                                4, 14, 15, 17, 18, 27, 22, 23, 24, 10, 9, 25,
-                                11, 8, 7, 0, 1, 5, 6, 12, 13, 19, 16, 26, 20,
-                                21,
-                              ].map((rel, id) => (
+                              {relayOptions.map((rel, id) => (
                                 <li
                                   tabIndex={i + 1}
                                   key={id}
                                   onClick={() =>
-                                    updateSpecificTarget(idx, true, rel)
+                                    updateSpecificTarget(idx, true, rel.config_name)
                                   }
                                   className={`cursor-pointer duration-100 m-1 snap-center ${
-                                    i.target_relay === rel
+                                    i.target_relay === rel.config_name
                                       ? "bg-base-200 outline outline-1"
                                       : ""
                                   }`}
                                 >
                                   <div className="flex p-4 justify-between">
-                                    <p className="text-md">{rel}</p>
+                                    <p className="text-md">{rel.config_name}</p>
                                   </div>
                                 </li>
                               ))}

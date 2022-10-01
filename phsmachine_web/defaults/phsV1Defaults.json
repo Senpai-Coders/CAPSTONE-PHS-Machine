@@ -102,7 +102,7 @@
           "targets": [
             {
               "target_relay": "4",
-              "duration": 50
+              "duration": 5
             }
           ],
           "caller": "Heat Stress Detector",
@@ -118,7 +118,7 @@
             "targets": [
               {
                 "target_relay": "14",
-                "duration": 50
+                "duration": 5
               }
             ],
             "caller": "Heat Stress Detector",
@@ -134,7 +134,7 @@
             "targets": [
               {
                 "target_relay": "15",
-                "duration": 50
+                "duration": 5
               }
             ],
             "caller": "Heat Stress Detector",
@@ -150,7 +150,7 @@
             "targets": [
               {
                 "target_relay": "18",
-                "duration": 50
+                "duration": 5
               }
             ],
             "caller": "Heat Stress Detector",
@@ -166,7 +166,7 @@
             "targets": [
               {
                 "target_relay": "17",
-                "duration": 50
+                "duration": 5
               }
             ],
             "caller": "Heat Stress Detector",
@@ -182,7 +182,7 @@
             "targets": [
               {
                 "target_relay": "27",
-                "duration": 50
+                "duration": 5
               }
             ],
             "caller": "Heat Stress Detector",
