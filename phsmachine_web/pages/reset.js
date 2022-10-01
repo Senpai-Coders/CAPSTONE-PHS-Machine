@@ -83,15 +83,15 @@ export default function reset() {
   };
 
   useEffect(() => {
-    // let connectChecker = setInterval(async () => {
-    //   try {
-    //     if (started) return;
-    //     const response = await axios.post("/api/connectivity");
-    //     if (started) return;
-    //     router.push("/auth/signin");
-    //   } catch (e) {}
-    // }, 3000);
-    // return () => clearInterval(connectChecker);
+    let connectChecker = setInterval(async () => {
+      try {
+        if (started) return;
+        const response = await axios.post("/api/connectivity");
+        if (started) return;
+        router.push("/auth/signin");
+      } catch (e) {}
+    }, 3000);
+    return () => clearInterval(connectChecker);
   }, []);
 
   return (
