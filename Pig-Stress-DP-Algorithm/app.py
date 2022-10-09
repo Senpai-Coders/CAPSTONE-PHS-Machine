@@ -793,7 +793,7 @@ def activateCategory(old_activate, caller, ForceActivate, Location):
                 new_activated.append(activated)
                 LOGGER.info(f'Activated {action_name} - Location Based {Location}')
                 
-
+    if old_activate is None : return new_activated
     return old_activate + new_activated
 
 def activateJob(targets, action_name, caller):
