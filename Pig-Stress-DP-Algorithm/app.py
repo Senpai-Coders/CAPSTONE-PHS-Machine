@@ -108,7 +108,7 @@ def errorWrite( new_error ):
     if doesExist: return
 
     error_logs.append(new_error)
-    with open('../phsmachine_web/error-logs.json', 'w', encoding='utf-8') as f:
+    with open('../phsmachine_web/public/logs/error-logs.json', 'w', encoding='utf-8') as f:
         json.dump(error_logs, f, ensure_ascii=False, indent=4 )
         f.close()
 
@@ -122,7 +122,7 @@ def deleteErrorCode ( code ):
         if errors['additional']['error_code'] != code:
             toWrite.append(errors)
 
-    with open('../phsmachine_web/error-logs.json', 'w', encoding='utf-8') as f:
+    with open('../phsmachine_web/public/logs/error-logs.json', 'w', encoding='utf-8') as f:
         json.dump(toWrite, f, ensure_ascii=False, indent=4 )
         f.close()
 
