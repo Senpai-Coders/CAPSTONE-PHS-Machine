@@ -4,7 +4,6 @@ import { PI_IP } from "../../helpers";
 const merge = () => {
   const [normal, setNormal] = useState(undefined);
   const [thermal, setThermal] = useState(undefined);
-  const [annotate, setAnnotate] = useState(undefined);
 
   const loadImage = () => {
     try {
@@ -24,13 +23,7 @@ const merge = () => {
         }).catch(function(error) {
         });
 
-        fetch(`http://${PI_IP}:8000/annotate`)
-        .then((response) => response.blob())
-        .then((imageBlob) => {
-          const imageObjectURL = URL.createObjectURL(imageBlob);
-          setAnnotate(imageObjectURL);
-        }).catch(function(error) {
-        });
+
     } catch (e) {}
   };
 
@@ -56,11 +49,7 @@ const merge = () => {
         className="w-full object-fill saturate-100 absolute left-0 top-0 opacity-80"
         src={thermal}
       />
-      <img
-        style={{ height: "calc(100vh * 0.70)" }}
-        className="w-full object-fill absolute left-0 top-0 opacity-60"
-        src={annotate}
-      />
+      
     </div>
   );
 };
