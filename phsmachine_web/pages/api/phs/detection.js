@@ -12,7 +12,7 @@ const handler = async (req, res) => {
   try {
     const { mode, detection_id, updates, path, toExport } = req.body;
     if (mode === 0) {
-      const detData = await detections.find({});
+      const detData = await detections.find({}).sort({cat : -1});
       logger.info("Retrieved all detections");
       return res.status(200).json({ detection_data: detData });
     } else if (mode === 1) {
