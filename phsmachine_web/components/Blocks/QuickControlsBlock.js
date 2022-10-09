@@ -50,13 +50,13 @@ const QuickControlsBlock = ({ state, setSelectedModal }) => {
             />
           </label>
           <label className="label cursor-pointer">
-            <span className="label-text">Disable PHS</span>
+            <span className="label-text">Enable PHS</span>
             <input
               onChange={(e) => {
-                chooseState(state === -1 ? 0 : -1);
+                chooseState(0);
               }}
-              disabled={state === -2 || state === 3}
-              checked={state === -1}
+              disabled={state === -2 || state === 3 || state === 0}
+              checked={state === 0}
               type="checkbox"
               className="toggle toggle-accent"
             />

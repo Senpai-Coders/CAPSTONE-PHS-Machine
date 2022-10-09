@@ -10,6 +10,7 @@ const Actions = ({ actions, relays, fireOnChange, divisionCount }) => {
 
   const [loading, setLoading] = useState(false);
 
+
   useEffect(() => {
     setFActions(actions);
     setLoading(false);

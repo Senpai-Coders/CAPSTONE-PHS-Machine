@@ -460,7 +460,7 @@ const phsSettings = ({
             </div>
           </div>
 
-          <div className="mt-2 card">
+          {/* <div className="mt-2 card">
             <div className="card-body p-2">
               <div className="md:flex items-center justify-between">
                 <div className="mr-4">
@@ -486,7 +486,7 @@ const phsSettings = ({
                 />
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="mt-2 card">
             <div className="card-body p-2">

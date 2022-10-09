@@ -122,7 +122,7 @@ export default function Home() {
           priority: 0,
           links: [
             {
-              link: "http://localhost:3001/",
+              link: `http://${PI_IP}:3001/`,
               link_mode: false,
               link_short: "/",
             },
@@ -253,8 +253,8 @@ export default function Home() {
         )}
 
         {/** MONITORING LAYOUT */}
-        {!isDown && SYSSTATE.status !== 3 && (
-          <div className="relative pb-4">
+        {SYSSTATE.status !== 3 && (
+          <div className="relative flex justify-center pb-4">
             {/* layout 0 - tripple */}
             {viewMode === 0 && (
               <Suspense fallback={`Loading...`}>

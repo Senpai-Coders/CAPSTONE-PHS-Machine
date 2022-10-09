@@ -28,7 +28,9 @@ class cam_therm:
     def _setup_therm_cam(self):
         self.i2c = busio.I2C(board.SCL, board.SDA, frequency=1000000)
         self.mlx = adafruit_mlx90640.MLX90640(self.i2c)
-        self.mlx.refresh_rate = adafruit_mlx90640.RefreshRate.REFRESH_16_HZ 
+        #self.mlx.refresh_rate = adafruit_mlx90640.RefreshRate.REFRESH_16_HZ 
+        #self.mlx.refresh_rate = adafruit_mlx90640.RefreshRate.REFRESH_8_HZ 
+        self.mlx.refresh_rate = adafruit_mlx90640.RefreshRate.REFRESH_4_HZ 
         time.sleep(0.1)
 
     def MINMAXAVG(self):
