@@ -776,8 +776,7 @@ def activateCategory(old_activate, caller, ForceActivate, Location):
         targets = action['value']['targets']
         action_name = action['config_name']
 
-
-        if ForceActivate and forceActivate:
+        if ForceActivate and forceActivate or act_caller == 'Dark Scene Detector':
             if act_caller == caller:
                 if not doesActionNameAlreadyActive(action_name):
                     activated = activateJob(targets, action_name, caller)
