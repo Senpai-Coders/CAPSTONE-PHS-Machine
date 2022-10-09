@@ -7,22 +7,16 @@ import time, socket
 import cv2
 import logging
 import math
-
 import requests
-
 from cameras.cam_normal import Cam_Norm
 from cameras.cam_thermal import cam_therm
-
 from cameras.cam_normal import Cam_Norm
-
 from component.r_controller import r_controller
 from action.a_controller import a_controller
 from cust_utils.utils import mongoResToJson
 import numpy as np
 import pymongo
-
 from pymongo.errors import ConnectionFailure
-
 import atexit
 from flask_cors import CORS
 import os
@@ -35,12 +29,17 @@ import pickle
 import tensorflow as tf
 import json
 import sys
+from signal import signal, SIGTERM, SIGHUP
+from rpi_lcd import LCD
 
 warnings.filterwarnings("ignore") # Warning will make operation confuse!!!
 #tf.get_logger().setLevel(logging.ERROR)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 font = cv2.FONT_HERSHEY_SIMPLEX
+
+_LCD = None
+_SELF_IP = ''
 
 LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)
@@ -266,6 +265,8 @@ def getAvailableRelay():
     res.headers.add("Access-Control-Allow-Origin", "*")
     return res, 200
 
+# STREAM ROUTES
+
 @app.route("/normal_feed")
 def feed_normal():
     global STREAM_REQ_NORM
@@ -290,6 +291,107 @@ def feed_annotate():
     with lock:
         STREAM_REQ_ANNOT = True
     return Response(gen_annotate(), mimetype="multipart/x-mixed-replace; boundary=frame")
+
+def gen_annotate():
+    global IMG_NORMAL_ANNOTATED, ANNOT_STREAM_UP, ANNOT_STREAM_CHECK, STREAM_REQ_ANNOT, lock
+    while STREAM_REQ_ANNOT:
+        with lock:
+            if IMG_NORMAL_ANNOTATED is None or ANNOT_STREAM_CHECK == STREAM_REQ_ANNOT:
+                continue
+            (flag, encodedImage) = cv2.imencode(".jpg", IMG_NORMAL_ANNOTATED)
+            if not flag:
+                continue
+            yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
+            time.sleep(0.1)
+
+def gen_normal():
+    global IMG_NORMAL, NORM_STREAM_UP, NORM_STREAM_CHECK, STREAM_REQ_NORM, lock
+    while STREAM_REQ_NORM:
+        with lock:
+            if IMG_NORMAL is None or NORM_STREAM_CHECK == NORM_STREAM_UP:
+                continue
+            (flag, encodedImage) = cv2.imencode(".jpg", IMG_NORMAL)
+            if not flag:
+                continue
+            time.sleep(0.1)
+            yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
+            NORM_STREAM_UP = NORM_STREAM_CHECK
+
+def gen_thermal():
+    global IMG_THERMAL, THERM_STREAM_UP, THERM_STREAM_CHECK, STREAM_REQ_THERM, lock
+    while STREAM_REQ_THERM:
+        with lock:
+            if IMG_THERMAL is None or THERM_STREAM_CHECK == THERM_STREAM_UP :
+                continue
+            (flag, encodedImage) = cv2.imencode(".jpg", IMG_THERMAL)
+            if not flag:
+                continue
+            time.sleep(0.1)
+            yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
+            THERM_STREAM_UP = THERM_STREAM_CHECK
+
+
+# NON STREAM ROUTS
+
+@app.route("/normal")
+def feed_normal_non_stream():
+    global STREAM_REQ_NORM
+    with lock:
+        STREAM_REQ_NORM = True
+    return Response(gen_normal_non_stream(), mimetype="image/jpeg; boundary=frame")
+    with lock:
+        STREAM_REQ_NORM = False
+
+@app.route("/thermal")
+def feed_thermal_non_stream():
+    global STREAM_REQ_THERM
+    with lock:
+        STREAM_REQ_THERM = True
+    return Response(gen_thermal_non_stream(), mimetype="image/jpeg; boundary=frame")  
+    with lock:
+        STREAM_REQ_THERM = False
+
+@app.route("/annotate")
+def feed_annotate_non_stream():
+    global STREAM_REQ_ANNOT
+    with lock:
+        STREAM_REQ_ANNOT = True
+    return Response(gen_annotate_non_stream(), mimetype="image/jpeg; boundary=frame")
+
+def gen_annotate_non_stream():
+    global IMG_NORMAL_ANNOTATED, ANNOT_STREAM_UP, ANNOT_STREAM_CHECK, STREAM_REQ_ANNOT, lock
+    while STREAM_REQ_ANNOT:
+        with lock:
+            if IMG_NORMAL_ANNOTATED is None or ANNOT_STREAM_CHECK == STREAM_REQ_ANNOT:
+                continue
+            (flag, encodedImage) = cv2.imencode(".jpg", IMG_NORMAL_ANNOTATED)
+            if not flag:
+                continue
+            return bytearray(encodedImage)
+
+def gen_normal_non_stream():
+    global IMG_NORMAL, NORM_STREAM_UP, NORM_STREAM_CHECK, STREAM_REQ_NORM, lock
+    while STREAM_REQ_NORM:
+        with lock:
+            if IMG_NORMAL is None or NORM_STREAM_CHECK == NORM_STREAM_UP:
+                continue
+            (flag, encodedImage) = cv2.imencode(".jpg", IMG_NORMAL)
+            if not flag:
+                continue
+            return bytearray(encodedImage)
+            # return(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
+
+def gen_thermal_non_stream():
+    global IMG_THERMAL, THERM_STREAM_UP, THERM_STREAM_CHECK, STREAM_REQ_THERM, lock
+    while STREAM_REQ_THERM:
+        with lock:
+            if IMG_THERMAL is None or THERM_STREAM_CHECK == THERM_STREAM_UP :
+                continue
+            (flag, encodedImage) = cv2.imencode(".jpg", IMG_THERMAL)
+            if not flag:
+                continue
+            return bytearray(encodedImage)
+
 
 def get_ip_address():
 	"""Find the current IP address of the device"""
@@ -805,44 +907,6 @@ def readCams():
                     THERM_STREAM_CHECK = THERM_STREAM_CHECK + 1
                     NORM_STREAM_CHECK = NORM_STREAM_CHECK + 1                
 
-def gen_annotate():
-    global IMG_NORMAL_ANNOTATED, ANNOT_STREAM_UP, ANNOT_STREAM_CHECK, STREAM_REQ_ANNOT, lock
-    while STREAM_REQ_ANNOT:
-        with lock:
-            if IMG_NORMAL_ANNOTATED is None or ANNOT_STREAM_CHECK == STREAM_REQ_ANNOT:
-                continue
-            (flag, encodedImage) = cv2.imencode(".jpg", IMG_NORMAL_ANNOTATED)
-            if not flag:
-                continue
-            yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
-            time.sleep(0.1)
-
-def gen_normal():
-    global IMG_NORMAL, NORM_STREAM_UP, NORM_STREAM_CHECK, STREAM_REQ_NORM, lock
-    while STREAM_REQ_NORM:
-        with lock:
-            if IMG_NORMAL is None or NORM_STREAM_CHECK == NORM_STREAM_UP:
-                continue
-            (flag, encodedImage) = cv2.imencode(".jpg", IMG_NORMAL)
-            if not flag:
-                continue
-            time.sleep(0.1)
-            yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
-            NORM_STREAM_UP = NORM_STREAM_CHECK
-
-def gen_thermal():
-    global IMG_THERMAL, THERM_STREAM_UP, THERM_STREAM_CHECK, STREAM_REQ_THERM, lock
-    while STREAM_REQ_THERM:
-        with lock:
-            if IMG_THERMAL is None or THERM_STREAM_CHECK == THERM_STREAM_UP :
-                continue
-            (flag, encodedImage) = cv2.imencode(".jpg", IMG_THERMAL)
-            if not flag:
-                continue
-            time.sleep(0.1)
-            yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
-            THERM_STREAM_UP = THERM_STREAM_CHECK
-
 def loadDbConfig():
     global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP, DETECTION_MODE, TEMPERATURE_THRESHOLD, GRID_COL, GRID_ROW, AUTODELETE, WEIGHTS_DIR, PHS_CNN_DIR, CANSAVE
     try:
@@ -885,7 +949,8 @@ def loadDbConfig():
 
         if len(ACTION_STATE.actions) != len(actions):
             ACTION_STATE = a_controller(actions, ACTION_STATE.actions)
-        
+
+        printLcd(statusToString(SYSTEM_STATE['status']), 1);
         deleteErrorCode(2)
     except Exception as e:
         LOGGER.error(f"Error Loading ConfigDb -> {str(e)}")
@@ -930,15 +995,41 @@ def process(raw):
         raw = cv2.flip(raw,1)
         return raw
     except Exception as e: print("🚩 Can't Processs this raw thermal",e)
-        
+
+def safe_exit(signum, frame):
+    exit(1)
+
+def printLcd(content, row):
+    global _LCD, _SELF_IP
+    try:
+        _LCD.text("192.168.1.8:3000", 2)
+        _LCD.text(content, row)
+    except Exception as e:
+        print(e)
+        LOGGER.error('Can\'t print to LCD')
+
+def statusToString ( status ):
+    if status == -1 : return 'Disabled'
+    statuses = ['Detecting', 'Resolving', 'Debugging', 'Connecting']
+    return statuses[status]
+
 def start_server():
-    global Yolov5_PHD, PHS_CNN, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL, WEIGHTS_DIR, PHS_CNN_DIR, LOGGER
+    global _LCD, _SELF_IP, Yolov5_PHD, PHS_CNN, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL, WEIGHTS_DIR, PHS_CNN_DIR, LOGGER
     updateLoggerHandler()
     LOGGER.info('⏳ Starting PHS')
+
+    try:
+        _LCD = LCD()
+        signal(SIGTERM, safe_exit)
+        signal(SIGHUP, safe_exit)
+        printLcd("Starting PHS", 1);
+    except Exception as e:
+        LOGGER.error("SIGTERM, SIGHUP err")
     
     CAM_NORMAL = Cam_Norm()
+    time.sleep(1)
     CAM_THERMAL = cam_therm()
-    time.sleep(0.1)
+    time.sleep(5)
     ACTION_STATE = a_controller((),())
 
     IMG_NORMAL_ANNOTATED = cv2.imread('misc/annotation_init.jpg')
@@ -956,11 +1047,14 @@ def start_server():
     }
     
     LOGGER.info('⏳ Pulling Configs From DB')
+    printLcd("Loading Configs", 1);
     loadDbConfig()
     LOGGER.info('Done Pulling Config')
     RAW_THERMAL = np.zeros((24*32,))        
+
     try:
         LOGGER.info(f"⏳ Loading Yolo V5 -> {WEIGHTS_DIR}")
+        printLcd("Loading Yolo", 1);
         Yolov5_PHD = torch.hub.load(
                 YOLO_DIR,
                 'custom',
@@ -999,6 +1093,7 @@ def start_server():
     try:
         PHS_CNN = tf.keras.models.load_model(PHS_CNN_DIR)
         LOGGER.info("Loaded PHS Heat Stress CNN!")
+        printLcd("Loading PHS CNN", 1);
 
         deleteErrorCode(5)
     except Exception as e:
@@ -1025,7 +1120,6 @@ def start_server():
         })
         LOGGER.error(f"ERROR LOADING PHS Heat Stress CNN : {str(e)} ")
 
-
     camThread = threading.Thread(target=readCams)
     camThread.daemon = True
     camThread.start()
@@ -1045,25 +1139,26 @@ def start_server():
 
     ip=get_ip_address()
     port=8000
+    _SELF_IP = f'{ip}:{port}'
     print(f'📍 Server can be found at http://{ip}:{port} or http://localhost:{port}')
     LOGGER.info(f'📍 Server can be found at http://{ip}:{port} or http://localhost:{port}')
     
 
     log = logging.getLogger('werkzeug')
     log.disabled = True
-
     app.run(host=ip, port=port, debug=False, threaded=True, use_reloader=False)
 
 @atexit.register
 def goodbye():
-    global R_CONTROLLER, EXITING
+    global _LCD, R_CONTROLLER, EXITING
     with lock:
         EXITING = True
     print("\n")
     LOGGER.info(f"⏾ PHS Turning OFF")
+    _LCD.text("PHS Turned Off", 1)
+    _LCD.text("Good Bye...", 2)
     if R_CONTROLLER is not None:
         R_CONTROLLER.offAll()
     LOGGER.info(f"💤 Good Bye ....")
-
 if __name__ == '__main__':
 	start_server()
