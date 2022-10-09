@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { dateToWord, tempParser } from "../helpers";
 
 import { RiCloseLine } from "react-icons/ri";
-import { FaTemperatureHigh, FaTemperatureLow } from "react-icons/fa";
+import { FaTemperatureHigh, FaTemperatureLow, FaLongArrowAltRight } from "react-icons/fa";
 import { GiPowerLightning } from "react-icons/gi";
 import { BsFolderFill, BsFillTrash2Fill } from "react-icons/bs";
 import { TiInfoLarge } from "react-icons/ti";
@@ -345,7 +345,7 @@ const _detection_details = () => {
             onClick={() => {
               setMerge(!merge);
             }}
-            className="btn btn-sm btn-active"
+            className="btn btn-sm btn-active mt-4"
           >
             <BiMerge className="text-xl mr-2" /> Merge View
           </button>
@@ -433,6 +433,45 @@ const _detection_details = () => {
                 </div>
               </div>
             ))}
+          </div>
+          
+          <p className="mt-8 text-xl">Actions performed</p>
+
+          <div className="mt-4 max-h-screen overflow-scroll w-full">
+            <table className="table w-full">
+              <thead>
+                <tr>
+                  <th>Action Name</th>
+                  <th>Event Caller</th>
+                  <th>Relay Used &amp; Duration</th>
+                </tr>
+              </thead>
+              <tbody>
+                {detection.actions.map((act, idx) => (
+                  <tr key={idx}>
+                    <td>
+                      <div>
+                        <div className="font-bold">{act[0].action_name}</div>
+                      </div>
+                    </td>
+                    <td>
+                      <span className="">{act[0].caller}</span>
+                    </td>
+                    <td>
+                      <div className="flex flex-wrap gap-2">
+                        {act.map((rel, idxx) => (
+                          <div key={idxx} className="px-4 py-2 bg-base-300 rounded-3xl gap-2 flex items-center">
+                            <span>Relay : {rel.relay_name}</span>
+                            <FaLongArrowAltRight className="text-xl"/>
+                            <span className="">{rel.duration}s</span>
+                          </div>
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
           <div className="my-8 text-sm alert shadow-lg">
