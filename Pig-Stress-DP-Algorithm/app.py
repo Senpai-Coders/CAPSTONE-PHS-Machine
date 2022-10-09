@@ -108,7 +108,7 @@ def errorWrite( new_error ):
     if doesExist: return
 
     error_logs.append(new_error)
-    with open('../phsmachine_web/error-logs.json', 'w', encoding='utf-8') as f:
+    with open('../phsmachine_web/public/logs/error-logs.json', 'w', encoding='utf-8') as f:
         json.dump(error_logs, f, ensure_ascii=False, indent=4 )
         f.close()
 
@@ -122,7 +122,7 @@ def deleteErrorCode ( code ):
         if errors['additional']['error_code'] != code:
             toWrite.append(errors)
 
-    with open('../phsmachine_web/error-logs.json', 'w', encoding='utf-8') as f:
+    with open('../phsmachine_web/public/logs/error-logs.json', 'w', encoding='utf-8') as f:
         json.dump(toWrite, f, ensure_ascii=False, indent=4 )
         f.close()
 
@@ -671,7 +671,7 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
                 cv2.imwrite(f"{path2}/pig-thermal-unprocessed{x}.png", croped_thermal_raw[i])
             
             rdata = croped_thermal_raw[i]
-            rdata = cv2.resize(rdata, (24,32))
+            rdata = cv2.resize(rdata, (32,24))
 
             DATA_DICT['data']['breakdown'].append(
                 {
@@ -776,8 +776,7 @@ def activateCategory(old_activate, caller, ForceActivate, Location):
         targets = action['value']['targets']
         action_name = action['config_name']
 
-
-        if ForceActivate and forceActivate:
+        if ForceActivate and forceActivate or act_caller == 'Dark Scene Detector':
             if act_caller == caller:
                 if not doesActionNameAlreadyActive(action_name):
                     activated = activateJob(targets, action_name, caller)

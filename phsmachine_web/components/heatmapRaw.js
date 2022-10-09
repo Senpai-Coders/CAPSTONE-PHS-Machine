@@ -15,19 +15,16 @@ const heatmapRaw = ({ data, chartName, textColor, title, subTitle }) => {
       draggable: true,
       progress: undefined,
     });
-    let y = 0,
-      Y = data.length - 1;
+    let y = 0, Y = data.length - 1;
     let newData = [];
     while (Y >= 0) {
-      let X = 0,
-        x = 0;
-      while (X < data[Y].length) {
-        newData.push([y, x, Math.trunc(data[Y][X])]);
-        X += 1;
-        x += 1;
+      let X = 0;
+      while  ( X < data[Y].length - 1){
+        newData.push([X, y, Math.trunc(data[Y][X])]);
+        X++;
       }
-      Y -= 1;
-      y += 1;
+      Y--;
+      y++;
     }
     toast.success(`Done mapping ${newData.length} temperature points`, {
       position: "top-right",
