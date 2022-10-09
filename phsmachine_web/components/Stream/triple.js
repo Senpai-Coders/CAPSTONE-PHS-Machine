@@ -43,6 +43,7 @@ const triple = () => {
       clearInterval(loader);
     };
   }, []);
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 w-full">
       {/* normal */}
