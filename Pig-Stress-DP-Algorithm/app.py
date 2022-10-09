@@ -671,7 +671,7 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
                 cv2.imwrite(f"{path2}/pig-thermal-unprocessed{x}.png", croped_thermal_raw[i])
             
             rdata = croped_thermal_raw[i]
-            rdata = cv2.resize(rdata, (24,32))
+            rdata = cv2.resize(rdata, (32,24))
 
             DATA_DICT['data']['breakdown'].append(
                 {
