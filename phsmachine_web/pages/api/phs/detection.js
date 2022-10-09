@@ -70,15 +70,12 @@ const handler = async (req, res) => {
         const update = await detections.deleteOne({
           _id: new ObjectId(ids[x].id),
         });
-        fs.rmdir(
-          `public/detection/${ids[x].path}`,
-          { recursive: true },
-          (err) => {
-            logger.error(`Failed To Delete, ${err.stack}`);
-          }
-        );
+        try{
+            const delRecrd = await fs.promises.rmdir(`public/detection/${ids[x].path}`, { recursive: true });
+        }catch(e){
+            logger.error(`Failed To Delete, ${e.stack}`);
+        }
       }
-
       return res.status(200).json({ message: "Deleted!" });
     } else if (mode === 4) {
       const { toExcel, toCsv, toZip } = toExport;
