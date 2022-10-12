@@ -38,6 +38,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 
+_SELFPATH_ = os.path.dirname(__file__)
 _LCD = None
 _SELF_IP = ''
 
@@ -48,7 +49,7 @@ FORMATTER = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s')
 def updateLoggerHandler():
     global LOGGER, FORMATTER
     LOGGER.handlers.clear()
-    file_handler = logging.FileHandler('../phsmachine_web/public/logs/core/{:%Y-%m-%d}.log'.format(datetime.now()))
+    file_handler = logging.FileHandler(os.path.join(_SELFPATH_, '../phsmachine_web/public/logs/core/{:%Y-%m-%d}.log'.format(datetime.now())))
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(FORMATTER)
     LOGGER.addHandler(file_handler)
@@ -59,7 +60,7 @@ def updateLoggerHandler():
 
     LOGGER.addHandler(stdout_handler)
 
-YOLO_DIR = os.path.join('models','Yolov5')
+YOLO_DIR = os.path.join(_SELFPATH_, 'models','Yolov5')
 WEIGHTS_DIR = ""
 PHS_CNN_DIR = ""
 
@@ -108,7 +109,7 @@ def errorWrite( new_error ):
     if doesExist: return
 
     error_logs.append(new_error)
-    with open('../phsmachine_web/public/logs/error-logs.json', 'w', encoding='utf-8') as f:
+    with open(os.path.join(_SELFPATH_,'../phsmachine_web/public/logs/error-logs.json'), 'w', encoding='utf-8') as f:
         json.dump(error_logs, f, ensure_ascii=False, indent=4 )
         f.close()
 
@@ -122,21 +123,21 @@ def deleteErrorCode ( code ):
         if errors['additional']['error_code'] != code:
             toWrite.append(errors)
 
-    with open('../phsmachine_web/public/logs/error-logs.json', 'w', encoding='utf-8') as f:
+    with open(os.path.join(_SELFPATH_,'../phsmachine_web/public/logs/error-logs.json'), 'w', encoding='utf-8') as f:
         json.dump(toWrite, f, ensure_ascii=False, indent=4 )
         f.close()
 
 def readError():
     try:
-        f = open('../phsmachine_web/public/logs/error-logs.json', 'r')
+        f = open(os.path.join(_SELFPATH_,'../phsmachine_web/public/logs/error-logs.json'), 'r')
         f.close()
     except:
-        with open('../phsmachine_web/public/logs/error-logs.json', 'w+', encoding='utf-8') as f:
+        with open(os.path.join(_SELFPATH_,'../phsmachine_web/public/logs/error-logs.json'), 'w+', encoding='utf-8') as f:
             json.dump([], f, ensure_ascii=False, indent=4 )
             f.close()
 
     try:
-        f = open('../phsmachine_web/public/logs/error-logs.json')
+        f = open(os.path.join(_SELFPATH_,'../phsmachine_web/public/logs/error-logs.json'))
         data = json.load(f)
         return data
     except:
@@ -907,7 +908,7 @@ def readCams():
                     NORM_STREAM_CHECK = NORM_STREAM_CHECK + 1                
 
 def loadDbConfig():
-    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP, DETECTION_MODE, TEMPERATURE_THRESHOLD, GRID_COL, GRID_ROW, AUTODELETE, WEIGHTS_DIR, PHS_CNN_DIR, CANSAVE
+    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP, DETECTION_MODE, TEMPERATURE_THRESHOLD, GRID_COL, GRID_ROW, AUTODELETE, WEIGHTS_DIR, PHS_CNN_DIR, CANSAVE, _SELFPATH_
     try:
         relays = list(DB_CONFIGS.find({ "category" : "relays" }))
         actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
@@ -932,8 +933,8 @@ def loadDbConfig():
                 GRID_COL = phs_grid_divisions['value']['col']
                 GRID_ROW = phs_grid_divisions['value']['row']
                 AUTODELETE = phs_autodelete['value']
-                WEIGHTS_DIR = os.path.join(phs_identity['value']['Yolo_Weights']['path'])
-                PHS_CNN_DIR = os.path.join(phs_identity['value']['Heat_Stress_Weights']['path'])
+                WEIGHTS_DIR = os.path.join(_SELFPATH_, phs_identity['value']['Yolo_Weights']['path'])
+                PHS_CNN_DIR = os.path.join(_SELFPATH_, phs_identity['value']['Heat_Stress_Weights']['path'])
 
         if hasNewUpdateStamp :
             with lock:
