@@ -1,11 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 clear
 echo "NOTE: IF ANY ERROR OCCURS PLEASE EMAIL jsparagas1@student.fatima.edu.ph with the screenshot of the error\n\n"
 
 echo "*** Welcome to PHS INSTALLER Part A ***\n\n"
 echo "We're about to install/download the following\n"
 sleep 1
-echo "-Dependency Technologies\n -MongoDb \n -Node \n -MiniConda \n -Git\n"
+echo "-Dependency Technologies\n -MongoDb \n -NVM \n -MiniConda \n -Git\n"
 sleep 1
 echo "-ADVANCE\n -Set i2c speed to 1mhz\n\nDownload PHS Files\n -PHS repository\n\n"
 
@@ -33,6 +33,11 @@ fi
 #Set i2c baudrate to 1mhz
 sudo -u $USER echo "i2c_arm_baudrate=1000000" >> "/boot/config.txt"
 
+# Install Node
+sudo -u $USER apt update
+sudo -u $USER apt install -y curl
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+
 # Install MongoDB
 wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo -u $USER apt-key add -
 curl -s -L https://www.mongodb.org/static/pgp/server-4.4.asc | sudo -u $USER apt-key add -
@@ -52,8 +57,13 @@ sh "$_CURDIR_/Installers/Miniforge3-Linux-aarch64.sh"
 # CREATING CONDA ENVIRONMENT
 echo "Creating Conda Environment"
 sleep 1
-conda create -y --name pig-stress-env python=3.8 pip
-conda activate pig-stress-env
-conda info
+conda init bash
 
-echo "please RESTART to apply changes & run Installer-B.sh to complete PHS Installation"
+echo "please RESTART to apply changes & run Installer-B.sh to continue PHS Installation"
+
+read -p "Do you want to restart? [y/n] : " _USR_INPUT_ 
+if [ "$_USR_INPUT_" = "n" ]; then
+  echo "\n\nInstallation Cancelled"
+  sudo shutdown now
+  exit 0
+fi
