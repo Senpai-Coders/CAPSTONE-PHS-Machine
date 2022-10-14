@@ -2,7 +2,7 @@
 
 ![logo](_media/pig.png)
 
-# PHS <small>v1.0</small>
+# PHS <small>4.12.2</small>
 
 > PHS Documentation
 
