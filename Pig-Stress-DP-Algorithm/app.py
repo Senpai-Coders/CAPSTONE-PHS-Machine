@@ -1159,6 +1159,7 @@ def goodbye():
     _LCD.text("PHS Turned Off", 1)
     _LCD.text("Good Bye...", 2)
     _LCD.clear()
+    time.sleep(1)
     if R_CONTROLLER is not None:
         R_CONTROLLER.offAll()
     LOGGER.info(f"💤 Good Bye ....")

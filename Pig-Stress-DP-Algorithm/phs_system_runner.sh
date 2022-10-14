@@ -17,4 +17,4 @@ fi
 
 pip list
 
-/home/phs/miniforge3/bin/python "$_SYSTEM_DIR_/app.py"
+/home/$USER/miniforge3/bin/python "$_SYSTEM_DIR_/app.py"
