@@ -1022,7 +1022,7 @@ def start_server():
         _LCD = LCD()
         signal(SIGTERM, safe_exit)
         signal(SIGHUP, safe_exit)
-        lcd.clear()
+        _LCD.clear()
         printLcd("Starting PHS", 1);
     except Exception as e:
         LOGGER.error("SIGTERM, SIGHUP err")
@@ -1158,6 +1158,7 @@ def goodbye():
     LOGGER.info(f"⏾ PHS Turning OFF")
     _LCD.text("PHS Turned Off", 1)
     _LCD.text("Good Bye...", 2)
+    _LCD.clear()
     if R_CONTROLLER is not None:
         R_CONTROLLER.offAll()
     LOGGER.info(f"💤 Good Bye ....")
