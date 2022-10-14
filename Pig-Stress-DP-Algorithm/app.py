@@ -908,7 +908,7 @@ def readCams():
                     NORM_STREAM_CHECK = NORM_STREAM_CHECK + 1                
 
 def loadDbConfig():
-    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP, DETECTION_MODE, TEMPERATURE_THRESHOLD, GRID_COL, GRID_ROW, AUTODELETE, WEIGHTS_DIR, PHS_CNN_DIR, CANSAVE, _SELFPATH_
+    global R_CONTROLLER, SYSTEM_STATE, ACTION_STATE, UPDATE_STAMP, DETECTION_MODE, TEMPERATURE_THRESHOLD, GRID_COL, GRID_ROW, AUTODELETE, WEIGHTS_DIR, PHS_CNN_DIR, CANSAVE, _SELFPATH_, _SELF_IP
     try:
         relays = list(DB_CONFIGS.find({ "category" : "relays" }))
         actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
@@ -978,7 +978,7 @@ def loadDbConfig():
 
     try:
         with lock:
-            phs_identity_next = requests.get('http://192.168.1.8:3000/api/connectivity')
+            phs_identity_next = requests.get(f'http://{_SELF_IP}:3000/api/connectivity')
             phs_identity_next = phs_identity_next.json()
             CANSAVE = phs_identity_next['storage']['canSave']
     except Exception as e: print('',end='')
@@ -1002,7 +1002,7 @@ def safe_exit(signum, frame):
 def printLcd(content, row):
     global _LCD, _SELF_IP
     try:
-        _LCD.text("192.168.1.8:3000", 2)
+        _LCD.text(_SELF_IP, 2)
         _LCD.text(content, row)
     except Exception as e:
         print(e)
