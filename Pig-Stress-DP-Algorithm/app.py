@@ -1022,6 +1022,7 @@ def start_server():
         _LCD = LCD()
         signal(SIGTERM, safe_exit)
         signal(SIGHUP, safe_exit)
+        lcd.clear()
         printLcd("Starting PHS", 1);
     except Exception as e:
         LOGGER.error("SIGTERM, SIGHUP err")

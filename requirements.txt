@@ -12,8 +12,9 @@ rpi-lcd
 pandas==1.4.2
 PyYAML==6.0
 tqdm==4.64.0
-torch==1.11.0
+torch
 torchvision
+torchaudio
 seaborn==0.11.2
 ipython==8.3.0
 ipython-genutils==0.2.0
