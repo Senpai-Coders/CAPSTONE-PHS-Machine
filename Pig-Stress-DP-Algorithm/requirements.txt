@@ -14,3 +14,10 @@ tensorflow-io
 pillow
 scikit-learn
 keras
+wandb
+jupyterlab
+notebook
+voila
+albumentations
+tqdm
+urllib3

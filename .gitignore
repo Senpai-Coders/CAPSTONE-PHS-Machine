@@ -1,0 +1,9 @@
+phsmachine_web/public/detection
+phsmachine_web/public/images
+phsmachine_web/public/exports
+phsmachine_web/public/logs
+
+apikey.json
+
+#web certs
+cert/*

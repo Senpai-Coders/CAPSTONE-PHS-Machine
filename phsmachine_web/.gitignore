@@ -30,6 +30,14 @@ yarn-error.log*
 
 # vercel
 .vercel
+
 # ignore pig datas
-/public/detection
-/public/images
+public/detection
+public/images
+public/exports
+public/logs
+
+apikey.json
+
+#web certs
+cert/*
