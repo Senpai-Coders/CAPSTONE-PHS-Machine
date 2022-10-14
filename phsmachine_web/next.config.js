@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 
-const PI_IP = 2;
+const PI_IP = 3;
 const IS_PI = true;
 
 const GET_SERVER_IP = () => {
@@ -35,6 +35,7 @@ module.exports = {
       : "mongodb+srv://Jervx:helloworld@capstone.nv1cu.mongodb.net/?retryWrites=true&w=majority",
     JWT_SCRT: "ErenJaeger",
     PI_IP : IP,
+    sendGrid : process.env.sendGrid,
     EXPIRATION: 86400, //Seconds
   },
 };

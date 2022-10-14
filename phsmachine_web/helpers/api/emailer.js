@@ -1,11 +1,10 @@
 const sgMail = require("@sendgrid/mail");
 const fs = require('fs');
-import { readJsonFile } from "./"
 import logger from "../../services/logger"
 
 const setApiKey = async () => { 
-    const key = await readJsonFile("apikey.json")
-    sgMail.setApiKey(key.sendGrid);
+    const key = process.env.sendGrid;
+    sgMail.setApiKey(key);
 }
 
 setApiKey()
