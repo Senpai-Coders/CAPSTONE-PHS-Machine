@@ -31,10 +31,13 @@ yarn-error.log*
 # vercel
 .vercel
 
-# Pub Folder
-/public/normal
-/public/thermal
-/public/thermal_raw
-/public/detection
-/public/images
-/public/detection/*
+# ignore pig datas
+public/detection
+public/images
+public/exports
+public/logs
+
+apikey.json
+
+#web certs
+cert/*

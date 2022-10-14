@@ -1,4 +1,12 @@
-phsmachine_web/public/logs/*
-phsmachine_web/apikey.json
+phsmachine_web/public/detection
+phsmachine_web/public/images
+phsmachine_web/public/exports
+phsmachine_web/public/logs
+phsmachine_docu/lib
+phsmachine_docu/node_modules
+phsmachine_docu/packages
 
-**/*.whl
+apikey.json
+
+#web certs
+cert/*
