@@ -1,12 +1,10 @@
-![logo](_media/icon.svg)
+<!-- _coverpage.md -->
 
-# docsify <small>4.12.2</small>
+![logo](_media/pig.png)
 
-> A magical documentation site generator.
+# PHS <small>v1.0</small>
 
-- Simple and lightweight
-- No statically built html files
-- Multiple themes
+> PHS Documentation
 
-[GitHub](https://github.com/docsifyjs/docsify/)
-[Getting Started](#docsify)
+[GitHub](https://github.com/Senpai-Coders/CAPSTONE-PHS-Machine.git)
+[Get Started](#PHS)

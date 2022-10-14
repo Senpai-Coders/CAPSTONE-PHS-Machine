@@ -21,19 +21,13 @@ if (isSSR) {
   </body>
   </html>`,
     config: {
-      name: 'docsify',
-      repo: 'docsifyjs/docsify',
-      basePath: 'https://docsify.js.org/',
+      name: 'PHS',
+      repo: 'Senpai-Coders/CAPSTONE-PHS-Machine',
       loadNavbar: true,
       loadSidebar: true,
       subMaxLevel: 3,
       auto2top: true,
-      alias: {
-        '/de-de/changelog': '/changelog',
-        '/zh-cn/changelog': '/changelog',
-        '/changelog':
-          'https://raw.githubusercontent.com/docsifyjs/docsify/master/CHANGELOG'
-      }
+      alias: {}
     },
     path: './'
   })
@@ -47,7 +41,7 @@ if (isSSR) {
 }
 
 const params = {
-  port: 3000,
+  port: 3001,
   watch: ['lib', 'docs', 'themes'],
   middleware
 }
