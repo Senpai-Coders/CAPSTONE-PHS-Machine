@@ -1002,7 +1002,7 @@ def safe_exit(signum, frame):
 def printLcd(content, row):
     global _LCD, _SELF_IP
     try:
-        _LCD.text(_SELF_IP, 2)
+        _LCD.text(f"{_SELF_IP}:3000", 2)
         _LCD.text(content, row)
     except Exception as e:
         print(e)
@@ -1140,7 +1140,7 @@ def start_server():
 
     ip=get_ip_address()
     port=8000
-    _SELF_IP = f'{ip}:{port}'
+    _SELF_IP = f'{ip}'
     print(f'📍 Server can be found at http://{ip}:{port} or http://localhost:{port}')
     LOGGER.info(f'📍 Server can be found at http://{ip}:{port} or http://localhost:{port}')
     
