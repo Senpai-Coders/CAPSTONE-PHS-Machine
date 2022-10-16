@@ -42,7 +42,7 @@ const handler = async (req, res) => {
       },
       links: [
         {
-          link: "https://www.youtube.com/watch?v=fFPgZiS7uAM&list=RDfFPgZiS7uAM&start_radio=1&ab_channel=PAINHUB",
+          link: `http://${PI_IP}:3001/`,
           link_short: "",
           link_mode: false,
         },
