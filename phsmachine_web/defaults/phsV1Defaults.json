@@ -317,11 +317,6 @@
         "message": "Welcome to phs, you can read the full manual bellow to get started.",
         "priority": 0,
         "links": [
-          {
-            "link": "http://localhost:3001/",
-            "link_short": "/",
-            "link_mode": false
-          }
         ],
         "seenBy": [],
         "date": ""

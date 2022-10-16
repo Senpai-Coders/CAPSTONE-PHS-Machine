@@ -165,7 +165,7 @@ export default function Home() {
           priority: 0,
           links: [
             {
-              link: "http://localhost:3001/",
+              link: `http://${PI_IP}:3001/`,
               link_mode: false,
               link_short: "/",
             },

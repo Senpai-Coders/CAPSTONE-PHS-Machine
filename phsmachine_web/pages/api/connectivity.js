@@ -58,7 +58,7 @@ const handler = async (req, res) => {
         priority: 0,
         links: [
             {
-            link: "http://localhost:3001/",
+            link: `http://${PI_IP}:3001/`,
             link_short: "",
             link_mode: false,
             },
