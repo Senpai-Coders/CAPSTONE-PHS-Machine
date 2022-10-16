@@ -4,7 +4,7 @@ clear
 
 _EXPECTED_DIR="/home/$USER/CAPSTONE-PHS-Machine"
 _SYSTEM_DIR_="$_EXPECTED_DIR/Pig-Stress-DP-Algorithm"
-_EXPECTED_MINIFORGE_="/home/$USER/miniforge3/bin/python"
+_EXPECTED_MINIFORGE_="/home/$USER/miniforge3/bin/"
 
 if [ -d "$_EXPECTED_DIR" ]; then
   echo ""
