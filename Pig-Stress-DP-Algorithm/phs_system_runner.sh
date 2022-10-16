@@ -1,7 +1,4 @@
-#! /bin/bash
 clear
-export TERM=xterm
-. ~/.nvm/nvm.sh
 . ~/.bashrc
 . ~/.condarc
 
