@@ -707,7 +707,7 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
                 "links" : [
                     {
                         "link" : "http://localhost:3001/",
-                        "link_mode" : false,
+                        "link_mode" : False,
                         "link_short" : "/",
                     }
                 ],
@@ -968,7 +968,7 @@ def loadDbConfig():
             "links" : [
                 {
                         "link" : "http://localhost:3001/",
-                        "link_mode" : false,
+                        "link_mode" : False,
                         "link_short" : "/",
                     }
             ],
@@ -1081,7 +1081,7 @@ def start_server():
         "links" : [
             {
                         "link" : "http://localhost:3001/",
-                        "link_mode" : false,
+                        "link_mode" : False,
                         "link_short" : "/",
                     }
         ],
@@ -1112,7 +1112,7 @@ def start_server():
         "links" : [
             {
                         "link" : "http://localhost:3001/",
-                        "link_mode" : false,
+                        "link_mode" : False,
                         "link_short" : "/",
                     }
         ],
