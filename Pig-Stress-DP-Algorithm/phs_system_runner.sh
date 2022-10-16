@@ -1,6 +1,5 @@
 clear
 . ~/.bashrc
-. ~/.condarc
 
 _EXPECTED_DIR="/home/$USER/CAPSTONE-PHS-Machine"
 _SYSTEM_DIR_="$_EXPECTED_DIR/Pig-Stress-DP-Algorithm"
