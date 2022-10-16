@@ -18,7 +18,28 @@ const handler = async (req, res) => {
 
   let IP = GET_SERVER_IP();
 
-  const serverInfo = await configs.findOne({ config_name: "identity" });
+  let serverInfo = await configs.findOne({ config_name: "identity" });
+
+  if(!serverInfo){
+    const dbInitialized = await fetch(`http:${PI_IP}:3000/api/init/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            default_users : true,
+            settings : true,
+            detections : true,
+            notifications : true,
+            del_detect_files : true,
+            del_user_photos : true,
+            del_exports : true,
+            del_errors : true,
+            del_system_logs : true,
+          }),
+      });
+  }
+
   const storageInfo = await checkDiskSpace("/");
   let storage = {
     ...storageInfo,
