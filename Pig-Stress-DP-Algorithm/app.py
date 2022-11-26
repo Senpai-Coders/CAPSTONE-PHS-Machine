@@ -717,8 +717,8 @@ def saveDetection(normal, thermal, raw_thermal, normal_annotated, stmp, croped_n
 
         detection_insert = DB_DETECTIONS.insert_one( DATA_DICT )
 
-        if CANSAVE:
-            p = pickle.dump( raw_thermal, open(f'../phsmachine_web/public/detection/Detection-{stmp}/raw_thermal.pkl', 'wb'))
+        # if CANSAVE:
+            # p = pickle.dump( raw_thermal, open(f'../phsmachine_web/public/detection/Detection-{stmp}/raw_thermal.pkl', 'wb'))
         LOGGER.info("✅ Done Saving Event Data 👌")
 
         DetectionNotification = dict({
