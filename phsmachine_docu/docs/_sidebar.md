@@ -1,6 +1,7 @@
 <!-- docs/_sidebar.md -->
 * [Introduction](README.md)
-* [User Guide](User/user.md)
+* [Access & Authentication](AccessAuth.md)
+* [Pages](Pages.md)
 * [Maintenance Guide](./Maintenance/README.md)
 * [Developer Guide](Developer/Developers.md)
 * [Components Used](./Componets/comp.md)
