@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 
-const PI_IP = 3;
+const PI_IP = 8;
 const IS_PI = true;
 
 const GET_SERVER_IP = () => {
@@ -28,6 +28,9 @@ module.exports = {
   reactStrictMode: false,
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  api: {
+    responseLimit: false,
   },
   env: {
     MONGODB_URI: IS_PI
