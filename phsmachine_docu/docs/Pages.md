@@ -102,3 +102,63 @@ This shows tabular view of the datas. You can **view, export, or delete** them.
 ### Visualization Tab
 
 This shows visualization of all the data.
+
+## Settings Page
+PHS provides configurations for the system. You can configure settings, system state, detection mode, actions, and relay testing.
+
+### Settings Tab
+
+#### System State Control
+
+![controls](_media/setting%20a.png)
+
+Let's you control the system state. When the system is on **Debuging mode** or has been **stop**, you can put it back to it's normal state by clicking **Start PHS**. You can also **Shutdown or Reboot** the system. If the state is not showing correctly, you can click **refresh** to get the latest system state.
+
+#### Heat Stress Detection Setting
+
+![controls b](_media/setting%20b.png)
+
+You can choose between **automatic detection** and **manual detection**. 
+- **automatic detection** : will use custom trained CNN to identify **heat stress**.
+- **manual detection** : will require you to put a preferred temperature threshold to identify **heat stress**
+
+#### PHS Pov event cell division
+
+![controls c](_media/fov%20settings.png)
+
+PHS machine uses camera to see the piggery. PHS divide what it see's to a **grid of cells**. Each cells can be **bind** to certain **actions** and **events(pig event, heat stress event, dark scene event)** and if a certain event happens on the particular cell, **all** actions bind on that cell will be **activated**. You can change the grid size by changing **column** and **row** values. Maximum column can be up to **12** while rows can be up to **5** only. 
+
+> **NOTE** : The number of column & rows will base on how many actions / relay you will be having for the system.
+
+#### Yolo Weights & CNN Weights
+
+This provide what available Weights can be used for PHS. These weights contains the **trained AI** and the data it **learned** from training, and if there are more options you can select what weights to use. You can add weights by asking the developers if there's new weights. 
+
+#### Adding Weights to the system.
+
+You can add new weights to the system by editing ```phsV1Defaults.json``` located at ```CAPSTONE-PHS-Machine/phsmachine_web/defaults/```
+
+Then Depending on what the weights is for, you need to move it either ```maiCNNet``` or ```yolo``` which is located at ```CAPSTONE-PHS-Machine/Pig-Stress-DP-Algorithm/models/weights/```
+
+> **NOTE** after adding weights. You must reset the system, uncheck all checkbox except settings, this will update the default settings with the new one you edited. Then the system will reboot.
+
+#### Automatic Record Deletion & Hard Reset 
+
+![last set](_media/last%20set.png)
+
+**PHS Automatic Record Deletion** indicates that once **PHS** exceeds **95%** of total storage, instead of stop detecting, the system will **delete old records** automatically to accomodate new ones. 
+
+**PHS Hard Reset** You can tell PHS what to reset by checking / unchecking the checkbox.
+
+> **NOTE** : Please read the description on the checkboxes before confirming reset. Reset can wipe your detection datas and other exports.
+
+> **TIP** : When exporting or zipping data, PHS will create a copy of these datas and create a downloadable links for them. These copies is not deleted so that the links will be available if the downloads failed or the system restarts unexpectedly. You can delete these cache using reset to freeup space.
+
+### UI
+
+### Actions
+
+### Relays
+These relays are the switches that controls any components that can be turned on and off by the system. Usually these components is **solenoid valve, pump, lights, etc..**. If the system is in **debugging mode** you can toggle these relays to test it's functionality.
+
+> **NOTE** : Some of these relays handle high voltage components. Please be careful when testing
