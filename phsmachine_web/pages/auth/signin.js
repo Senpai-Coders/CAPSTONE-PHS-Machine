@@ -60,6 +60,7 @@ const signin = () => {
       <div className="flex items-center bg-[#FDE9F4]">
         <div className="m-auto my-10 w-9/12 text-[#663A52]">
           <div className="flex justify-start items-center">
+            <img src="/pig.png" className="mr-2"/>
             <p className="font-inter text-xl opacity-80 font-light tracking-wide">
               PHS
             </p>

@@ -160,6 +160,8 @@ export const getCamMode = () => {
 
 export const loadTheme = () => {
   let savedTheme = localStorage.getItem("phs-theme");
+  if(savedTheme === undefined || savedTheme === null) setTheme('dracula')
+  savedTheme = localStorage.getItem("phs-theme");
   document
     .getElementsByTagName("html")[0]
     .setAttribute("data-theme", savedTheme);

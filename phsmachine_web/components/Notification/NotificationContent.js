@@ -162,26 +162,26 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
           notify(joined[x]);
 
           if (joined[x].notification_type === "notify") {
-            toast.info(joined[x].title, {
-              position: "top-right",
-              autoClose: 5000,
-            });
+            // toast.info(joined[x].title, {
+            //   position: "top-right",
+            //   autoClose: 5000,
+            // });
             audNotify.play()
           }
 
           if (joined[x].notification_type === "error" || joined[x].notification_type === "detection") {
-            toast.error(joined[x].title, {
-              position: "top-right",
-              autoClose: 5000,
-            });
+            // toast.error(joined[x].title, {
+            //   position: "top-right",
+            //   autoClose: 5000,
+            // });
             audError.play();
           }
 
           if (joined[x].notification_type === "reminder") {
-            toast.info(joined[x].title, {
-              position: "top-right",
-              autoClose: 5000,
-            });
+            // toast.info(joined[x].title, {
+            //   position: "top-right",
+            //   autoClose: 5000,
+            // });
             audRemind.play()
           }
 
