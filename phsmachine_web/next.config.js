@@ -29,6 +29,9 @@ module.exports = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  api: {
+    responseLimit: false,
+  },
   env: {
     MONGODB_URI: IS_PI
       ? `mongodb://127.0.0.1:27017/PHS_MACHINE`
