@@ -31,11 +31,45 @@ This provide what available Weights can be used for PHS. These weights contains 
 
 ### Adding Weights to the system.
 
-You can add new weights to the system by editing ```phsV1Defaults.json``` located at ```CAPSTONE-PHS-Machine/phsmachine_web/defaults/```
+You can add new weights to the system by editing ```phsV1Defaults.json``` located at ```CAPSTONE-PHS-Machine/phsmachine_web/defaults/``` and add it on ```"DEFAULT_CONFIGS"``` array 
+
+This is the format to add the new weights. choose depending on what the weight is for. 
+
+**format for YOLO** usually file of weight for YOLO ends with **.pt**
+```json
+{
+    "category": "models",
+    "config_name": "NAME OF WEIGHT",
+    "description": "DESCRIPTION OF WEIGHT",
+    "value": {
+        "name": "NAME OF WEIGHT",
+        "path": "models/weights/yolo/FILENAME OF WEIGHT",
+        "for": "yolo"
+    },
+    "deletable": false
+}
+```
+
+**format for HeatStress** usually file of weight for HeatStress ends with **.h5**
+```json
+{
+    "category": "models",
+    "config_name": "NAME OF WEIGHT",
+    "description": "DISCRIPTION OF WEIGHT",
+    "value": {
+        "name": "NAME OF WEIGHT",
+        "path": "models/weights/maiCNNet/FILENAME OF WEIGHT",
+        "for": "heatstress"
+    },
+    "deletable": false
+}
+```
 
 Then Depending on what the weights is for, you need to move it either ```maiCNNet``` or ```yolo``` which is located at ```CAPSTONE-PHS-Machine/Pig-Stress-DP-Algorithm/models/weights/```
 
-> **NOTE** after adding weights. You must reset the system, uncheck all checkbox except settings, this will update the default settings with the new one you edited. Then the system will reboot.
+> **NOTE** : after adding weights. You must reset the system, uncheck all checkbox except settings, this will update the default settings with the new one you edited. Then the system will reboot.
+
+> **NOTE** : We do not recommend doing this by yourself, please ask some assitance from a technical person or contact the developer.
 
 ### Automatic Record Deletion & Hard Reset 
 
@@ -51,7 +85,18 @@ Then Depending on what the weights is for, you need to move it either ```maiCNNe
 
 ## UI
 
+![ui](_media/ui%20sset.png)
+
+- **Theme** : Changes the web theme color. This will only apply to current device
+- **Monitor** : Changes the Monitor layout on the Monitor page.
+
 ## Actions
+
+These page contains all list of actions defined to be used by the system. Each actions uses **relay** and **events**. You can configure them.
+
+> **NOTE** : Some actions are default & cannot be deleted
+
+### Creating Actions
 
 ## Relays
 These relays are the switches that controls any components that can be turned on and off by the system. Usually these components is **solenoid valve, pump, lights, etc..**. If the system is in **debugging mode** you can toggle these relays to test it's functionality.
