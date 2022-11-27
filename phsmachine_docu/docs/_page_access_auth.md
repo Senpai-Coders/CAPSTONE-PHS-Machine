@@ -68,7 +68,7 @@ To access and monitor the detection history and realtime streaming of the system
 
 - **Step 1**: You must first have an account that is given by Admin or Root Admin. Contact your PHS Admin.
 
-![login](_media/login.png)
+![login](_media/page_login.png)
 
 - **Step 2**: Type your credentials into the text box of login page of PHS,
  then Click the button **Sign In**.
@@ -87,7 +87,7 @@ PHS provides navigation for easy navigating throughout the page. PHS Navbar incl
 ### Page Navigation
 Page navigation contains the **pages / routes** for easy switching of pages & also provides basic info about the current PHS.
 
-![pagenav](_media/page_nav.png)
+![pagenav](_media/nav_page.png)
 
 ### Notification
 This shows important notification the system created. Notifications might show different notification types including **detection, alert, errors, info**. You can also clear this notification once read.

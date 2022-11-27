@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import PhsScanner from "../components/Phs_Scanner/PhsScanner";
 import Layout from "../components/layout";
+import Head from "next/head";
 
 import PhsCard from "../components/Phs_Scanner/PhsCard";
 
@@ -46,6 +47,9 @@ export default function phsScan() {
       className="w-full md:justify-between md:flex"
     >
       {/* Current Device */}
+      <Head>
+        <title>Scan Other PHS</title>
+      </Head>
       <PhsCard
         phs_data={selected}
         showConnect={selected.ip !== curIp ? true : false}

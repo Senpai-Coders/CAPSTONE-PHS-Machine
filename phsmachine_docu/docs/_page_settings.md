@@ -1,4 +1,7 @@
 # Settings Page
+
+![settings](_media/page_settings.png)
+
 PHS provides configurations for the system. You can configure settings, system state, detection mode, actions, and relay testing.
 
 ## Settings
@@ -92,13 +95,40 @@ Then Depending on what the weights is for, you need to move it either ```maiCNNe
 
 ## Actions
 
+![action](_media/action.png)
+
 These page contains all list of actions defined to be used by the system. Each actions uses **relay** and **events**. You can configure them.
 
 > **NOTE** : Some actions are default & cannot be deleted
 
 ### Creating Actions
 
-## Relays
-These relays are the switches that controls any components that can be turned on and off by the system. Usually these components is **solenoid valve, pump, lights, etc..**. If the system is in **debugging mode** you can toggle these relays to test it's functionality.
+![new action](_media/new%20action.png)
 
-> **NOTE** : Some of these relays handle high voltage components. Please be careful when testing
+These are the required field to be filled in order to create an action.
+
+- **Action Name** - Unique Name of action
+- **Description** - Description of the action to easily identify the action
+- **Target Relays** - What relays will be activated when this action is activated
+- **Event/AI/Caller** - what event will activate this action.
+
+These are the possible events
+- **Heat Stress Detector** - When a pig is heat stressed, then this event will activate
+- **Pig Detector** - When a pig is detected, this event will activate
+- **Dark Scene Detector** - When the camera see's darker scene, this will activate
+
+![grid choose](_media/grid%20choose.png)
+
+If required to select a cell, you should select **single cell only**. This cell will be the source of activation of the event.
+
+![new action](_media/force%20activate.png)
+
+If you don't want to specify which cell this event will activate, you can enable **force activate** to set the action to force active. When force activate is enabled, **regardless** of cell location, if one of all cell fire the matching event you selected, then this action will also **activate**.
+
+## Relays
+
+![relay tog](_media/relay%20tog.png)
+
+These relays are the switches that controls any components that can be turned on and off by the system. Usually these components is **solenoid valve, pump, lights, etc..**. If the system is in **debugging mode** you can toggle these relays manualy to test it's functionality.
+
+> **REMINDER** : Some of these relays handle high voltage components. Please be careful when testing

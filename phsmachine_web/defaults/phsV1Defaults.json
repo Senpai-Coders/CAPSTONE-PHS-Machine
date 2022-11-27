@@ -210,7 +210,7 @@
       },
       {
         "category": "relays",
-        "config_name": "4",
+        "config_name": "1",
         "description": " - ",
         "value": {
           "GPIO_PIN": 4
@@ -220,7 +220,7 @@
       },
       {
         "category": "relays",
-        "config_name": "14",
+        "config_name": "2",
         "description": " - ",
         "value": {
           "GPIO_PIN": 14
@@ -230,7 +230,7 @@
       },
       {
         "category": "relays",
-        "config_name": "15",
+        "config_name": "3",
         "description": " - ",
         "value": {
           "GPIO_PIN": 15
@@ -240,7 +240,7 @@
       },
       {
         "category": "relays",
-        "config_name": "18",
+        "config_name": "4",
         "description": " - ",
         "value": {
           "GPIO_PIN": 18
@@ -250,7 +250,7 @@
       },
       {
         "category": "relays",
-        "config_name": "17",
+        "config_name": "5",
         "description": " - ",
         "value": {
           "GPIO_PIN": 17
@@ -260,7 +260,7 @@
       },
       {
         "category": "relays",
-        "config_name": "27",
+        "config_name": "6",
         "description": " - ",
         "value": {
           "GPIO_PIN": 27
@@ -270,7 +270,7 @@
       },
       {
         "category": "relays",
-        "config_name": "22",
+        "config_name": "7",
         "description": " - ",
         "value": {
           "GPIO_PIN": 22
@@ -280,7 +280,7 @@
       },
       {
         "category": "relays",
-        "config_name": "23",
+        "config_name": "8",
         "description": " - ",
         "value": {
           "GPIO_PIN": 23
@@ -290,7 +290,7 @@
       },
       {
         "category": "relays",
-        "config_name": "24",
+        "config_name": "9",
         "description": " - ",
         "value": {
           "GPIO_PIN": 24
@@ -300,7 +300,7 @@
       },
       {
         "category": "relays",
-        "config_name": "25",
+        "config_name": "10",
         "description": " - ",
         "value": {
           "GPIO_PIN": 25
