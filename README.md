@@ -1,4 +1,4 @@
-# PHS MACHINE
+# PHS MACHINE X
 
 Detection and Resolving Heat Stress from Pig that utilize Thermographic Imaging, Image processing, & Deep Learning
 
@@ -31,3 +31,4 @@ Optional commands in the environemnt
   > conda deactivate
 - Deleting the environment. Make sure to deactivate the env first.
   > conda env remove --name pig-stress-env
+

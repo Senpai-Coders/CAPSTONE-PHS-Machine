@@ -31,7 +31,7 @@ module.exports = {
   },
   env: {
     MONGODB_URI: IS_PI
-      ? `mongodb://${IP}:27017/PHS_MACHINE`
+      ? `mongodb://127.0.0.1:27017/PHS_MACHINE`
       : "mongodb+srv://Jervx:helloworld@capstone.nv1cu.mongodb.net/?retryWrites=true&w=majority",
     JWT_SCRT: "ErenJaeger",
     PI_IP : IP,
