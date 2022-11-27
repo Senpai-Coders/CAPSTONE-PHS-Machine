@@ -90,3 +90,15 @@ This indicates the current active users that is also using or monitoring the sys
 ![past indic](_media/indicator_past.png)
 
 Past detection shows the last 10 heat stress detections. You can **click** these to view more information about the detection record.
+
+## Detection Page
+
+Detection page contains all detection records that has been recorder by the system. You can view and manage this records here.
+
+### Records Tab
+
+This shows tabular view of the datas. You can **view, export, or delete** them.
+
+### Visualization Tab
+
+This shows visualization of all the data.

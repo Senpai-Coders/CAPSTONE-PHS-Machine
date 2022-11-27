@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 
-const PI_IP = 3;
-const IS_PI = true;
+const PI_IP = 8;
+const IS_PI = false;
 
 const GET_SERVER_IP = () => {
     if(!IS_PI) return `192.168.1.${PI_IP}`
