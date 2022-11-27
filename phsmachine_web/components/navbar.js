@@ -119,6 +119,7 @@ const navbar = ({ toggled, setToggled, userToggled, setUserToggled }) => {
           theme={"dark"}
           closeOnClick
           rtl={false}
+          limit={3}
           pauseOnFocusLoss
           draggable
           pauseOnHover
