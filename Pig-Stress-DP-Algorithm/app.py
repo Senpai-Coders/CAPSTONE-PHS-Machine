@@ -499,8 +499,9 @@ def detectHeatStress():
             coords = detect_pig_head.pandas().xyxy[0].to_dict(orient="records")
         
             if len(coords) > 0:
+                print("LENGTH : "+coords)
                 detect_annotation = np.squeeze(detect_pig_head.render())
-                
+
                 img_normal_cropped = []
                 img_thermal_cropped = []
                 img_thermal_cropped_raw = []
@@ -514,8 +515,8 @@ def detectHeatStress():
                 
                 pigC = 1
                 for result in coords:
-                    if not hasNoPendingHeatStressJob():
-                        break
+                    # if not hasNoPendingHeatStressJob():
+                    #     break
 
                     #print(result)
                     #confidence = float(result['confidence'])
@@ -586,11 +587,12 @@ def detectHeatStress():
                     # If it does classified stressed then set as detected to true
                     # also call the action bind to HEAT STRESS DETECTOR  
 
-                    # Call all action that require location match
-                    curACTIONS = activateCategory(curACTIONS, "Heat Stress Detector", False, division_location)
-
-                    # Call all action that doesn't require location match
-                    curACTIONS = activateCategory(curACTIONS, "Heat Stress Detector", True, division_location)
+                    if hasNoPendingHeatStressJob():
+                        # Call all action that require location match
+                        curACTIONS = activateCategory(curACTIONS, "Heat Stress Detector", False, division_location)
+                        # Call all action that doesn't require location match
+                        curACTIONS = activateCategory(curACTIONS, "Heat Stress Detector", True, division_location)
+                        # break
 
                     LOGGER.info(f'Detected 🔥 Heat Stress on pig {pigC}')
                     cpy_crop_normal = c_IMG_NORMAL[y1 : y2, x1 : x2]
