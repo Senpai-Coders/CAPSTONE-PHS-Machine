@@ -200,13 +200,15 @@ const NotificationContent = ({ userData, setUnreadCount }) => {
   };
 
   useEffect(() => {
-    var loader = setInterval(async () => {
-      load();
-    }, 2000);
+    // TODO UNCOMMENT MAYBE
+    load();
+    // var loader = setInterval(async () => {
+    //   load();
+    // }, 2000);
 
-    return () => {
-      clearInterval(loader);
-    };
+    // return () => {
+    //   clearInterval(loader);
+    // };
   }, []);
 
   const getColorCode = (type) => {

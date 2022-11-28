@@ -9,11 +9,29 @@ const index = () => {
 
   const init = async (t) => {
     try {
-      setLoading(true);
-      const resp = await axios.post("/api/phs/detection", { mode: 0 });
-      let det = resp.data.detection_data;
-      setDetections(det);
-      setLoading(false);
+    //   setLoading(true);
+    //   const resp = await axios.post("/api/phs/detection", { mode: 0 });
+    //   let det = resp.data.detection_data;
+    //   setDetections(det);
+    //   setLoading(false);
+
+    setLoading(true)
+    const response = fetch("/api/phs/detection", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mode : 0
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+            setDetections(data.detection_data);
+            setLoading(false);
+        });
     } catch (e) {
       console.log(e);
     }

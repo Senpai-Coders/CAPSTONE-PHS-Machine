@@ -21,7 +21,6 @@ const transTemplate = (template_content) => {
 
 const sendMail = async(msg) => {
     try{
-        //TODO UNCOMMENT
         const sent = await sgMail.send(msg);
         logger.info(`Email Sent -> ${msg.to}`);
         return sent;
