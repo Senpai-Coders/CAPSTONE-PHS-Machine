@@ -44,7 +44,7 @@ This indicates that PHS storage **exceeds 95%** of the total storage.
 #### Possible Solution
 You can **old records** at the **detection page**  to free up some space.
 
-> **TIP** You can follow the maintinance guid which include maintaining the PHS storage.
+> **TIP** You can follow the maintenance guid which include maintaining the PHS storage.
 
 
 # Possible Undocumented Errors

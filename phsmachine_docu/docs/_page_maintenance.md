@@ -1,8 +1,8 @@
-# Maintinance
+# Maintenance
 
-PHSM should follow maintinance every **1st day of the month** to prevent possible failure on it's **Physical Hardware** & **Software**.
+PHSM should follow maintenance every **1st day of the month** to prevent possible failure on it's **Physical Hardware** & **Software**.
 
-## Physical Maintinance
+## Physical Maintenance
 
 Before checking the **tubings, mist nozzle, relays, pump, valves** & **other** components, you should enable **debuggin mode** first at the **setting page**.
 
@@ -44,9 +44,9 @@ Solenoid may get **clogged by debree** or the solenoid itself reach it's **lifes
 
 Nozzle might be **blocked** by debree from the pipe, you can twist them to remove and clean the nozzle for **blockage** and put it back to test if it will produce ideal mist. If not, replace the nozzle.
 
-## Software  Maintinance
+## Software  Maintenance
 
-PHS doesn't require you to do a lot of maintinance of it software but we only have 1 checklist to do for maintaining PHS. 
+PHS doesn't require you to do a lot of maintenance of it software but we only have 1 checklist to do for maintaining PHS. 
 
 ### The storage 
 
