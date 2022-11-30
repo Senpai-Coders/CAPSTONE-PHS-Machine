@@ -100,13 +100,17 @@ Repeat the process to other 3 solenoid valves and it should look like this.
 
 ## The Water Pump ( Component, Optional )
 
-By default, we provide  **12 volt water pump** because some piggery have their water provider a **weak water pressure** failing to create good mist. Water pump helps generate **high pressure** thus forming an ideal mist. But if the water pressure from their water provider is **high enough**, you can replace it with **another solenoid valve**.
-
 <center>
     <img src="/docs/_media/phs_pump.png">
 </center>
 
-This shows on how we can attatch the water pump properly to the relay.
+By default, we provide  **12 volt water pump** because some piggery have their water provider a **weak water pressure** failing to create good mist. Water pump helps generate **high pressure** thus forming an ideal mist. But if the water pressure from their water provider is **high enough**, you can replace it with **another solenoid valve**. The image above shows the concept of how it should work.
+
+<center>
+    <img src="/docs/_media/phs_relay_pump.png">
+</center>
+
+This shows how the water pump should properly attatched to the relay.
 
 ## The Tubing ( Required )
 
@@ -138,7 +142,14 @@ This is how it should look after attatching
     <img src="/docs/_media/phs_fan.png">
 </center>
 
-By default, we provide a **leaf style fan**. Other than using water to reduce pig body temperature, there should be a **dry area** where pig can rest. So fan helps **circulate air** and **lowers the pig temperature** while leaving a dry place for the pig to rest. You can aim and place it where the pig can't reach it.
+By default, we provide a **leaf style fan**. Other than using water to reduce pig body temperature, there should be a **dry area** where pig can rest. So fan helps **circulate air** and **lowers the pig temperature** while leaving a dry place for the pig to rest. You should aim and place it where the pig can't reach it.
+
+
+<center>
+    <img src="/docs/_media/phs_relay_fan.png">
+</center>
+
+This shows how the fan should properly attatched to the relay.
 
 ## Example result when done
 
