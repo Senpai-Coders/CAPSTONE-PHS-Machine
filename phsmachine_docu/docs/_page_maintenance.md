@@ -46,7 +46,7 @@ Nozzle might be **blocked** by debree from the pipe, you can twist them to remov
 
 ## Software  Maintenance
 
-PHS doesn't require you to do a lot of maintenance of it software but we only have 1 checklist to do for maintaining PHS. 
+PHS doesn't require you to do a lot of maintenance of it software but we only have 1 checklist to do for maintaining PHS Software to function smoothly. 
 
 ### The storage 
 
