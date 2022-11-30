@@ -32,4 +32,28 @@ Make sure that **Debugging Mode** is enabled in the **settings page**. Go to **r
 
 If one of the relay module does **not** function correctly, replace the relay with the **same count** of relay module. Make sure to take a photo of the **order** of the wires attatched to the **relay module input controller pins**.
 
+### Checking Pump ( Skip if not using pump )
+
+Make sure that **Debugging Mode** is enabled in the **settings page**. To check if the pump functions correclty and producing enough pressure, you must go to the **settings page** > **relays** tab and toggle all relays that controls the **solenoid valves**. Now toggle on the relay that control the pump. Check if all nozzle produces ideal mist correctly.
+
+### Checking Solenoid
+
+Solenoid may get **clogged by debree** or the solenoid itself reach it's **lifespan and fails**. To check the solenoid valves, make sure that **Debugging Mode** is enabled in the **settings page**. Go to the **settings page** > **relays** tab and toggle on the relay that controls the pump. Then toggle **one by one** the relay that controls the solenoid valve you want to check. If the solenoid valve you are checking fails or have leak when turned off, you must replace it with the same **12V solenoid valve**.
+
+### Checking Nozzle
+
+Nozzle might be **blocked** by debree from the pipe, you can twist them to remove and clean the nozzle for **blockage** and put it back to test if it will produce ideal mist. If not, replace the nozzle.
+
 ## Software  Maintinance
+
+PHS doesn't require you to do a lot of maintinance of it software but we only have 1 checklist to do for maintaining PHS. 
+
+### The storage 
+
+PHS only comes with **32Gb storage**. We know that Heat Stress on pig doesn't occurs every day. But we still consider that possibly a lot of heatstress will occurs and the storage will eventually **exceed 95%** of the storage. This might introduce **unwanted fault/errors** on the PHS. 
+
+<center>
+    <img src="/docs/_media/phs_freeup.png">
+</center>
+
+You can freeup space via **system reset** & **uncheck** all other options & only choosing these options under **Files & Logs**. Usually **Detection Raw Data** & **Exported Data** are the one that take most of the PHS storage.
