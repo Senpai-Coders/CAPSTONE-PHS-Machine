@@ -934,7 +934,7 @@ def loadDbConfig():
         if len(ACTION_STATE.actions) != len(actions):
             ACTION_STATE = a_controller(actions, ACTION_STATE.actions)
 
-        printLcd(statusToString(SYSTEM_STATE['status']), 1);
+        printLcd(f'{_SELF_IP}', 1);
         deleteErrorCode(2)
     except Exception as e:
         LOGGER.error(f"Error Loading ConfigDb -> {str(e)}")
@@ -986,7 +986,7 @@ def safe_exit(signum, frame):
 def printLcd(content, row):
     global _LCD, _SELF_IP
     try:
-        _LCD.text(f"{_SELF_IP}:3000", 2)
+        _LCD.text(f"3000", 2)
         _LCD.text(content, row)
     except Exception as e:
         print(e)
