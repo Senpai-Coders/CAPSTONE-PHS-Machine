@@ -13,7 +13,6 @@ const Relays = ({ relays, coreRelays, state, fireOnChange }) => {
 
   const emit = async (relay_name, new_state) => {
     console.log("Emitting ", new_state)
-    state = 2
     if (state !== 2) {
       if (state === -2)
         toast.warn("PHS Core is off, this relay won't toggle!", {position: toast.POSITION.BOTTOM_RIGHT,});
