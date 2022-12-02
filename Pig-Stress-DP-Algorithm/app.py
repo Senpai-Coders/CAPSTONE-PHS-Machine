@@ -598,6 +598,7 @@ def detectHeatStress():
                     maxs.append(max_temp)
 
                 curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
+                print(f"TIME {curt}")
 
                 if detected and True:
                     overal_min_temp = sum(mins) / len(mins)
