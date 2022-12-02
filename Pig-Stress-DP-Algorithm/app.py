@@ -187,7 +187,6 @@ lock = threading.Lock()
 app = Flask(__name__)
 cors = CORS(app, resources={f"/*":{"origins":"*"}})
 
-
 @app.route("/")
 def index():
 	return "Hello"
@@ -331,7 +330,6 @@ def gen_thermal():
             yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
             THERM_STREAM_UP = THERM_STREAM_CHECK
 
-
 # NON STREAM ROUTS
 
 @app.route("/normal")
@@ -392,7 +390,6 @@ def gen_thermal_non_stream():
             if not flag:
                 continue
             return bytearray(encodedImage)
-
 
 def get_ip_address():
 	"""Find the current IP address of the device"""
@@ -487,7 +484,7 @@ def detectHeatStress():
             # CALL ALL ACTION THAT IS BIND TO DARK SCENE EVENT
             # TODO
             Dark_Scene_Detector = isDarkScene(to_read) 
-            if Dark_Scene_Detector:
+            if Dark_Scene_Detector :
                 curACTIONS = activateCategory(curACTIONS, "Dark Scene Detector", True, 0)
             
             # FEEDING IMAGE FOR FINDING THE PIG LOCATION ON PICTURE USING YOLOV5s 
@@ -765,7 +762,7 @@ def doesActionNameAlreadyActive(action_name) :
 
 def activateCategory(old_activate, caller, ForceActivate, Location):
     global ACTION_STATE, SYSTEM_STATE, LOGGER
-
+    
     if SYSTEM_STATE['status'] == 2:
         return
 
@@ -801,29 +798,21 @@ def activateCategory(old_activate, caller, ForceActivate, Location):
 def activateJob(targets, action_name, caller):
     global SYSTEM_STATE
     newJobs = []
-
     sortedTarg = sorted(targets, key=lambda d: d['duration']) 
-
     for targs in sortedTarg : 
             
             duration = targs['duration']
             endTime = datetime.now() + timedelta(seconds=int(duration))
-
-            
             targRelay = targs['target_relay']
-
             newJob = { 
                 "action_name" : action_name, 
                 "relay_name" : f'{targRelay}', 
                 "caller" : caller, 
                 "duration" : duration, 
                 "end" : endTime }
-            
             if SYSTEM_STATE['status'] == 2: return newJob
-
             SYSTEM_STATE['jobs'].append(newJob)
             newJobs.append(newJob)
-    
     return newJobs  
 
 def updateJobs():
