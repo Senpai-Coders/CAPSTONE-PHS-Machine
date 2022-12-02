@@ -90,15 +90,6 @@ const phsSettings = ({
   };
 
   const updatePhsName = async () => {
-    const toast_id = toast.loading("Updating PHS name...", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
     try {
       const phs_identity = await axios.post("/api/phs/config/aimodels", {
         mode: 1,
@@ -113,20 +104,10 @@ const phsSettings = ({
           },
         },
       });
-      toast.update(toast_id, {
-        render: "Done!",
-        type: "success",
-        isLoading: false,
-        autoClose: true,
-      });
+      toast.success("Done", {position: toast.POSITION.BOTTOM_RIGHT,});
       location.reload();
     } catch (e) {
-      toast.update(toast_id, {
-        render: "Failed saving changes",
-        type: "error",
-        isLoading: false,
-        autoClose: true,
-      });
+        toast.error("failed", {position: toast.POSITION.BOTTOM_RIGHT,});
     }
   };
 
@@ -135,48 +116,20 @@ const phsSettings = ({
   }, []);
 
   const updateAutoDelete = async () => {
-    const toast_id = toast.loading("updating...", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
     try {
       setUpdating("autodelete");
       let updateAutoDelete = await axios.post(
         "/api/phs/config/storageAutoDelete",
         { mode: 1, value: !autoDelete.value }
       );
-      toast.update(toast_id, {
-        render: `toggled PHS autodelete ${!autoDelete.value ? "on" : "off"}`,
-        type: "success",
-        isLoading: false,
-        autoClose: true,
-      });
+      toast.success("Done", {position: toast.POSITION.BOTTOM_RIGHT,});
     } catch (e) {
-      toast.update(toast_id, {
-        render: "Failed saving changes",
-        type: "error",
-        isLoading: false,
-        autoClose: true,
-      });
+        toast.error("Failed", {position: toast.POSITION.BOTTOM_RIGHT,});
     }
     fireOnChange();
   };
 
   const updateDivision = async () => {
-    const toast_id = toast.loading("updating...", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
     try {
       setUpdating("division");
       const ph_division = await axios.post("/api/phs/config/divisions", {
@@ -188,19 +141,10 @@ const phsSettings = ({
       });
       setHasChanges(false);
       fireOnChange();
-      toast.update(toast_id, {
-        render: "PHS Division updated",
-        type: "success",
-        isLoading: false,
-        autoClose: true,
-      });
+      toast.success("Done", {position: toast.POSITION.BOTTOM_RIGHT,});
     } catch (e) {
-      toast.update(toast_id, {
-        render: "Failed saving changes",
-        type: "error",
-        isLoading: false,
-        autoClose: true,
-      });
+        toast.error("failed", {position: toast.POSITION.BOTTOM_RIGHT,});
+
     }
   };
 
@@ -209,15 +153,7 @@ const phsSettings = ({
   }, [autoDelete, storageInfo, detectionMode, divisionCount]);
 
   const saveChange = async (val) => {
-    const toast_id = toast.loading("updating...", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+    
     try {
       setSaving(true);
       setUpdating("autodetect");
@@ -246,23 +182,12 @@ const phsSettings = ({
         );
       }
 
-      toast.update(toast_id, {
-        render: "Updated PHS Detection settings",
-        type: "success",
-        isLoading: false,
-        autoClose: true,
-      });
-
+      toast.success("Done", {position: toast.POSITION.BOTTOM_RIGHT,});
       setHasChanges(false);
       setSaving(false);
       fireOnChange();
     } catch (e) {
-      toast.update(toast_id, {
-        render: "Failed saving changes",
-        type: "error",
-        isLoading: false,
-        autoClose: true,
-      });
+      toast.success("Failed", {position: toast.POSITION.BOTTOM_RIGHT,});
       console.log(e);
     }
   };
@@ -273,76 +198,31 @@ const phsSettings = ({
   }, [detectionMode]);
 
   const chooseState = async (state) => {
-    const toast_id = toast.loading("updating...", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
     try {
       const updateState = await axios.get(
         `http://${PI_IP}:8000/updateState?status=${state}`
       );
-      toast.update(toast_id, {
-        render: "System state changed",
-        type: "success",
-        isLoading: false,
-        autoClose: true,
-      });
+      toast.success("Done", {position: toast.POSITION.BOTTOM_RIGHT,});
       fireOnChange();
     } catch (e) {
-      toast.update(toast_id, {
-        render: "Failed changing state",
-        type: "error",
-        isLoading: false,
-        autoClose: true,
-      });
+      toast.error("Failed", {position: toast.POSITION.BOTTOM_RIGHT,});
     }
   };
 
   const setModel = async (newValue) => {
-    const toast_id = toast.loading("changing weights..", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+    
     try {
       const updatePhsModel = await axios.post("/api/phs/config/aimodels", {
         mode: 1,
         search: { config_name: "identity" },
         changes: newValue,
       });
-      toast.update(toast_id, {
-        render: "Changed weights successfuly",
-        type: "success",
-        isLoading: false,
-        autoClose: true,
-      });
+      toast.success("Done", {position: toast.POSITION.BOTTOM_RIGHT,});
     } catch (e) {
-      toast.update(toast_id, {
-        render: "Failed changing weights",
-        type: "error",
-        isLoading: false,
-        autoClose: true,
-      });
+        toast.error("Failed", {position: toast.POSITION.BOTTOM_RIGHT,});
     }
     await fireOnChange();
-    toast.info("Restart is required for the changes to take effect", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+    toast.info("Restart is required for the changes to take effect", {position: toast.POSITION.BOTTOM_RIGHT,});
   };
 
   return (

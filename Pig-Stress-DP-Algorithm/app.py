@@ -463,7 +463,7 @@ def getCellLocation(img_h, img_w, center_x, center_y):
     return -1
 
 def detectHeatStress():
-    global font, ANNOT_STREAM_CHECK, DETECTION_MODE, TEMPERATURE_THRESHOLD, IMG_NORMAL_ANNOTATED, PHS_CNN, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD, EXITING, LOGGER
+    global font, ANNOT_STREAM_CHECK, SYSTEM_STATE, DETECTION_MODE, TEMPERATURE_THRESHOLD, IMG_NORMAL_ANNOTATED, PHS_CNN, IMG_NORMAL, IMG_THERMAL, RAW_THERMAL, Yolov5_PHD, EXITING, LOGGER
     while not EXITING and Yolov5_PHD is not None and PHS_CNN is not None:
         loadDbConfig()
         if IMG_NORMAL is not None and IMG_THERMAL is not None:
@@ -515,9 +515,6 @@ def detectHeatStress():
                     # if not hasNoPendingHeatStressJob():
                     #     break
 
-                    #print(result)
-                    #confidence = float(result['confidence'])
-                    #if confidence < 75.0: break
                     x1 = int(result['xmin'])
                     y1 = int(result['ymin'])
                     x2 = int(result['xmax'])
@@ -525,9 +522,6 @@ def detectHeatStress():
                     detect_annotation = cv2.putText(detect_annotation, f'pig {pigC}', (x1,y1 + 20), font, 0.5, (100, 255, 50), 2, cv2.LINE_AA)
                     pigC += 1
                     #cv2.putText(detect_annotation, f'{x2} {y2}', (x2,y2), font, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
-
-                    #print('h:',H, 'w:', W)
-                    #print(x1, y1, x2, y2, x1 + x2, y1 + y2)
 
                     # FOCUSED PIG LOCATION
                     center_x, center_y = getCenterPoint(x1,y1,x2,y2)
@@ -538,12 +532,10 @@ def detectHeatStress():
                     curACTIONS = activateCategory(curACTIONS, "Pig Detector", True, division_location)
                     # activate action if matched pig location
                     curACTIONS = activateCategory(curACTIONS, "Pig Detector", False, division_location)
-                    #print(f"🐖 PHS Detect detected {len(coords)} pigs")
 
                     detect_annotation = cv2.circle(detect_annotation, (center_x, center_y ), 4 , (255, 220, 80), 2)
                     #cv2.putText(detect_annotation, f'{center_x} {center_y}', (center_x,center_y), font, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
 
-                    #print('🐷 pig at coord :',x1,y1,x2,y2 )
                     cpy_thrm_crop_raw = c_Raw_Reshaped[y1:y2, x1:x2]
 
                     # detection = CNN ( RAW THERMAL )
@@ -584,12 +576,13 @@ def detectHeatStress():
                     # If it does classified stressed then set as detected to true
                     # also call the action bind to HEAT STRESS DETECTOR  
 
-                    if hasNoPendingHeatStressJob():
-                        # Call all action that require location match
-                        curACTIONS = activateCategory(curACTIONS, "Heat Stress Detector", False, division_location)
-                        # Call all action that doesn't require location match
-                        curACTIONS = activateCategory(curACTIONS, "Heat Stress Detector", True, division_location)
-                        # break
+                    if SYSTEM_STATE['status'] != 2:
+                        if hasNoPendingHeatStressJob():
+                            # Call all action that require location match
+                            curACTIONS = activateCategory(curACTIONS, "Heat Stress Detector", False, division_location)
+                            # Call all action that doesn't require location match
+                            curACTIONS = activateCategory(curACTIONS, "Heat Stress Detector", True, division_location)
+                            # break
 
                     LOGGER.info(f'Detected 🔥 Heat Stress on pig {pigC}')
                     cpy_crop_normal = c_IMG_NORMAL[y1 : y2, x1 : x2]
