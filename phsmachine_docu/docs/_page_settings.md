@@ -129,6 +129,6 @@ If you don't want to specify which cell this event will activate, you can enable
 
 ![relay tog](_media/relay%20tog.png)
 
-These relays are the switches that controls any components that can be turned on and off by the system. Usually these components is **solenoid valve, pump, lights, etc..**. If the system is in **debugging mode** you can toggle these relays manualy to test it's functionality.
+These relays are the switches that controls any components that can be turned on and off by the system. Usually these components is **solenoid valve, pump, lights, etc..**. If the system is in **debugging mode** you can toggle these relays manually to test it's functionality.
 
 > **REMINDER** : Some of these relays handle high voltage components. Please be careful when testing
