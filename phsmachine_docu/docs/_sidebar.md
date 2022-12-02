@@ -6,6 +6,8 @@
 * [Settings Page](_page_settings.md)
 * [Other PHS Scanner Page](_page_phs_scan.md)
 * [PHS Logs Page](_page_logs.md)
-* [Maintenance Guide](./Maintenance/README.md)
-* [Installation Gui de](_page_installation_guide.md)
-* [Developers Guide](_page_devguide.md)
+* [Error Codes](_page_error_codes.md)
+* [Maintenance Guide](./_page_maintenance.md)
+* [Physical Installation](_page_physical.md)
+* [Software Installation (RARE)](_page_software.md)
+<!-- * [Developers Guide](_page_devguide.md) -->

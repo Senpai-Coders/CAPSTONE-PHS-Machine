@@ -243,7 +243,7 @@
         "config_name": "4",
         "description": " - ",
         "value": {
-          "GPIO_PIN": 18
+          "GPIO_PIN": 17
         },
         "disabled": false,
         "deletable": false
@@ -253,7 +253,7 @@
         "config_name": "5",
         "description": " - ",
         "value": {
-          "GPIO_PIN": 17
+          "GPIO_PIN": 18
         },
         "disabled": false,
         "deletable": false
