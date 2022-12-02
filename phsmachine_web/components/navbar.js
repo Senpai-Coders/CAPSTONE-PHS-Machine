@@ -113,13 +113,13 @@ const navbar = ({ toggled, setToggled, userToggled, setUserToggled }) => {
         <ToastContainer
           className={"z-50"}
           position="top-left"
-          autoClose={5000}
+          autoClose={800}
           hideProgressBar={false}
           newestOnTop={false}
           theme={"dark"}
           closeOnClick
           rtl={false}
-          limit={3}
+          limit={1}
           pauseOnFocusLoss
           draggable
           pauseOnHover

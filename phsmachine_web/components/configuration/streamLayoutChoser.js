@@ -53,15 +53,7 @@ const themeChooser = ({ textMode }) => {
             tabIndex={i + 1}
             key={th.name}
             onClick={() => {
-              toast.success(`Camera set stream layout to ${th.name}`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-              });
+            toast.success(`Camera set stream layout to ${th.name}`, {position: toast.POSITION.BOTTOM_RIGHT,});
               setSelected(th);
             }}
             className={`cursor-pointer duration-100 m-1 snap-center ${

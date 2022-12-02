@@ -13,30 +13,12 @@ const Relays = ({ relays, coreRelays, state, fireOnChange }) => {
 
   const emit = async (relay_name, new_state) => {
     console.log("Emitting ", new_state)
-    let toast_id = toast.loading(`Updating State`, {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      draggable: true,
-      progress: undefined,
-    });
-
+    state = 2
     if (state !== 2) {
       if (state === -2)
-        toast.update(toast_id, {
-          render: `PHS Core is off, this relay won't toggle`,
-          type: "error",
-          isLoading: false,
-          autoClose: true,
-        });
+        toast.warn("PHS Core is off, this relay won't toggle!", {position: toast.POSITION.BOTTOM_RIGHT,});
       else
-        toast.update(toast_id, {
-          render: `Please set system state to Debug for safety`,
-          type: "error",
-          isLoading: false,
-          autoClose: true,
-        });
+        toast.warn("Please set system state to Debug for safety", {position: toast.POSITION.BOTTOM_RIGHT,});
       return;
     }
 
@@ -45,20 +27,10 @@ const Relays = ({ relays, coreRelays, state, fireOnChange }) => {
         relay_name,
         state : new_state,
       });
-      toast.update(toast_id, {
-        render: `${relay_name} toggled to ${new_state}`,
-        type: "success",
-        isLoading: false,
-        autoClose: true,
-      });
+      toast.success("toggled", {position: toast.POSITION.BOTTOM_RIGHT,});
       fireOnChange()
     } catch (e) {
-      toast.update(toast_id, {
-        render: `Unable To Toggle ${new_state}`,
-        type: "error",
-        isLoading: false,
-        autoClose: true,
-      });
+        toast.error("Can't Toggle", {position: toast.POSITION.BOTTOM_RIGHT,});
     }
   };
 
