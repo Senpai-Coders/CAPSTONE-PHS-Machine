@@ -67,6 +67,25 @@ Human **cannot** see infrared on the naked eye. But we can **feel** it in the fo
 
 PHS uses **Fan & Mist** to help reduce the pigs body **temperature**. PHS decide when to activate these components depending on the analyzed data from the camera & thermal camera.
 
+### Custom CNN for identifying **Heat Stress**
+
+PHS implements custom made **CNN** classify between HeatStress & Normal. It is trained with **5,072 Normal temperature** & **5,072 HeatStress tempareture**. The following graph shows the training accuracy & loss graph.
+
+<center>
+    <div style="display:flex; justify-content : evenly">
+        <img src="/docs/_media/accugraph.png">
+        <img src="/docs/_media/lossgraph.png">    
+    </div>
+</center>
+
+<center>
+    <sub><sup>(Training/Validation) Accuracy Graph & Loss Graph</sup></sub>
+</center>
+
+<center>
+</center>
+
+
 ## The sensors
 
 ### MLX90640 Thermal(IR) Camera
