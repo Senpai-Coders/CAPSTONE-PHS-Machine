@@ -1,326 +1,327 @@
 {
     "DEFAULT_USERS": [
-      {
-        "user_name": "PHS",
-        "photo": "pig.png",
-        "password": "$2a$10$Vl27DB4G4SrJp0YKpqmtl.q5vebNpHQy2StjA30Lw3DqRQjxFAlnK",
-        "role": 3,
-        "login_count": 1,
-        "email" : "jsparagas1@student.fatima.edu.ph",
-        "toNotify" : false
-      }
+        {
+            "user_name": "PHS",
+            "photo": "pig.png",
+            "password": "$2a$10$Vl27DB4G4SrJp0YKpqmtl.q5vebNpHQy2StjA30Lw3DqRQjxFAlnK",
+            "role": 3,
+            "login_count": 1,
+            "email": "jsparagas1@student.fatima.edu.ph",
+            "toNotify": false
+        }
     ],
     "DEFAULT_CONFIGS": [
-      {
-        "category": "config",
-        "config_name": "identity",
-        "description": "Unique Identity Of phs",
-        "value": {
-          "server_name": "PHS A1",
-          "type": "Standalone",
-          "Yolo_Weights": {
-            "name": "Yolov5 Weight - Pig Detection v1.0",
-            "path": "models/weights/yolo/best.pt",
-            "for": "yolo"
-          },
-          "Heat_Stress_Weights": {
-            "name": "Heat Stress mai_Net_v1.0.h5",
-            "path": "models/weights/maiCNNet/mai_Net.h5",
-            "for": "heatstress"
-          }
+        {
+            "category": "config",
+            "config_name": "identity",
+            "description": "Unique Identity Of phs",
+            "value": {
+                "server_name": "PHS A1",
+                "type": "Standalone",
+                "Yolo_Weights": {
+                    "name": "Yolov5 Weight - Pig Detection v1.0",
+                    "path": "models/weights/yolo/best.pt",
+                    "for": "yolo"
+                },
+                "Heat_Stress_Weights": {
+                    "name": "Heat Stress mai_Net_v1.0.h5",
+                    "path": "models/weights/maiCNNet/mai_Net.h5",
+                    "for": "heatstress"
+                }
+            },
+            "disabled": false,
+            "deletable": false
         },
-        "disabled": false,
-        "deletable": false
-      },
-      {
-        "category": "update",
-        "config_name": "update_stamp",
-        "description": "This will update phs system infos forced",
-        "value": "1659839703437",
-        "disabled": false,
-        "deletable": true
-      },
-      {
-        "category": "config",
-        "config_name": "DetectionMode",
-        "description": "Specify How PHS will identify heat stress",
-        "value": {
-          "mode": false,
-          "temperatureThreshold": "38.6"
+        {
+            "category": "update",
+            "config_name": "update_stamp",
+            "description": "This will update phs system infos forced",
+            "value": "1659839703437",
+            "disabled": false,
+            "deletable": true
         },
-        "disabled": false,
-        "deletable": true
-      },
-      {
-        "category": "config",
-        "config_name": "storageAutoDelete",
-        "description": "Specify if PHS will auto delete old records",
-        "value": false,
-        "disabled": false,
-        "deletable": false
-      },
-      {
-        "category": "config",
-        "config_name": "divisions",
-        "description": "Specifies how many parts the visible area of piggery can be divided",
-        "value": {
-          "col": 4,
-          "row": 2
+        {
+            "category": "config",
+            "config_name": "DetectionMode",
+            "description": "Specify How PHS will identify heat stress",
+            "value": {
+                "mode": false,
+                "temperatureThreshold": "38.6"
+            },
+            "disabled": false,
+            "deletable": true
         },
-        "disabled": false,
-        "deletable": false
-      },
-  
-      {
-        "category": "models",
-        "config_name": "Yolov5 Weight - Pig Detection v1.0",
-        "description": "Weights are the learning version of the AI, this can be change when PHS release new update that include new weights on the PHS repository",
-        "value": {
-          "name": "Yolov5 Weight - Pig Detection v1.0",
-          "path": "models/weights/yolo/best.pt",
-          "for": "yolo"
+        {
+            "category": "config",
+            "config_name": "storageAutoDelete",
+            "description": "Specify if PHS will auto delete old records",
+            "value": false,
+            "disabled": false,
+            "deletable": false
         },
-        "deletable": false
-      },
-      {
-        "category": "models",
-        "config_name": "Heat Stress mai_Net_v1.0.h5",
-        "description": "This defined where the trained PHS CNN for identifying heat stress will be found.",
-        "value": {
-          "name": "Heat Stress mai_Net_v1.0.h5",
-          "path": "models/weights/maiCNNet/mai_Net.h5",
-          "for": "heatstress"
+        {
+            "category": "config",
+            "config_name": "divisions",
+            "description": "Specifies how many parts the visible area of piggery can be divided",
+            "value": {
+                "col": 4,
+                "row": 2
+            },
+            "disabled": false,
+            "deletable": false
         },
-        "deletable": false
-      },
-  
-      {
-        "category": "actions",
-        "config_name": "Cell 1 Mist Valve",
-        "description": "This will be utilized by the AI",
-        "value": {
-          "targets": [
-            {
-              "target_relay": "4",
-              "duration": 5
-            }
-          ],
-          "caller": "Heat Stress Detector",
-          "forceActivate": false,
-          "eventLocation": 1
+        {
+            "category": "models",
+            "config_name": "Yolov5 Weight - Pig Detection v1.0",
+            "description": "Weights are the learning version of the AI, this can be change when PHS release new update that include new weights on the PHS repository",
+            "value": {
+                "name": "Yolov5 Weight - Pig Detection v1.0",
+                "path": "models/weights/yolo/best.pt",
+                "for": "yolo"
+            },
+            "deletable": false
         },
-        "deletable": false
-      },{
-          "category": "actions",
-          "config_name": "Cell 2 Mist Valve",
-          "description": "This will be utilized by the AI",
-          "value": {
-            "targets": [
-              {
-                "target_relay": "14",
-                "duration": 5
-              }
-            ],
-            "caller": "Heat Stress Detector",
-            "forceActivate": false,
-            "eventLocation": 2
-          },
-          "deletable": false
-        },{
-          "category": "actions",
-          "config_name": "Cell 3 Mist Valve",
-          "description": "This will be utilized by the AI",
-          "value": {
-            "targets": [
-              {
-                "target_relay": "15",
-                "duration": 5
-              }
-            ],
-            "caller": "Heat Stress Detector",
-            "forceActivate": false,
-            "eventLocation": 3
-          },
-          "deletable": false
-        },{
-          "category": "actions",
-          "config_name": "Cell 4 Mist Valve",
-          "description": "This will be utilized by the AI",
-          "value": {
-            "targets": [
-              {
-                "target_relay": "18",
-                "duration": 5
-              }
-            ],
-            "caller": "Heat Stress Detector",
-            "forceActivate": false,
-            "eventLocation": 4
-          },
-          "deletable": false
-        },{
-          "category": "actions",
-          "config_name": "Cell 5 Mist Valve",
-          "description": "This will be utilized by the AI",
-          "value": {
-            "targets": [
-              {
-                "target_relay": "17",
-                "duration": 5
-              }
-            ],
-            "caller": "Heat Stress Detector",
-            "forceActivate": false,
-            "eventLocation": 5
-          },
-          "deletable": false
-        },{
-          "category": "actions",
-          "config_name": "Cell 6 Mist Valve",
-          "description": "This will be utilized by the AI",
-          "value": {
-            "targets": [
-              {
-                "target_relay": "27",
-                "duration": 5
-              }
-            ],
-            "caller": "Heat Stress Detector",
-            "forceActivate": false,
-            "eventLocation": 6
-          },
-          "deletable": false
+        {
+            "category": "models",
+            "config_name": "Heat Stress mai_Net_v1.0.h5",
+            "description": "This defined where the trained PHS CNN for identifying heat stress will be found.",
+            "value": {
+                "name": "Heat Stress mai_Net_v1.0.h5",
+                "path": "models/weights/maiCNNet/mai_Net.h5",
+                "for": "heatstress"
+            },
+            "deletable": false
         },
-      {
-        "category": "actions",
-        "config_name": "Piggery Lights",
-        "description": "This will be utilized by the Dark Scene Detector",
-        "value": {
-          "targets": [
-            {
-              "target_relay": "25",
-              "duration": 50
-            }
-          ],
-          "caller": "Dark Scene Detector",
-          "forceActivate": true,
-          "eventLocation": 1
+        {
+            "category": "actions",
+            "config_name": "Cell 1 Mist Valve",
+            "description": "This will be utilized by the AI",
+            "value": {
+                "targets": [
+                    {
+                        "target_relay": "1",
+                        "duration": 5
+                    }
+                ],
+                "caller": "Heat Stress Detector",
+                "forceActivate": false,
+                "eventLocation": 1
+            },
+            "deletable": false
         },
-        "deletable": false
-      },
-      {
-        "category": "relays",
-        "config_name": "1",
-        "description": " - ",
-        "value": {
-          "GPIO_PIN": 4
+        {
+            "category": "actions",
+            "config_name": "Cell 2 Mist Valve",
+            "description": "This will be utilized by the AI",
+            "value": {
+                "targets": [
+                    {
+                        "target_relay": "2",
+                        "duration": 5
+                    }
+                ],
+                "caller": "Heat Stress Detector",
+                "forceActivate": false,
+                "eventLocation": 2
+            },
+            "deletable": false
         },
-        "disabled": false,
-        "deletable": false
-      },
-      {
-        "category": "relays",
-        "config_name": "2",
-        "description": " - ",
-        "value": {
-          "GPIO_PIN": 14
+        {
+            "category": "actions",
+            "config_name": "Cell 3 Mist Valve",
+            "description": "This will be utilized by the AI",
+            "value": {
+                "targets": [
+                    {
+                        "target_relay": "3",
+                        "duration": 5
+                    }
+                ],
+                "caller": "Heat Stress Detector",
+                "forceActivate": false,
+                "eventLocation": 3
+            },
+            "deletable": false
         },
-        "disabled": false,
-        "deletable": false
-      },
-      {
-        "category": "relays",
-        "config_name": "3",
-        "description": " - ",
-        "value": {
-          "GPIO_PIN": 15
+        {
+            "category": "actions",
+            "config_name": "Cell 4 Mist Valve",
+            "description": "This will be utilized by the AI",
+            "value": {
+                "targets": [
+                    {
+                        "target_relay": "4",
+                        "duration": 5
+                    }
+                ],
+                "caller": "Heat Stress Detector",
+                "forceActivate": false,
+                "eventLocation": 4
+            },
+            "deletable": false
         },
-        "disabled": false,
-        "deletable": false
-      },
-      {
-        "category": "relays",
-        "config_name": "4",
-        "description": " - ",
-        "value": {
-          "GPIO_PIN": 17
+        {
+            "category": "actions",
+            "config_name": "Pump",
+            "description": "Pumps water to the mists",
+            "value": {
+                "targets": [
+                    {
+                        "target_relay": "5",
+                        "duration": 8
+                    }
+                ],
+                "caller": "Heat Stress Detector",
+                "forceActivate": true,
+                "eventLocation": 5
+            },
+            "deletable": false
         },
-        "disabled": false,
-        "deletable": false
-      },
-      {
-        "category": "relays",
-        "config_name": "5",
-        "description": " - ",
-        "value": {
-          "GPIO_PIN": 18
+        {
+            "category": "actions",
+            "config_name": "Fan",
+            "description": "Circulates Air",
+            "value": {
+                "targets": [
+                    {
+                        "target_relay": "6",
+                        "duration": 8
+                    }
+                ],
+                "caller": "Heat Stress Detector",
+                "forceActivate": true,
+                "eventLocation": 0
+            },
+            "deletable": false
         },
-        "disabled": false,
-        "deletable": false
-      },
-      {
-        "category": "relays",
-        "config_name": "6",
-        "description": " - ",
-        "value": {
-          "GPIO_PIN": 27
+        {
+            "category": "actions",
+            "config_name": "Piggery Lights",
+            "description": "This will be utilized by the Dark Scene Detector",
+            "value": {
+                "targets": [
+                    {
+                        "target_relay": "25",
+                        "duration": 50
+                    }
+                ],
+                "caller": "Dark Scene Detector",
+                "forceActivate": true,
+                "eventLocation": 1
+            },
+            "deletable": false
         },
-        "disabled": false,
-        "deletable": false
-      },
-      {
-        "category": "relays",
-        "config_name": "7",
-        "description": " - ",
-        "value": {
-          "GPIO_PIN": 22
+        {
+            "category": "relays",
+            "config_name": "1",
+            "description": " - ",
+            "value": {
+                "GPIO_PIN": 4
+            },
+            "disabled": false,
+            "deletable": false
         },
-        "disabled": false,
-        "deletable": false
-      },
-      {
-        "category": "relays",
-        "config_name": "8",
-        "description": " - ",
-        "value": {
-          "GPIO_PIN": 23
+        {
+            "category": "relays",
+            "config_name": "2",
+            "description": " - ",
+            "value": {
+                "GPIO_PIN": 14
+            },
+            "disabled": false,
+            "deletable": false
         },
-        "disabled": false,
-        "deletable": false
-      },
-      {
-        "category": "relays",
-        "config_name": "9",
-        "description": " - ",
-        "value": {
-          "GPIO_PIN": 24
+        {
+            "category": "relays",
+            "config_name": "3",
+            "description": " - ",
+            "value": {
+                "GPIO_PIN": 15
+            },
+            "disabled": false,
+            "deletable": false
         },
-        "disabled": false,
-        "deletable": false
-      },
-      {
-        "category": "relays",
-        "config_name": "10",
-        "description": " - ",
-        "value": {
-          "GPIO_PIN": 25
+        {
+            "category": "relays",
+            "config_name": "4",
+            "description": " - ",
+            "value": {
+                "GPIO_PIN": 17
+            },
+            "disabled": false,
+            "deletable": false
         },
-        "disabled": false,
-        "deletable": false
-      }
+        {
+            "category": "relays",
+            "config_name": "5",
+            "description": " - ",
+            "value": {
+                "GPIO_PIN": 18
+            },
+            "disabled": false,
+            "deletable": false
+        },
+        {
+            "category": "relays",
+            "config_name": "6",
+            "description": " - ",
+            "value": {
+                "GPIO_PIN": 27
+            },
+            "disabled": false,
+            "deletable": false
+        },
+        {
+            "category": "relays",
+            "config_name": "7",
+            "description": " - ",
+            "value": {
+                "GPIO_PIN": 22
+            },
+            "disabled": false,
+            "deletable": false
+        },
+        {
+            "category": "relays",
+            "config_name": "8",
+            "description": " - ",
+            "value": {
+                "GPIO_PIN": 23
+            },
+            "disabled": false,
+            "deletable": false
+        },
+        {
+            "category": "relays",
+            "config_name": "9",
+            "description": " - ",
+            "value": {
+                "GPIO_PIN": 24
+            },
+            "disabled": false,
+            "deletable": false
+        },
+        {
+            "category": "relays",
+            "config_name": "10",
+            "description": " - ",
+            "value": {
+                "GPIO_PIN": 25
+            },
+            "disabled": false,
+            "deletable": false
+        }
     ],
     "DEFAULT_DETECTS": [],
     "DEFAULT_NOTIFICATIONS": [
-      {
-        "notification_type": "notify",
-        "title": "Welcome To PHS",
-        "message": "Welcome to phs, you can read the full manual bellow to get started.",
-        "priority": 0,
-        "links": [
-        ],
-        "seenBy": [],
-        "date": ""
-      }
+        {
+            "notification_type": "notify",
+            "title": "Welcome To PHS",
+            "message": "Welcome to phs, you can read the full manual bellow to get started.",
+            "priority": 0,
+            "links": [],
+            "seenBy": [],
+            "date": ""
+        }
     ]
-  }
-  
+}
