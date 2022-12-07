@@ -82,10 +82,6 @@ PHS implements custom made **CNN** classify between HeatStress & Normal. It is t
     <sub><sup>(Training/Validation) Accuracy Graph & Loss Graph</sup></sub>
 </center>
 
-<center>
-</center>
-
-
 ## The sensors
 
 ### MLX90640 Thermal(IR) Camera
@@ -115,3 +111,9 @@ MLX90640 can be used in **Arduino boards** and in **Raspberry Pi**. The sensor c
 PHS also uses a camera to properly identify the pigs. The camera matches the **110° FOV** of thermal camera. The images from this camera are then feed to **Yolov5** object detection model. The model then returns **coordinates** where the system extract the data from the same coordinates in the thermal camera's thermal data.
 
 > We both modified this cameras & combine it in a single casing to achieve thesame FOV alignment that will produce identical aligned image & thermal image.
+
+## Contribute
+
+We are open for contribution if you have a better idea to improve the system. We made the datas available here. 
+
+[Training Data](https://drive.google.com/file/d/17bbhedv_F0g8ObiGROWZ2qk1pJOwnOos/view?usp=sharing)
