@@ -23,6 +23,7 @@
     "formidable": "^2.0.1",
     "framer-motion": "^6.3.3",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.4",
     "mongoose": "^6.3.2",
     "next": "12.1.5",
     "nextjs-cors": "^2.1.1",

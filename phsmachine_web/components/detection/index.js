@@ -5,7 +5,9 @@ import { IoReloadCircleSharp, IoTrashBinSharp } from "react-icons/io5";
 import { GoPrimitiveDot } from "react-icons/go";
 import { BiExport, BiSearchAlt } from "react-icons/bi";
 
-import { dateToWord } from "../../helpers";
+import { toast } from "react-toastify"
+
+import { getDateAgo, dateMomentBeautify } from "../../helpers";
 import { DeleteConfirm, InfoCustom, ExportConfirm } from "../modals";
 import { RangePick, SinglePick } from "../DatePick";
 
@@ -23,6 +25,7 @@ const index = () => {
   const [toDate, setToDate] = useState(new Date());
   const [dateChanged, setDateChange] = useState(false);
   const [searchId, setSearchId] = useState("");
+  const [lastRecord, setLastRecord] = useState(false)
 
   const filterDateRange = (from, to, date) => {
     let FROM = new Date(from);
@@ -75,6 +78,7 @@ const index = () => {
         // setDetections(filterData(det));
         // setCopDet(det);
       //   setLoading(false);
+      let limit = 100
 
       const response = fetch("/api/phs/detection", {
         method: "POST",
@@ -84,13 +88,26 @@ const index = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          mode : 0
+          mode : 6,
+          limit,
+          filter : {
+            _id : { $nin : detections.map((dt) => dt._id ) }
+          }
         }),
       })
         .then((response) => response.json())
         .then((data) => {
-            setDetections(filterData(data.detection_data));
-            setCopDet(data.detection_data);
+            let newData = filterData([...data, ...detections])
+
+            if(data.length === 0 || data.length < limit) {
+                setLastRecord(true)
+                if(data.length < limit) toast(`Last ${data.length} records retrieved`, {position: toast.POSITION.BOTTOM_RIGHT,});
+                else toast(`No more records to retrieve`, {position: toast.POSITION.BOTTOM_RIGHT,});
+                setLoading(false)
+                return;
+            }else toast.success(`Retrieved ${newData.length} records`, {position: toast.POSITION.BOTTOM_RIGHT,});
+            setDetections(newData);
+            setCopDet(data);
             setLoading(false);
         });
     } catch (e) {
@@ -179,12 +196,14 @@ const index = () => {
       {/** MENU */}
       <div className="px-4 ">
         <div className="flex md:space-x-2 items-center flex-wrap justify-start">
-          <p className="btn btn-sm mr-2 md:mr-0" onClick={() => init()}>
+          <button disabled={lastRecord} className="btn btn-sm mr-2 md:mr-0" onClick={() => {
+            init()
+          }}>
             <IoReloadCircleSharp
               className={`mr-2 ${loading ? "animate-spin" : ""}`}
             />
-            Refresh{" "}
-          </p>
+            Load more{" "}
+          </button>
 
           <div className="dropdown mr-2 md:mr-0 dropdown-hover">
             <label tabIndex="0" className="btn btn-sm">
@@ -318,6 +337,8 @@ const index = () => {
               </button>
             </div>
           </div>
+
+          <p className="text-xs opacity-30">showing {detections.length} detections</p>
         </div>
       </div>
 
@@ -328,9 +349,9 @@ const index = () => {
               <th>
                 <input
                   checked={
-                    selected.length === detections.length &&
-                    detections.length !== 0 &&
-                    !loading
+                    !loading && selected.length === detections.length &&
+                    detections.length !== 0
+                    
                   }
                   onChange={(e) => {
                     if (e.target.checked) {
@@ -390,11 +411,7 @@ const index = () => {
                   </td>
                   <td className="">
                     <div className="flex items-center">
-                      <p className="text-base font-medium text-center truncate">
-                        {detection.uat
-                          ? dateToWord(detection.uat)
-                          : dateToWord(new Date())}
-                      </p>
+                      <p className="text-sm">{dateMomentBeautify(detection.cat, "MMM Do YYYY, h:mm a")} <span className="text-xs font-medium opacity-50">({getDateAgo(new Date(), new Date(detection.cat))} days ago)</span></p>
                     </div>
                   </td>
                   <td>
@@ -446,6 +463,7 @@ const index = () => {
         {loading && (
           <p className="text-sm my-2 text-center">loading please wait..</p>
         )}
+
       </div>
 
       {!loading && detections.length === 0 && (
@@ -453,6 +471,7 @@ const index = () => {
           There are 0 detections
         </p>
       )}
+
     </div>
   );
 };

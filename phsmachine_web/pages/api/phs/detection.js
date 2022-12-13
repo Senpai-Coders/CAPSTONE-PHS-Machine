@@ -10,7 +10,7 @@ dbConnect();
 
 const handler = async (req, res) => {
   try {
-    const { mode, detection_id, updates, path, toExport } = req.body;
+    const { mode, detection_id, updates, path, toExport, filter, limit } = req.body;
     if (mode === 0) {
       const detData = await detections.find({}).sort({cat : -1});
       logger.info("Retrieved all detections");
@@ -158,6 +158,10 @@ const handler = async (req, res) => {
     } else if (mode === 5){
         const todays = await detections.find({_id : { $gt : ObjectId(Math.floor(new Date(new Date().getFullYear()+'/'+(new Date().getMonth()+1)+'/'+new Date().getDate())/1000).toString(16)+"0000000000000000") }})
         return res.status(200).json(todays)
+    }else if(mode === 6){
+        console.log(filter, limit)
+        const filtered = await detections.find({...filter}).limit(limit)
+        return res.status(200).json(filtered)
     }
   } catch (e) {
     console.log(e);

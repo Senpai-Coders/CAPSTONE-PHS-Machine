@@ -28,6 +28,7 @@ import {
   setCamMode,
   localErrorAdd,
   localErrorRemoveCode,
+  dateMomentBeautify
 } from "../helpers";
 
 import { GiPig } from "react-icons/gi";
@@ -123,7 +124,7 @@ export default function Home() {
           priority: 0,
           links: [
             {
-              link: `http://${PI_IP}:3001/`,
+              link: `http://${PI_IP}:3001/#/_page_error_codes?id=error-code-0`,
               link_mode: false,
               link_short: "/",
             },
@@ -330,7 +331,7 @@ export default function Home() {
                     </p>
                   </div>
                   <div className="mx-4  mb-4 flex justify-between itms-center">
-                    <p className="text-error"> { todays.length() } Heat Stress Detection </p>
+                    <p className="text-error"> { todays.length } Heat Stress Detection </p>
                   </div>
                 </div>
               </div>

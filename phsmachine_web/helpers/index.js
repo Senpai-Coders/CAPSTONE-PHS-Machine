@@ -1,4 +1,5 @@
 import axios from "axios";
+var moment = require('moment'); 
 
 import { BsFillShieldLockFill, BsFillShieldFill } from "react-icons/bs";
 import { FaUserAlt, FaConnectdevelop } from "react-icons/fa";
@@ -255,3 +256,17 @@ export const getMonthName = (date) => {
 export const dateMwDDYYYY = (date) => {
   return `${getMonthName(date)} ${date.getDate()}, ${date.getFullYear()}`;
 };
+
+export const dateMomentBeautify = ( date, format) => {
+    //"MMMM Do YYYY, h:mm a"
+    return moment(
+        date
+      ).format(format)
+}
+
+export const getDateAgo = (current, given) => {
+    let a = moment(current);
+    let b = moment(given);
+
+    return a.diff(b, "days");
+  };

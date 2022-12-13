@@ -42,7 +42,7 @@ const handler = async (req, res) => {
       },
       links: [
         {
-          link: `http://${PI_IP}:3001/`,
+          link: `http://${PI_IP}:3001/#/_page_error_codes?id=error-code-1`,
           link_short: "",
           link_mode: false,
         },

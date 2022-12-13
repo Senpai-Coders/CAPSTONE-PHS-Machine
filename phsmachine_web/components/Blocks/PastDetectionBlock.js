@@ -1,7 +1,7 @@
 // import { FiHardDrive } from "react-icons/fi";
 import { useRouter } from "next/router";
 import { FaEye } from "react-icons/fa";
-import { appendToFSUrl } from "../../helpers/"
+import { appendToFSUrl, dateMomentBeautify, getDateAgo } from "../../helpers/"
 
 const PastDetectionBlock = ({ pastDetection }) => {
   const router = useRouter();
@@ -22,22 +22,22 @@ const PastDetectionBlock = ({ pastDetection }) => {
           {pastDetection.map((det, idx) => (
             <li
               key={idx}
-              className="flex items-center text-gray-400 justify-between py-3 border-b-2 border-gray-700"
+              onClick={()=>{router.push(`/detection_details?_id=${det._id}`)}}
+              className="flex items-center cursor-pointer duration-150 ease-in-out justify-between py-3 border-b-2 border-gray-700 hover:bg-base-300 "
             >
               <div className="flex items-center justify-start text-sm">
-                <span className="mx-4">{idx + 1}</span>
+                {/* <span className="mx-4">{idx + 1}</span> */}
                 <img className="h-8 w-8" src={appendToFSUrl(det.img_annotated)} />
-                <span className=""></span>
+              </div>
+              <div className="">
+                  <p className="text-sm">{dateMomentBeautify(det.cat, "MMM Do YYYY, h:mm a")}</p>
+                  <p className="text-xs">({getDateAgo(new Date(), new Date(det.cat))} days ago)</p>
               </div>
               <div
                 className="tooltip tooltip-left"
                 data-tip="View Detection Info"
               >
-                <a
-                  onClick={() =>
-                    router.push(`/detection_details?_id=${det._id}`)
-                  }
-                >
+                <a>
                   <FaEye className="text-secondary w-4 h-4 mr-2 cursor-pointer" />
                 </a>
               </div>
@@ -53,7 +53,7 @@ const PastDetectionBlock = ({ pastDetection }) => {
           {pastDetection.length === 10 && (
             <li className="text-center my-2">
               <a
-                onClick={() => router.push("/detections")}
+              onClick={() => router.push("/detections")}
                 className="text-primary text-sm cursor-pointer"
               >
                 View More Records

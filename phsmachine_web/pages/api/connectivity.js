@@ -58,7 +58,7 @@ const handler = async (req, res) => {
         priority: 0,
         links: [
             {
-            link: `http://${PI_IP}:3001/`,
+            link: `http://${PI_IP}:3001/#/_page_error_codes?id=error-code-3`,
             link_short: "",
             link_mode: false,
             },
