@@ -490,7 +490,6 @@ def detectHeatStress():
             
             # FEEDING IMAGE FOR FINDING THE PIG LOCATION ON PICTURE USING YOLOV5s 
             #print("🟠 YoloV5 Detecting Pig 🐷")
-            print("FEEDING normal image ", to_read.shape)
             detect_pig_head = Yolov5_PHD(to_read) 
             #print("🟢 YoloV5 Detection Complete")
             #print("🗃  Returned Bbox", detect_pig_head)
@@ -560,6 +559,7 @@ def detectHeatStress():
                     detect_annotation = drawText(detect_annotation, x1, y2 - 10,  "%.2f C" % (max_temp), chosenColor, font, 0.5)
 
                     if(DETECTION_MODE):
+                        converted_img = cv2.cvtColor(converted_img,cv2.COLOR_GRAY2RGB)
                         identify_pig_stress = PHS_CNN.predict(converted_img)
                         classification = classes[np.argmax(identify_pig_stress)]
                         # TODO # NOTE Remove 'np.max <=39.0' On Final Training of PHS Detector
