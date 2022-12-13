@@ -483,12 +483,14 @@ def detectHeatStress():
             # DETECT IF SCENE IS DARK
             # CALL ALL ACTION THAT IS BIND TO DARK SCENE EVENT
             # TODO
-            Dark_Scene_Detector = isDarkScene(to_read) 
-            if Dark_Scene_Detector :
-                curACTIONS = activateCategory(curACTIONS, "Dark Scene Detector", True, 0)
+            if SYSTEM_STATE['status'] != 2:
+                Dark_Scene_Detector = isDarkScene(to_read) 
+                if Dark_Scene_Detector  :
+                    curACTIONS = activateCategory(curACTIONS, "Dark Scene Detector", True, 0)
             
             # FEEDING IMAGE FOR FINDING THE PIG LOCATION ON PICTURE USING YOLOV5s 
             #print("🟠 YoloV5 Detecting Pig 🐷")
+            print("FEEDING normal image ", to_read.shape)
             detect_pig_head = Yolov5_PHD(to_read) 
             #print("🟢 YoloV5 Detection Complete")
             #print("🗃  Returned Bbox", detect_pig_head)
@@ -599,8 +601,6 @@ def detectHeatStress():
                     maxs.append(max_temp)
 
                 curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
-                print(datetime.today())
-                print(f"TIME {curt}")
 
                 if detected and True:
                     overal_min_temp = sum(mins) / len(mins)
