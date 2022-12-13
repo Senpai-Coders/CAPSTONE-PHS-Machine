@@ -541,7 +541,7 @@ def detectHeatStress():
                     cpy_thrm_crop_raw = c_Raw_Reshaped[y1:y2, x1:x2]
 
                     # detection = CNN ( RAW THERMAL )
-                    converted_img = conv_img(cpy_thrm_crop_raw)
+                    # converted_img = conv_img(cpy_thrm_crop_raw)
 
                     # DETECTION_MODE=False
                     # TEMPERATURE_THRESHOLD=0
@@ -559,7 +559,8 @@ def detectHeatStress():
                     detect_annotation = drawText(detect_annotation, x1, y2 - 10,  "%.2f C" % (max_temp), chosenColor, font, 0.5)
 
                     if(DETECTION_MODE):
-                        keras_img = converted_img
+                        # keras_img = converted_img
+                        keras_img = cpy_thrm_crop_raw
                         keras_img = cv2.resize(keras_img, (128, 128))
                         img_tensor = tf.keras.preprocessing.image.img_to_array(keras_img)
                         img_tensor /= 255. 
