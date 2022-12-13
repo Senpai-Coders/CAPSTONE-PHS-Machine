@@ -559,7 +559,6 @@ def detectHeatStress():
                     detect_annotation = drawText(detect_annotation, x1, y2 - 10,  "%.2f C" % (max_temp), chosenColor, font, 0.5)
 
                     if(DETECTION_MODE):
-                        converted_img = cv2.cvtColor(converted_img,cv2.COLOR_GRAY2RGB)
                         identify_pig_stress = PHS_CNN.predict(converted_img)
                         classification = classes[np.argmax(identify_pig_stress)]
                         # TODO # NOTE Remove 'np.max <=39.0' On Final Training of PHS Detector
