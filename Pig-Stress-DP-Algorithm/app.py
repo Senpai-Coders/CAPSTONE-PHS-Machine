@@ -559,8 +559,14 @@ def detectHeatStress():
                     detect_annotation = drawText(detect_annotation, x1, y2 - 10,  "%.2f C" % (max_temp), chosenColor, font, 0.5)
 
                     if(DETECTION_MODE):
-                        identify_pig_stress = PHS_CNN.predict(converted_img)
-                        classification = classes[np.argmax(identify_pig_stress)]
+                        keras_img = converted_img
+                        keras_img = cv2.resize(keras_img, (128, 128))
+                        img_tensor = tf.keras.preprocessing.image.img_to_array(keras_img)
+                        img_tensor /= 255. 
+
+                        res = PHS_CNN.predict(np.array(img_tensor).reshape(-1, 128, 128, 1))
+                        
+                        classification = classes[round(float(np.squeeze(res)))]
                         # TODO # NOTE Remove 'np.max <=39.0' On Final Training of PHS Detector
                         if classification == classes[1]:
                             #img, x, y, text, color, font, font_size
