@@ -155,6 +155,9 @@ const handler = async (req, res) => {
       res
         .status(200)
         .json({ downloadLinks: links.filter((ln) => ln.link.length > 0) });
+    } else if (mode === 5){
+        const todays = await detections.find({_id : { $gt : ObjectId(Math.floor(new Date(new Date().getFullYear()+'/'+(new Date().getMonth()+1)+'/'+new Date().getDate())/1000).toString(16)+"0000000000000000") }})
+        return res.status(200).json(todays)
     }
   } catch (e) {
     console.log(e);

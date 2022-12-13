@@ -61,7 +61,8 @@ export default function Home() {
     min_temp: "-",
     actions: [],
   });
-
+  
+  const [todays, setTodays] = useState([])
   const [timeOutCount, setTimeOutCount] = useState(0);
 
   const [exited, setExited] = useState(false);
@@ -143,12 +144,15 @@ export default function Home() {
       const db_past_detections = await axios.post("/api/phs/detection", {
         mode: 3,
       });
-
+      const db_todays = await axios.post("/api/phs/detection", {
+        mode: 5
+      });
       const phs_storage = await axios.post("/api/phs/phs_storage", {});
       setPhsStorage(phs_storage.data.storage);
       setDbActions(db_actions.data.actions);
       setDbActiveUsers(db_active_users.data.activeUsers);
       setPastDetection(db_past_detections.data.detections);
+      setTodays(db_todays)
       localErrorRemoveCode(1);
     } catch (e) {
       if (e.message == "Network Error")
@@ -326,7 +330,7 @@ export default function Home() {
                     </p>
                   </div>
                   <div className="mx-4  mb-4 flex justify-between itms-center">
-                    <p className="text-error"> {1} Heat Stress Detection </p>
+                    <p className="text-error"> { todays.length() } Heat Stress Detection </p>
                   </div>
                 </div>
               </div>
