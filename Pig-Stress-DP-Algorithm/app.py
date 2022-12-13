@@ -565,8 +565,8 @@ def detectHeatStress():
                         img_tensor /= 255. 
 
                         res = PHS_CNN.predict(np.array(img_tensor).reshape(-1, 128, 128, 1))
-                        
                         classification = classes[round(float(np.squeeze(res)))]
+                        
                         # TODO # NOTE Remove 'np.max <=39.0' On Final Training of PHS Detector
                         if classification == classes[1]:
                             #img, x, y, text, color, font, font_size
