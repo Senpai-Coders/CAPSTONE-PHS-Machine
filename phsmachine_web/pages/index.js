@@ -27,9 +27,10 @@ import {
   getCamMode,
   setCamMode,
   localErrorAdd,
-  localErrorRemoveCode,
-  dateMomentBeautify
+  localErrorRemoveCode
 } from "../helpers";
+
+import { dateMomentBeautify } from "../helpers/dynamicHelper"
 
 import { GiPig } from "react-icons/gi";
 import { BsHash } from "react-icons/bs";

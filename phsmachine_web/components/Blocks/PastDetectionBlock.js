@@ -1,7 +1,8 @@
 // import { FiHardDrive } from "react-icons/fi";
 import { useRouter } from "next/router";
 import { FaEye } from "react-icons/fa";
-import { appendToFSUrl, dateMomentBeautify, getDateAgo } from "../../helpers/"
+import { appendToFSUrl } from "../../helpers/"
+import { dateMomentBeautify, getDateAgo } from "../../helpers/dynamicHelper"
 
 const PastDetectionBlock = ({ pastDetection }) => {
   const router = useRouter();

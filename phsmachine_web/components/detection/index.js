@@ -7,7 +7,7 @@ import { BiExport, BiSearchAlt } from "react-icons/bi";
 
 import { toast } from "react-toastify"
 
-import { getDateAgo, dateMomentBeautify } from "../../helpers";
+import { dateMomentBeautify, getDateAgo } from "../../helpers/dynamicHelper"
 import { DeleteConfirm, InfoCustom, ExportConfirm } from "../modals";
 import { RangePick, SinglePick } from "../DatePick";
 
