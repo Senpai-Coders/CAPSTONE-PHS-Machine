@@ -498,7 +498,7 @@ def detectHeatStress():
         
             if len(coords) > 0:
                 curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
-                print(f"LENGTH {len(coords)}: TIME {curt}")
+                # print(f"LENGTH {len(coords)}: TIME {curt}")
                 detect_annotation = np.squeeze(detect_pig_head.render())
 
                 img_normal_cropped = []
