@@ -64,7 +64,7 @@
             "config_name": "divisions",
             "description": "Specifies how many parts the visible area of piggery can be divided",
             "value": {
-                "col": 4,
+                "col": 2,
                 "row": 2
             },
             "disabled": false,
