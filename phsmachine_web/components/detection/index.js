@@ -338,7 +338,7 @@ const index = () => {
             </div>
           </div>
 
-          <p className="text-xs opacity-30">showing {detections.length} detections</p>
+          <p className="text-xs opacity-50">showing {detections.length} detections</p>
         </div>
       </div>
 
@@ -373,9 +373,8 @@ const index = () => {
             </tr>
           </thead>
           <tbody className="">
-            {detections.map((detection) => (
-              <>
-                <tr
+            {detections.map((detection, i) => (
+                <tr key={i}
                   className={`hover:bg-base-300 border-b border-base-100 ${
                     selected.filter((id) => {
                       return id === detection._id;
@@ -456,7 +455,6 @@ const index = () => {
                     </button>
                   </td>
                 </tr>
-              </>
             ))}
           </tbody>
         </table>

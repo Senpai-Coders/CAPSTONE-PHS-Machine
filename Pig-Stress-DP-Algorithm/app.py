@@ -854,7 +854,7 @@ def updateJobs():
                 hasPrev = True
         if heatStressResolveJobs <= 0:
             curSysStatus = SYSTEM_STATE['status']
-            if curSysStatus not in [ -1, -2, 2 ]:
+            if curSysStatus != 2 or curSysStatus != -1 or curSysStatus != -2 :
                 SYSTEM_STATE['status'] = 0
 
 def isDarkScene(image):

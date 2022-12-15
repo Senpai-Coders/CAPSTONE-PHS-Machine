@@ -17,10 +17,11 @@ const index = ({
     dateYYYYMMDD(new Date(), "-")
   );
   const [showModal, setShowModal] = useState(-1);
+  const [min, setMin] = useState(0);
+  const [max, setMax] = useState(10);
 
   const [data, setData] = useState([
-    ["2022-01-06", 14],
-    ["2022-01-04", 5],
+
   ]);
 
   const findFromDatas = (datas, dateString) => {
@@ -32,17 +33,33 @@ const index = ({
 
   const parseData = () => {
     let datas = [];
+
     detections.forEach((det) => {
       let date = det.cat ? new Date(det.cat) : new Date();
       let dString = dateYYYYMMDD(date, "-");
       let idx = findFromDatas(datas, dString);
       if (idx === -1) datas.push([dString, 1]);
       else datas[idx][1] += 1;
-
       // if(idx === -1)  datas.push({ name : dString, value : 1 })
       // else datas[idx].value += 1
     });
 
+    let m = min, mx = max
+
+    datas.forEach((e,i)=>{
+        if(i === 0){
+            m = e[1]
+            max = e[1]
+            return
+        }
+
+        if(m > e[1]) m = [1]
+        if(mx < e[1]) mx = e[1]
+
+    })
+
+    setMax(mx)
+    setMin(m)
     setData(datas);
   };
 
@@ -132,8 +149,8 @@ const index = ({
               //   },
               tooltip: {},
               visualMap: {
-                min: 0,
-                max: 50,
+                min,
+                max,
                 type: "piecewise",
                 calculable: true,
                 orient: "horizontal",
