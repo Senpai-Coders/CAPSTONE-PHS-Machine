@@ -105,7 +105,7 @@ const index = () => {
                 else toast(`No more records to retrieve`, {position: toast.POSITION.BOTTOM_RIGHT,});
                 setLoading(false)
                 return;
-            }else toast.success(`Retrieved ${data.length} more records`, {position: toast.POSITION.BOTTOM_RIGHT, autoClose : 2000});
+            }else toast.success(`Retrieved`, {position: toast.POSITION.BOTTOM_RIGHT, autoClose : 2000});
             setDetections(newData);
             setCopDet(data);
             setLoading(false);

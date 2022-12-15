@@ -43,6 +43,8 @@ const index = () => {
 
   return (
     <div className="min-h-screen">
+      { loading && 
+      <p className="text-center mx-auto opacity-60 text-sm">loading data may take a while</p> }
       <CalendarHeatMap loading={loading} refresh={init} data={detections} />
       <div className="divider my-8"></div>
       <WeekDetection loading={loading} refresh={init} data={detections} />
