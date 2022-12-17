@@ -50,13 +50,17 @@ git clone "https://github.com/Senpai-Coders/CAPSTONE-PHS-Machine.git" ~/CAPSTONE
 cp .env.local ~/CAPSTONE-PHS-Machine/phsmachine_web;
 ```
 
-#### Enable Legacy Camera
+#### Enable i2c, Set i2c speed & enable i2c-rtc,ds3231
 ```
-sudo raspi-config nonint do_camera 0;
+echo -e "[all]\ndtoverlay=i2c-rtc,ds3231\ndtparam=i2c_arm=on,i2c_arm_baudrate=1000000\ngpu_mem=128" | sudo tee -a /boot/config.txt
 ```
-#### Edit this file ```/boot/config.txt``` and find ```dtparam=i2c_arm``` and change it to this
+
+#### Enable Real Time Clock (RTC) DS3231 on boot
 ```
-dtparam=i2c_arm=on, i2c_arm_baudrate=1000000
+sudo apt-get --purge remove fake-hwclock
+echo -e "i2c-dev\ni2c-bcm2708\nrtc-ds1307" | sudo tee -a /etc/modules
+echo -e "echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device" | sudo tee /etc/rc.local
+sudo hwclock -s
 ```
 
 #### Update Packages

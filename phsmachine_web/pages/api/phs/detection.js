@@ -156,10 +156,13 @@ const handler = async (req, res) => {
         .status(200)
         .json({ downloadLinks: links.filter((ln) => ln.link.length > 0) });
     } else if (mode === 5){
-        const todays = await detections.find({_id : { $gt : ObjectId(Math.floor(new Date(new Date().getFullYear()+'/'+(new Date().getMonth()+1)+'/'+new Date().getDate())/1000).toString(16)+"0000000000000000") }})
+        let strt = new Date();
+        let end = new Date();
+        strt.setHours(0,0,0,0)
+        end.setHours(23,59,59,999)
+        const todays = await detections.find({cat : { $gte : strt, $lt : end }}, {_id : 1})
         return res.status(200).json(todays)
     }else if(mode === 6){
-        console.log(filter, limit)
         const filtered = await detections.find({...filter}).limit(limit)
         return res.status(200).json(filtered)
     }

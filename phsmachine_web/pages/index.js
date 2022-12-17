@@ -154,7 +154,7 @@ export default function Home() {
       setDbActions(db_actions.data.actions);
       setDbActiveUsers(db_active_users.data.activeUsers);
       setPastDetection(db_past_detections.data.detections);
-      setTodays(db_todays)
+      setTodays(db_todays.data)
       localErrorRemoveCode(1);
     } catch (e) {
       if (e.message == "Network Error")
