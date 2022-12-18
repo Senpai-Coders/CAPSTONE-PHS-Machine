@@ -17,7 +17,6 @@ const genRandomDate = (month, year, sday, eday, shour, ehour) => {
 
 const handler = async (req, res) => {
   try {
-    console.log("Started")
     const dets = await detections.find({}, {_id : 1})
 
     const month = 11
@@ -34,12 +33,10 @@ const handler = async (req, res) => {
             cat : d,
             uat : d
         }})
-        console.log("\bUps "+dets[x]._id, upd)
     }
 
     return res.status(200).json("ok")
   } catch (e) {
-    console.log(e);
     res.status(500).json({ message: "Internal Server Error 😥" });
   }
 };
