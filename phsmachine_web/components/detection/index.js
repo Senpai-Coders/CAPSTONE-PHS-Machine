@@ -102,10 +102,9 @@ const index = () => {
         .then((response) => response.json())
         .then((data) => {
             let newData = filterData([...data, ...detections])
-            if(data.length === 0 || data.length < limit) {
+            if(data.length === 0 ) {
                 setLastRecord(true)
-                if(data.length < limit) toast(`Last ${data.length} records retrieved`, {position: toast.POSITION.BOTTOM_RIGHT, autoClose : 2000});
-                else toast(`No more records to retrieve`, {position: toast.POSITION.BOTTOM_RIGHT,});
+                toast(`No more records to retrieve`, {position: toast.POSITION.BOTTOM_RIGHT,});
                 setLoading(false)
                 return;
             }else toast.success(`Retrieved`, {position: toast.POSITION.BOTTOM_RIGHT, autoClose : 2000});
