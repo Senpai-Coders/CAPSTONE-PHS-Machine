@@ -143,6 +143,8 @@ const index = () => {
         ids,
       });
       setSelected([]);
+      setCopDet([]);
+      setDetections([])
       init();
     } catch (e) {
       console.log(e);
