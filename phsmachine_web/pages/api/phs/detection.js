@@ -82,11 +82,10 @@ const handler = async (req, res) => {
       let links = [];
 
       const data = await detections.find({});
-
       if (toExcel) {
         let parsedData = [];
-
-        data.forEach((data) => {
+        data.forEach((data, z) => {
+        console.log("iter ", z)
           parsedData.push({
             "Detection Date": new Intl.DateTimeFormat("en-US", {
               month: "2-digit",
@@ -99,7 +98,7 @@ const handler = async (req, res) => {
             "Min Temperature": data.data.min_temp.toFixed(2),
             "Average Temperature": data.data.avg_temp.toFixed(2),
             "Maximum Temperature": data.data.max_temp.toFixed(2),
-            "Actions Performed": data.actions.length,
+            "Actions Performed": data.actions ? data.actions.length : 0,
             "Raw Data Directory": data.img_normal.substring(
               data.img_normal.indexOf("/Dete") + 1,
               43
@@ -108,7 +107,7 @@ const handler = async (req, res) => {
           });
         });
 
-        const fileUrl = await ToExcel(parsedData);
+        let fileUrl = await ToExcel(parsedData);
         if (fileUrl.length > 0)
           links.push({ name: "Excel File", type: "xlsx", link: fileUrl });
         logger.info("Exported -> xlsx");
@@ -130,7 +129,7 @@ const handler = async (req, res) => {
             "Min Temperature": data.data.min_temp.toFixed(2),
             "Average Temperature": data.data.avg_temp.toFixed(2),
             "Maximum Temperature": data.data.max_temp.toFixed(2),
-            "Actions Performed": data.actions.length,
+            "Actions Performed": data.actions ? data.actions.length : 0,
             "Raw Data Directory": data.img_normal.substring(
               data.img_normal.indexOf("/Dete") + 1,
               43

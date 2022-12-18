@@ -41,7 +41,7 @@ const index = () => {
 
   const filterData = (data) => {
     let filtered = [];
-    if (dateMode === 0) filtered = data;
+    if (dateMode === 0 || searchId.length === 0) filtered = data;
 
     if (dateMode === 1) {
       data.forEach((det) => {
@@ -341,7 +341,14 @@ const index = () => {
                 placeholder="Detection ID"
                 className="input input-sm input-bordered"
               />
-              <button onClick={() => init()} className="btn btn-square btn-sm">
+              <button onClick={() => {
+                    if(searchId.length === 0){
+                        setDetections(filterData(copDet))
+                        return
+                    }
+                    setDetections(filterData(detections))
+                    // init()
+                }} className="btn btn-square btn-sm">
                 <BiSearchAlt className="text-xl" />
               </button>
             </div>
