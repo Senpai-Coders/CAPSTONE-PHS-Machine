@@ -36,6 +36,7 @@ const QuickControlsBlock = ({ state, setSelectedModal }) => {
           <RiRemoteControlLine className="w-7 h-7 text-secondary" />
           <p className="ml-2 font-bold text-md">PHS Quick Controls</p>
         </div>
+        {state === -2 && <p className="mx-auto text-error text-sm">system is off</p>}
         <div className="form-control mx-4 mb-4">
           <label className="label cursor-pointer">
             <span className="label-text">Debug Mode</span>
@@ -56,7 +57,7 @@ const QuickControlsBlock = ({ state, setSelectedModal }) => {
                 chooseState(0);
               }}
               disabled={state === -2 || state === 3 || state === 0}
-              checked={state === 0}
+              checked={state === 0 || state === 1}
               type="checkbox"
               className="toggle toggle-accent"
             />

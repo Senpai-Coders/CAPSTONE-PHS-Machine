@@ -41,7 +41,7 @@ const handler = async (req, res) => {
     } else if (mode === 3) {
       const past_detect = await detections
         .find({})
-        .sort({ img_normal: -1 })
+        .sort({ cat : -1 })
         .limit(10);
       res.status(200).json({ detections: past_detect });
     } else if (mode === -1) {
@@ -160,7 +160,7 @@ const handler = async (req, res) => {
         let end = new Date();
         strt.setHours(0,0,0,0)
         end.setHours(23,59,59,999)
-        const todays = await detections.find({cat : { $gte : strt, $lt : end }}, {_id : 1})
+        const todays = await detections.find({cat : { $gte : strt, $lt : end }}, {_id : 1}).sort({cat : -1})
         return res.status(200).json(todays)
     }else if(mode === 6){
         const filtered = await detections.find({...filter}).limit(limit)

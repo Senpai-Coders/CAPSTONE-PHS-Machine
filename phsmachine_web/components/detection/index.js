@@ -46,12 +46,11 @@ const index = () => {
     if (dateMode === 1) {
       data.forEach((det) => {
         let focObj = { ...det };
-        if (!det.cat) focObj = { ...det, cat: new Date() };
         if (filterDateEqual(fromDate, new Date(focObj.cat)))
           filtered.push(focObj);
       });
     }
-
+ 
     if (dateMode === 2) {
       data.forEach((det) => {
         let focObj = { ...det };
@@ -66,6 +65,11 @@ const index = () => {
         return data._id.includes(searchId);
       });
     }
+
+    filtered.sort((a,b)=>{
+        let A = new Date(a.cat), B = new Date(b.cat)
+        return A.getTime() > B.getTime() ? -1 : 1; 
+    })
 
     return filtered;
   };
@@ -91,14 +95,13 @@ const index = () => {
           mode : 6,
           limit,
           filter : {
-            _id : { $nin : detections.map((dt) => dt._id ) }
+            _id : { $nin : copDet.map((dt) => dt._id ) }
           }
         }),
       })
         .then((response) => response.json())
         .then((data) => {
             let newData = filterData([...data, ...detections])
-
             if(data.length === 0 || data.length < limit) {
                 setLastRecord(true)
                 if(data.length < limit) toast(`Last ${data.length} records retrieved`, {position: toast.POSITION.BOTTOM_RIGHT, autoClose : 2000});
@@ -218,8 +221,9 @@ const index = () => {
               <li>
                 <a
                   onClick={() => {
+                    setDetections([])
+                    setCopDet([])
                     setDateMode(0);
-                    setDetections(copDet);
                     init();
                   }}
                 >
@@ -229,6 +233,8 @@ const index = () => {
               <li>
                 <a
                   onClick={() => {
+                    setDetections([])
+                    setCopDet([])
                     setDateMode(1);
                   }}
                 >
@@ -238,6 +244,8 @@ const index = () => {
               <li>
                 <a
                   onClick={() => {
+                    setDetections([])
+                    setCopDet([])
                     setDateMode(2);
                   }}
                 >
