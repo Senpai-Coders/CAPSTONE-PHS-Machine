@@ -1001,7 +1001,7 @@ def printLcd(content, row):
         _LCD.text(content, row)
     except Exception as e:
         print(e)
-        LOGGER.error('Can\'t print to LCD')
+        LOGGER.error('Can\'t print to LCD ', e)
     finally:
         _LCD.clear()
 
