@@ -995,11 +995,15 @@ def safe_exit(signum, frame):
 def printLcd(content, row):
     global _LCD, _SELF_IP
     try:
+        signal(SIGTERM, safe_exit)
+        signal(SIGHUP, safe_exit)
         _LCD.text(f"3000", 2)
         _LCD.text(content, row)
     except Exception as e:
         print(e)
         LOGGER.error('Can\'t print to LCD')
+    finally:
+        _LCD.clear()
 
 def statusToString ( status ):
     if status == -1 : return 'Disabled'
