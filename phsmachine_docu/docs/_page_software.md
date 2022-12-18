@@ -59,7 +59,7 @@ echo -e "[all]\ndtoverlay=i2c-rtc,ds3231\ndtparam=i2c_arm=on,i2c_arm_baudrate=10
 ```
 sudo apt-get --purge remove fake-hwclock
 echo -e "i2c-dev\ni2c-bcm2708\nrtc-ds1307" | sudo tee -a /etc/modules
-echo -e "echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device" | sudo tee /etc/rc.local
+echo -e "echo ds1307 0x68 | sudo tee /sys/class/i2c-adapter/i2c-1/new_device" | sudo tee /etc/rc.local
 sudo hwclock -s
 ```
 
