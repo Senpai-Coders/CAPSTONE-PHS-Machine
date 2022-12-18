@@ -942,8 +942,6 @@ def loadDbConfig():
 
         if len(ACTION_STATE.actions) != len(actions):
             ACTION_STATE = a_controller(actions, ACTION_STATE.actions)
-
-        printLcd(f'{_SELF_IP}', 1);
         deleteErrorCode(2)
     except Exception as e:
         LOGGER.error(f"Error Loading ConfigDb -> {str(e)}")
@@ -1010,20 +1008,8 @@ def start_server():
     global _LCD, _SELF_IP, Yolov5_PHD, PHS_CNN, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL, WEIGHTS_DIR, PHS_CNN_DIR, LOGGER
     updateLoggerHandler()
     LOGGER.info('⏳ Starting PHS')
-    try:
-        signal(SIGTERM, safe_exit)
-        signal(SIGHUP, safe_exit)
-    except Exception as e: print(e)
 
-
-    try:
-        _LCD = LCD()
-        signal(SIGTERM, safe_exit)
-        signal(SIGHUP, safe_exit)
-        _LCD.clear()
-        printLcd("Starting PHS", 1);
-    except Exception as e:
-        LOGGER.error("SIGTERM, SIGHUP err")
+   
     
     CAM_NORMAL = Cam_Norm()
     time.sleep(1)
@@ -1046,14 +1032,12 @@ def start_server():
     }
     
     LOGGER.info('⏳ Pulling Configs From DB')
-    printLcd("Loading Configs", 1);
     loadDbConfig()
     LOGGER.info('Done Pulling Config')
     RAW_THERMAL = np.zeros((24*32,))        
 
     try:
         LOGGER.info(f"⏳ Loading Yolo V5 -> {WEIGHTS_DIR}")
-        printLcd("Loading Yolo", 1);
         Yolov5_PHD = torch.hub.load(
                 YOLO_DIR,
                 'custom',
@@ -1092,7 +1076,6 @@ def start_server():
     try:
         PHS_CNN = tf.keras.models.load_model(PHS_CNN_DIR)
         LOGGER.info("Loaded PHS Heat Stress CNN!")
-        printLcd("Loading PHS CNN", 1);
 
         deleteErrorCode(5)
     except Exception as e:
@@ -1139,9 +1122,18 @@ def start_server():
     ip=get_ip_address()
     port=8000
     _SELF_IP = f'{ip}'
+
     print(f'📍 Server can be found at http://{ip}:{port} or http://localhost:{port}')
     LOGGER.info(f'📍 Server can be found at http://{ip}:{port} or http://localhost:{port}')
     
+    try:
+        _LCD = LCD()
+        signal(SIGTERM, safe_exit)
+        signal(SIGHUP, safe_exit)
+        _LCD.text(f"{_SELF_IP}", 1)
+        _LCD.text(f"{port}",2)
+    except Exception as e:
+        LOGGER.error("SIGTERM, SIGHUP err")
 
     log = logging.getLogger('werkzeug')
     log.disabled = True
