@@ -1131,7 +1131,7 @@ def start_server():
         signal(SIGTERM, safe_exit)
         signal(SIGHUP, safe_exit)
         _LCD.text(f"{_SELF_IP}", 1)
-        _LCD.text(f"{port}",2)
+        _LCD.text(f"3000",2)
     except Exception as e:
         LOGGER.error("SIGTERM, SIGHUP err")
 
@@ -1148,8 +1148,8 @@ def goodbye():
     LOGGER.info(f"⏾ PHS Turning OFF")
     _LCD.text("PHS Turned Off", 1)
     _LCD.text("Good Bye...", 2)
-    _LCD.clear()
     time.sleep(1)
+    _LCD.clear()
     if R_CONTROLLER is not None:
         R_CONTROLLER.offAll()
     LOGGER.info(f"💤 Good Bye ....")
