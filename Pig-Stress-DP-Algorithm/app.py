@@ -995,15 +995,11 @@ def safe_exit(signum, frame):
 def printLcd(content, row):
     global _LCD, _SELF_IP
     try:
-        signal(SIGTERM, safe_exit)
-        signal(SIGHUP, safe_exit)
         _LCD.text(f"3000", 2)
         _LCD.text(content, row)
     except Exception as e:
         print(e)
         LOGGER.error('Can\'t print to LCD ', e)
-    finally:
-        _LCD.clear()
 
 def statusToString ( status ):
     if status == -1 : return 'Disabled'
@@ -1014,6 +1010,11 @@ def start_server():
     global _LCD, _SELF_IP, Yolov5_PHD, PHS_CNN, YOLO_DIR, WEIGHTS_DIR ,ACTION_STATE, CAM_THERMAL, CAM_NORMAL, RAW_THERMAL, SYSTEM_STATE, R_CONTROLLER, IMG_NORMAL_ANNOTATED, IMG_NORMAL, IMG_THERMAL, WEIGHTS_DIR, PHS_CNN_DIR, LOGGER
     updateLoggerHandler()
     LOGGER.info('⏳ Starting PHS')
+    try:
+        signal(SIGTERM, safe_exit)
+        signal(SIGHUP, safe_exit)
+    except Exception as e: print(e)
+
 
     try:
         _LCD = LCD()
