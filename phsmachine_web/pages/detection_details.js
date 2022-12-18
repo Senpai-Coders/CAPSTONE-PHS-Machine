@@ -273,7 +273,7 @@ const _detection_details = () => {
                   <GiPowerLightning className="w-8 h-8" />
                 </div>
                 <div className="stat-title">Actions</div>
-                <div className="stat-value ">{detection.actions.length}</div>
+                <div className="stat-value ">{detection.actions ? detection.actions.length : 0}</div>
                 <div className="stat-desc">to resolving heat stress</div>
               </div>
 
@@ -447,7 +447,7 @@ const _detection_details = () => {
                 </tr>
               </thead>
               <tbody>
-                {detection.actions.map((act, idx) => (
+                {detection.actions && detection.actions.map((act, idx) => (
                   <tr key={idx}>
                     <td>
                       <div>
