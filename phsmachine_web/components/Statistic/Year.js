@@ -53,9 +53,9 @@ const index = ({
             return
         }
 
-        if(m > e[1]) m = [1]
+        if(m > e[1]) m = e[1]
         if(mx < e[1]) mx = e[1]
-
+        console.log(e, m, mx)
     })
 
     setMax(mx)
