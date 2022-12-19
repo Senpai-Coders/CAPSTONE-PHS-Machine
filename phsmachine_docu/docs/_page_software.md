@@ -14,7 +14,7 @@ In some cases, you may want to build your **own PHS**, or your current PHS has b
 ## Required Hardware
 
 <center>
-   <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_hardware.png">
+    <img src="_media/phs_hardware.png">
 </center>
 
 PHS is using **Raspberry Pi 4 B 8Gb**. And due to fund limitations, we haven't tested it using other mini-computers.
@@ -22,7 +22,7 @@ PHS is using **Raspberry Pi 4 B 8Gb**. And due to fund limitations, we haven't t
 ## Required OS
 
 <center>
-   <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/rpilogo.png">
+    <img src="_media/rpilogo.png">
 </center>
 
 PHS Machine utilizes **Raspberry Pi 4B** Architecture:**aarch64** only. Due to fund limitation, we only tested the system to run on **Pi 4B 8Gb** running version **Debian GNU/Linux 11 (bullseye) 64bit**. 

@@ -11,7 +11,7 @@ PHS machine doesn't need any internet connection to function. The PHS runs on lo
 ## Technology Used
 
 <center>
-   <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/techs.png">
+    <img src="_media/techs.png">
 </center>
 
 The machine uses machine learning & image processing technology to detect and resolve the heatstress problem on pigs
@@ -20,7 +20,7 @@ The machine uses machine learning & image processing technology to detect and re
 ## Web Technology Used
 
 <center>
-   <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/webtech.png">
+    <img src="_media/webtech.png">
 </center>
 
 The machine uses Mongodb for database that uses json like documents/record for storing data. NextJs that include Front-end (React.js) for dynamic and reusable web components. And Flask for realtime detection monitoring and PHS machine controls.
@@ -29,7 +29,7 @@ The machine uses Mongodb for database that uses json like documents/record for s
 ## Compatibility
 
 <center>
-   <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/rpilogo.png">
+    <img src="_media/rpilogo.png">
 </center>
 
 PHS Machine utilizes **Raspberry Pi 4B** Architecture:**aarch64** only. Due to fund limitation, we only tested the system to run on **Pi 4B 8Gb** running version **Debian GNU/Linux 11 (bullseye) 64bit**. 
@@ -45,14 +45,14 @@ We also attempted to run it using **Ubuntu 64bit** (PHS does not work) but it la
 ## How PHS Works
 
 <center>
-   <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/Conceptual.png">
+    <img src="_media/Conceptual.png">
 </center>
 
 The image above shows the **Conceptual Framework** of PHSM. The PHS rely on it's 2 sensor. The **Camera** and **Thermal Camera**.
 
 ### Thermal Radiation / Infrared Radiation
 <center>
-   <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/EMSpec.jpg">
+    <img src="_media/EMSpec.jpg">
 </center>
 
 <center>
@@ -73,8 +73,8 @@ PHS implements custom made **CNN** classify between HeatStress & Normal. It is t
 
 <center>
     <div style="display:flex; justify-content : evenly">
-       <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/accugraph.png">
-       <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/lossgraph.png">    
+        <img src="_media/accugraph.png">
+        <img src="_media/lossgraph.png">    
     </div>
 </center>
 
@@ -87,7 +87,7 @@ PHS implements custom made **CNN** classify between HeatStress & Normal. It is t
 ### MLX90640 Thermal(IR) Camera
 
 <center>
-   <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/MLX90640.png">
+    <img src="_media/MLX90640.png">
 </center>
 
 <center>
@@ -101,7 +101,7 @@ MLX90640 can be used in **Arduino boards** and in **Raspberry Pi**. The sensor c
 ### SRICAM SriHome SH002 4MP 110 Degree Camera
 
 <center>
-   <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/SRICAM.png">
+    <img src="_media/SRICAM.png">
 </center>
 
 <center>
@@ -116,4 +116,4 @@ PHS also uses a camera to properly identify the pigs. The camera matches the **1
 
 We are open for contribution if you have a better idea to improve the system. We made the datas available here. 
 
-[Training Data](https://drive.google.com/file/d/17bbhedv_F0g8ObiGROWZ2qk1pJOwnOos/view?usp=sharing)
+[Training Data](https://drive.google.com/file/d/17bbhedv_F0g8ObiGROWZ2qk1pJOwnOos/view?usp=sharing)# PHS-Docs
