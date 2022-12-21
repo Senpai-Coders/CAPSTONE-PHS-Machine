@@ -83,6 +83,17 @@
         },
         {
             "category": "models",
+            "config_name": "Yolov5 Weight - Pig Det. + Head v1.0",
+            "description": "Weights are the learning version of the AI that is trained on a specific dataset version, this weight includes Pig Detection focusing on Pig head, this can be change when PHS release new update that include new weights on the PHS repository",
+            "value": {
+                "name": "Yolov5 Weight - Pig Det. + Head v1.0",
+                "path": "models/weights/yolo/yolo_phs_heads.pt",
+                "for": "yolo"
+            },
+            "deletable": false
+        },
+        {
+            "category": "models",
             "config_name": "Heat Stress mai_Net_v1.0.h5",
             "description": "This defined where the trained PHS CNN for identifying heat stress will be found.",
             "value": {
