@@ -27,7 +27,7 @@ sleep 1
 if [[ "$lastbuild" != "$curip" ]]; then
     echo "**need rebuild**"
     echo "rebuilding PHS"
-
+    npm --prefix "$_PHS_WEB_DIR_" run build
     echo -e "$curip" | tee "$_PHS_WEB_DIR_/lastipbuild.tmp"
 else
     echo "**no need for rebuild**"
