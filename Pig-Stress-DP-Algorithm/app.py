@@ -203,6 +203,7 @@ def setEmergencyStop():
     with lock:
         EMERGENCY_STOP = True
         SYSTEM_STATE['status'] = -1
+        print("Update State @ /emergencyStop")
     LOGGER.info(f"PHS EMERGENCY STOP")
     response = Response(mongoResToJson({ "message" : "ok" }), content_type='application/json')
     return response, 200
@@ -243,6 +244,7 @@ def setState():
                 R_CONTROLLER.offAll()
                 EMERGENCY_STOP = False
             SYSTEM_STATE['status']=int(status)
+            print("Update State @ updateState")
     response = Response( mongoResToJson({"status":200, "message":"Ok "}) , content_type="application/json")
     return response, 200
 
@@ -516,7 +518,7 @@ def detectHeatStress():
                 for result in coords:
                     # if not hasNoPendingHeatStressJob():
                     #     break
-
+                    print(f'YOLORES {result}')
                     x1 = int(result['xmin'])
                     y1 = int(result['ymin'])
                     x2 = int(result['xmax'])
@@ -616,7 +618,9 @@ def detectHeatStress():
                     #call save function XD to save the heat stress event
                     saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt, img_normal_cropped, img_thermal_cropped, img_thermal_cropped_raw, len(coords), img_thermal_cropped_info, overal_min_temp, overal_avg_temp, overal_max_temp, curACTIONS)
                     with lock:
-                        SYSTEM_STATE['status'] = 1
+                        if SYSTEM_STATE['status'] != -1 :
+                            SYSTEM_STATE['status'] = 1
+                            print("Update State @ detectheatstress()")
                 with lock:
                     IMG_NORMAL_ANNOTATED = detect_annotation
                     ANNOT_STREAM_CHECK = ANNOT_STREAM_CHECK + 1
@@ -765,7 +769,7 @@ def doesActionNameAlreadyActive(action_name) :
 def activateCategory(old_activate, caller, ForceActivate, Location):
     global ACTION_STATE, SYSTEM_STATE, LOGGER
     
-    if SYSTEM_STATE['status'] == 2:
+    if SYSTEM_STATE['status'] == 2 or SYSTEM_STATE['status'] == -1:
         return
 
     actions = list(DB_CONFIGS.find({ "category" : "actions", "disabled" : False }))
@@ -856,6 +860,7 @@ def updateJobs():
             curSysStatus = SYSTEM_STATE['status']
             if curSysStatus != 2 or curSysStatus != -1 or curSysStatus != -2 :
                 SYSTEM_STATE['status'] = 0
+                print("Update State @ JOBS")
 
 def isDarkScene(image):
     global LOGGER
