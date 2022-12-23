@@ -829,7 +829,7 @@ def updateJobs():
     hasPrev = False
     
     while not EXITING:
-        time.sleep(0.2)
+        time.sleep(1)
         S_STATE = SYSTEM_STATE['status']
         if S_STATE == 2:
             ACTION_STATE.offAll()
