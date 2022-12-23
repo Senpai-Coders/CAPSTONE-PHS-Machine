@@ -25,7 +25,6 @@ import cv2
 import torch
 import numpy as np
 import warnings
-import pickle
 import tensorflow as tf
 import json
 import sys
@@ -518,11 +517,15 @@ def detectHeatStress():
                 for result in coords:
                     # if not hasNoPendingHeatStressJob():
                     #     break
-                    print(f'YOLORES {result}')
                     x1 = int(result['xmin'])
                     y1 = int(result['ymin'])
                     x2 = int(result['xmax'])
                     y2 = int(result['ymax'])
+                    conf = float(result['confidence'])
+
+                    # skip if confidence level is less than 50%
+                    if conf < 0.50 : continue
+                    
                     detect_annotation = cv2.putText(detect_annotation, f'pig {pigC}', (x1,y1 + 20), font, 0.5, (100, 255, 50), 2, cv2.LINE_AA)
                     pigC += 1
                     #cv2.putText(detect_annotation, f'{x2} {y2}', (x2,y2), font, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
