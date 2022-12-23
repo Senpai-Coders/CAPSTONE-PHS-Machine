@@ -829,10 +829,11 @@ def updateJobs():
     hasPrev = False
     
     while not EXITING:
-        time.sleep(1)
+        time.sleep(0.2)
         S_STATE = SYSTEM_STATE['status']
         if S_STATE == 2:
             ACTION_STATE.offAll()
+            continue
         if EMERGENCY_STOP or S_STATE == -1:
             SYSTEM_STATE['jobs'] = []
             R_CONTROLLER.offAll()
@@ -861,9 +862,10 @@ def updateJobs():
                 hasPrev = True
         if heatStressResolveJobs <= 0:
             curSysStatus = SYSTEM_STATE['status']
+            
             if curSysStatus != 2 or curSysStatus != -1 or curSysStatus != -2 :
                 SYSTEM_STATE['status'] = 0
-                print("Update State @ JOBS")
+                # print("Update State @ JOBS")
 
 def isDarkScene(image):
     global LOGGER
