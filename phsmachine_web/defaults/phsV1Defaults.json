@@ -105,18 +105,7 @@
             },
             "deletable": false
         },
-        {
-            "category": "models",
-            "config_name": "Heat Stress mai_Net_v1.0 96.4perc",
-            "description": "This defined where the trained PHS CNN for identifying heat stress will be found.",
-            "value": {
-                "name": "Heat Stress mai_Net_v1.0 96.4perc",
-                "path": "models/weights/maiCNNet/mai_Net_dec24_96.4perc.h5",
-                "for": "heatstress"
-            },
-            "deletable": false
-        },
-
+        
         {
             "category": "actions",
             "config_name": "Cell 1 Mist Valve",
