@@ -2,10 +2,10 @@ import Year from "../../../Statistic/Year";
 import { useState, useEffect } from "react";
 import { IoReloadCircleSharp } from "react-icons/io5";
 import { dateYYYYMMDD } from "../../../../helpers";
+import { dateMomentBeautify } from "../../../../helpers/dynamicHelper"
 import MorphChart from "../../../charts/MorphChart";
 
 import Loading from "../../../loading";
-import { m } from "framer-motion";
 
 const index = ({ refresh, data, loading }) => {
   let curDate = new Date();
@@ -51,16 +51,40 @@ const index = ({ refresh, data, loading }) => {
       var tempCounter = 0;
 
       for (var t = startIndex; t < data.length; t++) {
-        var baseDate = dateYYYYMMDD(new Date(data[t].cat), '-')
-        if (dateYYYYMMDD(focusDate, '-') !== baseDate) continue;
+        var baseDate = dateYYYYMMDD(new Date(data[t].cat), '/')
+        if (dateYYYYMMDD(focusDate, '/') !== baseDate) continue;
         tempCounter = tempCounter < data[t].data.max_temp ? data[t].data.max_temp : tempCounter
         // counter++
       }
-      datas.push([dateYYYYMMDD(focusDate, '-'), tempCounter.toFixed(1)])
+      datas.push([dateYYYYMMDD(focusDate, '/'), tempCounter.toFixed(1)])
     });
-    setFinalData(datas);
+    fillYears(datas)
   };
 
+  const fillYears = (datas) => {
+    let filled_datas = []
+    const focDate = new Date(`1-1-${selectedYear}`)
+    let max = 367
+
+    while(focDate.getFullYear() !== selectedYear + 1){
+        const stringified_date = dateYYYYMMDD(focDate, '/')
+        focDate.setDate(focDate.getDate() + 1)
+        let added = false
+        for(var x = 0; x < datas.length && !added; x++){
+            if(datas[x][0] === stringified_date){
+                filled_datas.push(datas[x])
+                added = !added
+                break
+            }          
+        }
+        if(added) continue
+        filled_datas.push([stringified_date, '0.0'])
+        max--;
+        if(max <= 0) break;
+    }
+
+    setFinalData(filled_datas);
+  }
 
   useEffect(() => {
     let genYears = [];
@@ -68,6 +92,10 @@ const index = ({ refresh, data, loading }) => {
     setGeneratedYear(genYears);
     parseData()
   }, [fromYear, toYear]);
+
+  useEffect(()=>{
+    parseData()
+  }, [data, selectedYear])
 
   return (
     <div className="mt-4">
@@ -146,17 +174,11 @@ const index = ({ refresh, data, loading }) => {
                   },
                   tooltip: {
                     trigger: 'axis',
-                    formatter: function (params) {
+                    formatter: (params) => {
                       params = params[0];
-                      var date = new Date(params.data[0]);
                       return (
-                        date.getDate() +
-                        '/' +
-                        (date.getMonth() + 1) +
-                        '/' +
-                        date.getFullYear() +
-                        ' : ' +
-                        params.value[1] + ' °C'
+                        `${dateMomentBeautify(new Date(params.data[0]), "MMM Do YYYY")} :
+                        ${params.value[1] + ' °C'}`
                       );
                     },
                     axisPointer: {
@@ -171,8 +193,11 @@ const index = ({ refresh, data, loading }) => {
                     axisLabel: {
                       textStyle: {
                         color: "#7d6d72"
-                      }
+                      },
+                      formatter : (value, index) => dateMomentBeautify(new Date(value), "MMM Do YYYY")
+                      
                     }
+                    
                   },
                   yAxis: {
                     type: 'value',
@@ -186,11 +211,26 @@ const index = ({ refresh, data, loading }) => {
                       }
                     }
                   },
+                  dataZoom: [
+                    {
+                      type: 'inside',
+                      start: 0,
+                      end: 100
+                    },
+                    {
+                      start: 0,
+                      end: 100
+                    }
+                  ],
                   series: [
                     {
                       name: 'Max Temp',
                       type: 'line',
                       showSymbol: false,
+                      areaStyle: {
+                        color: 'rgb(255, 158, 68)'
+                        
+                      },
                       data: finalData
                     }
                   ]
