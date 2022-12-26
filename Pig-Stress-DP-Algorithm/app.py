@@ -190,6 +190,16 @@ cors = CORS(app, resources={f"/*":{"origins":"*"}})
 def index():
 	return "Hello"
 
+@app.route("/shutdown_reboot")
+def writeState():
+    global _LCD
+    tostate = request.args.get('tostate')
+    _LCD.clear()
+    _LCD.text(f"{tostate}", 1)
+    response = Response(mongoResToJson({ "msg" : "ok!" }), content_type='application/json' )
+    return response, 200
+
+
 @app.route("/getSystemState")
 def getSyState():
     global SYSTEM_STATE
