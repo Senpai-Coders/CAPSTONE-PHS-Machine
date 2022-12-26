@@ -13,14 +13,14 @@ n=1
 
 curip=$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p')
 
-ip_len=${#curip}
+# ip_len=${#curip}
 
-while [ $ip_len -lt 1 ]
-do
-   echo "no ip yet, loading.."
-   curip=$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p')
-done
-echo "Got an IP : $curip"
+# while [ $ip_len -lt 1 ]
+# do
+#    echo "no ip yet, loading.."
+#    curip=$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p')
+# done
+# echo "Got an IP : $curip"
 
 lastbuild='-'
 
