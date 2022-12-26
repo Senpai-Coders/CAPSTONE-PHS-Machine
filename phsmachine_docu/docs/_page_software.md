@@ -173,7 +173,7 @@ sudo systemctl enable phs_fserver.service
 ```
 echo "[Unit]" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "Description=Runs PHS Web Server" | sudo tee -a /lib/systemd/system/phs_web.service
-echo "After=mongod.service" | sudo tee -a /lib/systemd/system/phs_web.service
+echo "After=network.target" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "[Service]" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "WorkingDirectory=/home/$USER/CAPSTONE-PHS-Machine/phsmachine_web" | sudo tee -a /lib/systemd/system/phs_web.service
