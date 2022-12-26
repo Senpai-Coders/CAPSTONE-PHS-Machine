@@ -194,8 +194,8 @@ def index():
 def writeState():
     global _LCD
     tostate = request.args.get('tostate')
-    _LCD.clear()
     _LCD.text(f"{tostate}", 1)
+    _LCD.text("",2)
     print(f"turning {tostate}")
     response = Response(mongoResToJson({ "msg" : "ok!" }), content_type='application/json' )
     return response, 200
