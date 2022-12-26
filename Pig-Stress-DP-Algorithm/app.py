@@ -555,9 +555,12 @@ def detectHeatStress():
 
                     # constructing subinfo of the subcropped coords
                     cpy_thrm_crop = c_IMG_THERMAL[y1 : y2, x1 : x2]
+
                     min_temp = np.min(cpy_thrm_crop_raw)
                     avg_temp = np.mean(cpy_thrm_crop_raw)
                     max_temp = np.max(cpy_thrm_crop_raw)
+
+                    if(min_temp == 0 or avg_temp == 0 or max_temp == 0) : break
 
                     chosenColor = (59, 235, 255)
 
