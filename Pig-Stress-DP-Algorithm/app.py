@@ -196,6 +196,7 @@ def writeState():
     tostate = request.args.get('tostate')
     _LCD.clear()
     _LCD.text(f"{tostate}", 1)
+    print(f"turning {tostate}")
     response = Response(mongoResToJson({ "msg" : "ok!" }), content_type='application/json' )
     return response, 200
 
