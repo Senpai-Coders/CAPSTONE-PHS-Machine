@@ -526,7 +526,7 @@ def detectHeatStress():
 
                     # skip if confidence level is less than 50%
                     detect_annotation = drawRect(detect_annotation, (x1,y1), (x2,y2), (26, 219, 27), 3)
-                    detect_annotation = cv2.putText(detect_annotation, "%.2f %% %s" % (conf * 100, conf > .5 ? "sure" : "unsure"), (x1,y1), font, 1, (26, 219, 27), 2, cv2.LINE_AA)
+                    detect_annotation = cv2.putText(detect_annotation, "%.2f %% %s" % (conf * 100, "sure" if conf > .5 else "unsure"), (x1,y1), font, 1, (26, 219, 27), 2, cv2.LINE_AA)
                     if conf < 0.50 : continue
                     
                     detect_annotation = cv2.putText(detect_annotation, f'pig {pigC}', (x1,y1 + 20), font, 0.5, (100, 255, 50), 2, cv2.LINE_AA)
