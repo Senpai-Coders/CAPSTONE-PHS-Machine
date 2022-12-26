@@ -43,7 +43,7 @@ else
     echo "**no need for rebuild**"
 fi
 
-if [ ! -d "$_PHS_WEB_DIR_/.next" ]; then
+if [ -d "$_PHS_WEB_DIR_/.next" ]; then
     echo "**Build missing, rebuilding web**"
     npm --prefix "$_PHS_WEB_DIR_" run build
     echo "$curip" | tee "$_PHS_WEB_DIR_/lastipbuild.tmp"
