@@ -525,6 +525,7 @@ def detectHeatStress():
                     conf = float(result['confidence'])
 
                     # skip if confidence level is less than 50%
+                    detect_annotation = drawRect(detect_annotation, (x1,y1), (x2,y2), (26, 219, 27), 1)
                     if conf < 0.50 : continue
                     
                     detect_annotation = cv2.putText(detect_annotation, f'pig {pigC}', (x1,y1 + 20), font, 0.5, (100, 255, 50), 2, cv2.LINE_AA)
@@ -562,7 +563,6 @@ def detectHeatStress():
                     max_temp = np.max(cpy_thrm_crop_raw)
 
                     chosenColor = (59, 235, 255)
-                    detect_annotation = drawRect(detect_annotation, (x1,y1), (x2,y2), chosenColor, 1)
 
                     if max_temp == 0 : break
 
