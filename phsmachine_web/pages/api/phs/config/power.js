@@ -3,6 +3,9 @@ import logger from "../../../../services/logger";
 import { PI_IP } from "../../../../helpers/api";
 
 const handler = async (req, res) => {
+
+    const debs = true
+
   try {
     const auth = req.cookies.authorization;
     const editorDetails = VERIFY_AUTHORIZATION(auth);
@@ -26,7 +29,7 @@ const handler = async (req, res) => {
           logger.info(
             `User ${editorDetails.user_name}(${editorDetails._id}) -> Shutdown System`
           );
-        //   const shutdown = await exec_command("sudo shutdown now");
+          if(!debs){const shutdown = await exec_command("sudo shutdown now");}
         });
     } else if (mode === 1) {
       const reboot = await exec_command("sudo reboot now");
@@ -51,7 +54,7 @@ const handler = async (req, res) => {
           logger.info(
             `User ${editorDetails.user_name}(${editorDetails._id}) -> Shutdown System`
           );
-        //   const shutdown = await exec_command("sudo shutdown now");
+          if(!debs){const shutdown = await exec_command("sudo shutdown now");}
         });
     }
     res.status(200).json({ message: "Done" });
