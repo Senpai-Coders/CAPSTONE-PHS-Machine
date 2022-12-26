@@ -26,7 +26,7 @@ const handler = async (req, res) => {
           logger.info(
             `User ${editorDetails.user_name}(${editorDetails._id}) -> Shutdown System`
           );
-          const shutdown = await exec_command("sudo shutdown now");
+        //   const shutdown = await exec_command("sudo shutdown now");
         });
     } else if (mode === 1) {
       const reboot = await exec_command("sudo reboot now");
@@ -51,7 +51,7 @@ const handler = async (req, res) => {
           logger.info(
             `User ${editorDetails.user_name}(${editorDetails._id}) -> Shutdown System`
           );
-          const shutdown = await exec_command("sudo shutdown now");
+        //   const shutdown = await exec_command("sudo shutdown now");
         });
     }
     res.status(200).json({ message: "Done" });
