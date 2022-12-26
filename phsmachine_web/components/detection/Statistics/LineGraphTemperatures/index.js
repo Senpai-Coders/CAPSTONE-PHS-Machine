@@ -98,8 +98,8 @@ const index = ({ refresh, data, loading }) => {
   }, [data, selectedYear])
 
   return (
-    <div className="mt-4">
-      <p className="text-lg mb-6">Max Heat Graph</p>
+    <div className="my-4">
+      <p className="text-lg mb-6">Detection Max Heat Graph</p>
       <div className="flex items-center justify-between">
         <p className="btn btn-sm mr-2 md:mr-2" onClick={() => refresh()}>
           <IoReloadCircleSharp
@@ -134,8 +134,8 @@ const index = ({ refresh, data, loading }) => {
           </div>
         </div>
       )}
-      <div className="md:flex my-4 max-h-80">
-        <ul className="hidden md:block card max-h-80 overflow-y-scroll bg-base-100 shadow-xl">
+      <div className="md:flex my-4 max-h-96">
+        <ul className="hidden md:block card max-h-96 overflow-y-scroll bg-base-100 shadow-xl">
           {generatedYear.map((yr, i) => (
             <li
               onClick={() => {
@@ -150,7 +150,7 @@ const index = ({ refresh, data, loading }) => {
             </li>
           ))}
         </ul>
-        <div className=" h-80 w-full overflow-y-scroll">
+        <div className="max-h-96 w-full overflow-y-scroll">
           {!loading && (
             <MorphChart
               option={
@@ -163,15 +163,16 @@ const index = ({ refresh, data, loading }) => {
                         title: "Save",
                         show: true,
                       },
+                      magicType: { show: true, type: ['line', 'bar'] },
                     },
                   },
-                  title: {
-                    text: 'Yearly Maximum Thermal Graph',
-                    textStyle: {
-                      color: "#7d6d72"
-                    },
-                    left: 'center',
-                  },
+                //   title: {
+                //     text: 'Yearly Maximum Thermal Graph',
+                //     textStyle: {
+                //       color: "#7d6d72"
+                //     },
+                //     left: 'center',
+                //   },
                   tooltip: {
                     trigger: 'axis',
                     formatter: (params) => {
@@ -228,7 +229,7 @@ const index = ({ refresh, data, loading }) => {
                       type: 'line',
                       showSymbol: false,
                       areaStyle: {
-                        color: 'rgb(255, 158, 68)'
+                        color: '#f57b42'
                         
                       },
                       data: finalData
