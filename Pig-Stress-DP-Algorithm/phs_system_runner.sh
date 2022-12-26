@@ -19,4 +19,5 @@ else
     exit 0
 fi
 
+FLASK_ENV="development"
 /home/$USER/miniforge3/bin/python "$_SYSTEM_DIR_/app.py"
