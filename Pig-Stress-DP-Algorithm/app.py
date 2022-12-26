@@ -500,7 +500,8 @@ def detectHeatStress():
             if len(coords) > 0:
                 curt = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
                 # print(f"LENGTH {len(coords)}: TIME {curt}")
-                detect_annotation = np.squeeze(detect_pig_head.render())
+                # detect_annotation = np.squeeze(detect_pig_head.render())
+                detect_annotation = c_IMG_NORMAL
 
                 img_normal_cropped = []
                 img_thermal_cropped = []
@@ -540,7 +541,7 @@ def detectHeatStress():
                     # activate action if matched pig location
                     curACTIONS = activateCategory(curACTIONS, "Pig Detector", False, division_location)
 
-                    detect_annotation = cv2.circle(detect_annotation, (center_x, center_y ), 4 , (255, 220, 80), 2)
+                    detect_annotation = cv2.circle(detect_annotation, (center_x, center_y ), 8 , (255, 220, 80), 2)
                     #cv2.putText(detect_annotation, f'{center_x} {center_y}', (center_x,center_y), font, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
 
                     cpy_thrm_crop_raw = c_Raw_Reshaped[y1:y2, x1:x2]
@@ -560,11 +561,12 @@ def detectHeatStress():
                     avg_temp = np.mean(cpy_thrm_crop_raw)
                     max_temp = np.max(cpy_thrm_crop_raw)
 
-                    if(min_temp == 0 or avg_temp == 0 or max_temp == 0) : break
-
                     chosenColor = (59, 235, 255)
+                    detect_annotation = drawRect(detect_annotation, (x1,y1), (x2,y2), chosenColor, 1)
 
-                    detect_annotation = drawText(detect_annotation, x1, y2 - 10,  "%.2f C" % (max_temp), chosenColor, font, 0.5)
+                    if max_temp == 0 : break
+
+                    detect_annotation = drawText(detect_annotation, x1, y2 - 10,  "%.1f C" % (max_temp), chosenColor, font, 0.5)
 
                     if(DETECTION_MODE):
                         # keras_img = converted_img
@@ -622,7 +624,8 @@ def detectHeatStress():
                     overal_max_temp = sum(maxs) / len(maxs)
                     
                     #call save function XD to save the heat stress event
-                    saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt, img_normal_cropped, img_thermal_cropped, img_thermal_cropped_raw, len(coords), img_thermal_cropped_info, overal_min_temp, overal_avg_temp, overal_max_temp, curACTIONS)
+                    if SYSTEM_STATE['status'] != 2 :
+                        saveDetection(c_IMG_NORMAL, c_IMG_THERMAL, c_RAW_THERMAL, detect_annotation, curt, img_normal_cropped, img_thermal_cropped, img_thermal_cropped_raw, len(coords), img_thermal_cropped_info, overal_min_temp, overal_avg_temp, overal_max_temp, curACTIONS)
                     with lock:
                         if SYSTEM_STATE['status'] != -1 :
                             SYSTEM_STATE['status'] = 1
