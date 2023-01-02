@@ -92,8 +92,8 @@ sudo systemctl start mongod;
 
 #### Install Miniforge Miniconda
 ```
-sudo chmod +x "Miniforge3-Linux-aarch64.sh";
-sh "Miniforge3-Linux-aarch64.sh";
+sudo chmod +x ~/CAPSTONE-PHS-Machine/Miniforge3-Linux-aarch64.sh
+sh ~/CAPSTONE-PHS-Machine/Miniforge3-Linux-aarch64.sh
 ```
 
 #### Download Tensorflow
