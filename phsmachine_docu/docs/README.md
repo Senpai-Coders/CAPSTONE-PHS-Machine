@@ -114,6 +114,6 @@ PHS also uses a camera to properly identify the pigs. The camera matches the **1
 
 ## Contribute
 
-We are open for contribution if you have a better idea to improve the system. We made the datas available here. 
+We are open for contribution if you have a better idea to improve the system. We made the training scripts & datas available here. 
 
-[Training Data](https://drive.google.com/file/d/17bbhedv_F0g8ObiGROWZ2qk1pJOwnOos/view?usp=sharing)# PHS-Docs
+[Training Data](https://drive.google.com/drive/folders/1ySqsormrxzi2GBUkpTLrFrfWuoy8u3lo?usp=sharing)
