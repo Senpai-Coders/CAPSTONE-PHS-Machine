@@ -13,7 +13,7 @@ export const mbToGB = (mb) => mb / 1000;
 
 export const PI_IP = ip.address();
 
-export const fileServerUrl = `http://${PI_IP}:8001`;
+export const fileServerUrl = `http://${ip.address()}:8001`;
 
 export const appendToFSUrl = (path) => {
   return fileServerUrl + path;

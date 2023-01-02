@@ -229,3 +229,5 @@ The system is available on github and can be easily updated by executing this co
 ```
 cd ~/CAPSTONE-PHS-Machine; git reset --hard; git pull
 ```
+
+After it completed update, reboot the PHS
