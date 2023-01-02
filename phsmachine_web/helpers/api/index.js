@@ -6,8 +6,11 @@ const { exec } = require("child_process");
 var XLSX = require("xlsx");
 import { zip } from "zip-a-folder";
 import logger from "../../services/logger"
+var ip = require('ip');
 
-export const PI_IP = process.env.PI_IP;
+export const PI_IP = ip.address();
+
+// export const fileServerUrl = `http://${PI_IP}:8001`;
 
 export const createPathIfNotExist = async (path) => {
   try {

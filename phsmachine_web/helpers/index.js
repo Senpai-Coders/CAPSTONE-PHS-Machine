@@ -6,13 +6,14 @@ import { AiFillEye, AiOutlineLoading } from "react-icons/ai";
 import { FiZapOff, FiSlash } from "react-icons/fi";
 import { BsFillBugFill } from "react-icons/bs";
 import { GiCyberEye } from "react-icons/gi";
+var ip = require('ip');
 
 export const bytesToMegaBytes = (bytes) => bytes / 1000000; //bytes / (1024 ** 2)
 export const mbToGB = (mb) => mb / 1000;
 
-export const PI_IP = process.env.PI_IP;
+export const PI_IP = ip.address();
 
-export const fileServerUrl = `http://${process.env.PI_IP}:8001`;
+export const fileServerUrl = `http://${PI_IP}:8001`;
 
 export const appendToFSUrl = (path) => {
   return fileServerUrl + path;
