@@ -47,7 +47,8 @@ git clone "https://github.com/Senpai-Coders/CAPSTONE-PHS-Machine.git" ~/CAPSTONE
 
 #### Copying the environment variables
 ```
-cp .env.local ~/CAPSTONE-PHS-Machine/phsmachine_web;
+touch ~/CAPSTONE-PHS-Machine/phsmachine_web/.env.local
+echo -e "MASTEREMAIL=\"phscapstonesystem@gmail.com\"\nMASTERPASSW=\"xyeadvxzcoqhjbso\"" | tee ~/CAPSTONE-PHS-Machine/phsmachine_web/.env.local
 ```
 
 #### Enable i2c, Set i2c speed & enable i2c-rtc,ds3231
