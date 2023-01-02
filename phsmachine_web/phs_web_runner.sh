@@ -38,6 +38,7 @@ rerun_count=0
 
 build_phs() {
     echo "building PHS"
+    npm install --prefix "$_PHS_WEB_DIR_"
     npm --prefix "$_PHS_WEB_DIR_" run build
     echo "$curip" | tee "$_PHS_WEB_DIR_/lastipbuild.tmp"
 }

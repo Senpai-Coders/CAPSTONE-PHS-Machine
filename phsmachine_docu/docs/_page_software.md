@@ -220,3 +220,12 @@ sudo systemctl enable phs_system.service
 
 Once again, restart the system. Now access the system, you can read & follow the instruction at the link below.
 * [PHS Accessing & Authentication](_page_access_auth?id=accessing-phs)
+
+
+## Updating the system
+
+The system is available on github and can be easily updated by executing this command on Raspberry pi terminal
+
+```
+cd ~/CAPSTONE-PHS-Machine; git reset --hard; git pull
+```
