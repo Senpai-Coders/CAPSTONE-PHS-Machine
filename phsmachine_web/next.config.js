@@ -38,7 +38,8 @@ module.exports = {
       : "mongodb+srv://Jervx:helloworld@capstone.nv1cu.mongodb.net/?retryWrites=true&w=majority",
     JWT_SCRT: "ErenJaeger",
     PI_IP : IP,
-    sendGrid : process.env.sendGrid,
+    MASTEREMAIL : process.env.MASTEREMAIL,
+    MASTERPASSW : process.env.MASTERPASSW,
     EXPIRATION: 86400, //Seconds
   },
 };

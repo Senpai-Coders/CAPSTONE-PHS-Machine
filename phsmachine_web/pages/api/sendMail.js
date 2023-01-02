@@ -68,7 +68,6 @@ const handler = async (req, res) => {
     const notifyUsers = await users.find({ toNotify: true });
     logger.info(`Email Broadcast Notification ->  type : ${type}`);
     notifyUsers.forEach((u, i) => {
-        logger.info(`Email Sent -> ${u.email}`);
         if (type === 1) {
             toSend.template_name = "DetectedHeatStress.html"; //user_name heat_stress_count action_count detection_id //time_string
             toSend.subject = `Hi${u.user_name}, Heatstressed pig detected.`;
