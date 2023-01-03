@@ -187,6 +187,12 @@ const handler = async (req, res) => {
 
     res.status(200).json({ status: "Reset 👌" });
     if(!process.env.DEB){
+        try {
+            const response = await axios.get(
+              `http://${PI_IP}:8000/shutdown_reboot?tostate=reboot`
+            );
+          } catch (e) {}
+        await new Promise(resolve => setTimeout(resolve, 5000));
         let reboot = exec_command("sudo reboot now");
     }
   } catch (e) {
