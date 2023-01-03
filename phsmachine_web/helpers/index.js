@@ -6,18 +6,35 @@ import { AiFillEye, AiOutlineLoading } from "react-icons/ai";
 import { FiZapOff, FiSlash } from "react-icons/fi";
 import { BsFillBugFill } from "react-icons/bs";
 import { GiCyberEye } from "react-icons/gi";
-var ip = require('ip');
 
 export const bytesToMegaBytes = (bytes) => bytes / 1000000; //bytes / (1024 ** 2)
 export const mbToGB = (mb) => mb / 1000;
 
-export const PI_IP = ip.address();
+export const PI_IP = GET_SERVER_IP();
 
-export const fileServerUrl = `http://${ip.address()}:8001`;
+export const fileServerUrl = `http://${GET_SERVER_IP()}:8001`;
 
 export const appendToFSUrl = (path) => {
   return fileServerUrl + path;
 };
+
+export const GET_SERVER_IP = () => {
+    var interfaces = require("os").networkInterfaces();
+    for (var devName in interfaces) {
+      var iface = interfaces[devName];
+  
+      for (var i = 0; i < iface.length; i++) {
+        var alias = iface[i];
+        if (
+          alias.family === "IPv4" &&
+          alias.address !== "127.0.0.1" &&
+          !alias.internal
+        )
+          return alias.address;
+      }
+    }
+    return "0.0.0.0";
+  };
 
 export const notify = (notifyObject) => {
   if (!("Notification" in window)) {

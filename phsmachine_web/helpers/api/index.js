@@ -8,7 +8,7 @@ import { zip } from "zip-a-folder";
 import logger from "../../services/logger"
 var ip = require('ip');
 
-export const PI_IP = ip.address();
+export const PI_IP = GET_SERVER_IP();
 
 // export const fileServerUrl = `http://${PI_IP}:8001`;
 
