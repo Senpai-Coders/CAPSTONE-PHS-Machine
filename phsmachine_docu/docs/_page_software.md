@@ -199,7 +199,7 @@ echo "User=$USER" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "[Install]" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "WantedBy=multi-user.target" | sudo tee -a /lib/systemd/system/phs_docu.service
-sudo systemctl enable phs_docu.Service
+sudo systemctl enable phs_docu.service
 ```
 
 #### Configure & Enable PHS Detection System Service
