@@ -10,6 +10,8 @@ var ip = require('ip');
 
 export const GET_SERVER_IP = () => {
     var interfaces = require("os").networkInterfaces();
+    console.log(interfaces)
+
     for (var devName in interfaces) {
       var iface = interfaces[devName];
   

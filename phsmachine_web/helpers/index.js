@@ -12,6 +12,7 @@ export const mbToGB = (mb) => mb / 1000;
 
 export const GET_SERVER_IP = () => {
     var interfaces = require("os").networkInterfaces();
+    console.log(interfaces)
     for (var devName in interfaces) {
       var iface = interfaces[devName];
   
@@ -27,7 +28,7 @@ export const GET_SERVER_IP = () => {
     }
     return "0.0.0.0";
   };
-  
+
 export const PI_IP = GET_SERVER_IP();
 
 export const fileServerUrl = `http://${GET_SERVER_IP()}:8001`;
