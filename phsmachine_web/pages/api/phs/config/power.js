@@ -4,7 +4,7 @@ import { PI_IP } from "../../../../helpers/api";
 import axios from "axios";
 
 const handler = async (req, res) => {
-  const debs = false;
+  const debs = true;
 
   try {
     const auth = req.cookies.authorization;
