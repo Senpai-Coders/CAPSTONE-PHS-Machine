@@ -194,7 +194,7 @@ echo "After=mongod.service" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "[Service]" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "WorkingDirectory=/home/$USER/CAPSTONE-PHS-Machine/phsmachine_docu" | sudo tee -a /lib/systemd/system/phs_docu.service
-echo "ExecStart=/bin/bash phs_web_runner.sh" | sudo tee -a /lib/systemd/system/phs_docu.service
+echo "ExecStart=/bin/bash phs_docu_runner.sh" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "User=$USER" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "[Install]" | sudo tee -a /lib/systemd/system/phs_docu.service
