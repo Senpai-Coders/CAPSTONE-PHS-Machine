@@ -5,16 +5,16 @@ import { useRouter } from "next/router";
 const RebootConfirm = ({ close, shown, onAccept }) => {
   const router = useRouter();
 
-  const [default_users, setDefaultUsers] = useState(true);
-  const [settings, setSettings] = useState(true);
-  const [detections, setDetections] = useState(true);
-  const [notifications, setNotifications] = useState(true);
+  const [default_users, setDefaultUsers] = useState(false);
+  const [settings, setSettings] = useState(false);
+  const [detections, setDetections] = useState(false);
+  const [notifications, setNotifications] = useState(false);
 
-  const [del_user_photos, setDelUserPhotos] = useState(true);
-  const [del_detect_files, setDelDetectFiles] = useState(true);
-  const [del_exports, setDelExports] = useState(true);
-  const [del_errors, setDelErrors] = useState(true);
-  const [del_system_logs, setDelSystemLogs] = useState(true);
+  const [del_user_photos, setDelUserPhotos] = useState(false);
+  const [del_detect_files, setDelDetectFiles] = useState(false);
+  const [del_exports, setDelExports] = useState(false);
+  const [del_errors, setDelErrors] = useState(false);
+  const [del_system_logs, setDelSystemLogs] = useState(false);
 
   const reset = () => {
     router.push(
@@ -179,7 +179,18 @@ const RebootConfirm = ({ close, shown, onAccept }) => {
         </p>
 
         <div className="modal-action">
-          <label
+          <button
+            disabled={
+                !(default_users ||
+                    settings ||
+                    detections ||
+                    notifications ||
+                    del_user_photos ||
+                    del_detect_files ||
+                    del_exports ||
+                    del_errors ||
+                    del_system_logs)
+            }
             onClick={() => {
               close();
               reset();
@@ -188,10 +199,10 @@ const RebootConfirm = ({ close, shown, onAccept }) => {
             className="btn"
           >
             Reset Now
-          </label>
-          <label onClick={() => close()} className="btn">
+          </button>
+          <button onClick={() => close()} className="btn">
             Cancel
-          </label>
+          </button>
         </div>
       </div>
     </div>

@@ -41,7 +41,7 @@ module.exports = {
     MASTEREMAIL : process.env.MASTEREMAIL,
     MASTERPASSW : process.env.MASTERPASSW,
     EXPIRATION: 86400, //Seconds
-    DEB : true
+    DEB : false
   },
   publicRuntimeConfig: {
     PI_IP: IP,
