@@ -10,14 +10,6 @@ import { GiCyberEye } from "react-icons/gi";
 export const bytesToMegaBytes = (bytes) => bytes / 1000000; //bytes / (1024 ** 2)
 export const mbToGB = (mb) => mb / 1000;
 
-export const PI_IP = GET_SERVER_IP();
-
-export const fileServerUrl = `http://${GET_SERVER_IP()}:8001`;
-
-export const appendToFSUrl = (path) => {
-  return fileServerUrl + path;
-};
-
 export const GET_SERVER_IP = () => {
     var interfaces = require("os").networkInterfaces();
     for (var devName in interfaces) {
@@ -35,6 +27,15 @@ export const GET_SERVER_IP = () => {
     }
     return "0.0.0.0";
   };
+  
+export const PI_IP = GET_SERVER_IP();
+
+export const fileServerUrl = `http://${GET_SERVER_IP()}:8001`;
+
+export const appendToFSUrl = (path) => {
+  return fileServerUrl + path;
+};
+
 
 export const notify = (notifyObject) => {
   if (!("Notification" in window)) {
