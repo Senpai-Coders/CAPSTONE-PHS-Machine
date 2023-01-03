@@ -6,7 +6,6 @@ import { BiReset } from "react-icons/bi";
 
 export default function reset() {
   const router = useRouter();
-  const [started, setStarted] = useState(false);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -85,9 +84,8 @@ export default function reset() {
   useEffect(() => {
     let connectChecker = setInterval(async () => {
       try {
-        if (started) return;
+        await new Promise(resolve => setTimeout(resolve, 4000));
         const response = await axios.post("/api/connectivity");
-        if (started) return;
         router.push("/auth/signin");
       } catch (e) {}
     }, 3000);
