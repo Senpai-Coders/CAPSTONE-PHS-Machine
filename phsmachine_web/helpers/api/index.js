@@ -6,27 +6,20 @@ const { exec } = require("child_process");
 var XLSX = require("xlsx");
 import { zip } from "zip-a-folder";
 import logger from "../../services/logger"
-var ip = require('ip');
 
 export const GET_SERVER_IP = () => {
-    var interfaces = require("os").networkInterfaces();
-    console.log(interfaces)
-
-    for (var devName in interfaces) {
-      var iface = interfaces[devName];
-  
-      for (var i = 0; i < iface.length; i++) {
-        var alias = iface[i];
-        if (
-          alias.family === "IPv4" &&
-          alias.address !== "127.0.0.1" &&
-          !alias.internal
-        )
-          return alias.address;
-      }
-    }
-    return "0.0.0.0";
+    var os = require('os');
+    var ifaces = os.networkInterfaces();
+    var values = Object.keys(ifaces).map(function(name) {
+      return ifaces[name];
+    });
+    values = [].concat.apply([], values).filter(function(val){
+      return val.family == 'IPv4' && val.internal == false && val.address != "127.0.0.1"
+    });
+    
+    return values.length ? values[0].address : '0.0.0.0';
   };
+
 
 export const PI_IP = GET_SERVER_IP();
 

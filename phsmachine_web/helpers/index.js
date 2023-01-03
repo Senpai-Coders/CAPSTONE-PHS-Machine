@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import getConfig from 'next/config'
 import { BsFillShieldLockFill, BsFillShieldFill } from "react-icons/bs";
 import { FaUserAlt, FaConnectdevelop } from "react-icons/fa";
 import { AiFillEye, AiOutlineLoading } from "react-icons/ai";
@@ -10,28 +10,9 @@ import { GiCyberEye } from "react-icons/gi";
 export const bytesToMegaBytes = (bytes) => bytes / 1000000; //bytes / (1024 ** 2)
 export const mbToGB = (mb) => mb / 1000;
 
-export const GET_SERVER_IP = () => {
-    var interfaces = require("os").networkInterfaces();
-    console.log(interfaces)
-    for (var devName in interfaces) {
-      var iface = interfaces[devName];
-  
-      for (var i = 0; i < iface.length; i++) {
-        var alias = iface[i];
-        if (
-          alias.family === "IPv4" &&
-          alias.address !== "127.0.0.1" &&
-          !alias.internal
-        )
-          return alias.address;
-      }
-    }
-    return "0.0.0.0";
-  };
+export const PI_IP = process.env.PI_IP
 
-export const PI_IP = GET_SERVER_IP();
-
-export const fileServerUrl = `http://${GET_SERVER_IP()}:8001`;
+export const fileServerUrl = `http://${PI_IP}:8001`;
 
 export const appendToFSUrl = (path) => {
   return fileServerUrl + path;

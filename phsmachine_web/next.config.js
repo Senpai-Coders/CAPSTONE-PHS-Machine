@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const PI_IP = 5;
-const IS_PI = false;
+const IS_PI = true;
 
 const GET_SERVER_IP = () => {
     if(!IS_PI) return `192.168.1.${PI_IP}`
@@ -41,5 +41,8 @@ module.exports = {
     MASTEREMAIL : process.env.MASTEREMAIL,
     MASTERPASSW : process.env.MASTERPASSW,
     EXPIRATION: 86400, //Seconds
+  },
+  publicRuntimeConfig: {
+    PI_IP: IP,
   },
 };
