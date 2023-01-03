@@ -186,7 +186,9 @@ const handler = async (req, res) => {
     }
 
     res.status(200).json({ status: "Reset 👌" });
-    let reboot = exec_command("sudo reboot now");
+    if(!process.env.DEB){
+        let reboot = exec_command("sudo reboot now");
+    }
   } catch (e) {
     console.log(e);
   }
