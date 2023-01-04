@@ -154,7 +154,7 @@ This shows how the fan should properly attatched to the relay.
 ## Example result when done
 
 <center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/Example.png">
+    <img src="/docs/_media/final_phs.png">
 </center>
 
 ## DONE
