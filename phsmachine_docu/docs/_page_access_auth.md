@@ -7,9 +7,7 @@ See the basics about navigation and how to access / connect and gain authorizati
 
 On PHS Machine, there is a screen embeded on it's body. There are information that is written there that indicates the local IP and Port of the PHS Machine.
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_box.png">
-</center>
+![phsbox](_media/phs_box.png)
 
 ### Accessing Via Browser
 

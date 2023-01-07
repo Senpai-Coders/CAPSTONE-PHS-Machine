@@ -1,8 +1,6 @@
 # Physical Installation
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_install.png">
-</center>
+![phs_install](_media/phs_install.png)
 
 Out of the box, PHS Machine is configured by the developer. Only the wiring of other components are not pre-installed & you have to install it by yourself on the PHS.
 
@@ -12,9 +10,7 @@ PHS Box contains the heart & brain of the system. You can place it anywhere safe
 
 ## Opening PHS Case Box
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/scrw.png">
-</center>
+![scrw](_media/scrw.png)
 
 Once PHS is installed in place. We can now install other components needed by PHS. But first let's open the case where it is held by **4 screws**. Unscrew this to open the PHS.
 
