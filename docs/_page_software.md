@@ -14,7 +14,7 @@ In some cases, you may want to build your **own PHS**, or your current PHS has b
 ## Required Hardware
 
 <center>
-    <img src="/docs/_media/phs_hardware.png">
+    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_hardware.png">
 </center>
 
 PHS is using **Raspberry Pi 4 B 8Gb**. And due to fund limitations, we haven't tested it using other mini-computers.
@@ -22,7 +22,7 @@ PHS is using **Raspberry Pi 4 B 8Gb**. And due to fund limitations, we haven't t
 ## Required OS
 
 <center>
-    <img src="/docs/_media/rpilogo.png">
+    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/rpilogo.png">
 </center>
 
 PHS Machine utilizes **Raspberry Pi 4B** Architecture:**aarch64** only. Due to fund limitation, we only tested the system to run on **Pi 4B 8Gb** running version **Debian GNU/Linux 11 (bullseye) 64bit**. 
@@ -47,7 +47,8 @@ git clone "https://github.com/Senpai-Coders/CAPSTONE-PHS-Machine.git" ~/CAPSTONE
 
 #### Copying the environment variables
 ```
-cp .env.local ~/CAPSTONE-PHS-Machine/phsmachine_web;
+touch ~/CAPSTONE-PHS-Machine/phsmachine_web/.env.local
+echo -e "MASTEREMAIL=\"phscapstonesystem@gmail.com\"\nMASTERPASSW=\"xyeadvxzcoqhjbso\"" | tee ~/CAPSTONE-PHS-Machine/phsmachine_web/.env.local
 ```
 
 #### Enable i2c, Set i2c speed & enable i2c-rtc,ds3231
@@ -91,8 +92,8 @@ sudo systemctl start mongod;
 
 #### Install Miniforge Miniconda
 ```
-sudo chmod +x "Miniforge3-Linux-aarch64.sh";
-sh "Miniforge3-Linux-aarch64.sh";
+sudo chmod +x ~/CAPSTONE-PHS-Machine/Miniforge3-Linux-aarch64.sh
+sh ~/CAPSTONE-PHS-Machine/Miniforge3-Linux-aarch64.sh
 ```
 
 #### Download Tensorflow
@@ -173,7 +174,7 @@ sudo systemctl enable phs_fserver.service
 ```
 echo "[Unit]" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "Description=Runs PHS Web Server" | sudo tee -a /lib/systemd/system/phs_web.service
-echo "After=phs_fserver.service" | sudo tee -a /lib/systemd/system/phs_web.service
+echo "After=network.target" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "[Service]" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "WorkingDirectory=/home/$USER/CAPSTONE-PHS-Machine/phsmachine_web" | sudo tee -a /lib/systemd/system/phs_web.service
@@ -193,12 +194,12 @@ echo "After=mongod.service" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "[Service]" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "WorkingDirectory=/home/$USER/CAPSTONE-PHS-Machine/phsmachine_docu" | sudo tee -a /lib/systemd/system/phs_docu.service
-echo "ExecStart=/bin/bash phs_web_runner.sh" | sudo tee -a /lib/systemd/system/phs_docu.service
+echo "ExecStart=/bin/bash phs_docu_runner.sh" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "User=$USER" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "[Install]" | sudo tee -a /lib/systemd/system/phs_docu.service
 echo "WantedBy=multi-user.target" | sudo tee -a /lib/systemd/system/phs_docu.service
-sudo systemctl enable phs_docu.Service
+sudo systemctl enable phs_docu.service
 ```
 
 #### Configure & Enable PHS Detection System Service
@@ -219,3 +220,14 @@ sudo systemctl enable phs_system.service
 
 Once again, restart the system. Now access the system, you can read & follow the instruction at the link below.
 * [PHS Accessing & Authentication](_page_access_auth?id=accessing-phs)
+
+
+## Updating the system
+
+The system is available on github and can be easily updated by executing this command on Raspberry pi terminal
+
+```
+cd ~/CAPSTONE-PHS-Machine; git reset --hard; git pull
+```
+
+After it completed update, reboot the PHS

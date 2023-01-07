@@ -10,27 +10,21 @@ PHS machine doesn't need any internet connection to function. The PHS runs on lo
 
 ## Technology Used
 
-<center>
-    <img src="/docs/_media/techs.png">
-</center>
+![techused](_media/techs.png)
 
 The machine uses machine learning & image processing technology to detect and resolve the heatstress problem on pigs
 
 
 ## Web Technology Used
 
-<center>
-    <img src="/docs/_media/webtech.png">
-</center>
+![webtech](_media/webtech.png)
 
 The machine uses Mongodb for database that uses json like documents/record for storing data. NextJs that include Front-end (React.js) for dynamic and reusable web components. And Flask for realtime detection monitoring and PHS machine controls.
 
 
 ## Compatibility
 
-<center>
-    <img src="/docs/_media/rpilogo.png">
-</center>
+![rasplogo](_media/rpilogo.png)
 
 PHS Machine utilizes **Raspberry Pi 4B** Architecture:**aarch64** only. Due to fund limitation, we only tested the system to run on **Pi 4B 8Gb** running version **Debian GNU/Linux 11 (bullseye) 64bit**. 
 
@@ -44,16 +38,13 @@ We also attempted to run it using **Ubuntu 64bit** (PHS does not work) but it la
 
 ## How PHS Works
 
-<center>
-    <img src="/docs/_media/Conceptual.png">
-</center>
+![how](_media/Conceptual.png)
 
 The image above shows the **Conceptual Framework** of PHSM. The PHS rely on it's 2 sensor. The **Camera** and **Thermal Camera**.
 
 ### Thermal Radiation / Infrared Radiation
-<center>
-    <img src="/docs/_media/EMSpec.jpg">
-</center>
+
+![infra](_media/EMSpec.jpg)
 
 <center>
     <sub><sup>(Credit: NASA's Imagine the Universe)</sup></sub>
@@ -67,14 +58,26 @@ Human **cannot** see infrared on the naked eye. But we can **feel** it in the fo
 
 PHS uses **Fan & Mist** to help reduce the pigs body **temperature**. PHS decide when to activate these components depending on the analyzed data from the camera & thermal camera.
 
+### Yolov5 custom trained
+
+PHS used a custom trained Yolov5 that is only trained to detect pig. The model is trained using the dataset we created in roboflow. It contains **11,374 images** of pigs. 
+
+- **Training Set** : 9.9k images ( 87% )
+- **Validation Set** : 944 images ( 8% )
+- **Testing Set Set** : 482 images ( 4% )
+
+The result of yolov5 custom trained model is shown bellow
+
+![yoloresult](_media/results.png)
+
 ### Custom CNN for identifying **Heat Stress**
 
 PHS implements custom made **CNN** classify between HeatStress & Normal. It is trained with **5,072 Normal temperature** & **5,072 HeatStress tempareture**. The following graph shows the training accuracy & loss graph.
 
 <center>
     <div style="display:flex; justify-content : evenly">
-        <img src="/docs/_media/accugraph.png">
-        <img src="/docs/_media/lossgraph.png">    
+        <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/accugraph.png">
+        <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/lossgraph.png">    
     </div>
 </center>
 
@@ -87,7 +90,7 @@ PHS implements custom made **CNN** classify between HeatStress & Normal. It is t
 ### MLX90640 Thermal(IR) Camera
 
 <center>
-    <img src="/docs/_media/MLX90640.png">
+    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/MLX90640.png">
 </center>
 
 <center>
@@ -101,7 +104,7 @@ MLX90640 can be used in **Arduino boards** and in **Raspberry Pi**. The sensor c
 ### SRICAM SriHome SH002 4MP 110 Degree Camera
 
 <center>
-    <img src="/docs/_media/SRICAM.png">
+    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/SRICAM.png">
 </center>
 
 <center>
@@ -114,6 +117,6 @@ PHS also uses a camera to properly identify the pigs. The camera matches the **1
 
 ## Contribute
 
-We are open for contribution if you have a better idea to improve the system. We made the datas available here. 
+We are open for contribution if you have a better idea to improve the system. We made the training scripts & datas available here. 
 
-[Training Data](https://drive.google.com/file/d/17bbhedv_F0g8ObiGROWZ2qk1pJOwnOos/view?usp=sharing)# PHS-Docs
+[Training Data](https://drive.google.com/drive/folders/1ySqsormrxzi2GBUkpTLrFrfWuoy8u3lo?usp=sharing)

@@ -61,3 +61,28 @@ We **highly encourage** to report **errors** that are **not** in this manual/doc
 
 - Description of what wen't wrong (on your own words)
 - Date of error
+
+# Errors/Problems with no error code
+
+## Time is not correct
+
+The Raspberry Pi doesn't have a **Real Time Clock Module (RTC)**, but possible to add an RTC module via **i2C**. The RTC module has a standard **CMOS Battery** so it doesn't loose it's time even if the PHS is unpluged.
+
+![RTC Module Real Image](_media/rl_rtc.jpg)
+
+RTC Pinout
+![RTC Pinout](_media/RTC_PINOUTS.png)
+
+> **Note** : remember the arrangement of the wire. This is the i2c bus connection which include 4 wires connecting to SCL, SDA, VCC, GND. You might be required to replace the wires sometime in the PHS lifespan.
+
+Ways to check what went wrong. 
+
+1. You must connect via SSH with your Laptop/PC that is connected on the same local network which PHS is connected. [Access Via SSH](_page_access_auth?id=accessing-via-ssh)
+2. Try executing ``` sudo i2cdetect -y 1 ```
+this should include address of **57** & **68**
+if not the RTC wires have damage or the battery need to be replaced.
+![i2caddre](_media/i2caddresses.png)
+3. Check if wires on RTC is damaged, try moving the wire & replace if necessary. Repeat step 2 to check the RTC
+
+4. Replace by a standard CMOS Battery. After replacing try doing step 2
+5. If replacing the batter solved the problem, please connect the PHS machine to a router that has an Internet for it to be able to obtain a correct time.
