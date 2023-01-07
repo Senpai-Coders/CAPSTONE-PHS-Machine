@@ -10,27 +10,21 @@ PHS machine doesn't need any internet connection to function. The PHS runs on lo
 
 ## Technology Used
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/techs.png">
-</center>
+![techused](_media/techs.png)
 
 The machine uses machine learning & image processing technology to detect and resolve the heatstress problem on pigs
 
 
 ## Web Technology Used
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/webtech.png">
-</center>
+![webtech](_media/webtech.png)
 
 The machine uses Mongodb for database that uses json like documents/record for storing data. NextJs that include Front-end (React.js) for dynamic and reusable web components. And Flask for realtime detection monitoring and PHS machine controls.
 
 
 ## Compatibility
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/rpilogo.png">
-</center>
+![rasplogo](_media/rpilogo.png)
 
 PHS Machine utilizes **Raspberry Pi 4B** Architecture:**aarch64** only. Due to fund limitation, we only tested the system to run on **Pi 4B 8Gb** running version **Debian GNU/Linux 11 (bullseye) 64bit**. 
 
@@ -44,16 +38,13 @@ We also attempted to run it using **Ubuntu 64bit** (PHS does not work) but it la
 
 ## How PHS Works
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/Conceptual.png">
-</center>
+![how](_media/Conceptual.png)
 
 The image above shows the **Conceptual Framework** of PHSM. The PHS rely on it's 2 sensor. The **Camera** and **Thermal Camera**.
 
 ### Thermal Radiation / Infrared Radiation
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/EMSpec.jpg">
-</center>
+
+![infra](_media/EMSpec.jpg)
 
 <center>
     <sub><sup>(Credit: NASA's Imagine the Universe)</sup></sub>
@@ -66,6 +57,18 @@ Human **cannot** see infrared on the naked eye. But we can **feel** it in the fo
 ### Cooling the pig
 
 PHS uses **Fan & Mist** to help reduce the pigs body **temperature**. PHS decide when to activate these components depending on the analyzed data from the camera & thermal camera.
+
+### Yolov5 custom trained
+
+PHS used a custom trained Yolov5 that is only trained to detect pig. The model is trained using the dataset we created in roboflow. It contains **11,374 images** of pigs. 
+
+- **Training Set** : 9.9k images ( 87% )
+- **Validation Set** : 944 images ( 8% )
+- **Testing Set Set** : 482 images ( 4% )
+
+The result of yolov5 custom trained model is shown bellow
+
+![yoloresult](_media/results.png)
 
 ### Custom CNN for identifying **Heat Stress**
 

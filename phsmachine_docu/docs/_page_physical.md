@@ -20,9 +20,7 @@ Once PHS is installed in place. We can now install other components needed by PH
 
 > **NOTE** : Ignore the wires that are pre installed.
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_box_open.png">
-</center>
+![phs box open](_media/phs_box_open.png)
 
 Once opened. This is what PHS contains. It contains **Relays, Raspberry Pi, Breadboard, & Fan**.
 
@@ -30,40 +28,31 @@ Once opened. This is what PHS contains. It contains **Relays, Raspberry Pi, Brea
 
 PHS has its power adapter which is a **type c**. Pass it through the PHS port holes and connect it to the **C port** of Raspberry Pi.
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_power.png">
-</center>
+![imgs](_media/phs_power.png)
 
 ## Local Network 
 
 PHS need a **local network** so that the website can be accessable via local network on **any** devices that have a **web browser**. 
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/network_topo.png">
-</center>
+![imgs](_media/network_topo.png)
+
 
 > **Note** : PHS Doesn't need a Internet, just a router that can function properly to create a local network. But if internet does exist, PHS will enable its feature **notification via email**.
 
 ## Connecting PHS to router
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/catcable.png">
-</center>
+![imgs](_media/catcable.png)
 
 PHS comes with 1 **ethernet cable**. You can connect this ethernet cable to the router. The router will assign an **IP address** to the PHS once the router & PHS is turned on. This makes the PHS **accessible** from the Local Network
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_ether.png">
-</center>
+![imgs](_media/phs_ether.png)
 
 Connect the cable to the **Ethernet Port** of the Rasberry Pi and attatch the other end to the one of available **port** on the **Router**.
 
 
 ## Attatching Components / Devices 
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_relays.png">
-</center>
+![imgs](_media/phs_relays.png)
 
 By default, PHS have **6 relays**. These relays **controls** all the components that the system uses to perform it's duty in resolving heat stress. Components that can be attatch to the relays are devices that can be turn **on** or **off** only. These relay can handle up to **10A 250VAC** or **15A 125VAC**.
 
@@ -72,9 +61,7 @@ By default, PHS have **6 relays**. These relays **controls** all the components 
 
 > **WARNING** : Some of this component may range from **low voltage** to **high voltage**, so please be extra careful.
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_relay_diag.png">
-</center>
+![imgs](_media/phs_relay_diag.png)
 
 This is how relay works. It has **3 contact terminal** to connect to.
 
@@ -86,51 +73,37 @@ This is how relay works. It has **3 contact terminal** to connect to.
 
 By default, PHS has **2x2 Grid** on it's pov but you can expand it from the settings, each cell call the **solenoid valves** to open when the heat stress originate from one of them. This allows the flow of water to flow and create a **mist** to lower the pigs body temperature. These solenoid valves needs **12V** power to run.
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_solenoid_attatchment.png">
-</center>
+![imgs](_media/phs_solenoid_attatchment.png)
 
 This is how to attatch a solenoid valve to the relay.
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_solenoids.png">
-</center>
+![imgs](_media/phs_solenoids.png)
 
 Repeat the process to other 3 solenoid valves and it should look like this.
 
 ## The Water Pump ( Component, Optional )
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_pump.png">
-</center>
+![imgs](_media/phs_pump.png)
 
 By default, we provide  **12 volt water pump** because some piggery have their water provider a **weak water pressure** failing to create good mist. Water pump helps generate **high pressure** thus forming an ideal mist. But if the water pressure from their water provider is **high enough**, you can replace it with **another solenoid valve**. The image above shows the concept of how it should work.
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_relay_pump.png">
-</center>
+![imgs](_media/phs_relay_pump.png)
 
 This shows how the water pump should properly attatched to the relay.
 
 ## The Tubing ( Required )
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_tubing.png">
-</center>
+![imgs](_media/phs_tubing.png)
 
 Depends on how many mist **nozzle** and **solenoid** you'll have, the tubing also depends on that. This is a **simple example** on how you may do your tubing. You may repeat this to other nozzles or solenoid.
 
 ## The Nozzle ( Required )
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_nozzle.png">
-</center>
+![imgs](_media/phs_nozzle.png)
 
 You need to attatch the **nozzle** at the **end destination** of every tubes. This nozzle create **fine mist** that helps lower pig temperature.
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_tubing_nozzle.png">
-</center>
+![imgs](_media/phs_tubing_nozzle.png)
 
 This is how it should look after attatching
 
@@ -138,24 +111,18 @@ This is how it should look after attatching
 
 ## The Fan ( Component, Optional )
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_fan.png">
-</center>
+![imgs](_media/phs_fan.png)
 
 By default, we provide a **leaf style fan**. Other than using water to reduce pig body temperature, there should be a **dry area** where pig can rest. So fan helps **circulate air** and **lowers the pig temperature** while leaving a dry place for the pig to rest. You should aim and place it where the pig can't reach it.
 
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/phs_relay_fan.png">
-</center>
+![imgs](_media/phs_relay_fan.png)
 
 This shows how the fan should properly attatched to the relay.
 
 ## Example result when done
 
-<center>
-    <img src="/docs/_media/final_phs.png">
-</center>
+![imgs](_media/final_phs.png)
 
 ## DONE
 
