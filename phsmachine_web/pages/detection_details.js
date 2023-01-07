@@ -5,9 +5,13 @@ import { useEffect, useState } from "react";
 import { dateToWord, tempParser } from "../helpers";
 
 import { RiCloseLine } from "react-icons/ri";
-import { FaTemperatureHigh, FaTemperatureLow, FaLongArrowAltRight } from "react-icons/fa";
+import {
+  FaTemperatureHigh,
+  FaTemperatureLow,
+  FaLongArrowAltRight,
+} from "react-icons/fa";
 import { GiPowerLightning } from "react-icons/gi";
-import { BsFolderFill, BsFillTrash2Fill } from "react-icons/bs";
+import { BsFolderFill, BsFillTrash2Fill, BsClockFill } from "react-icons/bs";
 import { TiInfoLarge } from "react-icons/ti";
 import { MdScience } from "react-icons/md";
 import { HiOutlineArrowSmDown } from "react-icons/hi";
@@ -185,7 +189,7 @@ const _detection_details = () => {
         </div>
       )}
       {loading && (
-        <div className="flex p-32 items-center justify-center">
+        <div className="flex p-4 md:p-14 lg:p-32 items-center justify-center">
           <h1 className="font-inter">
             loading data, this may take a while, please wait.
           </h1>
@@ -273,7 +277,9 @@ const _detection_details = () => {
                   <GiPowerLightning className="w-8 h-8" />
                 </div>
                 <div className="stat-title">Actions</div>
-                <div className="stat-value ">{detection.actions ? detection.actions.length : 0}</div>
+                <div className="stat-value ">
+                  {detection.actions ? detection.actions.length : 0}
+                </div>
                 <div className="stat-desc">to resolving heat stress</div>
               </div>
 
@@ -434,10 +440,11 @@ const _detection_details = () => {
               </div>
             ))}
           </div>
-          
-          <p className="mt-8 text-xl">Actions performed</p>
 
-          <div className="mt-4 max-h-screen overflow-scroll w-full">
+          <p className="mt-8 text-xl">Actions performed</p>
+          <p className="mt-2 text-sm opacity-80">Actions that the system performed to resolve the problem</p>
+
+          {/* <div className="mt-4 max-h-screen overflow-scroll w-full">
             <table className="table w-full">
               <thead>
                 <tr>
@@ -447,31 +454,73 @@ const _detection_details = () => {
                 </tr>
               </thead>
               <tbody>
-                {detection.actions && detection.actions.map((act, idx) => (
-                  <tr key={idx}>
-                    <td>
-                      <div>
-                        <div className="font-bold">{act[0].action_name}</div>
-                      </div>
-                    </td>
-                    <td>
-                      <span className="">{act[0].caller}</span>
-                    </td>
-                    <td>
-                      <div className="flex flex-wrap gap-2">
-                        {act.map((rel, idxx) => (
-                          <div key={idxx} className="px-4 py-2 bg-base-300 rounded-3xl gap-2 flex items-center">
-                            <span>Relay : {rel.relay_name}</span>
-                            <FaLongArrowAltRight className="text-xl"/>
-                            <span className="">{rel.duration}s</span>
-                          </div>
-                        ))}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {detection.actions &&
+                  detection.actions.map((act, idx) => (
+                    <tr key={idx}>
+                      <td>
+                        <div>
+                          <div className="font-bold">{act[0].action_name}</div>
+                        </div>
+                      </td>
+                      <td>
+                        <span className="">{act[0].caller}</span>
+                      </td>
+                      <td>
+                        <div className="flex flex-wrap gap-2">
+                          {act.map((rel, idxx) => (
+                            <div
+                              key={idxx}
+                              className="px-4 py-2 bg-base-300 rounded-3xl gap-2 flex items-center"
+                            >
+                              <span>Relay : {rel.relay_name}</span>
+                              <FaLongArrowAltRight className="text-xl" />
+                              <span className="">{rel.duration}s</span>
+                            </div>
+                          ))}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
+          </div> */}
+
+          <div className="mt-4 max-h-screen overflow-scroll w-full">
+            <ul className="steps  text-left steps-vertical">
+              {detection.actions &&
+                detection.actions.map((act, idx) => (
+                  <li data-content="●" key={idx} className="step step-neutral">
+                    <div className="py-4 px-2 text-left">
+                      <div className="text-left">
+                        <p className="text-left">
+                        <span className="font-medium">{act[0].action_name}{" - "}</span>
+                          <span className="opacity-80 text-sm">activated at event </span>{" "}
+                          <span className="font-medium">{act[0].caller}</span>
+                        </p>
+                        <ul className="md:ml-2 mt-2">
+                          {act.map((rel, idxx) => (
+                            <li
+                              key={idxx}
+                              className="px-2 py-1 rounded-3xl mt-1 text-sm flex items-center"
+                            >
+                              <p>
+                                Relay : {rel.relay_name}{" "}
+                                <span className="opacity-60 font-thin">
+                                  {" "}
+                                  for{" "}
+                                </span>
+                              </p>
+
+                              <BsClockFill className="mx-1"/>
+                              <span className="">{rel.duration} seconds</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+            </ul>
           </div>
 
           <div className="my-8 text-sm alert shadow-lg">
