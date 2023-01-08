@@ -99,7 +99,6 @@ run_phs() {
     fi
 }
 
-
 echo "\n**Checking PHS build**"
 echo "lastbuild -> $lastbuild"
 echo "current_ip -> $curip \n"
