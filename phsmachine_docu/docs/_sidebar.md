@@ -6,7 +6,7 @@
 * [Settings Page](_page_settings.md)
 * [Other PHS Scanner Page](_page_phs_scan.md)
 * [PHS Logs Page](_page_logs.md)
-* [Error Codes](_page_error_codes.md)
+* [Error & Problems](_page_error_codes.md)
 * [Maintenance Guide](./_page_maintenance.md)
 * [Physical Installation](_page_physical.md)
 * [Software Installation (RARE)](_page_software.md)
