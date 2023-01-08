@@ -12,6 +12,14 @@ PHS provides configurations for the system. You can configure settings, system s
 
 Let's you control the system state. When the system is on **Debuging mode** or has been **stop**, you can put it back to it's normal state by clicking **Start PHS**. You can also **Shutdown or Reboot** the system. If the state is not showing correctly, you can click **refresh** to get the latest system state.
 
+### Updating the system
+
+![controls](_media/setting_phsupdate.png)
+
+For the system to be able to know that an update is **available** from our repository, you can connect the PHS to a router that has **internet connection** & **reboot it**. After rebooting the PHS will gather new information about the **latest commits/changes/update** from us and show the **latest udate** on the settings page which you can choose to update your system. 
+
+> **NOTE** : Updates are ment to improve and fix problems to the system. But just like any other softwares, updates might bring incompatibility, errors & bugs to the system. Proceed at your own risk. If you encounter any issue, you can [Report Issue Here](https://github.com/Senpai-Coders/CAPSTONE-PHS-Machine/issues) or you can email us directly at  <u>phscapstonesystem@gmail.com</u>
+
 ### Heat Stress Detection Setting
 
 ![controls b](_media/setting%20b.png)

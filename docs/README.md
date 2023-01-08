@@ -1,9 +1,9 @@
-# PHS  
+# PHS
 
 ![logo](_media/pig_w_bg.png)
 ![logo](_media/phsmock.png)
 
-## Introduction   
+## Introduction
 **PHSM**, or **Pig Heat Stress Machine**, is a capstone project develop to help piggery owners to detect and automatically resolve any possible heat stress affecting the pigs. PHS machine gathers all information & details that is being monitored by the web-based system of PHSM.
 
 PHS machine doesn't need any internet connection to function. The PHS runs on local network on the piggery and can be used to scan and connect other PHS machine on the same network.
@@ -74,12 +74,10 @@ The result of yolov5 custom trained model is shown bellow
 
 PHS implements custom made **CNN** classify between HeatStress & Normal. It is trained with **5,072 Normal temperature** & **5,072 HeatStress tempareture**. The following graph shows the training accuracy & loss graph.
 
-<center>
-    <div style="display:flex; justify-content : evenly">
-        <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/accugraph.png">
-        <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/lossgraph.png">    
-    </div>
-</center>
+**accuracy**
+
+![acculoss](_media/acculoss.png)
+
 
 <center>
     <sub><sup>(Training/Validation) Accuracy Graph & Loss Graph</sup></sub>
@@ -89,9 +87,7 @@ PHS implements custom made **CNN** classify between HeatStress & Normal. It is t
 
 ### MLX90640 Thermal(IR) Camera
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/MLX90640.png">
-</center>
+![MLX90640](_media/MLX90640.png)
 
 <center>
     <sub><sup>(Credit: Adafruit)</sup></sub>
@@ -103,9 +99,7 @@ MLX90640 can be used in **Arduino boards** and in **Raspberry Pi**. The sensor c
 
 ### SRICAM SriHome SH002 4MP 110 Degree Camera
 
-<center>
-    <img src="https://senpai-coders.github.io/CAPSTONE-PHS-Machine/_media/SRICAM.png">
-</center>
+![SRICAM](_media/SRICAM.png)
 
 <center>
     <sub><sup>(Credit: SRICAM)</sup></sub>

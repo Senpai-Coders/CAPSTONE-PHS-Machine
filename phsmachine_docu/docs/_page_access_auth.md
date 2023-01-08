@@ -59,7 +59,7 @@ PHS machine doesn't have a sign up / create account endpoint to ensure that nobo
 You can email PHSM developers below if you have question or problem about the root account.
 
 #### Devs
-- jsparagas1@student.fatima.edu.ph
+- phscapstonesystem@gmail.com@student.fatima.edu.ph
 
 ### Logging In
 To access and monitor the detection history and realtime streaming of the system. You must first gain authorization by logging in to your account that is provided by **root** or **admin**. 

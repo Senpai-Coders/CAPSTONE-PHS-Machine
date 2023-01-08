@@ -1,10 +1,10 @@
-# PHS Error Codes
+## PHS Error Codes
 
 PHS may encounter **errors** in future. **Error codes** may help admins, developers on **tracing** or knowing what is the **caused** of error and the **possible fix**.
 
 Error codes might appear on the **bell notification** located at the nav bar or Error codes might appear on the **Log page**
 
-## Error Code **-1**
+### Error Code **-1**
 
 This error indicates that the PHS cannot **reset** or **initialize** it's initial settings due to **PHS default factory file configuration** can't be accessed or not found.
 
@@ -13,7 +13,7 @@ The default file configuration ```phsV1Defaults.json``` which is located at ```p
 #### Possible Solution
 - Try downloading the ```phsV1Defaults.json``` file from the [github repository phsmachine_web/defaults/](https://github.com/Senpai-Coders/CAPSTONE-PHS-Machine/tree/main/phsmachine_web/defaults)
 
-## Error Code **0**
+### Error Code **0**
 
 This indicates that the **PHS Detection System** of PHS is **not running** or **can't be reached**. This may result to the possibility that it is **not running**. 
 
@@ -26,7 +26,7 @@ This indicates that the **PHS Detection System** of PHS is **not running** or **
 journalctl -u phs_system.service
 ```
 
-## Error Code **1**
+### Error Code **1**
 
 This indicates that the **Web Service** of PHS is **not running** or **cannot be reached**. This might be local network issue or the Web service failed to run.
 
@@ -37,7 +37,7 @@ This indicates that the **Web Service** of PHS is **not running** or **cannot be
 journalctl -u phs_web.service
 ```
 
-## Error Code 3
+### Error Code 3
 
 This indicates that PHS storage **exceeds 95%** of the total storage.
 
@@ -46,31 +46,16 @@ You can **old records** at the **detection page**  to free up some space.
 
 > **TIP** You can follow the maintenance guid which include maintaining the PHS storage.
 
+## Errors with no error code
 
-# Possible Undocumented Errors
-
-We **highly encourage** to report **errors** that are **not** in this manual/documentation inorder to improve the system's error handling and support.
-
-#### Email the developer & send the following
-
-- Log Files (Both PHS Web & PHS Detection System Logs)
-
-> **TIP** : You can download the logs at the Log Page
-
-> **TIP** : You can also connect via SSH or VNC to the phs and on terminal you can run ```journalctl -u phs_system.service``` && ```journalctl -u phs_web.service``` to view the logs, and take a screenshot of the errors.
-
-- Description of what wen't wrong (on your own words)
-- Date of error
-
-# Errors/Problems with no error code
-
-## Time is not correct
+### Time is not correct
 
 The Raspberry Pi doesn't have a **Real Time Clock Module (RTC)**, but possible to add an RTC module via **i2C**. The RTC module has a standard **CMOS Battery** so it doesn't loose it's time even if the PHS is unpluged.
 
 ![RTC Module Real Image](_media/rl_rtc.jpg)
 
 RTC Pinout
+
 ![RTC Pinout](_media/RTC_PINOUTS.png)
 
 > **Note** : remember the arrangement of the wire. This is the i2c bus connection which include 4 wires connecting to SCL, SDA, VCC, GND. You might be required to replace the wires sometime in the PHS lifespan.
@@ -86,3 +71,27 @@ if not the RTC wires have damage or the battery need to be replaced.
 
 4. Replace by a standard CMOS Battery. After replacing try doing step 2
 5. If replacing the batter solved the problem, please connect the PHS machine to a router that has an Internet for it to be able to obtain a correct time.
+
+
+## Report Errors & Issues
+
+We **highly encourage** to report **errors** that are **not** in this manual/documentation inorder to improve the system's error handling and support.
+
+### Report Via Github Issue
+If you encounter any issue that is not documented on the system manual, you can [Report Issue Here](https://github.com/Senpai-Coders/CAPSTONE-PHS-Machine/issues)
+
+### Report Via Email
+
+You can report the error to us here <u>phscapstonesystem@gmail.com</u>
+
+
+#### Provide the following when sending report
+
+- Log Files of the specific date you encounter the problem (Both PHS Web & PHS Detection System Logs)
+- Description of what wen't wrong (on your own words)
+- Date of error
+
+
+> **TIP** : You can download the logs at the Log Page
+
+> **TIP** : You can also connect via SSH or VNC to the phs and on terminal you can run ```journalctl -u phs_system.service``` && ```journalctl -u phs_web.service``` to view the logs, and take a screenshot of the errors.
