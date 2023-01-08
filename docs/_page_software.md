@@ -220,10 +220,8 @@ Once again, restart the system. Now access the system, you can read & follow the
 
 ## Updating the system
 
-The system is available on github and can be easily updated by executing this command on Raspberry pi terminal
+![controls](_media/setting_phsupdate.png)
 
-```
-cd ~/CAPSTONE-PHS-Machine; git reset --hard; git pull
-```
+You can update the system via PHS settings. For the system to be able to know that an update is **available** from our repository, you must connect the PHS to a router that has **internet connection** & **reboot it**. After rebooting the PHS will gather new information about the **latest commits/changes/update** from us and show the **latest udate** on the settings page which you can choose to update your system. 
 
-After it completed update, reboot the PHS
+> Updates are ment to improve and fix problems to the system. But just like any other softwares, updates might bring incompatibility, errors & bugs to the system. Proceed at your own risk. If you encounter any issue, you can [Report Issue Here](https://github.com/Senpai-Coders/CAPSTONE-PHS-Machine/issues) or you can email us directly at  <u>phscapstonesystem@gmail.com</u>
