@@ -66,7 +66,7 @@ const handler = async (req, res) => {
 
         action = await users.updateOne(
           { _id },
-          { $set: { user_name: up_userName, password: up_password } }
+          { $set: { ...updates, password: up_password } }
         );
       }
       logger.info(

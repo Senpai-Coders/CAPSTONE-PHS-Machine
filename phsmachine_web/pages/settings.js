@@ -171,11 +171,11 @@ const configuration = () => {
       <input type="checkbox" id="sys_off_modal" className="modal-toggle" />
       <div className="flex justify-center">
         <div className="w-full mx-0 md:mx-4 md:w-1/2">
-          <p className="text-2xl card-title font-lato font-semibold">
+          <p className="text-2xl card-title font-inte font-semibold">
             {/* Configuration */}
           </p>
-          <div className="my-2 ">
-            <div className="tabs w-72 overflow-x-scroll">
+          <div className="my-2 w-full">
+            <div className="tabs w-full overflow-x-scroll">
               <a
                 onClick={() => {
                   router.push("settings?tb=0");

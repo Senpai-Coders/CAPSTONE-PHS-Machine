@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { RiRestartLine } from "react-icons/ri";
+import Head from "next/head";
 
 export default function reboot() {
   const router = useRouter();
@@ -28,6 +29,9 @@ export default function reboot() {
       exit={{ opacity: 0 }}
       className="flex items-center justify-center w-screen h-screen"
     >
+        <Head>
+        <title>PHS Reboot</title>
+      </Head>
       <div className="flex animate-pulse items-center space-x-4">
         <RiRestartLine className="animate-spin text-primary text-3xl" />
         <h1 className="text-xl font-inter">

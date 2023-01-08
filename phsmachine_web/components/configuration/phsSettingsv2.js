@@ -63,6 +63,12 @@ const phsSettings = ({
 
   const [PHS_NAME, setPHS_NAME] = useState("");
 
+  const [availableUps, setAvailableUps] = useState()
+
+  useEffect(()=>{
+    
+  },[])
+
   useEffect(() => {
     if (hasChanges) return;
     setDivCol(divisionCount.col);
@@ -104,10 +110,10 @@ const phsSettings = ({
           },
         },
       });
-      toast.success("Done", {position: toast.POSITION.BOTTOM_RIGHT,});
+      toast.success("Done", { position: toast.POSITION.BOTTOM_RIGHT });
       location.reload();
     } catch (e) {
-        toast.error("failed", {position: toast.POSITION.BOTTOM_RIGHT,});
+      toast.error("failed", { position: toast.POSITION.BOTTOM_RIGHT });
     }
   };
 
@@ -122,9 +128,9 @@ const phsSettings = ({
         "/api/phs/config/storageAutoDelete",
         { mode: 1, value: !autoDelete.value }
       );
-      toast.success("Done", {position: toast.POSITION.BOTTOM_RIGHT,});
+      toast.success("Done", { position: toast.POSITION.BOTTOM_RIGHT });
     } catch (e) {
-        toast.error("Failed", {position: toast.POSITION.BOTTOM_RIGHT,});
+      toast.error("Failed", { position: toast.POSITION.BOTTOM_RIGHT });
     }
     fireOnChange();
   };
@@ -141,10 +147,9 @@ const phsSettings = ({
       });
       setHasChanges(false);
       fireOnChange();
-      toast.success("Done", {position: toast.POSITION.BOTTOM_RIGHT,});
+      toast.success("Done", { position: toast.POSITION.BOTTOM_RIGHT });
     } catch (e) {
-        toast.error("failed", {position: toast.POSITION.BOTTOM_RIGHT,});
-
+      toast.error("failed", { position: toast.POSITION.BOTTOM_RIGHT });
     }
   };
 
@@ -153,7 +158,6 @@ const phsSettings = ({
   }, [autoDelete, storageInfo, detectionMode, divisionCount]);
 
   const saveChange = async (val) => {
-    
     try {
       setSaving(true);
       setUpdating("autodetect");
@@ -182,12 +186,12 @@ const phsSettings = ({
         );
       }
 
-      toast.success("Done", {position: toast.POSITION.BOTTOM_RIGHT,});
+      toast.success("Done", { position: toast.POSITION.BOTTOM_RIGHT });
       setHasChanges(false);
       setSaving(false);
       fireOnChange();
     } catch (e) {
-      toast.success("Failed", {position: toast.POSITION.BOTTOM_RIGHT,});
+      toast.success("Failed", { position: toast.POSITION.BOTTOM_RIGHT });
       console.log(e);
     }
   };
@@ -202,27 +206,28 @@ const phsSettings = ({
       const updateState = await axios.get(
         `http://${PI_IP}:8000/updateState?status=${state}`
       );
-      toast.success("Done", {position: toast.POSITION.BOTTOM_RIGHT,});
+      toast.success("Done", { position: toast.POSITION.BOTTOM_RIGHT });
       fireOnChange();
     } catch (e) {
-      toast.error("Failed", {position: toast.POSITION.BOTTOM_RIGHT,});
+      toast.error("Failed", { position: toast.POSITION.BOTTOM_RIGHT });
     }
   };
 
   const setModel = async (newValue) => {
-    
     try {
       const updatePhsModel = await axios.post("/api/phs/config/aimodels", {
         mode: 1,
         search: { config_name: "identity" },
         changes: newValue,
       });
-      toast.success("Done", {position: toast.POSITION.BOTTOM_RIGHT,});
+      toast.success("Done", { position: toast.POSITION.BOTTOM_RIGHT });
     } catch (e) {
-        toast.error("Failed", {position: toast.POSITION.BOTTOM_RIGHT,});
+      toast.error("Failed", { position: toast.POSITION.BOTTOM_RIGHT });
     }
     await fireOnChange();
-    toast.info("Restart is required for the changes to take effect", {position: toast.POSITION.BOTTOM_RIGHT,});
+    toast.info("Restart is required for the changes to take effect", {
+      position: toast.POSITION.BOTTOM_RIGHT,
+    });
   };
 
   return (
@@ -272,8 +277,15 @@ const phsSettings = ({
       <div className="mt-4 mx-1 md:mx-2 rounded-md p-4 md:p-4 outline  bg-base-100 shadow-sm outline-1 outline-base-300">
         {/** Simple Control & Status */}
         <div className="flex justify-between items-center">
-            <p className="font-inter font-medium mb-2 text-lg md:text-xl">System</p>
-            <button onClick={()=>fireOnChange()} className="btn btn-sm btn-active ">Refresh <FiRefreshCcw className="ml-2"/></button>
+          <p className="font-inter font-medium mb-2 text-lg md:text-xl">
+            System
+          </p>
+          <button
+            onClick={() => fireOnChange()}
+            className="btn btn-sm btn-active "
+          >
+            Refresh <FiRefreshCcw className="ml-2" />
+          </button>
         </div>
 
         <div className="form-control mt-2 md:mt-6">
@@ -319,13 +331,13 @@ const phsSettings = ({
                   <p className="text-xs md:text-sm">
                     This will disable detection & actions. You can also be able
                     to test the relays via{" "}
-                    <div className="text-sm text-secondary breadcrumbs">
-                      <ul>
-                        <li>Settings</li>
-                        <li>Relays</li>
-                      </ul>
-                    </div>
                   </p>
+                  <div className="text-sm text-secondary breadcrumbs">
+                    <ul>
+                      <li>Settings</li>
+                      <li>Relays</li>
+                    </ul>
+                  </div>
                 </div>
                 <input
                   type="checkbox"
@@ -443,10 +455,10 @@ const phsSettings = ({
                 const updateState = await axios.get(
                   `http://${PI_IP}:8000/emergencyStop`
                 );
-                fireOnChange()
+                fireOnChange();
               } catch (e) {
                 console.log("err ", e);
-                fireOnChange()
+                fireOnChange();
               }
             }}
             disabled={state < 0 || state === 3}
@@ -469,6 +481,13 @@ const phsSettings = ({
             <BsBootstrapReboot className="w-4 h-4 mr-2" />
             Reboot PHS
           </button>
+        </div>
+
+        <div className="divider" />
+        <div className="mt-2">
+          <p className="font-inter font-medium mb-2 text-lg md:text-xl">
+            System Update
+          </p>
         </div>
       </div>
 

@@ -207,7 +207,7 @@ const _detection_details = () => {
         <section className="mt-8 sm:mx-1 md:mx-8">
           <p className="font-inter text-lg">
             Detection Date -{" "}
-            <span className="font-lato text-sm">
+            <span className="font-inte text-sm">
               {dateToWord(detection.cat)}
             </span>
           </p>
@@ -232,7 +232,7 @@ const _detection_details = () => {
 
           <p className="font-inter text-lg">
             Detection ID -{" "}
-            <span className="font-lato text-sm">{detection._id}</span>
+            <span className="font-inte text-sm">{detection._id}</span>
           </p>
 
           <div className="my-4 text-sm alert shadow-lg">

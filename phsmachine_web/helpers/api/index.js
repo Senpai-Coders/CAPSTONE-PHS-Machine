@@ -237,6 +237,16 @@ export const readLogs = async (logFileName) => {
   }
 };
 
+export const readFile = async (file) => {
+    try {
+      const data = await fs.promises.readFile(file, "utf8");
+      return data;
+    } catch (err) {
+      const data = await fs.promises.writeFile(file, "");
+      return "";
+    }
+  };
+
 export const clearError = async () => {
   try {
     const prev = await readError();

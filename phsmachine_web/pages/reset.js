@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { BiReset } from "react-icons/bi";
+import Head from "next/head";
 
 export default function reset() {
   const router = useRouter();
@@ -100,6 +101,9 @@ export default function reset() {
       exit={{ opacity: 0 }}
       className="flex items-center justify-center w-screen h-screen"
     >
+        <Head>
+        <title>PHS Reset</title>
+      </Head>
       <div className="flex animate-pulse items-center space-x-4">
         <BiReset className="text-primary text-3xl" />
         <h1 className="text-sm md:text-xl font-inter">

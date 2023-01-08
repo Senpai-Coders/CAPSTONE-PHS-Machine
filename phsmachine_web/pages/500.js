@@ -2,7 +2,7 @@ export default function _500() {
   return (
     <div className="relative flex items-center justify-center w-screen h-screen">
       <div>
-        <h1 className="text-3xl font-lato font-light">500 | Page Not Found</h1>
+        <h1 className="text-3xl font-inte font-light">500 | Page Not Found</h1>
       </div>
       <div className="absolute">
         <div className="grid-cols-1 grid-rows-1"></div>

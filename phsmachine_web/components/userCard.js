@@ -109,7 +109,6 @@ const userCard = ({ u, editor_info, onUpdate, onDelete, onNav }) => {
       }
 
       if (pass.length === 0) {
-        console.log(username);
         update = await axios.post("/api/phs/updateUser", {
           _id: u._id,
           mode: 1,
@@ -198,7 +197,7 @@ const userCard = ({ u, editor_info, onUpdate, onDelete, onNav }) => {
               <span className="text-sm ml-2">
                 {getRole(u.role)}
                 {u.role === editor_info.role && u._id === editor_info._id && (
-                  <span className="text-sm text-accent animate-pulse ml-2">
+                  <span className="text-sm opacity-80 animate-pulse ml-2">
                     (You)
                   </span>
                 )}

@@ -31,15 +31,6 @@ const Accounts = () => {
   };
 
   const deleteUser = async () => {
-    const id = toast.loading("Deleting user...", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
     try {
       const response = await axios.post("/api/phs/updateUser", {
         mode: -1,
@@ -48,48 +39,20 @@ const Accounts = () => {
       setDeleteModal(false);
       setTargetId(null);
       init();
-      toast.update(id, {
-        render: "Deleted successfuly!",
-        type: "success",
-        isLoading: false,
-        autoClose: true,
-      });
+      toast.success("User has been removed", {position: toast.POSITION.BOTTOM_RIGHT,});
     } catch (e) {
-      toast.update(id, {
-        render: "Error saving changes",
-        type: "error",
-        isLoading: false,
-        autoClose: true,
-      });
+      toast.error("Failed to remove user", {position: toast.POSITION.BOTTOM_RIGHT,});
     }
   };
 
   const newUser = async () => {
-    const id = toast.loading("Generating User...", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+    
     try {
       const resp = await axios.post("/api/phs/updateUser", { mode: 0 });
       init();
-      toast.update(id, {
-        render: "User Created!",
-        type: "success",
-        isLoading: false,
-        autoClose: true,
-      });
+      toast.success("User created", {position: toast.POSITION.BOTTOM_RIGHT,});
     } catch (e) {
-      toast.update(id, {
-        render: "Error creating user",
-        type: "error",
-        isLoading: false,
-        autoClose: true,
-      });
+      toast.error("Done", {position: toast.POSITION.BOTTOM_RIGHT,});
     }
   };
 
@@ -118,7 +81,7 @@ const Accounts = () => {
               onClick={() => {
                 deleteUser();
               }}
-              className="btn"
+              className="btn btn-error"
             >
               Delete
             </button>
@@ -127,7 +90,7 @@ const Accounts = () => {
                 setTargetId(null);
                 setDeleteModal(false);
               }}
-              className="btn glass"
+              className="btn "
             >
               Cancel
             </button>
@@ -135,7 +98,7 @@ const Accounts = () => {
         </div>
       </div>
       <div className="flex items-center">
-        <p className="text-xl card-title font-lato font-semibold">
+        <p className="text-xl card-title font-inte font-semibold">
           Account Management
         </p>
 
