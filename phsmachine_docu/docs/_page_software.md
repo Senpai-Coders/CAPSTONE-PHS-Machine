@@ -27,7 +27,7 @@ Get the Pi **SDCard** located under it and attatch it to your computer and you c
 
 ## Installation
 
-The following are **linux commands** used to install PHS. 
+Connect to PHS via **[VNC](_page_access_auth?id=accessing-via-vnc)** or **[SSH](_page_access_auth?id=accessing-via-ssh)**. On the terminal, execute the following **linux commands** used to install PHS. 
 
 > **NOTE** : If installation of these dependencies/packages fails, please google or contact the developers for help.
 
