@@ -513,8 +513,9 @@ const phsSettings = ({
           <p className="font-inter font-medium mb-2 text-lg md:text-xl">
             System Update
           </p>
+          <p className="mt-2 text-xs">PHS must be connected to the internet in order to get available updates</p>
           {availableUps !== "-" ? (
-            <div className="flex duration-400 group ease-in-out hover:bg-neutral hover:text-neutral-content justify-evenly items-center shadow-md p-4">
+            <div className="flex mt-2 duration-400 group ease-in-out hover:bg-neutral hover:text-neutral-content justify-evenly items-center shadow-md p-4">
               <IoMdGitMerge className="text-4xl mr-2" />
               <div className="">
                 <p className="font-bold mt-1">New Update Available</p>
@@ -533,12 +534,12 @@ const phsSettings = ({
               <div className="divider divider-horizontal"></div>
               <button onClick={()=>{
                 setSelectedModal(1)
-              }} className="p-4 hover:text-lg duration-500 ease-in-out hover:opacity-100 opacity-75 font-semibold">
+              }} className="p-4 hover:text-lg duration-500 hover:bg-base-300 ease-in-out hover:opacity-100 opacity-75 font-semibold">
                 Update
               </button>
             </div>
           ) : (
-            <p className="text-center w-full text-sm opacity-80 my-4">
+            <p className="text-center w-full text-sm opacity-80 py-8">
               No available update
             </p>
           )}

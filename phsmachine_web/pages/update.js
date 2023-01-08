@@ -26,18 +26,20 @@ export default function reboot() {
       .catch(function (error) {
 
       });
+
+    axios.post("/api/phs/config/power", { mode: 1 });
   }, []);
 
   useEffect(() => {
-    // let connectChecker = setInterval(async () => {
-    //   try {
-    //     if (started) return;
-    //     const response = await axios.post("/api/connectivity");
-    //     if (started) return;
-    //     router.push("/");
-    //   } catch (e) {}
-    // }, 3000);
-    // return () => clearInterval(connectChecker);
+    let connectChecker = setInterval(async () => {
+      try {
+        if (started) return;
+        const response = await axios.post("/api/connectivity");
+        if (started) return;
+        router.push("/");
+      } catch (e) {}
+    }, 3000);
+    return () => clearInterval(connectChecker);
   }, []);
 
   return (
