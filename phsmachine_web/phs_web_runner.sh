@@ -75,7 +75,7 @@ update_phs() {
 
     echo "\nUpdating PHS"
     git -C "$_PHS_WEB_DIR_" reset --hard
-    git -C "$_PHS_WEB_DIR_" pull
+    git -C "$_PHS_WEB_DIR_" pull # pull update sa ating repo Hhahah!
     echo "false" >"$_PHS_WEB_DIR_/tracking_shouldupdate.tmp"
     forcebuild="true"
 }
