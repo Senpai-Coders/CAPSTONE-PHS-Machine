@@ -1,4 +1,4 @@
-# PHS 
+# PHS
 
 ![logo](_media/pig_w_bg.png)
 ![logo](_media/phsmock.png)
@@ -70,9 +70,14 @@ The result of yolov5 custom trained model is shown bellow
 
 ![yoloresult](_media/results.png)
 
-### Custom CNN for identifying **Heat Stress**
+### Custom CNN for identifying **Heat Stress** we called **Mai_Net CNN**
 
 PHS implements custom made **CNN** classify between HeatStress & Normal. It is trained with **5,072 Normal temperature** & **5,072 HeatStress tempareture**. The following graph shows the training accuracy & loss graph.
+
+#### Convolutional Layers
+![mainet_conv_layer](_media/mai_net_cnn_block.png)
+
+![mai_net_cnn_block](_media/mai_net_cnn.png)
 
 **accuracy**
 
