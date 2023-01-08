@@ -43,3 +43,6 @@ apikey.json
 cert/*
 
 #tracking files
+tracking_shouldupdate.tmp
+tracking_lastipbuild.tmp
+tracking_hasupdate.tmp
