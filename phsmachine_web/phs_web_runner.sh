@@ -54,11 +54,11 @@ fetch_phs() {
     echo "Base Version : $BASE"
 
     if [ $LOCAL = $REMOTE ]; then
-        echo "\nPHS is Up-to-date"
+        echo -e "\nPHS is Up-to-date"
         echo "-" >"$_PHS_WEB_DIR_/tracking_hasupdate.tmp"
         hasupdate="false"
     elif [ $LOCAL = $BASE ]; then
-        echo "\nPHS Has New Update -> $REMOTE"
+        echo -e "\nPHS Has New Update -> $REMOTE"
         echo $(git rev-list --format=%B --max-count=1 "$REMOTE") >"$_PHS_WEB_DIR_/tracking_hasupdate.tmp"
         hasupdate="true"
     fi
@@ -68,12 +68,12 @@ update_phs() {
     fetch_phs
 
     if [ $hasupdate = "false" ]; then
-        echo "lol system doesn't have latest update from remote"
+        echo -e "lol system doesn't have latest update from remote\n"
         echo "false" >"$_PHS_WEB_DIR_/tracking_shouldupdate.tmp"
         return 0
     fi
 
-    echo "\nUpdating PHS"
+    echo -e "\nUpdating PHS"
     git -C "$_PHS_WEB_DIR_" reset --hard
     git -C "$_PHS_WEB_DIR_" pull # pull update sa ating repo Hhahah!
     echo "false" >"$_PHS_WEB_DIR_/tracking_shouldupdate.tmp"
@@ -116,9 +116,9 @@ run_phs() {
     fi
 }
 
-echo "\n**Checking PHS build**"
+echo -e "\n**Checking PHS build**"
 echo "lastbuild -> $lastbuild"
-echo "current_ip -> $curip \n"
+echo -e "current_ip -> $curip \n"
 sleep 1
 
 if [ $hasupdate = "true" ]; then
@@ -128,7 +128,7 @@ elif [ "$lastbuild" != "$curip" ]; then
     echo "**need rebuild**"
     build_phs
 else
-    echo "**no need for rebuild**\n"
+    echo -e "**no need for rebuild**\n"
 fi
 
 echo "**Checking PHS update from remote**"
