@@ -23,7 +23,6 @@ n=1
 
 #exit if ip is not fully set 
 if [ `expr length "$curip"` -eq 0 ]; then
-    sleep 20
 	exit 1
 fi
 

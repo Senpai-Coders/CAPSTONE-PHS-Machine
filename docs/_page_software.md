@@ -27,7 +27,7 @@ Get the Pi **SDCard** located under it and attatch it to your computer and you c
 
 ## Installation
 
-The following are **linux commands** used to install PHS. 
+Connect to PHS via **[VNC](_page_access_auth?id=accessing-via-vnc)** or **[SSH](_page_access_auth?id=accessing-via-ssh)**. On the terminal, execute the following **linux commands** used to install PHS. 
 
 > **NOTE** : If installation of these dependencies/packages fails, please google or contact the developers for help.
 
@@ -170,6 +170,8 @@ sudo systemctl enable phs_fserver.service
 ```
 echo "[Unit]" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "Description=Runs PHS Web Server" | sudo tee -a /lib/systemd/system/phs_web.service
+echo "StartLimitIntervalSec=20s" | sudo tee -a /lib/systemd/system/phs_web.service
+echo "StartLimitBurst=5" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "After=network-online.target" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "Wants=network-online.target systemd-networkd-wait-online.service" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "" | sudo tee -a /lib/systemd/system/phs_web.service

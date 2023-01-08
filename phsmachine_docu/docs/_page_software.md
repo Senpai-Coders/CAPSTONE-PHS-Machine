@@ -170,6 +170,8 @@ sudo systemctl enable phs_fserver.service
 ```
 echo "[Unit]" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "Description=Runs PHS Web Server" | sudo tee -a /lib/systemd/system/phs_web.service
+echo "StartLimitIntervalSec=20s" | sudo tee -a /lib/systemd/system/phs_web.service
+echo "StartLimitBurst=5" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "After=network-online.target" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "Wants=network-online.target systemd-networkd-wait-online.service" | sudo tee -a /lib/systemd/system/phs_web.service
 echo "" | sudo tee -a /lib/systemd/system/phs_web.service
