@@ -11,7 +11,7 @@ const handler = async (req, res) => {
     const editorDetails = VERIFY_AUTHORIZATION(auth);
     const { mode } = req.body;
 
-    const DELAY = await new Promise(resolve => setTimeout(resolve, 8000)) 
+    const DELAY = await new Promise(resolve => setTimeout(resolve, 6000)) 
 
     if (mode === 0) {
       try {
