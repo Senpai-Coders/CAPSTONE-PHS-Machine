@@ -15,6 +15,12 @@ touch "$_PHS_WEB_DIR_/tracking_shouldupdate.tmp"
 touch "$_PHS_WEB_DIR_/tracking_lastipbuild.tmp"
 touch "$_PHS_WEB_DIR_/tracking_hasupdate.tmp"
 
+#git tracking info
+UPSTREAM=${1:-'@{u}'}
+LOCAL=$(git -C "$_PHS_WEB_DIR_" rev-parse @)
+REMOTE=$(git -C "$_PHS_WEB_DIR_" rev-parse "$UPSTREAM")
+BASE=$(git -C "$_PHS_WEB_DIR_" merge-base @ "$UPSTREAM")
+
 #read nung mga tracking files
 lastbuild=$(cat $_PHS_WEB_DIR_/tracking_lastipbuild.tmp)
 toupdate=$(cat $_PHS_WEB_DIR_/tracking_shouldupdate.tmp)
@@ -57,6 +63,12 @@ fetch_phs() {
 }
 
 update_phs() {
+    if [ $LOCAL = $REMOTE ]; then
+        echo "lol system doesn't have latest update from remote"
+        echo "false" >"$_PHS_WEB_DIR_/tracking_shouldupdate.tmp"
+        return 0
+    fi
+
     echo "\nUpdating PHS"
     git -C "$_PHS_WEB_DIR_" reset --hard
     git -C "$_PHS_WEB_DIR_" pull
