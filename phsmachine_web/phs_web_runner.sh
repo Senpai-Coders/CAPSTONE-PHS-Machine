@@ -27,7 +27,7 @@ toupdate=$(cat $_PHS_WEB_DIR_/tracking_shouldupdate.tmp)
 
 curip=$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p')
 forcebuild="false"
-
+hasupdate="false"
 n=1
 
 # ip_len=${#curip}
@@ -56,14 +56,18 @@ fetch_phs() {
     if [ $LOCAL = $REMOTE ]; then
         echo "\nPHS is Up-to-date"
         echo "-" >"$_PHS_WEB_DIR_/tracking_hasupdate.tmp"
+        hasupdate="false"
     elif [ $LOCAL = $BASE ]; then
         echo "\nPHS Has New Update -> $REMOTE"
         echo $(git rev-list --format=%B --max-count=1 "$REMOTE") >"$_PHS_WEB_DIR_/tracking_hasupdate.tmp"
+        hasupdate="true"
     fi
 }
 
 update_phs() {
-    if [ $LOCAL = $REMOTE ]; then
+    fetch_phs
+
+    if [ $hasupdate = "false" ]; then
         echo "lol system doesn't have latest update from remote"
         echo "false" >"$_PHS_WEB_DIR_/tracking_shouldupdate.tmp"
         return 0
@@ -116,7 +120,11 @@ echo "\n**Checking PHS build**"
 echo "lastbuild -> $lastbuild"
 echo "current_ip -> $curip \n"
 sleep 1
-if [ "$lastbuild" != "$curip" ]; then
+
+if [ $hasupdate = "true" ]; then
+    echo "**new update, need rebuild**"
+    build_phs
+elif [ "$lastbuild" != "$curip" ]; then
     echo "**need rebuild**"
     build_phs
 else
