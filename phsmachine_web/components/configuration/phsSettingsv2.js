@@ -534,7 +534,7 @@ const phsSettings = ({
               <div className="divider divider-horizontal"></div>
               <button onClick={()=>{
                 setSelectedModal(1)
-              }} className="p-4 hover:text-lg duration-500 hover:bg-base-300 ease-in-out hover:opacity-100 opacity-75 font-semibold">
+              }} className="p-4 hover:text-lg duration-500 hover:shadow-md ease-in-out hover:opacity-100 opacity-75 font-semibold">
                 Update
               </button>
             </div>
