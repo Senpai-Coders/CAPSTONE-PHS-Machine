@@ -3,7 +3,7 @@
 ![logo](_media/pig_w_bg.png)
 ![logo](_media/phsmock.png)
 
-## Introduction
+## Introduction 
 **PHSM**, or **Pig Heat Stress Machine**, is a capstone project develop to help piggery owners to detect and automatically resolve any possible heat stress affecting the pigs. PHS machine gathers all information & details that is being monitored by the web-based system of PHSM.
 
 PHS machine doesn't need any internet connection to function. The PHS runs on local network on the piggery and can be used to scan and connect other PHS machine on the same network.
