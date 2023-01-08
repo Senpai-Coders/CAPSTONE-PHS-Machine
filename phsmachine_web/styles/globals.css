@@ -15,6 +15,10 @@
   font-family: "Inter", sans-serif;
 }
 
+.gifbg{
+    background-image: url(../public/images/bg.gif)
+}
+
 html,
 body {
   @apply duration-500;

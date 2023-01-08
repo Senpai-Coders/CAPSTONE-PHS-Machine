@@ -1,4 +1,4 @@
-import { readFile } from "../../../helpers/api";
+import { readFile, writeFile } from "../../../helpers/api";
 import logger from "../../../services/logger";
 
 const handler = async (req, res) => {
@@ -8,7 +8,12 @@ const handler = async (req, res) => {
     if ( mode === 0 ) {
       let update = await readFile(`tracking_hasupdate.tmp`);
       logger.info(`Retrieve Update`);
-      return res.status(200).json({ update : update });
+      return res.status(200).json({ update : update.replace("\n","") });
+    }
+
+    if ( mode === 1 ){
+        let shouldUpdate = await writeFile("tracking_shouldupdate.tmp", "true")
+        return res.status(200).json({ message : "ok" })
     }
 
     return res

@@ -22,12 +22,13 @@ export default function reboot() {
   }, []);
 
   return (
+        <div className="gifbg bg-no-repeat bg-cover">
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
       exit={{ opacity: 0 }}
-      className="flex items-center justify-center w-screen h-screen"
+      className="flex backdrop-blur-xl bg-base-100/80 items-center justify-center w-screen h-screen"
     >
         <Head>
         <title>PHS Reboot</title>
@@ -38,6 +39,6 @@ export default function reboot() {
           Please wait.. Rebooting may take a while
         </h1>
       </div>
-    </motion.div>
+    </motion.div></div>
   );
 }

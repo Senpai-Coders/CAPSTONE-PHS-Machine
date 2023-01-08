@@ -5,21 +5,24 @@ const fs = require("fs");
 const { exec } = require("child_process");
 var XLSX = require("xlsx");
 import { zip } from "zip-a-folder";
-import logger from "../../services/logger"
+import logger from "../../services/logger";
 
 export const GET_SERVER_IP = () => {
-    var os = require('os');
-    var ifaces = os.networkInterfaces();
-    var values = Object.keys(ifaces).map(function(name) {
-      return ifaces[name];
-    });
-    values = [].concat.apply([], values).filter(function(val){
-      return val.family == 'IPv4' && val.internal == false && val.address != "127.0.0.1"
-    });
-    
-    return values.length ? values[0].address : '0.0.0.0';
-  };
+  var os = require("os");
+  var ifaces = os.networkInterfaces();
+  var values = Object.keys(ifaces).map(function (name) {
+    return ifaces[name];
+  });
+  values = [].concat.apply([], values).filter(function (val) {
+    return (
+      val.family == "IPv4" &&
+      val.internal == false &&
+      val.address != "127.0.0.1"
+    );
+  });
 
+  return values.length ? values[0].address : "0.0.0.0";
+};
 
 export const PI_IP = GET_SERVER_IP();
 
@@ -71,7 +74,7 @@ export const ToExcel = async (data) => {
     let writeResult = await XLSX.writeFile(workbook, "public" + pth);
     if (writeResult === undefined) exportLink = pth;
   } catch (e) {
-    logger.error(e.stack)
+    logger.error(e.stack);
   }
   return exportLink;
 };
@@ -89,7 +92,7 @@ export const ToCsv = async (data) => {
     const writeResult = await fs.promises.writeFile("public" + pth, CsvSheet);
     if (writeResult === undefined) exportLink = pth;
   } catch (e) {
-    logger.error(e.stack)
+    logger.error(e.stack);
   }
   return exportLink;
 };
@@ -105,7 +108,7 @@ export const ToZip = async (path) => {
     if (result === undefined) return pth;
     return "";
   } catch (e) {
-    logger.error(e.stack)
+    logger.error(e.stack);
     return "";
   }
 };
@@ -113,7 +116,7 @@ export const ToZip = async (path) => {
 export const exec_command = async (comnd) => {
   let exec_res = exec(comnd, function (error, stdout, stderr) {
     if (error) {
-        logger.error(e.stack)
+      logger.error(e.stack);
       logger.error("Error code: " + error.code);
       logger.error("Signal received: " + error.signal);
     }
@@ -137,7 +140,7 @@ export const deletePathOrFile = async (paths) => {
       }
       result.done += 1;
     } catch (e) {
-      logger.error(e.stack)
+      logger.error(e.stack);
       result.failed += 1;
     }
   });
@@ -195,7 +198,10 @@ export const removeErrorCode = async (error_code) => {
 
 export const readError = async () => {
   try {
-    const data = await fs.promises.readFile("public/logs/error-logs.json", "utf8");
+    const data = await fs.promises.readFile(
+      "public/logs/error-logs.json",
+      "utf8"
+    );
     return JSON.parse(data);
   } catch (err) {
     const data = await fs.promises.writeFile(
@@ -207,22 +213,23 @@ export const readError = async () => {
 };
 
 export const readJsonFile = async (path) => {
-    try {
-        const content = await fs.promises.readFile(path, "utf8");
-        return JSON.parse(content);
-      } catch (err) {
-        return { sendGrid : "" };
-      }
-}
+  try {
+    const content = await fs.promises.readFile(path, "utf8");
+    return JSON.parse(content);
+  } catch (err) {
+    return { sendGrid: "" };
+  }
+};
 
 export const readDirContent = async (path) => {
   try {
-    let files = fs.readdirSync(path, { withFileTypes: true })
+    let files = fs
+      .readdirSync(path, { withFileTypes: true })
       .filter((item) => !item.isDirectory())
-      .map((item) => item.name );
+      .map((item) => item.name);
     return files;
   } catch (e) {
-    logger.error(e.stack)
+    logger.error(e.stack);
     return [];
   }
 };
@@ -238,14 +245,19 @@ export const readLogs = async (logFileName) => {
 };
 
 export const readFile = async (file) => {
-    try {
-      const data = await fs.promises.readFile(file, "utf8");
-      return data;
-    } catch (err) {
-      const data = await fs.promises.writeFile(file, "");
-      return "";
-    }
-  };
+  try {
+    const data = await fs.promises.readFile(file, "utf8");
+    return data;
+  } catch (err) {
+    const data = await fs.promises.writeFile(file, "");
+    return "";
+  }
+};
+
+export const writeFile = async (file, content) => {
+  const data = await fs.promises.writeFile(file, content);
+  return data;
+};
 
 export const clearError = async () => {
   try {
@@ -291,23 +303,22 @@ export const bytesToMegaBytes = (bytes) => bytes / 1000000; //bytes / (1024 ** 2
 export const mbToGB = (mb) => mb / 1000;
 
 export const getPercentUsage = (total, taken) => {
-    var tk = (taken / total) * 100;
-    return isNaN(tk) ? 0 : tk;
-  };
+  var tk = (taken / total) * 100;
+  return isNaN(tk) ? 0 : tk;
+};
 
 export const dateToBeutify = (date) => {
-    let thisDate = new Date(date);
-    let wordDate = `${thisDate.toLocaleString("en-us", {
-      month: "short",
-    })} ${thisDate.getDate()}, ${thisDate.getFullYear()} at ${thisDate.toLocaleTimeString(
-      "en-US",
-      {
-        hour: "2-digit",
-        minute: "2-digit",
-      }
-    )}`;
-    return wordDate;
-  };
-  
+  let thisDate = new Date(date);
+  let wordDate = `${thisDate.toLocaleString("en-us", {
+    month: "short",
+  })} ${thisDate.getDate()}, ${thisDate.getFullYear()} at ${thisDate.toLocaleTimeString(
+    "en-US",
+    {
+      hour: "2-digit",
+      minute: "2-digit",
+    }
+  )}`;
+  return wordDate;
+};
 
 export default {};

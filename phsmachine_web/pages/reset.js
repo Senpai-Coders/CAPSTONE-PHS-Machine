@@ -94,12 +94,13 @@ export default function reset() {
   }, []);
 
   return (
+    <div className="gifbg bg-no-repeat bg-cover">
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
       exit={{ opacity: 0 }}
-      className="flex items-center justify-center w-screen h-screen"
+      className="backdrop-blur-xl bg-base-100/80 flex items-center justify-center w-screen h-screen"
     >
         <Head>
         <title>PHS Reset</title>
@@ -111,5 +112,6 @@ export default function reset() {
         </h1>
       </div>
     </motion.div>
+    </div>
   );
 }

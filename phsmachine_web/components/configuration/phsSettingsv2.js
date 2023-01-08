@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Loading from "../loading";
 
-import { RebootConfirm, ShutdownConfirm, ResetConfirm } from "../modals";
+import { RebootConfirm, ShutdownConfirm, ResetConfirm, UpdateConfirm } from "../modals";
 
 import axios from "axios";
 
@@ -10,7 +10,8 @@ import { VscDebugConsole } from "react-icons/vsc";
 
 import { FiHardDrive, FiZapOff, FiRefreshCcw } from "react-icons/fi";
 import { MdAutoDelete } from "react-icons/md";
-import { AiFillStop } from "react-icons/ai";
+import { IoMdGitMerge } from "react-icons/io";
+import { AiFillGithub } from "react-icons/ai";
 import { BiNetworkChart, BiReset } from "react-icons/bi";
 import { BsGear, BsLayoutThreeColumns } from "react-icons/bs";
 import { TiWarningOutline } from "react-icons/ti";
@@ -63,11 +64,24 @@ const phsSettings = ({
 
   const [PHS_NAME, setPHS_NAME] = useState("");
 
-  const [availableUps, setAvailableUps] = useState()
+  const [availableUps, setAvailableUps] = useState("-");
 
-  useEffect(()=>{
-    
-  },[])
+  useEffect(() => {
+    fetch(`/api/phs/phsUpdate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mode: 0,
+        }),
+      })
+        .then((response) => response.json())
+        .then((res) => {
+          setAvailableUps(res.update);
+        })
+        .catch(function (error) {});
+  }, []);
 
   useEffect(() => {
     if (hasChanges) return;
@@ -262,6 +276,16 @@ const phsSettings = ({
         }}
       />
 
+      < UpdateConfirm 
+      shown={selectedModal === 1}
+      onAccept={() => {
+        router.push("/update")
+      }}
+      close={() => {
+        setSelectedModal(-1);
+      }}
+      />
+
       {state === -2 && (
         <div className="alert alert-warning shadow-lg my-4 animate-pulse">
           <div className="">
@@ -446,6 +470,7 @@ const phsSettings = ({
             </div>
           </div>
         </div>
+        
         <div className="divider" />
         <div className="flex justify-evenly mt-4">
           <button
@@ -488,6 +513,35 @@ const phsSettings = ({
           <p className="font-inter font-medium mb-2 text-lg md:text-xl">
             System Update
           </p>
+          {availableUps !== "-" ? (
+            <div className="flex duration-400 group ease-in-out hover:bg-neutral hover:text-neutral-content justify-evenly items-center shadow-md p-4">
+              <IoMdGitMerge className="text-4xl mr-2" />
+              <div className="">
+                <p className="font-bold mt-1">New Update Available</p>
+                <p className="mt-2 text-sm">{availableUps}</p>
+                <div className=" mt-4 flex flex-wrap space-x-2 items-center text-xs ">
+                  <p className="font-medium">From </p>
+                  <span><AiFillGithub/></span>
+                  <a
+                    className="link font-medium"
+                    href="https://github.com/Senpai-Coders/CAPSTONE-PHS-Machine"
+                  >
+                    https://github.com/Senpai-Coders/CAPSTONE-PHS-Machine
+                  </a>
+                </div>
+              </div>
+              <div className="divider divider-horizontal"></div>
+              <button onClick={()=>{
+                setSelectedModal(1)
+              }} className="p-4 hover:text-lg duration-500 ease-in-out hover:opacity-100 opacity-75 font-semibold">
+                Update
+              </button>
+            </div>
+          ) : (
+            <p className="text-center w-full text-sm opacity-80 my-4">
+              No available update
+            </p>
+          )}
         </div>
       </div>
 
