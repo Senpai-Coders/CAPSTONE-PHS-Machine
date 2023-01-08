@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
@@ -57,6 +58,7 @@ const signin = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 h-screen w-screen relative">
+        <Head><title>Sign In</title></Head>
       <div className="flex items-center bg-[#FDE9F4]">
         <div className="m-auto my-10 w-9/12 text-[#663A52]">
           <div className="flex justify-start items-center">
