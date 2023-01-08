@@ -7,7 +7,6 @@ import Head from "next/head";
 
 export default function reboot() {
   const router = useRouter();
-  const [started, setStarted] = useState(false);
 
   useEffect(() => {
     fetch(`/api/phs/phsUpdate`, {
@@ -32,13 +31,13 @@ export default function reboot() {
 
   useEffect(() => {
     let connectChecker = setInterval(async () => {
+        if (turnedof) return;
       try {
-        if (started) return;
+        
         const response = await axios.post("/api/connectivity");
-        if (started) return;
         router.push("/");
       } catch (e) {}
-    }, 3000);
+    }, 10000);
     return () => clearInterval(connectChecker);
   }, []);
 

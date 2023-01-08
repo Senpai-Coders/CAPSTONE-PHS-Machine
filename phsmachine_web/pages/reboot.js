@@ -17,7 +17,7 @@ export default function reboot() {
         if (started) return;
         router.push("/");
       } catch (e) {}
-    }, 3000);
+    }, 10000);
     return () => clearInterval(connectChecker);
   }, []);
 

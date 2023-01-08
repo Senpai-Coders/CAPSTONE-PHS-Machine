@@ -89,7 +89,7 @@ export default function reset() {
         const response = await axios.post("/api/connectivity");
         router.push("/auth/signin");
       } catch (e) {}
-    }, 3000);
+    }, 10000);
     return () => clearInterval(connectChecker);
   }, []);
 
