@@ -58,6 +58,7 @@ fetch_phs() {
 
 update_phs() {
     echo "\nUpdating PHS"
+    git -C "$_PHS_WEB_DIR_" reset --hard
     git -C "$_PHS_WEB_DIR_" pull
     echo "false" >"$_PHS_WEB_DIR_/tracking_shouldupdate.tmp"
     forcebuild="true"
