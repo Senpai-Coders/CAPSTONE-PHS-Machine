@@ -1,33 +1,11 @@
 import axios from "axios";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { RiRestartLine } from "react-icons/ri";
+import { useEffect } from "react";
 import Head from "next/head";
 
 export default function reboot() {
   const router = useRouter();
-
-  useEffect(() => {
-    fetch(`/api/phs/phsUpdate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        mode: 1,
-      }),
-    })
-      .then((response) => response.json())
-      .then((res) => {
-        
-      })
-      .catch(function (error) {
-
-      });
-
-    axios.post("/api/phs/config/power", { mode: 1 });
-  }, []);
 
   useEffect(() => {
     let connectChecker = setInterval(async () => {

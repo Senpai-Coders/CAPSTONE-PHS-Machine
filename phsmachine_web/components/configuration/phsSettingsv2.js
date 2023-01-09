@@ -280,6 +280,8 @@ const phsSettings = ({
       shown={selectedModal === 1}
       onAccept={() => {
         router.push("/update")
+        axios.post("/api/phs/phsUpdate", { mode: 1 });
+        axios.post("/api/phs/config/power", { mode: 1 });
       }}
       close={() => {
         setSelectedModal(-1);

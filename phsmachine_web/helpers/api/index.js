@@ -255,8 +255,10 @@ export const readFile = async (file) => {
 };
 
 export const writeFile = async (file, content) => {
+    try{
   const data = await fs.promises.writeFile(file, content);
   return data;
+    }catch(e){ logger.error("ERROR : "+e) }
 };
 
 export const clearError = async () => {
