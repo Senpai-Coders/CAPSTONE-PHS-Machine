@@ -1,6 +1,7 @@
-import { readFile, writeFile, exec_command } from "../../../helpers/api";
+import { readFile, writeFile, exec_command, PI_IP } from "../../../helpers/api";
 import logger from "../../../services/logger";
 const { exec } = require("child_process");
+import axios from "axios";
 
 function execShellCommand(cmd) {
     const exec = require('child_process').exec;
@@ -28,6 +29,7 @@ const handler = async (req, res) => {
       logger.info(`Set system to update on boot`);
       const { stdout, stderr } = await execShellCommand("./phs_updater.sh");
       let shouldUpdate = await writeFile("tracking_lastipbuild.tmp", "-");
+      const { stdout, stderr } = await execShellCommand("sudo reboot now");
       return res.status(200).json({ message: "ok" });
     }
 
