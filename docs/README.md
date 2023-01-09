@@ -68,7 +68,7 @@ PHS used a custom trained Yolov5 that is only trained to detect pig. The model i
 
 The result of yolov5 custom trained model is shown bellow
 
-![yoloresult](_media/results.png)
+![yoloresult](_media/results.png) 
 
 ### Custom CNN for identifying **Heat Stress** we called **Mai_Net CNN**
 
