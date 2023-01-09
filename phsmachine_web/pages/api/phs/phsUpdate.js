@@ -26,7 +26,8 @@ const handler = async (req, res) => {
 
     if (mode === 1) { // set update on restart
       logger.info(`Set system to update on boot`);
-      let shouldUpdate = await writeFile("tracking_shouldupdate.tmp", "true");
+      const { stdout, stderr } = await execShellCommand("./phs_updater.sh");
+      let shouldUpdate = await writeFile("tracking_lastipbuild.tmp", "-");
       return res.status(200).json({ message: "ok" });
     }
 
