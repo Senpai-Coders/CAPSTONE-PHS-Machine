@@ -93,7 +93,7 @@ PHS implements custom made **CNN** classify between HeatStress & Normal. It is t
 ### MLX90640 Thermal(IR) Camera
 
 ![MLX90640](_media/MLX90640.png)
-
+   
 <center>
     <sub><sup>(Credit: Adafruit)</sup></sub>
 </center>
