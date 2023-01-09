@@ -49,6 +49,7 @@ toupdate=$(cat $_PHS_WEB_DIR_/tracking_shouldupdate.tmp)
 
 max_rerun=5   #max reattempt to run
 rerun_count=0 #rerun count
+retry_update_count=0
 
 fetch_phs() {
     git -C "$_PHS_WEB_DIR_" fetch
@@ -104,7 +105,8 @@ if [ "$toupdate" = "true" ]; then
     if [ $? -eq 0 ]; then
         update_phs
     else
-        echo "Offline - Won't Update"
+        echo "Offline - Won't Update, Please make sure you have internet connection or the PHS repository is accessible"
+        exit 1
     fi
 
     sleep 1
