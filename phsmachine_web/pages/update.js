@@ -9,7 +9,6 @@ export default function reboot() {
 
   useEffect(() => {
     let connectChecker = setInterval(async () => {
-        if (turnedof) return;
       try {
         
         const response = await axios.post("/api/connectivity");

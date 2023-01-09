@@ -2,7 +2,12 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Loading from "../loading";
 
-import { RebootConfirm, ShutdownConfirm, ResetConfirm, UpdateConfirm } from "../modals";
+import {
+  RebootConfirm,
+  ShutdownConfirm,
+  ResetConfirm,
+  UpdateConfirm,
+} from "../modals";
 
 import axios from "axios";
 
@@ -11,7 +16,7 @@ import { VscDebugConsole } from "react-icons/vsc";
 import { FiHardDrive, FiZapOff, FiRefreshCcw } from "react-icons/fi";
 import { MdAutoDelete } from "react-icons/md";
 import { IoMdGitMerge } from "react-icons/io";
-import { AiFillGithub } from "react-icons/ai";
+import { AiFillGithub ,AiOutlineSearch , AiOutlineLoading} from "react-icons/ai";
 import { BiNetworkChart, BiReset } from "react-icons/bi";
 import { BsGear, BsLayoutThreeColumns } from "react-icons/bs";
 import { TiWarningOutline } from "react-icons/ti";
@@ -46,6 +51,8 @@ const phsSettings = ({
     detectionMode.value.temperatureThreshold
   );
 
+  const [loadingupdate, setLoadingUpdate] = useState(false);
+
   const [saving, setSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -68,19 +75,19 @@ const phsSettings = ({
 
   useEffect(() => {
     fetch(`/api/phs/phsUpdate`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          mode: 0,
-        }),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mode: 0,
+      }),
+    })
+      .then((response) => response.json())
+      .then((res) => {
+        setAvailableUps(res.update);
       })
-        .then((response) => response.json())
-        .then((res) => {
-          setAvailableUps(res.update);
-        })
-        .catch(function (error) {});
+      .catch(function (error) {});
   }, []);
 
   useEffect(() => {
@@ -244,6 +251,19 @@ const phsSettings = ({
     });
   };
 
+  const checkupdate = async () => {
+    try {
+      setLoadingUpdate(true)
+      const fetchupdate = await axios.post("/api/phs/phsUpdate", { mode: 2 });
+      const getupdate = await axios.post("/api/phs/phsUpdate", { mode: 0 });
+      setAvailableUps(getupdate.data.update);
+    } catch (e) {
+      console.log(e);
+    }finally{
+        setLoadingUpdate(false)
+    }
+  };
+
   return (
     <div className="">
       <ShutdownConfirm
@@ -276,16 +296,19 @@ const phsSettings = ({
         }}
       />
 
-      < UpdateConfirm 
-      shown={selectedModal === 1}
-      onAccept={() => {
-        router.push("/update")
-        axios.post("/api/phs/phsUpdate", { mode: 1 });
-        axios.post("/api/phs/config/power", { mode: 1 });
-      }}
-      close={() => {
-        setSelectedModal(-1);
-      }}
+      <UpdateConfirm
+        shown={selectedModal === 1}
+        onAccept={() => {
+          router.push("/update");
+          axios.post("/api/phs/phsUpdate", { mode: 1 });
+          const response = axios.get(
+            `http://${PI_IP}:8000/shutdown_reboot?tostate=updating`
+          );
+          axios.post("/api/phs/config/power", { mode: 1 });
+        }}
+        close={() => {
+          setSelectedModal(-1);
+        }}
       />
 
       {state === -2 && (
@@ -472,7 +495,7 @@ const phsSettings = ({
             </div>
           </div>
         </div>
-        
+
         <div className="divider" />
         <div className="flex justify-evenly mt-4">
           <button
@@ -515,36 +538,59 @@ const phsSettings = ({
           <p className="font-inter font-medium mb-2 text-lg md:text-xl">
             System Update
           </p>
-          <p className="mt-2 text-xs">PHS must be connected to the internet in order to get available updates</p>
-          {availableUps !== "-" ? (
-            <div className="flex mt-2 duration-400 group ease-in-out hover:bg-neutral hover:text-neutral-content justify-evenly items-center shadow-md p-4">
-              <IoMdGitMerge className="text-4xl mr-2" />
-              <div className="">
-                <p className="font-bold mt-1">New Update Available</p>
-                <p className="mt-2 text-sm">{availableUps}</p>
-                <div className=" mt-4 flex flex-wrap space-x-2 items-center text-xs ">
-                  <p className="font-medium">From </p>
-                  <span><AiFillGithub/></span>
-                  <a
-                    className="link font-medium"
-                    href="https://github.com/Senpai-Coders/CAPSTONE-PHS-Machine"
-                  >
-                    https://github.com/Senpai-Coders/CAPSTONE-PHS-Machine
-                  </a>
-                </div>
-              </div>
-              <div className="divider divider-horizontal"></div>
-              <button onClick={()=>{
-                setSelectedModal(1)
-              }} className="p-4 hover:text-lg duration-500 hover:shadow-md ease-in-out hover:opacity-100 opacity-75 font-semibold">
-                Update
-              </button>
-            </div>
+          <p className="mt-2 text-xs">
+            PHS must be connected to the internet in order to get available
+            updates
+          </p>
+          { loadingupdate ? (
+            <AiOutlineLoading className=" mx-auto animate-spin my-16" />
           ) : (
-            <p className="text-center w-full text-sm opacity-80 py-8">
-              No available update
-            </p>
+            <>
+              {availableUps !== "-" ? (
+                <div className="flex mt-2 duration-400 group ease-in-out hover:bg-neutral hover:text-neutral-content justify-evenly items-center shadow-md p-4">
+                  <IoMdGitMerge className="text-4xl mr-2" />
+                  <div className="">
+                    <p className="font-bold mt-1">New Update Available</p>
+                    <p className="mt-2 text-sm">{availableUps}</p>
+                    <div className=" mt-4 flex flex-wrap space-x-2 items-center text-xs ">
+                      <p className="font-medium">From </p>
+                      <span>
+                        <AiFillGithub />
+                      </span>
+                      <a
+                        className="link font-medium"
+                        href="https://github.com/Senpai-Coders/CAPSTONE-PHS-Machine"
+                      >
+                        https://github.com/Senpai-Coders/CAPSTONE-PHS-Machine
+                      </a>
+                    </div>
+                  </div>
+                  <div className="divider divider-horizontal"></div>
+                  <button
+                    onClick={() => {
+                      setSelectedModal(1);
+                    }}
+                    className="p-4 hover:text-lg duration-500 hover:shadow-md ease-in-out hover:opacity-100 opacity-75 font-semibold"
+                  >
+                    Update
+                  </button>
+                </div>
+              ) : (
+                <p className="text-center w-full text-sm opacity-90 py-8">
+                  No available update
+                </p>
+              )}
+            </>
           )}
+          <div
+            className={"flex items-center justify-start text-sm mt-4 hover:opacity-80 duration-200 ease-in-out cursor-pointer " + + `${loadingupdate ? "animate-pulse" : " opacity-50"}` }
+            onClick={() => {
+                if(loadingupdate) return
+              checkupdate();
+            }}
+          >
+            {!loadingupdate && <AiOutlineSearch className={"mr-2" }/> } <p>{loadingupdate ? "getting updates..." : "Check for new update"}</p>
+          </div>
         </div>
       </div>
 

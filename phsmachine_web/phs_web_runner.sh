@@ -26,7 +26,6 @@ if [ `expr length "$curip"` -eq 0 ]; then
 	exit 1
 fi
 
-
 #git tracking info
 UPSTREAM=${1:-'@{u}'}
 LOCAL=$(git -C "$_PHS_WEB_DIR_" rev-parse @)
@@ -36,16 +35,6 @@ BASE=$(git -C "$_PHS_WEB_DIR_" merge-base @ "$UPSTREAM")
 #read nung mga tracking files
 lastbuild=$(cat $_PHS_WEB_DIR_/tracking_lastipbuild.tmp)
 toupdate=$(cat $_PHS_WEB_DIR_/tracking_shouldupdate.tmp)
-
-
-
-# ip_len=${#curip}
-# while [ $ip_len -lt 1 ]
-# do
-#    echo "no ip yet, loading.."
-#    curip=$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p')
-# done
-# echo "Got an IP : $curip"
 
 max_rerun=5   #max reattempt to run
 rerun_count=0 #rerun count
@@ -108,7 +97,6 @@ if [ "$toupdate" = "true" ]; then
         echo "Offline - Won't Update, Please make sure you have internet connection or the PHS repository is accessible"
         exit 1
     fi
-
     sleep 1
 fi
 
