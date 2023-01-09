@@ -87,18 +87,18 @@ build_phs() {
 }
 
 # update the system if requested by user
-if [ "$toupdate" = "true" ]; then
-    echo "**Updating System**"
-    echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 >/dev/null 2>&1
+# if [ "$toupdate" = "true" ]; then
+#     echo "**Updating System**"
+#     echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 >/dev/null 2>&1
 
-    if [ $? -eq 0 ]; then
-        update_phs
-    else
-        echo "Offline - Won't Update, Please make sure you have internet connection or the PHS repository is accessible"
-        exit 1
-    fi
-    sleep 1
-fi
+#     if [ $? -eq 0 ]; then
+#         update_phs
+#     else
+#         echo "Offline - Won't Update, Please make sure you have internet connection or the PHS repository is accessible"
+#         exit 1
+#     fi
+#     sleep 1
+# fi
 
 run_phs() {
     npm --prefix "$_PHS_WEB_DIR_" run start
@@ -120,10 +120,11 @@ echo "lastbuild -> $lastbuild"
 echo -e "current_ip -> $curip \n"
 sleep 1
 
-if [ $hasupdate = "true" ]; then
-    echo "**new update, need rebuild**"
-    build_phs
-elif [ "$lastbuild" != "$curip" ]; then
+# if [ $hasupdate = "true" ]; then
+#     echo "**new update, need rebuild**"
+#     build_phs
+# el
+if [ "$lastbuild" != "$curip" ]; then
     echo "**need rebuild**"
     build_phs
 else
